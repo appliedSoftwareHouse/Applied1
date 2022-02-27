@@ -1,0 +1,21 @@
+﻿
+RunTime Compilation
+=============================================================================
+Install-Package Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation -Version 6.0.2
+=============================================================================
+
+User Registration / Login etc.
+===================================================================
+dotnet add package Microsoft.AspNet.Identity.Core --version 2.2.3
+===================================================================
+
+User Registration / Login etc. Extention
+
+=====================================================================
+Install-Package Microsoft.Extensions.Identity.Core -Version 7.0.0-preview.1.22109.13
+======================================================================
+
+SQLite Database Engine
+===============================================
+Install-Package System.Data.SQLite -Version 1.0.115.5
+===============================================

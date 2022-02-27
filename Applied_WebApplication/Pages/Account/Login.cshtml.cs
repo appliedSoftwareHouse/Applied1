@@ -1,3 +1,4 @@
+using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,11 @@ namespace Applied_WebApplication.Pages
         [BindProperty]
         public Credential MyCredential { get; set; }
 
+        private DataTableClass tb_User = new DataTableClass("Users");
 
         public void OnGet()
         {
-
-
+            
         }
 
 
