@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Security.Claims;
 
 namespace Applied_WebApplication.Pages
@@ -17,7 +18,7 @@ namespace Applied_WebApplication.Pages
 
         public void OnGet()
         {
-            
+
         }
 
 
@@ -25,12 +26,16 @@ namespace Applied_WebApplication.Pages
         {
             if (!ModelState.IsValid) return Page();
 
-            if (MyCredential.Username == "Admin" && MyCredential.Password == "Password")
+            tb_User.View_Filter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
+            UserProfile  uprofile = new(tb_User.UserRow());                                                     // Get a User Profile from User Record in DataTable.
+            
+            if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
             {
                 var Claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, "Admin"),
-                    new Claim(ClaimTypes.Email, "aamir@jahangir.com"),
+                    new Claim(ClaimTypes.Name, uprofile.UserID),
+                    new Claim(ClaimTypes.Actor, uprofile.UserName),
+                    new Claim(ClaimTypes.Email, uprofile.Email),
                     new Claim("Department", "HR"),
                     new Claim ("Admin", "true")
                 };
@@ -46,7 +51,7 @@ namespace Applied_WebApplication.Pages
 
         }
 
-        
+
         public class Credential
         {
             [Required]

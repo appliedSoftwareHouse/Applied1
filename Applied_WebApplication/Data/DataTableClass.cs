@@ -12,7 +12,8 @@ namespace Applied_WebApplication.Data
         public SQLiteConnection MyConnection = new();
         public string MyTableName = "";
         public bool IsError = false;
-
+        public string View_Filter { get; set; } = "";
+        
 
         public DataTableClass()
         {
@@ -23,9 +24,24 @@ namespace Applied_WebApplication.Data
         {
             MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _TableName;
-            GetDataTable();                                                                                    // Load DataTable and View
+            GetDataTable();                                                                                   // Load DataTable and View
+            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
         }
+        
+        public DataRow? UserRow()
+        {
+            if(ViewRecordCount() == 1) 
+            {
+                return MyDataView[0].Row;
+            }
+            else
+            {
+                return null; 
+            }
+        }
+
+        public int ViewRecordCount() { return MyDataView.Count; }
 
         private void CheckError()
         {
