@@ -33,11 +33,13 @@ namespace Applied_WebApplication.Pages
             {
                 var Claims = new List<Claim>
                 {
+                    
+
                     new Claim(ClaimTypes.Name, uprofile.UserID),
-                    new Claim(ClaimTypes.Actor, uprofile.UserName),
+                    new Claim(ClaimTypes.GivenName, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
                     new Claim("Department", "HR"),
-                    new Claim ("Admin", "true")
+                    new Claim ("Admin", "false")
                 };
 
                 var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
