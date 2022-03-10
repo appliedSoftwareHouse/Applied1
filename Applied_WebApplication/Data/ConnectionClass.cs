@@ -16,7 +16,6 @@ namespace Applied_WebApplication.Data
             AppliedConnection = new("Data Source=" + DBFile_Path);
         }
 
-
         private void CreateAppliedDataBase()
         {
             CreateTablesClass TableClass = new();

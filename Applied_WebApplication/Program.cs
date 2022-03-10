@@ -4,13 +4,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); ;
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
     options.Cookie.Name = "MyCookieAuth";
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/AccessDenied";
+    options.LogoutPath = "/Account/Logout";
     
 });
 
@@ -20,6 +20,7 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AccountsManager", Policy => Policy.RequireClaim("Accounts_Manager"));
     options.AddPolicy("AccountsClark", Policy => Policy.RequireClaim("Accounts_Clark"));
     options.AddPolicy("MustBelongToHRPolicy", policy => policy.RequireClaim("Department", "HR"));
+    options.AddPolicy("StoreOnly", policy => policy.RequireClaim("Stock", "Store"));
 });
 
 

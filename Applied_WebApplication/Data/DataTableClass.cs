@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Data
         public string MyTableName = "";
         public bool IsError = false;
         public string View_Filter { get; set; } = "";
-        
+        public DataRow CurrentRow { get; set; }
 
         public DataTableClass()
         {
@@ -68,6 +68,13 @@ namespace Applied_WebApplication.Data
             }
             else { MyDataTable = new DataTable(); }
             return;
+        }
+
+        public bool SaveCurrentRow()
+        {
+
+
+            return true;
         }
 
         //======================================================== eof
