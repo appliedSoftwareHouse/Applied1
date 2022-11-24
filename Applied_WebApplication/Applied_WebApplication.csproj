@@ -13,7 +13,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\Accounts\" />
     <Folder Include="Pages\HR\" />
     <Folder Include="Pages\Stock\" />
     <Folder Include="Pages\Sales\" />
