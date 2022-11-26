@@ -1,37 +1,33 @@
+using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Data;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
     public class COAModel : PageModel
     {
-        public int ID { get; set; }
-        public string Title { get; set; }
+        public double _ID { get; set; }
+        public string _Title { get; set; }
 
-        private bool IsPosted = false;
+        
+        
 
         public void OnGet()
         {
-            if (!IsPosted) 
-            {
-                ID = 999;
-                Title = "My Name type here";
-            }
-            else
-            {
-                ID = ID;
-                Title =  Title;
 
-            }
-            
-
-            
-        }
+            _ID = 999;
+            _Title = "My Name type here";
+         }
 
         public void OnPost()
-        {
-            IsPosted = true;
-            ID = ID+1;
+        { 
+            DataTableClass COA = new DataTableClass(Tables.COA.ToString());
+            COA.CurrentRow = COA.MyDataTable.NewRow();
+            COA.CurrentRow["ID"] = _ID;
+            COA.CurrentRow["Title"] = _Title;
+            COA.SaveCurrentRow();
+                      
 
         }
 

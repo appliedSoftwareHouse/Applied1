@@ -9,18 +9,19 @@
 <br />
 
 <form method="post">
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
     <div class="form-group row">
-        <div class="col-3">    <label asp-for="ID"></label></div>
-        <div class="col-5"> <input type="text" asp-for="ID" class="form-control" /></div>
-        <span class="text-danger" asp-validation-for="ID"></span>
+        <div class="col-3">    <label asp-for="_ID"></label></div>
+        <div class="col-5"> <input type="text" asp-for="_ID" class="form-control" /></div>
+        <span class="text-danger" asp-validation-for="_ID"></span>
     </div>
     <br />
 
     <div class="form-group row">
-        <div class="col-3">    <label asp-for="Title"></label></div>
-        <div class="col-5">  <input type="text" asp-for="Title" class="form-control" /></div>
-        <span class="text-danger" asp-validation-for="Title"></span>
+        <div class="col-3">    <label asp-for="_Title"></label></div>
+        <div class="col-5">  <input type="text" asp-for="_Title" class="form-control" /></div>
+        <span class="text-danger" asp-validation-for="_Title"></span>
     </div>
 
     <div class="form-group row">

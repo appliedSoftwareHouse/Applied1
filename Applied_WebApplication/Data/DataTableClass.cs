@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.VisualBasic;
+using System.Data;
 using System.Data.SQLite;
 
 namespace Applied_WebApplication.Data
@@ -14,6 +15,10 @@ namespace Applied_WebApplication.Data
         public bool IsError = false;
         public string View_Filter { get; set; } = "";
         public DataRow CurrentRow { get; set; }
+        private SQLiteCommand Command_Update;
+        private SQLiteCommand Command_Delete;
+        private SQLiteCommand Command_Insert;
+
 
         public DataTableClass()
         {
@@ -27,8 +32,31 @@ namespace Applied_WebApplication.Data
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
+            
+            Command_Update = new SQLiteCommand(MyConnection);
+            Command_Delete = new SQLiteCommand(MyConnection);
+            Command_Insert = new SQLiteCommand(MyConnection);
         }
-        
+
+        private string Get_InsertText()
+        {
+                Command_Insert.Parameters.AddWithValue("@ID", 0);
+                Command_Insert.Parameters.AddWithValue("@Title", "");
+                return "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title) WHERE ID=@ID";
+        }
+
+        private string Get_DeleteText()
+        {
+            throw new NotImplementedException();
+        }
+
+        private string Get_UpdateText()
+        {
+           Command_Update.Parameters.AddWithValue("@ID", 0);
+            Command_Update.Parameters.AddWithValue("@Title", "");
+            return "UPDATE [" + MyTableName + "] SET ID=@ID, Title=@Title WHERE ID=@ID";
+        }
+
         public DataRow? UserRow()
         {
             if(ViewRecordCount() == 1) 
@@ -70,13 +98,47 @@ namespace Applied_WebApplication.Data
             return;
         }
 
+        public bool Seek(Double _ID)
+        {
+            DataView _TableView = MyDataView;
+            _TableView.RowFilter = "ID=" + _ID.ToString();
+
+            if(_TableView.Count > 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool SaveCurrentRow()
         {
+            MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
+            if (MyDataView.Count > 0)      
+            {
+
+                Command_Update.ExecuteNonQuery(); 
+            }
+            else  
+            {
+                Command_Insert_Set(CurrentRow);
+                Command_Insert.Connection.Open();
+                Command_Insert.ExecuteNonQuery();
+            }
 
             return true;
         }
 
+
+        public void Command_Insert_Set(DataRow _Row)
+        {
+            Command_Insert.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
+            Command_Insert.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
+            Command_Insert.CommandText = "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title)";
+        }
         //======================================================== eof
     }
 }
