@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Data
 @model Applied_WebApplication.Pages.Accounts.COAModel
 @{
 }
@@ -9,24 +10,48 @@
 <br />
 
 <form method="post">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
-    <div class="form-group row">
-        <div class="col-3">    <label asp-for="_ID"></label></div>
-        <div class="col-5"> <input type="text" asp-for="_ID" class="form-control" /></div>
-        <span class="text-danger" asp-validation-for="_ID"></span>
-    </div>
+    <input class="btn btn-primary" type="submit" value="Submit">
+
     <br />
 
-    <div class="form-group row">
-        <div class="col-3">    <label asp-for="_Title"></label></div>
-        <div class="col-5">  <input type="text" asp-for="_Title" class="form-control" /></div>
-        <span class="text-danger" asp-validation-for="_Title"></span>
-    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a >
+                        Code
+                    </a>
+                </th>
+                <th>
+                    Title
+                    </a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow item in Model.COA.MyDataTable.Rows)
+            {
+                <tr>
+                    <td>
+                        @item["ID"]
+                        
+                    </td>
+                    <td>
+                        @item["Title"]
+                    </td>
+                    <td>
+                        <a asp-page="./COA_Edit" asp-route-id="@item["ID"]">Edit</a> |
+                        <a asp-page="./Details" asp-route-id="@item["ID"]">Details</a> |
+                        <a asp-page="./Delete" asp-route-id="@item["ID"]">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-    <div class="form-group row">
-        <div class="col-5">  <input type="submit" class="btn btn-primary" value="Login" />   </div>
-    </div>
 
+
+    
 </form>
-

@@ -21,8 +21,6 @@ namespace Applied_WebApplication
             {
                 _next = next;
             }
-            
-
         }
 
         public Task Invoke(HttpContext httpContext)

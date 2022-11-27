@@ -32,52 +32,62 @@ namespace Applied_WebApplication.Data
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
-            
+
             Command_Update = new SQLiteCommand(MyConnection);
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
-        private string Get_InsertText()
+
+
+        public DataRow NewRecord()
         {
-                Command_Insert.Parameters.AddWithValue("@ID", 0);
-                Command_Insert.Parameters.AddWithValue("@Title", "");
-                return "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title) WHERE ID=@ID";
+            return MyDataTable.NewRow();
         }
 
-        private string Get_DeleteText()
+        #region GET Commands
+
+        private void CommandInsert()
         {
-            throw new NotImplementedException();
+            Command_Insert.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
+            Command_Insert.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
+            Command_Insert.CommandText = "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title)";
+        }
+        private void CommandUpdate()
+        {
+            Command_Update.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
+            Command_Update.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
+            Command_Update.CommandText = "UPDATE [" + MyTableName + "] SET ID=@ID, Title=@Title WHERE ID=@ID";
+        }
+        private void CommandDelete()
+        {
+            Command_Update.Parameters.AddWithValue("@ID", 0);
+            Command_Update.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
         }
 
-        private string Get_UpdateText()
-        {
-           Command_Update.Parameters.AddWithValue("@ID", 0);
-            Command_Update.Parameters.AddWithValue("@Title", "");
-            return "UPDATE [" + MyTableName + "] SET ID=@ID, Title=@Title WHERE ID=@ID";
-        }
+
+        #endregion
 
         public DataRow? UserRow()
         {
-            if(ViewRecordCount() == 1) 
+            if (ViewRecordCount() == 1)
             {
                 return MyDataView[0].Row;
             }
             else
             {
-                return null; 
+                return null;
             }
         }
-
-        public int ViewRecordCount() { return MyDataView.Count; }
 
         private void CheckError()
         {
             if (MyConnectionClass.AppliedConnection == null) { IsError = true; }
             if (MyTableName == null) { IsError = true; }
             if (MyTableName.Length == 0) { IsError = true; }
-            if(MyDataTable==null) { IsError = true; }
-            if(MyDataView==null) { IsError = true; }
+            if (MyDataTable == null) { IsError = true; }
+            if (MyDataView == null) { IsError = true; }
+            if (CurrentRow == null) { IsError = true; }
         }
 
         private void GetDataTable()
@@ -98,47 +108,61 @@ namespace Applied_WebApplication.Data
             return;
         }
 
+
+        #region Table's Command
         public bool Seek(Double _ID)
         {
-            DataView _TableView = MyDataView;
-            _TableView.RowFilter = "ID=" + _ID.ToString();
+            string Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter = "ID=" + _ID.ToString();
 
-            if(_TableView.Count > 0)
-            {
-                return true;
-            }
+            if (MyDataView.Count > 0)
+            { MyDataView.RowFilter = Filter;  return true; }
             else
-            {
-                return false;
-            }
+            { MyDataView.RowFilter = Filter; return false; }
         }
 
-        public bool SaveCurrentRow()
+        public DataRow SeekRecord(Double _ID)
         {
-            MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
+            string Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter = "ID=" + _ID.ToString();
 
-            if (MyDataView.Count > 0)      
+            if (MyDataView.Count > 0)
+            { MyDataView.RowFilter = Filter; return MyDataView[0].Row; }
+            else
+            { MyDataView.RowFilter = Filter; return MyDataTable.NewRow(); }
+        }
+
+        public int ViewRecordCount() { return MyDataView.Count; }
+
+        public bool Save()
+        {
+            if (CurrentRow != null)
             {
 
-                Command_Update.ExecuteNonQuery(); 
-            }
-            else  
-            {
-                Command_Insert_Set(CurrentRow);
-                Command_Insert.Connection.Open();
-                Command_Insert.ExecuteNonQuery();
+                MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
+
+                if (MyDataView.Count > 0)
+                {
+                    CommandUpdate();
+                    Command_Update.Connection.Open();
+                    Command_Update.ExecuteNonQuery();
+                    GetDataTable();
+
+                }
+                else
+                {
+                    CommandInsert();
+                    Command_Insert.Connection.Open();
+                    Command_Insert.ExecuteNonQuery();
+                    GetDataTable();
+                }
             }
 
             return true;
         }
 
+        #endregion
 
-        public void Command_Insert_Set(DataRow _Row)
-        {
-            Command_Insert.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
-            Command_Insert.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
-            Command_Insert.CommandText = "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title)";
-        }
         //======================================================== eof
     }
 }
