@@ -1,4 +1,4 @@
-﻿@page 
+﻿@page
 @model Applied_WebApplication.Pages.Accounts.COA_EditModel
 @{
 }
@@ -8,5 +8,30 @@
 </div>
 <br />
 
-@Model.MyID
-@Model.MyTitle
+
+<form method="post">
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+    <div class="row">
+        <div class="col-sm-2">
+            Code
+            <input id="Title" asp-for=@Model.COA.CurrentRow["ID"] class="form-control" type="text">
+            <span class="input-group-addon">
+                <i class="text-danger"></i>
+            </span>
+        </div>
+        <div class="col-sm-3">
+            Title
+            <input id="Code" asp-for=@Model.COA.CurrentRow["Title"] class="form-control" type="text">
+            <span class="input-group-addon">
+                <i class="text-danger"></i>
+            </span>
+        </div>
+    </div>
+    <br />
+    <br />
+    <div class="form-group row">
+        <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" />   </div>
+    </div>
+    </div>
+</form>

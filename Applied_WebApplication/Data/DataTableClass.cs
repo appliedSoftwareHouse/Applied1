@@ -138,13 +138,17 @@ namespace Applied_WebApplication.Data
 
         public DataRow SeekRecord(double _ID)
         {
+            DataRow row = null;
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
             if (MyDataView.Count > 0)
-            { MyDataView.RowFilter = Filter; return MyDataView[0].Row; }
+            { row= MyDataView[0].Row;  }
             else
-            { MyDataView.RowFilter = Filter; return MyDataTable.NewRow(); }
+            { row=MyDataTable.NewRow(); }
+
+            MyDataView.RowFilter=Filter; return row;
+
         }
 
         public int ViewRecordCount() { return MyDataView.Count; }

@@ -2,6 +2,7 @@ using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
 using System.Dynamic;
@@ -11,7 +12,7 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class COA_EditModel : PageModel
     {
-        private DataTableClass COA = new DataTableClass(Tables.COA.ToString());
+        public DataTableClass COA;
         public double MyID;
         public string MyTitle;
 
@@ -22,12 +23,15 @@ namespace Applied_WebApplication.Pages.Accounts
                 return NotFound();
             }
 
-            DataTableClass _Table = new DataTableClass(Tables.COA.ToString(),  Convert.ToDouble(id));
-
-            MyID = (double)_Table.CurrentRow["ID"];
-            MyTitle = (string)_Table.CurrentRow["Title"];
+            COA = new DataTableClass(Tables.COA.ToString(),  Convert.ToDouble(id));
+            
+            MyID = (double)COA.CurrentRow["ID"];
+            MyTitle = COA.CurrentRow["Title"].ToString();
 
             return Page();
         }
+
+        
+        
     }
 }
