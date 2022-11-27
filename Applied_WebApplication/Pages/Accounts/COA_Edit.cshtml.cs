@@ -1,7 +1,11 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.CSharp;
+using System.Data;
 using System.Data.Entity;
+using System.Dynamic;
+using System.Runtime.CompilerServices;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -9,27 +13,21 @@ namespace Applied_WebApplication.Pages.Accounts
     {
         private DataTableClass COA = new DataTableClass(Tables.COA.ToString());
         public double MyID;
+        public string MyTitle;
 
-        public async Task<IActionResult> OnGetAsync(double? id)
+        public async Task<IActionResult> OnGetAsync(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            MyID = (double)id;
+            DataTableClass _Table = new DataTableClass(Tables.COA.ToString(),  Convert.ToDouble(id));
 
-            //Movie = await _context.Movie.FirstOrDefaultAsync(m => m.ID == id);
+            MyID = (double)_Table.CurrentRow["ID"];
+            MyTitle = (string)_Table.CurrentRow["Title"];
 
-            //if (Movie == null)
-            //{
-            //    return NotFound();
-            //}
             return Page();
-        }
-
-        public void OnGet()
-        {
         }
     }
 }

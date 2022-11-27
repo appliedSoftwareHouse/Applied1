@@ -38,6 +38,21 @@ namespace Applied_WebApplication.Data
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
+        public DataTableClass(string _TableName, double _ID)
+        {
+            MyConnection = MyConnectionClass.AppliedConnection;
+            MyTableName = _TableName;
+            GetDataTable();                                                                                   // Load DataTable and View
+            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
+            CheckError();
+
+            Command_Update = new SQLiteCommand(MyConnection);
+            Command_Delete = new SQLiteCommand(MyConnection);
+            Command_Insert = new SQLiteCommand(MyConnection);
+
+            CurrentRow = SeekRecord(_ID);
+        }
+
 
 
         public DataRow NewRecord()
@@ -110,7 +125,7 @@ namespace Applied_WebApplication.Data
 
 
         #region Table's Command
-        public bool Seek(Double _ID)
+        public bool Seek(double _ID)
         {
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
@@ -121,7 +136,7 @@ namespace Applied_WebApplication.Data
             { MyDataView.RowFilter = Filter; return false; }
         }
 
-        public DataRow SeekRecord(Double _ID)
+        public DataRow SeekRecord(double _ID)
         {
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();

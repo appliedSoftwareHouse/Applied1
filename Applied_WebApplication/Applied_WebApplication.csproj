@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="wwwroot\SQLiteDB\Applied.DB" />
   </ItemGroup>
 
 </Project>

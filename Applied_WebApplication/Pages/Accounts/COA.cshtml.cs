@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public double ID;
         public string Title;
-        public List<DataRow> Records = new List<DataRow>();
+        
 
         public DataTableClass COA = new DataTableClass(Tables.COA.ToString());
 
@@ -22,11 +22,6 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet()
         {
-            List<DataRow> _Records = new List<DataRow>();
-            foreach (DataRow _Row in COA.MyDataTable.Rows)
-            {
-                _Records.Add(_Row);
-            }
         }
 
         #endregion
@@ -55,8 +50,6 @@ namespace Applied_WebApplication.Pages.Accounts
 
             [BindProperty]
             public string _Title { get; set; }
-
-            public List<DataRow> _Records { get; set; }
         }
 
         #endregion
