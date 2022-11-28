@@ -9,30 +9,34 @@
 <br />
 
 
+
+
 <form method="post">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    @*<div class="text-danger" asp-validation-summary="ModelOnly"></div>*@
 
     <div class="row">
         <div class="col-sm-2">
             Code
-            <input id="Title" asp-for=@Model.COA.CurrentRow["ID"] class="form-control" type="text">
+            <input id="Code" name = "ID"  asp-for="ID"   type="text">
+            
             <span class="input-group-addon">
                 <i class="text-danger"></i>
             </span>
         </div>
         <div class="col-sm-3">
             Title
-            <input id="Code" asp-for=@Model.COA.CurrentRow["Title"] class="form-control" type="text">
+            <input id="Title" name="Title"  asp-for="Title"  type="text">
+            
             <span class="input-group-addon">
                 <i class="text-danger"></i>
             </span>
         </div>
     </div>
-    
+    <br />
 
-
+@*
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">Nature of Account</label>
+        <label class="input-group-text" for="inputGroupSelect01" disabled>Nature of Account</label>
         <select class="form-select" id="inputGroupSelect01">
             <option selected>Choose...</option>
             <option value="1">Asset</option>
@@ -62,12 +66,12 @@
             <option value="12">Other Expense</option>
 
         </select>
-    </div>
+    </div>*@
 
     <br />
     <br />
     <div class="form-group row">
-        <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" />   </div>
+        <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
     </div>
 
 </form>
