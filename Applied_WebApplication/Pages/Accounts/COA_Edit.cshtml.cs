@@ -32,6 +32,6 @@ namespace Applied_WebApplication.Pages.Accounts
         }
 
         
-        
+
     }
 }
