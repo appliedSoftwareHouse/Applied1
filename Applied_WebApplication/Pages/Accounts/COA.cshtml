@@ -22,15 +22,15 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (DataRow item in Model.COA.MyDataTable.Rows)
+            @foreach (DataRow _Record in Model.COA.MyDataTable.Rows)
             {
                 <tr>
-                    <td>  @item["ID"]     </td>
-                    <td>   @item["Title"] </td>
+                    <td>  @_Record["ID"]     </td>
+                    <td>   @_Record["Title"] </td>
                     <td>
-                        <a asp-page="./COA_Edit/" asp-route-id=@item["ID"]>Edit</a> |
-                        <a asp-page="./Details" asp-route-id=@item>Details</a> |
-                        <a asp-page="./Delete" asp-route-id=@item>Delete</a>
+                        <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"]>Edit</a> |
+                        <a asp-page="./COA_Add" asp-route-id=@_Record>Add</a> |
+                        <a asp-page="./COA_Del" asp-route-id=@_Record>Delete</a>
                     </td>
                 </tr>
             }

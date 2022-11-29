@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Data
 @model Applied_WebApplication.Pages.Accounts.COA_EditModel
 @{
 }
@@ -12,7 +13,7 @@
 
 
 <form method="post">
-    @*<div class="text-danger" asp-validation-summary="ModelOnly"></div>*@
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
     <div class="row">
         <div class="col-sm-2">
@@ -34,44 +35,47 @@
     </div>
     <br />
 
-@*
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01" disabled>Nature of Account</label>
-        <select class="form-select" id="inputGroupSelect01">
-            <option selected>Choose...</option>
-            <option value="1">Asset</option>
-            <option value="2">Liability</option>
-            <option value="3">Capital</option>
-            <option value="4">Reveune</option>
-            <option value="5">Expense</option>
-
+        <label class="input-group-text g-2" for="inputCOA_Class" disabled>Class of Account</label>
+        <select class="form-select" id="inputCOA_Class" asp-for="_Record.Class">
+            <option selected>@Model.Title_Class</option>
+            @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
+            {
+                <option value=@_Record["ID"]>@_Record["Title"]</option>
+            }
         </select>
     </div>
 
     <div class="input-group mb-3">
-        <label class="input-group-text" for="inputGroupSelect01">Class of Account</label>
-        <select class="form-select" id="inputGroupSelect01">
-            <option selected>Choose...</option>
-            <option value="1">Fixed Assets</option>
-            <option value="2">Current Assets</option>
-            <option value="3">Short Term Liability</option>
-            <option value="4">Long Term Liability</option>
-            <option value="5">Paid up Capital</option>
-            <option value="6">Reserves</option>
-            <option value="7">Income from Sales</option>
-            <option value="8">Income from Sale of Fixed Assets</option>
-            <option value="9">Other Income</option>
-            <option value="10">Operational Expense</option>
-            <option value="11">Administration Expense</option>
-            <option value="12">Other Expense</option>
-
+        <label class="input-group-text g-3" for="inputCOA_Nature" disabled>Nature of Account</label>
+        <select class="form-select" id="inputCOA_Nature">
+            <option selected>@Model.Title_Nature</option>
+            
+            @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
+            {
+                
+                <option value=@_Record["ID"]>@_Record["Title"]</option>
+            }
         </select>
-    </div>*@
+    </div>
+
+    <div class="input-group mb-3">
+        <label class="input-group-text g-4" for="inputCOA_Notes" disabled>Notes of Financial Accounts</label>
+        <select class="form-select" id="inputCOA_Notes">
+            <option selected>@Model.Title_Notes</option>
+            @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
+            {
+                <option value=@_Record["ID"]>@_Record["Title"]</option>
+            }
+        </select>
+    </div>
+
 
     <br />
     <br />
     <div class="form-group row">
         <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
     </div>
+
 
 </form>

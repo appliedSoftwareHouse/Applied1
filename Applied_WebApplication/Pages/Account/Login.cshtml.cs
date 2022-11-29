@@ -28,7 +28,7 @@ namespace Applied_WebApplication.Pages
 
             tb_User.View_Filter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
             UserProfile  uprofile = new(tb_User.UserRow());                                             // Get a User Profile from User Record in DataTable.
-            string UserProfileDB = "";
+            //string UserProfileDB = "";
 
             if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
             {

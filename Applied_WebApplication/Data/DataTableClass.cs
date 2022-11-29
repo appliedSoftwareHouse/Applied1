@@ -1,6 +1,8 @@
-﻿using Microsoft.VisualBasic;
+﻿using Microsoft.Extensions.Primitives;
+using Microsoft.VisualBasic;
 using System.Data;
 using System.Data.SQLite;
+using System.Security.Cryptography;
 
 namespace Applied_WebApplication.Data
 {
@@ -38,7 +40,7 @@ namespace Applied_WebApplication.Data
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
-        public DataTableClass(string _TableName, double _ID)
+        public DataTableClass(string _TableName, int _ID)
         {
             MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _TableName;
@@ -57,7 +59,8 @@ namespace Applied_WebApplication.Data
 
         public DataRow NewRecord()
         {
-            return MyDataTable.NewRow();
+            CurrentRow = MyDataTable.NewRow();
+            return CurrentRow;
         }
 
         #region GET Commands
@@ -125,7 +128,7 @@ namespace Applied_WebApplication.Data
 
 
         #region Table's Command
-        public bool Seek(double _ID)
+        public bool Seek(int _ID)
         {
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
@@ -136,7 +139,7 @@ namespace Applied_WebApplication.Data
             { MyDataView.RowFilter = Filter; return false; }
         }
 
-        public DataRow SeekRecord(double _ID)
+        public DataRow SeekRecord(int _ID)
         {
             DataRow row = null;
             string Filter = MyDataView.RowFilter;
@@ -147,9 +150,22 @@ namespace Applied_WebApplication.Data
             else
             { row=MyDataTable.NewRow(); }
 
+            CurrentRow = row;
             MyDataView.RowFilter=Filter; return row;
 
         }
+        
+        public string Title(int _ID)
+        {
+            string Title = "";
+            string Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter = "ID=" + _ID.ToString();
+            if (MyDataView.Count > 0)
+            { Title = (string)MyDataView[0]["Title"]; }
+            MyDataView.RowFilter = Filter; 
+            return Title;
+        }
+
 
         public int ViewRecordCount() { return MyDataView.Count; }
 
