@@ -17,9 +17,10 @@ namespace Applied_WebApplication.Pages.Accounts
         public DataTableClass COA_Nature = new DataTableClass(Tables.COA_Nature.ToString());
         public DataTableClass COA_Class = new DataTableClass(Tables.COA_Class.ToString());
         public DataTableClass COA_Notes = new DataTableClass(Tables.COA_Notes.ToString());
-        //public Record _Record { get; set; } = new Record();
+        
         public Record _Record = new Record();
         public int Counter = 0;
+        public string Test = "";
         public string Title_Nature, Title_Class, Title_Notes;
 
         public async Task<IActionResult> OnGetAsync(int? id)
@@ -36,13 +37,13 @@ namespace Applied_WebApplication.Pages.Accounts
 
             _Record.ID = (int)COA.CurrentRow["ID"];
             _Record.Title = (string)COA.CurrentRow["Title"];
-            _Record.Nature = (int)COA.CurrentRow["Nature"];
-            _Record.Class = (int)COA.CurrentRow["Class"];
-            _Record.Notes = (int)COA.CurrentRow["Notes"];
+            _Record.COA_Nature = (int)COA.CurrentRow["Nature"];
+            _Record.COA_Class = (int)COA.CurrentRow["Class"];
+            _Record.COA_Notes = (int)COA.CurrentRow["Notes"];
 
-            Title_Class = COA_Class.Title(_Record.Class);
-            Title_Nature = COA_Nature.Title(_Record.Nature);
-            Title_Notes = COA_Notes.Title(_Record.Notes);
+            Title_Class = COA_Class.Title(_Record.COA_Class);
+            Title_Nature = COA_Nature.Title(_Record.COA_Nature);
+            Title_Notes = COA_Notes.Title(_Record.COA_Notes);
 
             return Page();
         }
@@ -51,15 +52,16 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             if (ModelState.IsValid)
             {
+                var Test  = 
+
                 COA.CurrentRow = COA.NewRecord();
                 COA.CurrentRow["ID"] = _FillRecord.ID;
                 COA.CurrentRow["Title"] = _FillRecord.Title;
-                COA.CurrentRow["Nature"] = _FillRecord.Nature;
-                COA.CurrentRow["Class"] = _FillRecord.Class;
-                COA.CurrentRow["Notes"] = _FillRecord.Notes;
+                COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
+                COA.CurrentRow["Class"] = _FillRecord.COA_Class;
+                COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
                 COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
                 COA.Save();
-
 
                 // message.
                 // do something.
@@ -79,11 +81,11 @@ namespace Applied_WebApplication.Pages.Accounts
             [BindProperty]
             public string Title { get; set; }
 
-            public int Nature { get; set; }
+            public int COA_Nature { get; set; }
 
-            public int Class { get; set; }
+            public int COA_Class { get; set; }
 
-            public int Notes { get; set; }
+            public int COA_Notes { get; set; }
 
             public decimal OBal { get; set; }
 

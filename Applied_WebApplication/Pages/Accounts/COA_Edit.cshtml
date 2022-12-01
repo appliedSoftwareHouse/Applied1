@@ -9,73 +9,88 @@
 </div>
 <br />
 
+<div class="container-fluid">
+    <!-- Content here -->
 
 
 
-<form method="post">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
-    <div class="row">
-        <div class="col-sm-2">
-            Code
-            <input id="Code" name = "ID"  asp-for="_Record.ID"   type="text">
-            
-            <span class="input-group-addon">
-                <i class="text-danger"></i>
-            </span>
+        <div class="row">
+            <div class="col-sm-3">
+                Code
+                <input id="Code" name="ID" asp-for="_Record.ID" type="text">
+
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
+            <div class="col-sm-3">
+                Title
+                <input id="Title" name="Title" asp-for="_Record.Title" type="text">
+
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
         </div>
-        <div class="col-sm-3">
-            Title
-            <input id="Title" name="Title"  asp-for="_Record.Title"  type="text">
-            
-            <span class="input-group-addon">
-                <i class="text-danger"></i>
-            </span>
-        </div>
-    </div>
-    <br />
-
-    <div class="input-group mb-3">
-        <label class="input-group-text g-2" for="inputCOA_Class" disabled>Class of Account</label>
-        <select class="form-select" id="inputCOA_Class" asp-for="_Record.Class">
-            <option selected>@Model.Title_Class</option>
-            @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
-            {
-                <option value=@_Record["ID"]>@_Record["Title"]</option>
-            }
+        <br />
+@*
+        <select class="form-select" aria-label="Default select example" name="COA_Class" asp-for="_Record.COA_Class">
+            <option selected>Select</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
         </select>
-    </div>
+        <br />*@
 
-    <div class="input-group mb-3">
+        <div class="input-group mb-3">
+            <label class="input-group-text g-2" for="hd_Class" disabled>Class of Account</label>
+            <select class="form-select" id="inputCOA_Class" name = "COA_Class" asp-for=_Record.COA_Class>
+                <option selected>@Model.Title_Class</option>
+                @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
+                {
+                    <option value=@_Record["ID"]> @_Record["Title"] </option>
+                }
+            </select>
+        </div>
+
+
+        @*<div class="input-group mb-3">
         <label class="input-group-text g-3" for="inputCOA_Nature" disabled>Nature of Account</label>
         <select class="form-select" id="inputCOA_Nature">
-            <option selected>@Model.Title_Nature</option>
-            
-            @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
-            {
-                
-                <option value=@_Record["ID"]>@_Record["Title"]</option>
-            }
-        </select>
-    </div>
+        <option selected>@Model.Title_Nature</option>
 
-    <div class="input-group mb-3">
+        @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
+        {
+
+        <option value=@_Record["ID"]>@_Record["Title"]</option>
+        }
+        </select>
+        </div>
+
+        <div class="input-group mb-3">
         <label class="input-group-text g-4" for="inputCOA_Notes" disabled>Notes of Financial Accounts</label>
         <select class="form-select" id="inputCOA_Notes">
-            <option selected>@Model.Title_Notes</option>
-            @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
-            {
-                <option value=@_Record["ID"]>@_Record["Title"]</option>
-            }
+        <option selected>@Model.Title_Notes</option>
+        @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
+        {
+        <option value=@_Record["ID"]>@_Record["Title"]</option>
+        }
         </select>
-    </div>
+        </div>
+        *@
+
+        <br />
+        <br />
+        <div class="form-group row">
+            <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
+        </div>
 
 
-    <br />
-    <br />
-    <div class="form-group row">
-        <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
-    </div>
+
+    </form>
 
 
-</form>
+</div>
