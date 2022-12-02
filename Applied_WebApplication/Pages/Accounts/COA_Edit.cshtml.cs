@@ -75,10 +75,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public class Record
         {
-            [BindProperty]
+            [Required(ErrorMessage ="Enter Valid Code.")]
+            [Range(100001,999999, ErrorMessage = "Must be 6 Charactors Code.")]
             public int ID { get; set; }
 
-            [BindProperty]
+            [Required(ErrorMessage = "Enter Valid Title of Account")]
+            
             public string Title { get; set; }
 
             public int COA_Nature { get; set; }

@@ -4,6 +4,9 @@ using System.Data;
 using System.Data.SQLite;
 using System.Text;
 using System.Security.Cryptography;
+using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
+using static System.Net.Mime.MediaTypeNames;
+using System.Data.Common;
 
 namespace Applied_WebApplication.Data
 {
@@ -16,6 +19,7 @@ namespace Applied_WebApplication.Data
         public SQLiteConnection MyConnection = new();
         public string MyTableName = "";
         public bool IsError = false;
+        public string MyMessage = "";
         public string View_Filter { get; set; } = "";
         public DataRow CurrentRow { get; set; }
 
@@ -65,24 +69,90 @@ namespace Applied_WebApplication.Data
             return CurrentRow;
         }
 
-        #region GET Commands
+        #region Commands INSERT / UPDATE / DELETE
 
         private void CommandInsert()
         {
-            Command_Insert.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
-            Command_Insert.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
-            Command_Insert.CommandText = "INSERT INTO [" + MyTableName + "] VALUES (@ID, @Title)";
+            DataColumnCollection _Columns = MyDataTable.Columns;
+            SQLiteCommand _Command = new SQLiteCommand(MyConnection);
+
+            StringBuilder _CommandString = new StringBuilder();
+            string _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
+            string _TableName = MyTableName;
+            string _ParameterName;
+
+            _CommandString.Append("INSERT INTO ");
+            _CommandString.Append(_TableName);
+            _CommandString.Append(" ( ");
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                string _ColumnName = _Column.ColumnName.ToString();
+                _CommandString.Append(string.Concat("[", _Column.ColumnName, "]"));
+                if (_ColumnName != _LastColumn)
+                { _CommandString.Append(","); }
+                else
+                { _CommandString.Append(") "); }
+            }
+
+            _CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
+            _Command.CommandText = _CommandString.ToString();
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column == null) { continue; }
+                _ParameterName = string.Concat("@", _Column.ColumnName.Replace(" ", ""));
+                _Command.Parameters.AddWithValue(_ParameterName, CurrentRow[_Column.ColumnName]);
+            }
+
         }
         private void CommandUpdate()
         {
-            Command_Update.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
-            Command_Update.Parameters.AddWithValue("@Title", CurrentRow["Title"]);
-            Command_Update.CommandText = "UPDATE [" + MyTableName + "] SET ID=@ID, Title=@Title WHERE ID=@ID";
+            DataColumnCollection _Columns = CurrentRow.Table.Columns;
+            SQLiteCommand _Command = new SQLiteCommand(MyConnection);
+
+            StringBuilder _CommandString = new StringBuilder();
+            string _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
+            string _TableName = MyTableName;
+            string _ParameterName;
+
+            _CommandString.Append(string.Concat("UPDATE [", _TableName, "] SET "));
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column.ColumnName == "ID") { continue; }
+                _CommandString.Append(String.Concat("[", _Column.ColumnName, "]"));
+                _CommandString.Append("=");
+                _CommandString.Append(String.Concat("@", _Column.ColumnName.Replace(" ", "")));
+
+                if (_Column.ColumnName == _LastColumn)
+                {
+                    _CommandString.Append(String.Concat(" WHERE ID = @ID"));
+                }
+                else
+                {
+                    _CommandString.Append(",");
+                }
+            }
+
+            _Command.CommandText = _CommandString.ToString();
+            Command_Update = _Command;
+            
+
+
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column == null) { continue; }
+                _ParameterName = string.Concat("@", _Column.ColumnName.Replace(" ", ""));
+                _Command.Parameters.AddWithValue(_ParameterName, CurrentRow[_Column.ColumnName]);
+            }
+
         }
         private void CommandDelete()
         {
-            Command_Update.Parameters.AddWithValue("@ID", 0);
-            Command_Update.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
+            Command_Delete.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
+            Command_Delete.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
         }
 
 
@@ -199,86 +269,6 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
-
-        #region SQLite Insert and Update Command
-
-        public bool TableRowInsert(DataRow _Row)
-        {
-            DataColumnCollection _Columns = _Row.Table.Columns;
-            SQLiteCommand _Command = new SQLiteCommand(MyConnection);
-
-            StringBuilder _CommandString = new StringBuilder();
-            string _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
-            string _TableName =  _Row.Table.TableName;
-
-            _CommandString.Append("INSERT INTO ");
-           _CommandString.Append(_TableName);
-           _CommandString.Append(" ( ");
-
-            foreach (DataColumn _Column in _Columns)
-            {
-                string _ColumnName = _Column.ColumnName.ToString();
-                _CommandString.Append(string.Concat("[",_Column.ColumnName,"]"));
-
-                if(_ColumnName != _LastColumn)
-                { _CommandString.Append(",");  }
-                else
-                { _CommandString.Append(") ");  }
-            }
-
-            _CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
-
-
-            return true;
-        }
-
-        #endregion
-
-       
-        //    If _ColumnName<> _LastColumn Then
-        //        _CommandString.Append(",")
-        //    Else
-        //        _CommandString.Append(") ")
-        //    End If
-        //Next
-
-        //_CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1)
-        //_CommandString.Append(") VALUES (")
-
-        //For Each _Column As DataColumn In _Columns
-        //    Dim _ColumnName As String = _Column.ColumnName
-        //    _CommandString.Append(String.Concat("@", _Column.ColumnName.Replace(" ", "")))
-
-        //    If _ColumnName<> _LastColumn Then
-        //        _CommandString.Append(",")
-        //    Else
-        //        _CommandString.Append(") ")
-        //    End If
-        //Next
-
-        //Return _CommandString.ToString
-
-
-        //Public Function SQLiteInsert(_DataRow As DataRow, _Connection As SQLiteConnection) As SQLiteCommand
-
-        //        'Dim _Connection As Data.sql
-
-        //        Dim _Columns As DataColumnCollection = _DataRow.Table.Columns                       ' Assign Columns to create SQLite Command.
-        //        Dim _Command As New SQLiteCommand(General.SQLInsert(_Columns), _Connection)
-        //        Dim _ParmaterName As String
-
-        //        For Each _Column As DataColumn In _Columns
-        //            If _Column Is Nothing Then
-        //                Continue For
-        //            End If
-
-        //            _ParmaterName = String.Concat("@" & _Column.ColumnName.Replace(" ", ""))
-        //            _Command.Parameters.AddWithValue(_ParmaterName, _DataRow(_Column.ColumnName))
-        //        Next
-
-        //        Return _Command
-        //    End Function
-
 
 
         //======================================================== eof
