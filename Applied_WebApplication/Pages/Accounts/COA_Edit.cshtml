@@ -19,26 +19,26 @@
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
         <div class="row">
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="width:25%;">
                 Code
-                <input id="RowID" name="ID" asp-for="_Record.ID" type="text">
+                <input id="RowID" name="ID" asp-for="_Record.ID" type="text" style="width:80px;" disabled>
 
                 <span class="input-group-addon">
                     <i class="text-danger"></i>
                 </span>
             </div>
 
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="width:25%">
                 Code
-                <input id="Code" name="Code" asp-for="_Record.Code" type="text">
+                <input id="Code" name="Code" asp-for="_Record.Code" type="text" style="width:100px;">
                 
                 <span class="input-group-addon">
                     <i class="text-danger"></i>
                 </span>
             </div>
-            <div class="col-sm-3">
+            <div class="col-sm-3" style="width:50%">
                 Title
-                <input id="Title" name="Title" asp-for="_Record.Title" type="text">
+                <input id="Title" name="Title" asp-for="_Record.Title" type="text" style="width:400px;">
 
                 <span class="input-group-addon">
                     <i class="text-danger"></i>
@@ -50,7 +50,7 @@
 
 
         <div class="input-group mb-3">
-            <label class="input-group-text g-2" for="hd_Class" disabled>Class of Account</label>
+            <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
             <select class="form-select" id="inputCOA_Class" name="COA_Class" asp-for=_Record.COA_Class>
                 <option selected>@Model.Title_Class</option>
                 @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
@@ -61,7 +61,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <label class="input-group-text g-2" for="hd_Nature" disabled>Nature of Account</label>
+            <label class="input-group-text g-2" for="hd_Nature" disabled style="width:250px;">Nature of Account</label>
             <select class="form-select" id="inputCOA_Nature" name="COA_Nature" asp-for=_Record.COA_Nature>
                 <option selected>@Model.Title_Nature</option>
                 @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
@@ -72,7 +72,7 @@
         </div>
 
         <div class="input-group mb-3">
-            <label class="input-group-text g-2" for="hd_Nature" disabled>Notes of Account</label>
+            <label class="input-group-text g-2" for="hd_Nature" disabled style="width:250px;">Notes of Account</label>
             <select class="form-select" id="inputCOA_Notes" name="COA_Notes" asp-for=_Record.COA_Notes>
                 <option selected>@Model.Title_Notes</option>
                 @foreach (DataRow _Record in Model.COA_Notes.MyDataTable.Rows)
@@ -85,9 +85,17 @@
         <br />
 
         <br />
+        
+        <div class="row" style="width:200px;">
 
-        <div class="form-group row">
+        <div class="form-group row" style="width:50%">
             <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
+        </div>
+
+        <div class="form-group row" style="width:50%">
+            <div class="col-5">  <input type="submit" class="button btn-primary" value="Back" asp-page-handler="Back" />   </div>
+        </div>
+
         </div>
 
     </form>

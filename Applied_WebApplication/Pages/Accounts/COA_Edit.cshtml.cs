@@ -76,6 +76,12 @@ namespace Applied_WebApplication.Pages.Accounts
             }
         }
 
+        public async Task<IActionResult> OnPostBack(Record? _FillRecord)
+        {
+            return RedirectToPage("COA");
+        }
+
+
         public class Record
         {
             public int ID { get; set; }
