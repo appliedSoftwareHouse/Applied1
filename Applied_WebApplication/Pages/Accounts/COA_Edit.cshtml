@@ -2,7 +2,7 @@
 @using System.Data
 @model Applied_WebApplication.Pages.Accounts.COA_EditModel
 @{
-    
+
 }
 
 <div class="card bg-warning text-dark">
@@ -21,8 +21,17 @@
         <div class="row">
             <div class="col-sm-3">
                 Code
-                <input id="Code" name="ID" asp-for="_Record.ID" type="text">
+                <input id="RowID" name="ID" asp-for="_Record.ID" type="text">
 
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
+
+            <div class="col-sm-3">
+                Code
+                <input id="Code" name="Code" asp-for="_Record.Code" type="text">
+                
                 <span class="input-group-addon">
                     <i class="text-danger"></i>
                 </span>
@@ -37,6 +46,7 @@
             </div>
         </div>
         <br />
+
 
 
         <div class="input-group mb-3">
@@ -71,6 +81,7 @@
                 }
             </select>
         </div>
+
         <br />
 
         <br />

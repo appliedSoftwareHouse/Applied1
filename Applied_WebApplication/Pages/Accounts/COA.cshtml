@@ -25,7 +25,7 @@
             @foreach (DataRow _Record in Model.COA.MyDataTable.Rows)
             {
                 <tr>
-                    <td>  @_Record["ID"]     </td>
+                    <td>  @_Record["Code"] </td>
                     <td>   @_Record["Title"] </td>
                     <td>
                         <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"]>Edit</a> |

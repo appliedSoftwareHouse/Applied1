@@ -12,8 +12,9 @@ namespace Applied_WebApplication.Data
 {
     public class DataTableClass
     {
+        private TableValidationClass validationClass = new ();
 
-        private ConnectionClass MyConnectionClass = new ConnectionClass();
+        private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable = new();
         public DataView MyDataView = new();
         public SQLiteConnection MyConnection = new();
@@ -81,14 +82,14 @@ namespace Applied_WebApplication.Data
             string _TableName = MyTableName;
             string _ParameterName;
 
-            _CommandString.Append("INSERT INTO ");
+            _CommandString.Append("INSERT INTO [");
             _CommandString.Append(_TableName);
-            _CommandString.Append(" ( ");
+            _CommandString.Append("] VALUES ( ");
 
             foreach (DataColumn _Column in _Columns)
             {
                 string _ColumnName = _Column.ColumnName.ToString();
-                _CommandString.Append(string.Concat("[", _Column.ColumnName, "]"));
+                _CommandString.Append(string.Concat("@", _Column.ColumnName));
                 if (_ColumnName != _LastColumn)
                 { _CommandString.Append(","); }
                 else
@@ -104,6 +105,8 @@ namespace Applied_WebApplication.Data
                 _ParameterName = string.Concat("@", _Column.ColumnName.Replace(" ", ""));
                 _Command.Parameters.AddWithValue(_ParameterName, CurrentRow[_Column.ColumnName]);
             }
+
+            Command_Insert = _Command;
 
         }
         private void CommandUpdate()
@@ -137,7 +140,7 @@ namespace Applied_WebApplication.Data
 
             _Command.CommandText = _CommandString.ToString();
             Command_Update = _Command;
-            
+
 
 
 
@@ -241,31 +244,35 @@ namespace Applied_WebApplication.Data
 
         public int ViewRecordCount() { return MyDataView.Count; }
 
-        public bool Save()
+        public TableValidationClass Save()
         {
+            validationClass = new TableValidationClass();
+
             if (CurrentRow != null)
             {
-
-                MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
-
-                if (MyDataView.Count > 0)
+                if (validationClass.Validation(CurrentRow))
                 {
-                    CommandUpdate();
-                    Command_Update.Connection.Open();
-                    Command_Update.ExecuteNonQuery();
-                    GetDataTable();
+                    
+                    MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
-                }
-                else
-                {
-                    CommandInsert();
-                    Command_Insert.Connection.Open();
-                    Command_Insert.ExecuteNonQuery();
-                    GetDataTable();
+                    if (MyDataView.Count > 0)
+                    {
+                        CommandUpdate();
+                        Command_Update.Connection.Open();
+                        Command_Update.ExecuteNonQuery();
+                        GetDataTable();
+
+                    }
+                    else
+                    {
+                        CommandInsert();
+                        Command_Insert.Connection.Open();
+                        Command_Insert.ExecuteNonQuery();
+                        GetDataTable();
+                    }
                 }
             }
-
-            return true;
+            return validationClass;
         }
 
         #endregion
@@ -275,26 +282,3 @@ namespace Applied_WebApplication.Data
     }
 }
 
-public class MySQLiteCommand
-{
-
-
-    //    Public Function SQLiteUpdate(ByVal _DataRow As DataRow, _PrimaryKeyName As String, _Connection As SQLiteConnection) As SQLiteCommand
-
-    //        Dim _Command As New SQLiteCommand(General.SQLUpdate(_DataRow.Table.Columns, _PrimaryKeyName), _Connection)
-    //        Dim _ParmaterName As String
-
-    //        For Each _Column As DataColumn In _DataRow.Table.Columns
-    //            If _Column Is Nothing Then
-    //                Continue For
-    //            End If
-
-    //            _ParmaterName = String.Concat("@" & _Column.ColumnName.Replace(" ", ""))
-    //            _Command.Parameters.AddWithValue(_ParmaterName, _DataRow(_Column.ColumnName))
-    //        Next
-
-    //        Return _Command
-    //    End Function
-
-
-}
