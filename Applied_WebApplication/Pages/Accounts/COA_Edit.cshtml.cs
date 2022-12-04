@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.CodeAnalysis.CSharp;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.Entity;
@@ -17,25 +18,26 @@ namespace Applied_WebApplication.Pages.Accounts
         public DataTableClass COA_Nature = new DataTableClass(Tables.COA_Nature.ToString());
         public DataTableClass COA_Class = new DataTableClass(Tables.COA_Class.ToString());
         public DataTableClass COA_Notes = new DataTableClass(Tables.COA_Notes.ToString());
-
-        private TableValidationClass Validation;
+        public TableValidationClass Validation;
         public Record _Record = new Record();
-        public int RowID  {get; set;} = 0;
-        
         public string Title_Nature, Title_Class, Title_Notes;
+        public int Test;
 
-        public async Task<IActionResult> OnGetAsync(int? id)
-
+        public PageResult OnGet(int? id)
         {
-            if (id == null)
+            Test = 9999;
+
+            if(COA.MyDataView.Count==0)                 // if Data Table is empty. return page
             {
-                return NotFound();
+                return Page();
             }
 
-            //COA = new DataTableClass(Tables.COA.ToString(), Convert.ToDouble(id));
-            COA.SeekRecord((int)id);
+            if (id == null)
+            {
+                id = (int)COA.MyDataView[0]["ID"];          // Get First Record of Table id Id is null.
+            }
 
-             
+            COA.SeekRecord((int)id);
             _Record.ID = (int)COA.CurrentRow["ID"];
             _Record.Code = (string)COA.CurrentRow["Code"];
             _Record.Title = (string)COA.CurrentRow["Title"];
@@ -48,40 +50,44 @@ namespace Applied_WebApplication.Pages.Accounts
             Title_Notes = COA_Notes.Title(_Record.COA_Notes);
 
             return Page();
+
         }
 
-        public async Task<IActionResult> OnPostSubmit(Record? _FillRecord)
+
+        
+        public IActionResult OnPostSubmit(Record? _FillRecord)
+    {
+        if (ModelState.IsValid)
         {
-            if (ModelState.IsValid)
-            {
-                Validation = new();
-                COA.SeekRecord(_FillRecord.ID);
-                COA.CurrentRow["ID"] = _FillRecord.ID;
-                COA.CurrentRow["Code"] = _FillRecord.Code;
-                COA.CurrentRow["Title"] = _FillRecord.Title;
-                COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
-                COA.CurrentRow["Class"] = _FillRecord.COA_Class;
-                COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
-                COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
-                Validation = COA.Save();
-            }
+            Validation = new();
+            COA.SeekRecord(_FillRecord.ID);
+            COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
+            COA.CurrentRow["Code"] = _FillRecord.Code;
+            COA.CurrentRow["Title"] = _FillRecord.Title;
+            COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
+            COA.CurrentRow["Class"] = _FillRecord.COA_Class;
+            COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
+            COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
+            Validation = COA.Save();
 
-            if(Validation.success)
-            { 
-                return RedirectToPage("COA");
-            }
-            else
-            {
-                return Page();
-            }
+
+            string i = this.Request.Form["ID"].ToString();
         }
 
-        public async Task<IActionResult> OnPostBack(Record? _FillRecord)
+        if (Validation.success)
         {
             return RedirectToPage("COA");
         }
+        else
+        {
+            return Page();
+        }
+    }
 
-
+    public async Task<IActionResult> OnPostBack(Record _FillRecord)
+        {
+            return RedirectToPage("COA");
+        }
         public class Record
         {
             public int ID { get; set; }
@@ -91,6 +97,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int COA_Class { get; set; }
             public int COA_Notes { get; set; }
             public decimal OBal { get; set; }
+            
         }
     }
 }

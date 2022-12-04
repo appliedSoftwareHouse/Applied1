@@ -14,7 +14,6 @@ namespace Applied_WebApplication.Data
             message = string.Empty;
         }
 
-
         public bool Validation(DataRow Row)
         {
             success = true; ;
