@@ -25,9 +25,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public PageResult OnGet(int? id)
         {
-            Test = 9999;
-
-            if(COA.MyDataView.Count==0)                 // if Data Table is empty. return page
+            if (COA.MyDataView.Count == 0)                 // if Data Table is empty. return page
             {
                 return Page();
             }
@@ -44,6 +42,7 @@ namespace Applied_WebApplication.Pages.Accounts
             _Record.COA_Nature = (int)COA.CurrentRow["Nature"];
             _Record.COA_Class = (int)COA.CurrentRow["Class"];
             _Record.COA_Notes = (int)COA.CurrentRow["Notes"];
+            _Record.OBal = (decimal)COA.CurrentRow["Opening_Balance"];
 
             Title_Class = COA_Class.Title(_Record.COA_Class);
             Title_Nature = COA_Nature.Title(_Record.COA_Nature);
@@ -54,37 +53,37 @@ namespace Applied_WebApplication.Pages.Accounts
         }
 
 
-        
+
         public IActionResult OnPostSubmit(Record? _FillRecord)
-    {
-        if (ModelState.IsValid)
         {
-            Validation = new();
-            COA.SeekRecord(_FillRecord.ID);
-            COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
-            COA.CurrentRow["Code"] = _FillRecord.Code;
-            COA.CurrentRow["Title"] = _FillRecord.Title;
-            COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
-            COA.CurrentRow["Class"] = _FillRecord.COA_Class;
-            COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
-            COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
-            Validation = COA.Save();
+            if (ModelState.IsValid)
+            {
+                Validation = new();
+                COA.SeekRecord(_FillRecord.ID);
+                COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
+                COA.CurrentRow["Code"] = _FillRecord.Code;
+                COA.CurrentRow["Title"] = _FillRecord.Title;
+                COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
+                COA.CurrentRow["Class"] = _FillRecord.COA_Class;
+                COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
+                COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
+                Validation = COA.Save();
 
 
-            string i = this.Request.Form["ID"].ToString();
+                string i = this.Request.Form["ID"].ToString();
+            }
+
+            if (Validation.success)
+            {
+                return RedirectToPage("COA");
+            }
+            else
+            {
+                return Page();
+            }
         }
 
-        if (Validation.success)
-        {
-            return RedirectToPage("COA");
-        }
-        else
-        {
-            return Page();
-        }
-    }
-
-    public async Task<IActionResult> OnPostBack(Record _FillRecord)
+        public IActionResult OnPostBack(Record _FillRecord)
         {
             return RedirectToPage("COA");
         }
@@ -97,7 +96,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int COA_Class { get; set; }
             public int COA_Notes { get; set; }
             public decimal OBal { get; set; }
-            
+
         }
     }
 }

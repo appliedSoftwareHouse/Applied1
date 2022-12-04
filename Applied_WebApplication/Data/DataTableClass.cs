@@ -84,7 +84,7 @@ namespace Applied_WebApplication.Data
 
             _CommandString.Append("INSERT INTO [");
             _CommandString.Append(_TableName);
-            _CommandString.Append("] VALUES ( ");
+            _CommandString.Append("] VALUES (");
 
             foreach (DataColumn _Column in _Columns)
             {
@@ -96,7 +96,7 @@ namespace Applied_WebApplication.Data
                 { _CommandString.Append(") "); }
             }
 
-            _CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
+            //_CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
             _Command.CommandText = _CommandString.ToString();
 
             foreach (DataColumn _Column in _Columns)
@@ -107,8 +107,18 @@ namespace Applied_WebApplication.Data
             }
 
             Command_Insert = _Command;
+            Command_Insert.Parameters["@ID"].Value = NewID(CurrentRow.Table);
 
         }
+
+        private int NewID(DataTable table)
+        {
+            int _result = 0;
+            string MaxID = string.Empty;
+            _result= (int)table.Compute("MAX(ID)","") + 1;
+            return _result;
+        }
+
         private void CommandUpdate()
         {
             DataColumnCollection _Columns = CurrentRow.Table.Columns;
@@ -161,7 +171,7 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        public DataRow? UserRow()
+        public DataRow? UserRow(string _UserName)
         {
             if (ViewRecordCount() == 1)
             {

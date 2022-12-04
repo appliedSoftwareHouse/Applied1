@@ -10,7 +10,7 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
 {
     options.Cookie.Name = "MyCookieAuth";
     options.LoginPath = "/Account/Login";
-    options.AccessDeniedPath = "/AccessDenied";
+    options.AccessDeniedPath = "/Account/AccessDenied";
     options.LogoutPath = "/Account/Logout";
     
 });
@@ -18,10 +18,11 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", Policy => Policy.RequireClaim("Admin"));
-    options.AddPolicy("AccountsManager", Policy => Policy.RequireClaim("Accounts_Manager"));
-    options.AddPolicy("AccountsClark", Policy => Policy.RequireClaim("Accounts_Clark"));
+    options.AddPolicy("AccountsManager", Policy => Policy.RequireClaim("AccountsManager"));
+    options.AddPolicy("AccountsAssistant", policy => policy.RequireClaim("AccountAssistants"));
     options.AddPolicy("MustBelongToHRPolicy", policy => policy.RequireClaim("Department", "HR"));
     options.AddPolicy("StoreOnly", policy => policy.RequireClaim("Stock", "Store"));
+    
 });
 
 

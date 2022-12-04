@@ -1,10 +1,11 @@
 ﻿@page
+@using System.Data
 @model Applied_WebApplication.Pages.Accounts.COA_AddModel
 @{
 }
 
-<div class="w3-container">
-  <p>CHART OF ACCOUNTS - ADD (NEW ACCOUNT)</p>
+<div class="card bg-warning text-dark">
+    <div class="card-body">CHART OF ACCOUNT - ADD RECORD</div>
 </div>
 <br />
 
@@ -12,8 +13,83 @@
     <div class="Row">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
-        <div class="col-sm-1"
+        <div class="row justify-content-center">
+            <div class="col-sm-3" style="width:20%;">
+                <label class="form-label" asp-for="_Record.ID">Account ID</label>
+                <input id="txtID" name="ID" asp-for="_Record.ID" type="text">
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
+            <div class="col-sm-3" style="width:20%">
+                <label class="form-label" asp-for="_Record.Code">Account Code</label>
+                <input id="Code" name="Code" asp-for="_Record.Code" type="text">
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
+            <div class="col-sm-3" style="width:40%">
+                <label class="form-label" asp-for="_Record.Title">Account Title</label>
+                <input id="Title" name="Title" asp-for="_Record.Title" type="text" style="width:300px;">
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
+            <div class="align-content-md-end" style="width:20%">
+                Opening Balance
+                <input id="Title" name="OBal" asp-for="_Record.OBal" type="text" style="width:100px;">
+                <span class="input-group-addon">
+                    <i class="text-danger"></i>
+                </span>
+            </div>
 
+        </div>
+        <br />
+        <div class="row-cols-3">
+            <div class="input-group mb-3">
+                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
+                <select class="form-select" id="inputCOA_Class" name="COA_Class" asp-for=_Record.COA_Class>
+                    <option selected>@Model.Title_Class</option>
+                    @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
+                    {
+                        <option value=@_Record["ID"]> @_Record["Title"] </option>
+                    }
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text g-2" for="hd_Nature" disabled style="width:250px;">Nature of Account</label>
+                <select class="form-select" id="inputCOA_Nature" name="COA_Nature" asp-for=_Record.COA_Nature>
+                    <option selected>@Model.Title_Nature</option>
+                    @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
+                    {
+                        <option value=@_Record["ID"]> @_Record["Title"] </option>
+                    }
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text g-2" for="hd_Nature" disabled style="width:250px;">Notes of Account</label>
+                <select class="form-select" id="inputCOA_Notes" name="COA_Notes" asp-for=_Record.COA_Notes>
+                    <option selected>@Model.Title_Notes</option>
+                    @foreach (DataRow _Record in Model.COA_Notes.MyDataTable.Rows)
+                    {
+                        <option value=@_Record["ID"]> @_Record["Title"] </option>
+                    }
+                </select>
+            </div>
+        </div>
+        <br />
+
+        <div class="row" style="width:400px;">
+
+            <div class="form-group row" style="width:50%">
+                <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit"  />   </div>
+            </div>
+
+            <div class="form-group row" style="width:50%">
+                <div class="col-5">  <input type="submit" class="button btn-primary" value="Back" asp-page-handler="Back" />   </div>
+            </div>
+
+        </div>
 
 
     </div>

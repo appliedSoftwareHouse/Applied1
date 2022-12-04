@@ -27,29 +27,36 @@ namespace Applied_WebApplication.Pages
             if (!ModelState.IsValid) return Page();
 
             tb_User.View_Filter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
-            UserProfile  uprofile = new(tb_User.UserRow());                                             // Get a User Profile from User Record in DataTable.
-            //string UserProfileDB = "";
 
-            if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
+            tb_User.MyDataView.RowFilter = "UserID='" + MyCredential.Username.Trim() +"'";
+
+            if (tb_User.MyDataView.Count == 1)
             {
-                var Claims = new List<Claim>
+                UserProfile uprofile = new(tb_User.UserRow(MyCredential.Username));                                             // Get a User Profile from User Record in DataTable.
+                if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
                 {
+                    var Claims = new List<Claim>
+                    {
                     new Claim(ClaimTypes.Name, uprofile.UserID),
                     new Claim(ClaimTypes.GivenName, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
+                    new Claim(ClaimTypes.Role,"Admin"),
                     new Claim("Department", "HR"),
+                    new Claim("AccountsManager", "Accounts"),
                     new Claim ("Admin", "false")
-                };
+                    
+                    
+                    };
 
-                var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
-                ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
-                await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
+                    var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
+                    ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
+                    await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
 
-                return RedirectToPage("/Index");
+                    return RedirectToPage("/Index");
 
+                }
             }
             return Page();
-
         }
 
 

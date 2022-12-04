@@ -9,6 +9,8 @@ namespace Applied_WebApplication.Data
         public string Password { get; set; }
         public string Email { get; set; }
         public int Role { get; set; }
+        public string DataFile {get; set;}
+        public string Company { get; set; }
 
         public UserProfile(DataRow _Row)
         {
@@ -19,6 +21,7 @@ namespace Applied_WebApplication.Data
                 Password = _Row["Password"].ToString();
                 Email = _Row["UserEmail"].ToString();
                 Role = int.Parse(_Row["Role"].ToString());
+                Company = _Row["Company"].ToString();
             }
 
 
