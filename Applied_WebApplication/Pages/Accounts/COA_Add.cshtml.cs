@@ -57,7 +57,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 return Page();
             }
 
-            return RedirectToPage("COA");
+            
         }
 
         public IActionResult OnPostBack()

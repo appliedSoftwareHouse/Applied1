@@ -7,3 +7,4 @@ public enum Tables
     COA_Class = 103,
     COA_Notes = 104
 }
+

@@ -1,10 +1,13 @@
 ﻿using System.Data;
+using System.Security.Claims;
 using System.Security.Principal;
 
 namespace Applied_WebApplication.Data
 {
     public class UserProfile
     {
+
+        public ClaimsIdentity UserIdentity;
         public string UserID { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -12,6 +15,16 @@ namespace Applied_WebApplication.Data
         public int Role { get; set; }
         public string DataFile {get; set;}
         public string Company { get; set; }
+
+        public UserProfile()
+        {
+            UserID = "Guest";
+            UserName = "My Sweet Guest ";
+            Password = "Guest";
+            Email = "info@jahangir.com";
+            Role = 9;
+            Company = "Applied Software House";
+        }
 
         public UserProfile(DataRow _Row)
         {
@@ -25,15 +38,23 @@ namespace Applied_WebApplication.Data
                 Company = _Row["Company"].ToString();
             }
         }
-        public static string GetUserIdentity(string _ClaimType, System.Security.Principal.IIdentity. _Identity)
+
+        public string GetIdentityValue (string _ClaimValue, System.Security.Claims.ClaimsIdentity _UserIdentity)
         {
-            foreach (var claim in _Identity.Claims)
+            foreach (Claim _Claim in _UserIdentity.Claims)
             {
-                string _Claim = claim.Value;
-                string _Type = claim.Type;
-                if(_Type=="Company") { return _Claim; } 
+                string _Value = _Claim.Value.ToString();
+                string _Type    = _Claim.Type.ToString();
+
+                if (_Claim.Type == "Applied")
+                {
+                    Company = _Claim.Value;
+                }
             }
-            return "Applied Software House";
+
+            return Company;
         }
+
+        
     }
 }

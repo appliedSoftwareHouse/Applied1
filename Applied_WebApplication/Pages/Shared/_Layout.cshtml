@@ -1,9 +1,23 @@
 ﻿@using System.IO;
+@using Applied_WebApplication.Data;
+@using System.Security.Claims
 
 @{
-    
-    
-    string = Applied_WebApplication.Data.UserProfile.GetUserIdentity("Company", this.User.Identity)
+
+    string MyCompany = "Applied Software House";
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        foreach (Claim _Claim in User.Claims)
+        {
+            if (_Claim.Type == "Company")
+            {
+                MyCompany = _Claim.Value;
+                break;
+            }
+        }
+    }
+
 
 }
 
@@ -30,8 +44,6 @@
 
                 @if (User.Identity.IsAuthenticated)
                 {
-
-                    
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">
@@ -52,7 +64,31 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-page="/HumanResources">HR & Admin</a>
                             </li>
+                            <li>
+                                <label class="position-absolute top-0 end-0"> @MyCompany</label>
+                            </li>
+
+                            <li class="nav-item dropdown">
+                                <a class="nav-link me-3 me-lg-0 dropdown-toggle hidden-arrow"
+                               href="#"
+                               id="navbarDropdownMenuLink"
+                               role="button"
+                               data-mdb-toggle="dropdown"
+                               aria-expanded="false">
+                                    <i class="fas fa-bell"></i>
+                                    <span class="badge rounded-pill badge-notification bg-danger">1</span>
+                                </a>
+                                <ul class="dropdown-menu dropdown-menu-end"
+                                aria-labelledby="navbarDropdownMenuLink">
+                                    <li><a class="dropdown-item" href="#">Some news</a></li>
+                                    <li><a class="dropdown-item" href="#">Another news</a></li>
+                                    <li><a class="dropdown-item" href="#">Something else here</a>
+                                    </li>
+                                </ul>
+                            </li>
+
                         </ul>
+
                     </div>
                 }
 
