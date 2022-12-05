@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Security.Principal;
 
 namespace Applied_WebApplication.Data
 {
@@ -23,10 +24,16 @@ namespace Applied_WebApplication.Data
                 Role = int.Parse(_Row["Role"].ToString());
                 Company = _Row["Company"].ToString();
             }
-
-
-
         }
-
+        public static string GetUserIdentity(string _ClaimType, System.Security.Principal.IIdentity. _Identity)
+        {
+            foreach (var claim in _Identity.Claims)
+            {
+                string _Claim = claim.Value;
+                string _Type = claim.Type;
+                if(_Type=="Company") { return _Claim; } 
+            }
+            return "Applied Software House";
+        }
     }
 }

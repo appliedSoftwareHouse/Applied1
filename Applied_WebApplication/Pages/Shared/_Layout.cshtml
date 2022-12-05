@@ -1,5 +1,12 @@
 ﻿@using System.IO;
 
+@{
+    
+    
+    string = Applied_WebApplication.Data.UserProfile.GetUserIdentity("Company", this.User.Identity)
+
+}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,6 +31,7 @@
                 @if (User.Identity.IsAuthenticated)
                 {
 
+                    
                     <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                         <ul class="navbar-nav flex-grow-1">
                             <li class="nav-item">

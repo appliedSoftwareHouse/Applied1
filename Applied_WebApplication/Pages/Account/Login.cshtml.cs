@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Net.NetworkInformation;
 using System.Security.Claims;
+using System.Linq;
 
 namespace Applied_WebApplication.Pages
 {
@@ -41,16 +43,19 @@ namespace Applied_WebApplication.Pages
                     new Claim(ClaimTypes.GivenName, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
                     new Claim(ClaimTypes.Role,"Admin"),
+                    new Claim("Company", uprofile.Company),
                     new Claim("Department", "HR"),
                     new Claim("AccountsManager", "Accounts"),
                     new Claim ("Admin", "false")
-                    
-                    
                     };
 
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
+
+                    
+                    
+                   
 
                     return RedirectToPage("/Index");
 
@@ -58,7 +63,6 @@ namespace Applied_WebApplication.Pages
             }
             return Page();
         }
-
 
         public class Credential
         {
