@@ -15,6 +15,7 @@ namespace Applied_WebApplication.Data
         public int Role { get; set; }
         public string DataFile {get; set;}
         public string Company { get; set; }
+        public string Designation { get; set; }
 
         public UserProfile()
         {

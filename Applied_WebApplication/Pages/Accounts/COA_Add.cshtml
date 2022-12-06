@@ -4,45 +4,44 @@
 @{
 }
 
-<div class="card bg-warning text-dark">
+<div class="container-lg text-danger">
     <div class="card-body">CHART OF ACCOUNT - ADD RECORD</div>
 </div>
 <br />
 
 <form method="post">
-    <div class="Row">
+
+    
+    <div class="container text-md-start w3-border-blue-grey g-1">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="row text-start">
+            <label class="col-sm-2 col-form-label-sm" asp-for="_Record.ID">Account ID</label>
+            <div class="col-sm-10">
+                <input type="text" style="width:200px" class="form-control form-control-sm" id="txtID" name="ID" asp-for="_Record.ID">
+            </div>
+        </div>
+        <div class="row text-start">
+            <label class="col-sm-2 col-form-label-sm" asp-for="_Record.Code">Account Code</label>
+            <div class="col-sm-10">
+                <input type="text" style="width:200px" class="form-control form-control-sm" id="txtCode" name="Code" asp-for="_Record.Code">
+            </div>
+        </div>
+        <div class="row text-start">
+            <label class="col-sm-2 col-form-label-sm" asp-for="_Record.Title">Account Title</label>
+            <div class="col-sm-10">
+                <input type="text" style="width:400px" class="form-control form-control-sm" id="txtTitle" name="Title" asp-for="_Record.Title">
+            </div>
+        </div>
+        <div class="row text-start">
+            <label class="col-sm-2 col-form-label-sm" asp-for="_Record.OBal">Opening Balance</label>
+            <div class="col-sm-10">
+                <input type="text" style="width:200px" class="form-control form-control-sm" id="txtOBal" name="Opening Balance" asp-for="_Record.OBal">
+            </div>
+        </div>
+    </div>
 
-        <div class="row justify-content-center">
-            <div class="col-sm-3" style="width:20%;">
-                <label class="form-label" asp-for="_Record.ID">Account ID</label>
-                <input id="txtID" name="ID" asp-for="_Record.ID" type="text">
-                <span class="input-group-addon">
-                    <i class="text-danger"></i>
-                </span>
-            </div>
-            <div class="col-sm-3" style="width:20%">
-                <label class="form-label" asp-for="_Record.Code">Account Code</label>
-                <input id="Code" name="Code" asp-for="_Record.Code" type="text">
-                <span class="input-group-addon">
-                    <i class="text-danger"></i>
-                </span>
-            </div>
-            <div class="col-sm-3" style="width:40%">
-                <label class="form-label" asp-for="_Record.Title">Account Title</label>
-                <input id="Title" name="Title" asp-for="_Record.Title" type="text" style="width:300px;">
-                <span class="input-group-addon">
-                    <i class="text-danger"></i>
-                </span>
-            </div>
-            <div class="align-content-md-end" style="width:20%">
-                Opening Balance
-                <input id="Title" name="OBal" asp-for="_Record.OBal" type="text" style="width:100px;">
-                <span class="input-group-addon">
-                    <i class="text-danger"></i>
-                </span>
-            </div>
-
+    <div class="container-lg pt-5">
+        <div class="Row">
         </div>
         <br />
         <div class="row-cols-3">
@@ -82,7 +81,7 @@
         <div class="row" style="width:400px;">
 
             <div class="form-group row" style="width:50%">
-                <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit"  />   </div>
+                <div class="col-5">  <input type="submit" class="button btn-primary" value="Save" asp-page-handler="Submit" />   </div>
             </div>
 
             <div class="form-group row" style="width:50%">

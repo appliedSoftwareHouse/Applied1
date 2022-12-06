@@ -25,3 +25,5 @@ Useful Links
 https://getbootstrap.com/docs/5.0/forms/input-group/			TextBox Buttons Bootstrip 5
 
 https://mdbootstrap.com/snippets/standard/mdbootstrap/2923164				Navigation Sample
+
+https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-7.0   User Attemps and Lock 

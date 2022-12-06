@@ -23,7 +23,6 @@ namespace Applied_WebApplication.Pages
 
         }
 
-
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();
@@ -35,28 +34,28 @@ namespace Applied_WebApplication.Pages
             if (tb_User.MyDataView.Count == 1)
             {
                 UserProfile uprofile = new(tb_User.UserRow(MyCredential.Username));                                             // Get a User Profile from User Record in DataTable.
+
+                if(uprofile.Company == null) { uprofile.Company = "Applied Software House"; }
+                if(uprofile.Designation== null) { uprofile.Designation = "Guest"; }
+
+
+
                 if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
                 {
                     var Claims = new List<Claim>
                     {
                     new Claim(ClaimTypes.Name, uprofile.UserID),
                     new Claim(ClaimTypes.GivenName, uprofile.UserName),
+                    new Claim(ClaimTypes.Surname, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
-                    new Claim(ClaimTypes.Role,"Admin"),
+                    new Claim(ClaimTypes.Role,uprofile.Role.ToString()),
                     new Claim("Company", uprofile.Company),
-                    new Claim("Department", "HR"),
-                    new Claim("AccountsManager", "Accounts"),
-                    new Claim ("Admin", "false")
+                    new Claim("Designation", uprofile.Designation)
                     };
 
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
-
-                    
-                    
-                   
-
                     return RedirectToPage("/Index");
 
                 }

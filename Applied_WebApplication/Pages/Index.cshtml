@@ -2,8 +2,42 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    //ViewData["UserName"] = this.User.Claims[1];
+    
+@using System.Security.Claims
+@using System.Linq;
+
+
+    string MyCompany = "Applied Software House";
+
+    @if (User.Identity.IsAuthenticated)
+    {
+        foreach (Claim _Claim in User.Claims)
+        {
+            var asd = _Claim.ValueType;
+
+            if (_Claim.Type == "Company")
+            {
+                MyCompany = _Claim.Value;
+                break;
+            }
+        }
+    }
+
 
 }
 
-<h1>WELL COME</h1>
+
+<div class="mt-4 p-5 bg-primary text-white rounded">
+    <h1>WELL COME</h1>
+    <p> APPLIED SOFTWARE HOUSE is a Software Development Company</p>
+</div>
+<br />
+
+<blockquote class="blockquote">
+    <p>For 30 years, Applied Software House providing Desktop Software Solution, Now we are developing a web base Accounting Software for small and midam scale organization.</p>
+    <footer class="blockquote-footer">It is Under Development.</footer>
+</blockquote>
+
+<div class="alert alert-success">
+  <strong>Success!</strong> @MyCompany
+</div>
