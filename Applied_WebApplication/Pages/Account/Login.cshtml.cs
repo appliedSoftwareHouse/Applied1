@@ -1,13 +1,9 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Net.NetworkInformation;
 using System.Security.Claims;
-using System.Linq;
 
 namespace Applied_WebApplication.Pages
 {
@@ -48,15 +44,19 @@ namespace Applied_WebApplication.Pages
                     new Claim(ClaimTypes.GivenName, uprofile.UserName),
                     new Claim(ClaimTypes.Surname, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
-                    new Claim(ClaimTypes.Role,uprofile.Role.ToString()),
+                    new Claim(ClaimTypes.Role,"Admin"),
                     new Claim("Company", uprofile.Company),
-                    new Claim("Designation", uprofile.Designation)
+                    new Claim("Designation", uprofile.Designation),
+                    new Claim("Admin", "Administrator"),
+                    new Claim("Administrator", "Admin")
                     };
 
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
                     return RedirectToPage("/Index");
+
+                    
 
                 }
             }

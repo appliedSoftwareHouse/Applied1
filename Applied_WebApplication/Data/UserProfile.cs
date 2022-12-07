@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Data
         public string UserName { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
-        public int Role { get; set; }
+        public string Role { get; set; }
         public string DataFile {get; set;}
         public string Company { get; set; }
         public string Designation { get; set; }
@@ -23,7 +23,7 @@ namespace Applied_WebApplication.Data
             UserName = "My Sweet Guest ";
             Password = "Guest";
             Email = "info@jahangir.com";
-            Role = 9;
+            Role = "Guest";
             Company = "Applied Software House";
         }
 
@@ -35,8 +35,9 @@ namespace Applied_WebApplication.Data
                 UserName = _Row["DisplayName"].ToString();
                 Password = _Row["Password"].ToString();
                 Email = _Row["UserEmail"].ToString();
-                Role = int.Parse(_Row["Role"].ToString());
+                Role = _Row["Role"].ToString();
                 Company = _Row["Company"].ToString();
+                
             }
         }
 
