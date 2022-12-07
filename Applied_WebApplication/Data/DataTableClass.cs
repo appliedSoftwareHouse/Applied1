@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Data
     public class DataTableClass
     {
         private TableValidationClass validationClass = new ();
-
+        private AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
         private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable = new();
         public DataView MyDataView = new();
@@ -171,18 +171,7 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        public DataRow? UserRow(string _UserName)
-        {
-            if (ViewRecordCount() == 1)
-            {
-                return MyDataView[0].Row;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
+        
         private void CheckError()
         {
             if (MyConnectionClass.AppliedConnection == null) { IsError = true; }

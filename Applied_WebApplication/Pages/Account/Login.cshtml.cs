@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Security.Claims;
 
 namespace Applied_WebApplication.Pages
@@ -12,7 +13,8 @@ namespace Applied_WebApplication.Pages
         [BindProperty]
         public Credential MyCredential { get; set; }
 
-        private DataTableClass tb_User = new DataTableClass("Users");
+        private AppliedUsersClass UserTableClass = new();                       // Make Connectiona and get Applied Users Table.
+        
 
         public void OnGet()
         {
@@ -23,18 +25,15 @@ namespace Applied_WebApplication.Pages
         {
             if (!ModelState.IsValid) return Page();
 
-            tb_User.View_Filter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
+            
+            UserTableClass.UserView.RowFilter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
 
-            tb_User.MyDataView.RowFilter = "UserID='" + MyCredential.Username.Trim() +"'";
-
-            if (tb_User.MyDataView.Count == 1)
+            if (UserTableClass.UserView.Count == 1)
             {
-                UserProfile uprofile = new(tb_User.UserRow(MyCredential.Username));                                             // Get a User Profile from User Record in DataTable.
+                UserProfile uprofile = new(UserTableClass.UserView[0].Row);                                             // Get a User Profile from User Record in DataTable.
 
                 if(uprofile.Company == null) { uprofile.Company = "Applied Software House"; }
                 if(uprofile.Designation== null) { uprofile.Designation = "Guest"; }
-
-
 
                 if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
                 {
@@ -44,20 +43,17 @@ namespace Applied_WebApplication.Pages
                     new Claim(ClaimTypes.GivenName, uprofile.UserName),
                     new Claim(ClaimTypes.Surname, uprofile.UserName),
                     new Claim(ClaimTypes.Email, uprofile.Email),
-                    new Claim(ClaimTypes.Role,"Admin"),
+                    new Claim(ClaimTypes.Role,uprofile.Role),
                     new Claim("Company", uprofile.Company),
                     new Claim("Designation", uprofile.Designation),
-                    new Claim("Admin", "Administrator"),
-                    new Claim("Administrator", "Admin")
+                    new Claim("DBFilePath", uprofile.DBFilePath)
+                    
                     };
 
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
                     return RedirectToPage("/Index");
-
-                    
-
                 }
             }
             return Page();
@@ -71,6 +67,8 @@ namespace Applied_WebApplication.Pages
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; } = string.Empty;
+            
+
 
         }
     }

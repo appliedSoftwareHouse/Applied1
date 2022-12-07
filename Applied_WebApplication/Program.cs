@@ -22,7 +22,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("AccountsAssistant", policy => policy.RequireClaim("AccountAssistants"));
     options.AddPolicy("MustBelongToHRPolicy", policy => policy.RequireClaim("Department", "HR"));
     options.AddPolicy("StoreOnly", policy => policy.RequireClaim("Stock", "Store"));
-    
+    options.AddPolicy("Client", policy => policy.RequireClaim("Client", "Customer"));
+
 });
 
 

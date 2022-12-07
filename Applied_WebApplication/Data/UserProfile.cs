@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Data
         public string Password { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public string DataFile {get; set;}
+        public string DBFilePath {get; set;}
         public string Company { get; set; }
         public string Designation { get; set; }
 
@@ -25,6 +25,7 @@ namespace Applied_WebApplication.Data
             Email = "info@jahangir.com";
             Role = "Guest";
             Company = "Applied Software House";
+            DBFilePath = "";
         }
 
         public UserProfile(DataRow _Row)
@@ -37,26 +38,9 @@ namespace Applied_WebApplication.Data
                 Email = _Row["UserEmail"].ToString();
                 Role = _Row["Role"].ToString();
                 Company = _Row["Company"].ToString();
+                DBFilePath = _Row["DataFile"].ToString();
                 
             }
         }
-
-        public string GetIdentityValue (string _ClaimValue, System.Security.Claims.ClaimsIdentity _UserIdentity)
-        {
-            foreach (Claim _Claim in _UserIdentity.Claims)
-            {
-                string _Value = _Claim.Value.ToString();
-                string _Type    = _Claim.Type.ToString();
-
-                if (_Claim.Type == "Applied")
-                {
-                    Company = _Claim.Value;
-                }
-            }
-
-            return Company;
-        }
-
-        
     }
 }
