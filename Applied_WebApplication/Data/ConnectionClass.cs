@@ -1,13 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc.ViewFeatures;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
-using System.IO;
-using System.Xml.Schema;
+using System.Text;
 
 namespace Applied_WebApplication.Data
 {
-    public class ConnectionClass
+    public class ConnectionClass : IdentityUser
     {
+        
         public SQLiteConnection AppliedConnection = new();
         private AppliedUsersClass UsersTableClass= new();
 
@@ -19,7 +19,7 @@ namespace Applied_WebApplication.Data
         public ConnectionClass()
         {
             //DBFile_Path = DBListClass.GetSQLiteFile((int)DBListClass.DBList.Applied);
-            DBFile_Path = UsersTableClass.GetClientDBFile();
+            DBFile_Path = UsersTableClass.GetClientDBFile(UserName);
  
             if (!DBFile_Exist) { CreateAppliedDataBase(); }
             AppliedConnection = new("Data Source=" + DBFile_Path);
@@ -42,9 +42,9 @@ namespace Applied_WebApplication.Data
 
     public class AppliedUsersClass
     {
-        public string AppliedUsersFile = ".\\wwwroot\\SQLiteDB\\AppliedUsers.db";
-        public DataTable UsersTable = new DataTable();
-        public DataView UserView = new DataView();
+        public string AppliedUsersFile = ".\\wwwroot\\SQLiteDB\\AppliedUsers.db";                   // Applied Users ID & PW File.
+        public DataTable UsersTable = new DataTable();                                  
+        public readonly DataView UserView = new DataView();
         public AppliedUsersClass()
         {
             UsersTable = UsersDataTable();
@@ -73,11 +73,30 @@ namespace Applied_WebApplication.Data
             return UsersTable;
         }
 
-        internal string GetClientDBFile()
+        internal string GetClientDBFile(string _User)
         {
+            if(_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
 
+            switch (_User.ToUpper())
+            {
+                case "ADMIN":
+                    return ".\\wwwroot\\SQLiteDB\\Applied.db";
 
-            return ".\\wwwroot\\SQLiteDB\\Applied.db";
+                case "AMCORP":
+                    return ".\\wwwroot\\SQLiteDB\\Amcorp.db";
+
+                case "ALTAMASH":
+                    return ".\\wwwroot\\SQLiteDB\\Altamash.db";
+
+                case "GUEST":
+                    return ".\\wwwroot\\SQLiteDB\\Guest.db";
+
+                case "WINMARK":
+                    return ".\\wwwroot\\SQLiteDB\\Winmark.db";
+
+                default:
+                    return ".\\wwwroot\\SQLiteDB\\Applied.db";
+            }
         }
     }
 }

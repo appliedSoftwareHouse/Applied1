@@ -1,19 +1,19 @@
-﻿using Microsoft.Extensions.Primitives;
-using Microsoft.VisualBasic;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
-using System.Security.Cryptography;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using static System.Net.Mime.MediaTypeNames;
-using System.Data.Common;
+
 
 namespace Applied_WebApplication.Data
 {
-    public class DataTableClass
+
+    
+    public class DataTableClass : IdentityUser
     {
+        
+        public string MyUser {get; set;}
         private TableValidationClass validationClass = new ();
-        private AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
+        private readonly AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
         private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable = new();
         public DataView MyDataView = new();
@@ -31,11 +31,14 @@ namespace Applied_WebApplication.Data
 
         public DataTableClass()
         {
+
+            MyUser = UserName;
             MyConnection = MyConnectionClass.AppliedConnection;
         }
 
         public DataTableClass(string _TableName)
         {
+            
             MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _TableName;
             GetDataTable();                                                                                   // Load DataTable and View
@@ -47,7 +50,7 @@ namespace Applied_WebApplication.Data
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
-        public DataTableClass(string _TableName, int _ID)
+        public DataTableClass(string _TableName, int _ID)                               // Loan DataTablle and load current row specific by Table Row ID.
         {
             MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _TableName;
@@ -111,7 +114,7 @@ namespace Applied_WebApplication.Data
 
         }
 
-        private int NewID(DataTable table)
+        private static int NewID(DataTable table)
         {
             int _result = 0;
             string MaxID = string.Empty;
