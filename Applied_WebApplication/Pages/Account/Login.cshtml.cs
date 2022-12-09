@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Pages
     {
         [BindProperty]
         public Credential MyCredential { get; set; }
-        public CredentialSession UserSession { get; set; }
+        public CredentialSession UserSession = new();
 
         private AppliedUsersClass UserTableClass = new();                       // Make Connectiona and get Applied Users Table.
         
@@ -53,7 +53,7 @@ namespace Applied_WebApplication.Pages
                     UserSession.UserName = uprofile.UserID;
                     UserSession.UserID = uprofile.UserID;
                     UserSession.CompanyName = uprofile.Company;
-                    UserSession.SessionID = 
+                    UserSession.SessionID = Claims.GetType().GUID.ToString();
 
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);

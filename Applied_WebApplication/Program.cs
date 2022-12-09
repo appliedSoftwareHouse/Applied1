@@ -1,7 +1,9 @@
 using Applied_WebApplication;
 using Applied_WebApplication.Data;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 builder.Services.AddControllers();
@@ -12,7 +14,7 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.LogoutPath = "/Account/Logout";
-    
+
 });
 
 builder.Services.AddAuthorization(options =>
@@ -26,6 +28,9 @@ builder.Services.AddAuthorization(options =>
 
 });
 
+//builder.Services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSession();
 
 var app = builder.Build();
 
@@ -40,14 +45,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
+app.UseSession();
 app.UseCreateDatabase();
-
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapRazorPages();
-
 app.Run();

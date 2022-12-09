@@ -2,32 +2,11 @@
 @using Applied_WebApplication.Data;
 @using System.Security.Claims
 @using System.Linq;
-
-
 @{
-
-
-
-    var MyCompany =    this.User.Identity.GetType().Name;
-    if(string.IsNullOrEmpty(MyCompany)) { MyCompany = "Applied Software House"; }
-
-    //@if (User.Identity.IsAuthenticated)
-    //{
-    //    foreach (Claim _Claim in User.Claims)
-    //    {
-    //        var asd = _Claim.ValueType;
-
-    //        if (_Claim.Type == "Company")
-    //        {
-    //            MyCompany = _Claim.Value;
-    //            break;
-    //        }
-    //    }
+    var MyCompany =    this.User.Identity.Name;
+    if(string.IsNullOrEmpty(MyCompany)) { MyCompany = "Applied"; }
     }
-
-
 }
-
 
 <!DOCTYPE html>
 <html lang="en">

@@ -8,7 +8,7 @@ namespace Applied_WebApplication.Data
 {
 
     
-    public class DataTableClass : IdentityUser
+    public class DataTableClass
     {
         
         public string MyUser {get; set;}
@@ -32,13 +32,20 @@ namespace Applied_WebApplication.Data
         public DataTableClass()
         {
 
-            MyUser = UserName;
             MyConnection = MyConnectionClass.AppliedConnection;
         }
 
+        public DataTableClass(HttpContext PageContext)
+        {
+
+            //MyUser = UserName;
+            MyUser = PageContext.User.Identity.Name;
+            MyConnection = MyConnectionClass.AppliedConnection;
+        }
+
+
         public DataTableClass(string _TableName)
         {
-            
             MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _TableName;
             GetDataTable();                                                                                   // Load DataTable and View
