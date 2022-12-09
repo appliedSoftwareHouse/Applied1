@@ -23,6 +23,13 @@ namespace Applied_WebApplication.Pages.Accounts
         public string Title_Nature, Title_Class, Title_Notes;
         public int Test;
 
+
+        public void OnGetEdit(int? id, string UserName)
+        {
+            string user = UserName;
+
+        }
+
         public PageResult OnGet(int? id)
         {
             if (COA.MyDataView.Count == 0)                 // if Data Table is empty. return page

@@ -21,13 +21,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (DataRow _Record in Model.COA.MyDataTable.Rows)
+            @foreach (DataRow _Record in Table_COA.MyDataTable.Rows)
             {
                 <tr>
                     <td>  @_Record["Code"] </td>
                     <td>  @_Record["Title"] </td>
                     <td>
-                        <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"]> Edit</a> |
+                        <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"] asp-route-UserName=@Model.User.Identity.Name asp-page-handler="Edit"> Edit</a> |
                         <a asp-page="./COA_Del" asp-route-id=@_Record["ID"]>Delete </a> |
                     </td>
                 </tr>
