@@ -8,13 +8,13 @@ namespace Applied_WebApplication.Data
     public class DataTableClass
     {
         public string MyUser {get; set;}
-        private TableValidationClass validationClass = new ();
-        private readonly AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
+        private TableValidationClass validationClass; // = new ();
+        //private readonly AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
         private ConnectionClass MyConnectionClass = new();
-        public DataTable MyDataTable = new();
-        public DataView MyDataView = new();
-        public SQLiteConnection MyConnection = new();
-        public string MyTableName = "";
+        public DataTable MyDataTable; // = new();
+        public DataView MyDataView; // = new();
+        public SQLiteConnection MyConnection; // = new();
+        public string MyTableName; // = "";
         public bool IsError = false;
         public string MyMessage = "";
         public string View_Filter { get; set; } = "";
@@ -26,15 +26,18 @@ namespace Applied_WebApplication.Data
 
         public DataTableClass(IIdentity identity, string _TableName)
         {
-            ConnectionClass MyConnection = new ConnectionClass(identity.Name);
+            //ConnectionClass MyConnection = new ConnectionClass(identity.Name);
+            MyConnectionClass = new(identity.Name);
+            MyConnection = MyConnectionClass.AppliedConnection;
+            
             MyTableName = _TableName;
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
 
-            Command_Update = new SQLiteCommand(MyConnection.AppliedConnection);
-            Command_Delete = new SQLiteCommand(MyConnection.AppliedConnection);
-            Command_Insert = new SQLiteCommand(MyConnection.AppliedConnection);
+            Command_Update = new SQLiteCommand(MyConnection);
+            Command_Delete = new SQLiteCommand(MyConnection);
+            Command_Insert = new SQLiteCommand(MyConnection);
 
         }
 
@@ -200,7 +203,7 @@ namespace Applied_WebApplication.Data
             if (_DataSet.Tables.Count == 1)
             {
                 MyDataTable = _DataSet.Tables[0];
-                MyDataView.Table = MyDataTable;
+                MyDataView = MyDataTable.AsDataView();
             }
             else { MyDataTable = new DataTable(); }
             return;
