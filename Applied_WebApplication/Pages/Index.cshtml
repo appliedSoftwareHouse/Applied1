@@ -1,12 +1,10 @@
 ﻿@page
+@using System.Security.Claims
+@using System.Linq;
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
     
-@using System.Security.Claims
-@using System.Linq;
-
-
     string MyCompany = "Applied Software House";
 
     @if (User.Identity.IsAuthenticated)
@@ -22,8 +20,6 @@
             }
         }
     }
-
-
 }
 
 

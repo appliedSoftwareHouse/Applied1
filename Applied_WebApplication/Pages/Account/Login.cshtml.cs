@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Session;
+using Microsoft.AspNetCore.Http;
 
 namespace Applied_WebApplication.Pages
 {
@@ -12,14 +14,12 @@ namespace Applied_WebApplication.Pages
     {
         [BindProperty]
         public Credential MyCredential { get; set; }
-        public CredentialSession UserSession = new();
-
+        public string Username { get; set; }
         private AppliedUsersClass UserTableClass = new();                       // Make Connectiona and get Applied Users Table.
         
 
         public void OnGet()
         {
-
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -27,6 +27,7 @@ namespace Applied_WebApplication.Pages
             if (!ModelState.IsValid) return Page();
 
             
+
             UserTableClass.UserView.RowFilter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
 
             if (UserTableClass.UserView.Count == 1)
@@ -49,16 +50,14 @@ namespace Applied_WebApplication.Pages
                     new Claim("Designation", uprofile.Designation),
                     new Claim("DBFilePath", uprofile.DBFilePath)
                     };
-
-                    UserSession.UserName = uprofile.UserID;
-                    UserSession.UserID = uprofile.UserID;
-                    UserSession.CompanyName = uprofile.Company;
-                    UserSession.SessionID = Claims.GetType().GUID.ToString();
-
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
-                    return RedirectToPage("/Index");
+
+
+                    Username = User.Identity.Name;
+
+                    return RedirectToPage("/Index",uprofile.UserName);
                 }
             }
             return Page();
@@ -72,16 +71,6 @@ namespace Applied_WebApplication.Pages
             [Required]
             [DataType(DataType.Password)]
             public string Password { get; set; } = string.Empty;
-        }
-
-        public class CredentialSession
-        {
-            public string UserID { get; set; }
-            public string UserName { get; set; }
-            public string CompanyName { get; set; }
-            public string SessionID { get; set; } 
-            public DateTime LoginDatetime { get; set; }
-            public DateTime LogoutDateTime { get; set; }
         }
     }
 }

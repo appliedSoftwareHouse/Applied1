@@ -1,16 +1,12 @@
-﻿using Microsoft.AspNetCore.Identity;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
+using System.Security.Principal;
 using System.Text;
-
 
 namespace Applied_WebApplication.Data
 {
-
-    
     public class DataTableClass
     {
-        
         public string MyUser {get; set;}
         private TableValidationClass validationClass = new ();
         private readonly AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
@@ -28,21 +24,19 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
 
-
-        public DataTableClass()
+        public DataTableClass(IIdentity identity, string _TableName)
         {
+            ConnectionClass MyConnection = new ConnectionClass(identity.Name);
+            MyTableName = _TableName;
+            GetDataTable();                                                                                   // Load DataTable and View
+            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
+            CheckError();
 
-            MyConnection = MyConnectionClass.AppliedConnection;
+            Command_Update = new SQLiteCommand(MyConnection.AppliedConnection);
+            Command_Delete = new SQLiteCommand(MyConnection.AppliedConnection);
+            Command_Insert = new SQLiteCommand(MyConnection.AppliedConnection);
+
         }
-
-        public DataTableClass(HttpContext PageContext)
-        {
-
-            //MyUser = UserName;
-            MyUser = PageContext.User.Identity.Name;
-            MyConnection = MyConnectionClass.AppliedConnection;
-        }
-
 
         public DataTableClass(string _TableName)
         {
@@ -195,6 +189,8 @@ namespace Applied_WebApplication.Data
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
+
+            if(MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
 
             SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
             SQLiteDataAdapter _Adapter = new(_Command);

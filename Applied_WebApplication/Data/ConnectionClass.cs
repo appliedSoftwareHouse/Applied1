@@ -18,11 +18,20 @@ namespace Applied_WebApplication.Data
 
         public ConnectionClass()
         {
-            //DBFile_Path = DBListClass.GetSQLiteFile((int)DBListClass.DBList.Applied);
             DBFile_Path = UsersTableClass.GetClientDBFile(UserName);
- 
+
             if (!DBFile_Exist) { CreateAppliedDataBase(); }
             AppliedConnection = new("Data Source=" + DBFile_Path);
+        }
+
+        public ConnectionClass(string _UserName)
+        {
+            DBFile_Path = UsersTableClass.GetClientDBFile(_UserName);
+
+            if (!DBFile_Exist) { CreateAppliedDataBase(); }
+            AppliedConnection = new("Data Source=" + DBFile_Path);                      // Established a Connection with Database File
+            AppliedConnection.Open();                                                                   
+
         }
 
         private void CreateAppliedDataBase()
@@ -32,11 +41,11 @@ namespace Applied_WebApplication.Data
             SQLiteCommand _Command = new();
             SQLiteConnection _Connection = new SQLiteConnection("Data Source=" + DBFile_Path); _Connection.Open();
 
-            _Command = new SQLiteCommand(TableClass.tb_Users, _Connection); _Command.ExecuteNonQuery();
-            _Command = new SQLiteCommand(TableClass.AddAdmin, _Connection); _Command.ExecuteNonQuery();
-            _Command = new SQLiteCommand(TableClass.tb_Profile, _Connection); _Command.ExecuteNonQuery();
-            _Command = new SQLiteCommand(TableClass.tb_Roles, _Connection); _Command.ExecuteNonQuery();
-            _Command = new SQLiteCommand(TableClass.AddRole1, _Connection); _Command.ExecuteNonQuery();
+            //_Command = new SQLiteCommand(TableClass.tb_Users, _Connection); _Command.ExecuteNonQuery();
+            //_Command = new SQLiteCommand(TableClass.AddAdmin, _Connection); _Command.ExecuteNonQuery();
+            //_Command = new SQLiteCommand(TableClass.tb_Profile, _Connection); _Command.ExecuteNonQuery();
+            //_Command = new SQLiteCommand(TableClass.tb_Roles, _Connection); _Command.ExecuteNonQuery();
+            //_Command = new SQLiteCommand(TableClass.AddRole1, _Connection); _Command.ExecuteNonQuery();
         }
     }           // END()
 

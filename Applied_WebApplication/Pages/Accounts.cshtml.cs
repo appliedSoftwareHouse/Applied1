@@ -12,11 +12,6 @@ namespace Applied_WebApplication.Pages
         {
             return RedirectToPage("COA_Add", _UserName);
         }
-        
-        public string MyHandler(string? _UserName)
-        {
-            return _UserName;
-        }
 
     }
 }

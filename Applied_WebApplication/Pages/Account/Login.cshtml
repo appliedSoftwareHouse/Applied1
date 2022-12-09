@@ -1,6 +1,9 @@
 ﻿@page
+@using System.Data
+@using Applied_WebApplication.Data
 @model LoginModel
 @{
+    DataTableClass _Table = new DataTableClass(Tables.COA.ToString());
 }
 
 

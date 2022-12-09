@@ -1,12 +1,12 @@
 ﻿@page
 @using System.Data
-@using Microsoft.AspNetCore.Identity
-
-
+@using Applied_WebApplication.Data
 @model Applied_WebApplication.Pages.Accounts.COAModel
 @{
-}
 
+    DataTableClass Table_COA = new DataTableClass(this.User.Identity, Tables.COA.ToString());
+
+}
 <form method="post">
  <ul class="list-group list-group-horizontal ">
         <li class="list-group-item " style="width:92%;background-color:lavender;"  >CHART OF ACCOUNT</li>
@@ -25,17 +25,13 @@
             {
                 <tr>
                     <td>  @_Record["Code"] </td>
-                    <td>   @_Record["Title"] </td>
+                    <td>  @_Record["Title"] </td>
                     <td>
                         <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"]> Edit</a> |
-                        <a asp-page="./COA_Del" asp-route-id=@_Record["ID"]>Delete </a>
+                        <a asp-page="./COA_Del" asp-route-id=@_Record["ID"]>Delete </a> |
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
-    
-
-
 </form>

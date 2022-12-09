@@ -1,7 +1,6 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static Applied_WebApplication.Pages.Accounts.COA_EditModel;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -28,6 +27,14 @@ namespace Applied_WebApplication.Pages.Accounts
             Title_Class = COA_Class.Title(_Record.COA_Class);
             Title_Nature = COA_Nature.Title(_Record.COA_Nature);
             Title_Notes = COA_Notes.Title(_Record.COA_Notes);
+
+            return Page();
+        }
+
+        public IActionResult OnPostTest(HttpContextAccessor _httpContextAccessor)
+        {
+
+            string abc = _httpContextAccessor.HttpContext.User.Identity.Name;
 
             return Page();
         }
