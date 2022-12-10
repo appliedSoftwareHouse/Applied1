@@ -6,15 +6,22 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class COA_AddModel : PageModel
     {
-        public DataTableClass COA = new DataTableClass(Tables.COA.ToString());
-        public DataTableClass COA_Nature = new DataTableClass(Tables.COA_Nature.ToString());
-        public DataTableClass COA_Class = new DataTableClass(Tables.COA_Class.ToString());
-        public DataTableClass COA_Notes = new DataTableClass(Tables.COA_Notes.ToString());
+        public DataTableClass COA; //= new DataTableClass(Tables.COA.ToString());
+        public DataTableClass COA_Nature; //= new DataTableClass(Tables.COA_Nature.ToString());
+        public DataTableClass COA_Class; //= new DataTableClass(Tables.COA_Class.ToString());
+        public DataTableClass COA_Notes; //= new DataTableClass(Tables.COA_Notes.ToString());
         public TableValidationClass Validation;
-        public Record _Record = new Record();
+        public Record _Record; // = new Record();
         public string Title_Nature, Title_Class, Title_Notes;
-        public IActionResult OnGet()
+        public IActionResult OnPostAdd(string UserName)
         {
+
+            COA = new DataTableClass(UserName, Tables.COA.ToString());
+            COA_Nature = new DataTableClass(UserName, Tables.COA_Nature.ToString());
+            COA_Class = new DataTableClass(UserName, Tables.COA_Class.ToString());
+            COA_Notes = new DataTableClass(UserName, Tables.COA_Notes.ToString());
+
+            _Record = new Record();
             COA.NewRecord();
             _Record.ID = (int)COA.CurrentRow["ID"];
             _Record.Code = (string)COA.CurrentRow["Code"];

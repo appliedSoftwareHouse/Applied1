@@ -49,7 +49,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSubmit(Record _FillRecord, string UserName)
         {
-            DataTableClass COA = new(Tables.COA.ToString(), UserName);
+            DataTableClass COA = new(UserName, Tables.COA.ToString());
             
             if (ModelState.IsValid)
             {

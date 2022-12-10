@@ -7,9 +7,10 @@
 }
 
 <form method="post">
- <ul class="list-group list-group-horizontal ">
-        <li class="list-group-item " style="width:92%;background-color:lavender;"  >CHART OF ACCOUNT</li>
-        <li class="list-group-item" style="width:8%" >  <button class=btn-primary asp-page="./COA_Add/"> ADD </button>  </li>
+
+ <ul class="list-group list-group-horizontal mt-3 p-2 bg-success text-white rounded">
+        <li class="list-group-item" style="width:92%;"  >CHART OF ACCOUNT</li>
+        @*<li class="list-group-item" style="width:8%;" >  <button class=btn-primary asp-page="./COA_Add/"> ADD </button>  </li>*@
     </ul>
 <br />  <br />
     <table class="table table-hover">
@@ -17,6 +18,7 @@
             <tr>
                 <th>   <a> Code </a> </th>
                 <th>    <a>Title   </a> </th>
+                <th><button class=btn-primary asp-page="./COA_Add/" asp-route-UserName=@User.Identity.Name asp-page-handler="Add"> ADD </button> </th>
             </tr>
         </thead>
         <tbody>
