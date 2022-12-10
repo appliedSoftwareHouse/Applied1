@@ -7,7 +7,7 @@ namespace Applied_WebApplication.Data
 {
     public class DataTableClass
     {
-        public string MyUser {get; set;}
+        public string MyUserName {get; set;}
         private TableValidationClass validationClass; // = new ();
         //private readonly AppliedUsersClass UsersTableClass = new AppliedUsersClass ();
         private ConnectionClass MyConnectionClass = new();
@@ -24,10 +24,10 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
 
-        public DataTableClass(IIdentity identity, string _TableName)
+        public DataTableClass(string _UserName, string _TableName)
         {
-            //ConnectionClass MyConnection = new ConnectionClass(identity.Name);
-            MyConnectionClass = new(identity.Name);
+            MyUserName = _UserName;
+            MyConnectionClass = new(MyUserName);
             MyConnection = MyConnectionClass.AppliedConnection;
             
             MyTableName = _TableName;
@@ -61,12 +61,10 @@ namespace Applied_WebApplication.Data
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
-
             Command_Update = new SQLiteCommand(MyConnection);
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
-
-            CurrentRow = SeekRecord(_ID);
+            SeekRecord(_ID);
         }
 
 
@@ -222,9 +220,27 @@ namespace Applied_WebApplication.Data
             { MyDataView.RowFilter = Filter; return false; }
         }
 
+        //public void SeekRecord(int _ID)
+        //{
+        //    DataRow row = MyDataTable.NewRow();
+        //    string Filter = MyDataView.RowFilter;
+        //    MyDataView.RowFilter = "ID=" + _ID.ToString();
+
+        //    if (MyDataView.Count > 0)
+        //    { row = MyDataView[0].Row; }
+        //    else
+        //    { row = MyDataTable.NewRow(); }
+
+        //    CurrentRow = row;
+        //    MyDataView.RowFilter = Filter;
+        //    return;
+        //    //return row;
+
+        //}
+
         public DataRow SeekRecord(int _ID)
         {
-            DataRow row = null;
+            DataRow row = MyDataTable.NewRow();
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
@@ -234,9 +250,11 @@ namespace Applied_WebApplication.Data
             { row = MyDataTable.NewRow(); }
 
             CurrentRow = row;
-            MyDataView.RowFilter = Filter; return row;
-
+            MyDataView.RowFilter = Filter;
+            return row;
+            //return row;
         }
+
 
         public string Title(int _ID)
         {

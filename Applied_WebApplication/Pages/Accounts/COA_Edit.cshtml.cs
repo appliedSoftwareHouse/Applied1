@@ -14,35 +14,24 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class COA_EditModel : PageModel
     {
-        public DataTableClass COA = new DataTableClass(Tables.COA.ToString());
-        public DataTableClass COA_Nature = new DataTableClass(Tables.COA_Nature.ToString());
-        public DataTableClass COA_Class = new DataTableClass(Tables.COA_Class.ToString());
-        public DataTableClass COA_Notes = new DataTableClass(Tables.COA_Notes.ToString());
+        public DataTableClass COA; // = new DataTableClass(Tables.COA.ToString());
+        public DataTableClass COA_Nature; // = new DataTableClass(Tables.COA_Nature.ToString());
+        public DataTableClass COA_Class; // = new DataTableClass(Tables.COA_Class.ToString());
+        public DataTableClass COA_Notes; // = new DataTableClass(Tables.COA_Notes.ToString());
         public TableValidationClass Validation;
-        public Record _Record = new Record();
+        public Record _Record  = new Record();
         public string Title_Nature, Title_Class, Title_Notes;
         public int Test;
 
 
-        public void OnGetEdit(int? id, string UserName)
+        public IActionResult OnGetEdit(int id, string UserName)
         {
-            string user = UserName;
-
-        }
-
-        public PageResult OnGet(int? id)
-        {
-            if (COA.MyDataView.Count == 0)                 // if Data Table is empty. return page
-            {
-                return Page();
-            }
-
-            if (id == null)
-            {
-                id = (int)COA.MyDataView[0]["ID"];          // Get First Record of Table id Id is null.
-            }
-
-            COA.SeekRecord((int)id);
+            COA = new DataTableClass(UserName,Tables.COA.ToString());
+            COA_Nature = new DataTableClass(UserName, Tables.COA_Nature.ToString());
+            COA_Class = new DataTableClass(UserName, Tables.COA_Class.ToString());
+            COA_Notes = new DataTableClass(UserName, Tables.COA_Notes.ToString());
+            
+            COA.CurrentRow = COA.SeekRecord(id);
             _Record.ID = (int)COA.CurrentRow["ID"];
             _Record.Code = (string)COA.CurrentRow["Code"];
             _Record.Title = (string)COA.CurrentRow["Title"];
@@ -56,17 +45,17 @@ namespace Applied_WebApplication.Pages.Accounts
             Title_Notes = COA_Notes.Title(_Record.COA_Notes);
 
             return Page();
-
         }
-
-
 
         public IActionResult OnPostSubmit(Record? _FillRecord)
         {
+            int _RecID = _FillRecord.ID;
+            COA.CurrentRow = COA.SeekRecord(_RecID);
+
             if (ModelState.IsValid)
             {
                 Validation = new();
-                COA.SeekRecord(_FillRecord.ID);
+                //COA.SeekRecord(_RecID);
                 COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
                 COA.CurrentRow["Code"] = _FillRecord.Code;
                 COA.CurrentRow["Title"] = _FillRecord.Title;
