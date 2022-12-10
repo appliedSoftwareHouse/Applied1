@@ -7,11 +7,13 @@ namespace Applied_WebApplication.Data
         public bool success { get; set; }
         public string message { get; set; }
         public int ErrorID { get; set; }
+        public int records { get; set; }
 
         public TableValidationClass()
         {
             success = true;
             message = string.Empty;
+            records = 0;
         }
 
         public bool Validation(DataRow Row)

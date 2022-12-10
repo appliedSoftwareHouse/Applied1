@@ -47,16 +47,15 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
         }
 
-        public IActionResult OnPostSubmit(Record? _FillRecord)
+        public IActionResult OnPostSubmit(Record _FillRecord, string UserName)
         {
-            int _RecID = _FillRecord.ID;
-            COA.CurrentRow = COA.SeekRecord(_RecID);
-
+            DataTableClass COA = new(Tables.COA.ToString(), UserName);
+            
             if (ModelState.IsValid)
             {
                 Validation = new();
-                //COA.SeekRecord(_RecID);
-                COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
+                COA.CurrentRow = COA.SeekRecord(_FillRecord.ID);
+                //COA.CurrentRow["ID"] = COA.CurrentRow["ID"];
                 COA.CurrentRow["Code"] = _FillRecord.Code;
                 COA.CurrentRow["Title"] = _FillRecord.Title;
                 COA.CurrentRow["Nature"] = _FillRecord.COA_Nature;
@@ -64,9 +63,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
                 COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
                 Validation = COA.Save();
-
-
-                string i = this.Request.Form["ID"].ToString();
             }
 
             if (Validation.success)

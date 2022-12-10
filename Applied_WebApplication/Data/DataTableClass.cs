@@ -67,8 +67,6 @@ namespace Applied_WebApplication.Data
             SeekRecord(_ID);
         }
 
-
-
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -101,7 +99,6 @@ namespace Applied_WebApplication.Data
                 { _CommandString.Append(") "); }
             }
 
-            //_CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
             _Command.CommandText = _CommandString.ToString();
 
             foreach (DataColumn _Column in _Columns)
@@ -114,16 +111,11 @@ namespace Applied_WebApplication.Data
             Command_Insert = _Command;
             Command_Insert.Parameters["@ID"].Value = NewID(CurrentRow.Table);
 
+            if(Command_Insert.Connection.State != ConnectionState.Open) { Command_Insert.Connection.Open(); }
+
         }
 
-        private static int NewID(DataTable table)
-        {
-            int _result = 0;
-            string MaxID = string.Empty;
-            _result= (int)table.Compute("MAX(ID)","") + 1;
-            return _result;
-        }
-
+        
         private void CommandUpdate()
         {
             DataColumnCollection _Columns = CurrentRow.Table.Columns;
@@ -209,6 +201,15 @@ namespace Applied_WebApplication.Data
 
 
         #region Table's Command
+
+        private static int NewID(DataTable table)
+        {
+            int _result = 0;
+            string MaxID = string.Empty;
+            _result = (int)table.Compute("MAX(ID)", "") + 1;
+            return _result;
+        }
+
         public bool Seek(int _ID)
         {
             string Filter = MyDataView.RowFilter;
@@ -219,24 +220,6 @@ namespace Applied_WebApplication.Data
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
-
-        //public void SeekRecord(int _ID)
-        //{
-        //    DataRow row = MyDataTable.NewRow();
-        //    string Filter = MyDataView.RowFilter;
-        //    MyDataView.RowFilter = "ID=" + _ID.ToString();
-
-        //    if (MyDataView.Count > 0)
-        //    { row = MyDataView[0].Row; }
-        //    else
-        //    { row = MyDataTable.NewRow(); }
-
-        //    CurrentRow = row;
-        //    MyDataView.RowFilter = Filter;
-        //    return;
-        //    //return row;
-
-        //}
 
         public DataRow SeekRecord(int _ID)
         {
@@ -267,7 +250,6 @@ namespace Applied_WebApplication.Data
             return Title;
         }
 
-
         public int ViewRecordCount() { return MyDataView.Count; }
 
         public TableValidationClass Save()
@@ -283,18 +265,44 @@ namespace Applied_WebApplication.Data
 
                     if (MyDataView.Count > 0)
                     {
-                        CommandUpdate();
-                        Command_Update.Connection.Open();
-                        Command_Update.ExecuteNonQuery();
-                        GetDataTable();
+                        try
+                        {
+                            CommandUpdate();
+                            validationClass.records = Command_Update.ExecuteNonQuery();
+                            GetDataTable();
+                            validationClass.success = true;
+                            validationClass.message = "Record has been (Updated) saved.";
+                            validationClass.ErrorID = 0;
+
+                        }
+                        catch (Exception e)
+                        {
+                            validationClass.success = false;
+                            validationClass.records = 0;
+                            validationClass.message = e.Message;
+                            validationClass.ErrorID = (int)Messaages.Record_not_Saved;
+                        }
+                        
 
                     }
                     else
                     {
-                        CommandInsert();
-                        Command_Insert.Connection.Open();
-                        Command_Insert.ExecuteNonQuery();
-                        GetDataTable();
+                        try
+                        {
+                            validationClass.records = Command_Insert.ExecuteNonQuery();
+                            GetDataTable();
+                            validationClass.success = true;
+                            validationClass.message = "Record has been (Insert) saved.";
+                            validationClass.ErrorID = 0;
+
+                        }
+                        catch (Exception e)
+                        {
+                            validationClass.success = false;
+                            validationClass.records = 0;
+                            validationClass.message = e.Message;
+                            validationClass.ErrorID = (int)Messaages.Record_not_Saved;
+                        }
                     }
                 }
             }

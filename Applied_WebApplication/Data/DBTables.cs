@@ -8,3 +8,14 @@ public enum Tables
     COA_Notes = 104
 }
 
+
+public enum Messaages
+{
+    Record_Saved=100,
+    Record_not_Saved=101
+
+
+
+
+
+}
