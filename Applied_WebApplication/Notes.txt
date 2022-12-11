@@ -27,3 +27,7 @@ https://getbootstrap.com/docs/5.0/forms/input-group/			TextBox Buttons Bootstrip
 https://mdbootstrap.com/snippets/standard/mdbootstrap/2923164				Navigation Sample
 
 https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity-configuration?view=aspnetcore-7.0   User Attemps and Lock 
+
+https://getbootstrap.com/docs/5.0/content/reboot/#headings-and-paragraphs			Sample HTML Tag
+
+https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-7.0   .Net Core 7  c# references

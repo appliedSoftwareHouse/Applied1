@@ -13,14 +13,15 @@
 </div>
 <br />
 
-@MyUserProfile.UserID
-<br />
-@MyUserProfile.UserName
-<br />
-@MyUserProfile.Company
-<br />
-@MyUserProfile.Email
-<br />Date Format :
-@DateTime.Now.ToString(MyUserProfile.DateFormat);
-<br />Currency Format :
-@CurrencyAmount.ToString(MyUserProfile.CurrencyFormat);
+
+<div class="d-grid gap-3">
+
+    <div class="p-2 bg-light border rounded">User ID : @MyUserProfile.UserID</div>
+    <div class="p-2 bg-light border rounded">User Name : @MyUserProfile.UserName</div>
+    <div class="p-2 bg-light border rounded">Designation : @MyUserProfile.Designation</div>
+    <div class="p-2 bg-light border rounded">Company : @MyUserProfile.Company</div>
+    <div class="p-2 bg-light border rounded">Email : @MyUserProfile.Email</div>
+    <div class="p-2 bg-light border rounded">Date Format : @DateTime.Now.ToString(MyUserProfile.DateFormat)</div>
+    <div class="p-2 bg-light border rounded">Currency Format : @CurrencyAmount.ToString(MyUserProfile.CurrencyFormat)</div>
+
+</div>

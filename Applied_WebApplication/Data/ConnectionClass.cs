@@ -1,15 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Applied_WebApplication.Data
 {
     public class ConnectionClass : IdentityUser
     {
-        
+
         public SQLiteConnection AppliedConnection = new();
-        private AppliedUsersClass UsersTableClass= new();
+        private AppliedUsersClass UsersTableClass = new();
 
         public string DBFile_Path { get; set; }
         public string DBFile_Name = "";
@@ -30,7 +31,7 @@ namespace Applied_WebApplication.Data
 
             if (!DBFile_Exist) { CreateAppliedDataBase(); }
             AppliedConnection = new("Data Source=" + DBFile_Path);                      // Established a Connection with Database File
-            AppliedConnection.Open();                                                                   
+            AppliedConnection.Open();
 
         }
 
@@ -52,18 +53,26 @@ namespace Applied_WebApplication.Data
     public class AppliedUsersClass
     {
         public string AppliedUsersFile = ".\\wwwroot\\SQLiteDB\\AppliedUsers.db";                   // Applied Users ID & PW File.
-        public DataTable UsersTable = new DataTable();                                  
+        public DataTable UsersTable = new DataTable();
         public readonly DataView UserView = new DataView();
+        public SQLiteConnection AppliedUserConnection;
+        public SQLiteCommand AppliedUserCommand;
+        private string AppliedUserCommandText = string.Empty;
+
         public AppliedUsersClass()
         {
+            AppliedUserConnection = new SQLiteConnection("Data Source=" + AppliedUsersFile);
+            AppliedUserConnection.Open();
+            AppliedUserCommand = new SQLiteCommand();
             UsersTable = UsersDataTable();
             UserView = UsersTable.AsDataView();
         }
 
+
         public DataRow UserRecord(string _UserName)
         {
             UserView.RowFilter = "UserID='" + _UserName + "'";
-            if(UserView.Count==1)
+            if (UserView.Count == 1)
             {
                 return UserView[0].Row;
             }
@@ -72,29 +81,23 @@ namespace Applied_WebApplication.Data
         }
         public DataTable UsersDataTable()
         {
-            SQLiteConnection UsersConnection = new SQLiteConnection();
+            AppliedUserCommandText = "SELECT * FROM [Users]";
+            AppliedUserCommand = new(AppliedUserCommandText, AppliedUserConnection);
 
-            if (File.Exists(AppliedUsersFile))
+            SQLiteDataAdapter _Adapter = new(AppliedUserCommand);
+            DataSet _DataSet = new();
+            _Adapter.Fill(_DataSet, "UsersTable");
+
+            if (_DataSet.Tables.Count == 1)
             {
-                UsersConnection = new SQLiteConnection("Data Source=" + AppliedUsersFile);
-                UsersConnection.Open();
-
-                SQLiteCommand _Command = new("SELECT * FROM [Users]", UsersConnection);
-                SQLiteDataAdapter _Adapter = new(_Command);
-                DataSet _DataSet = new();
-                _Adapter.Fill(_DataSet, "UsersTable");
-
-                if (_DataSet.Tables.Count == 1)
-                {
-                    UsersTable = _DataSet.Tables[0];
-                }
+                UsersTable = _DataSet.Tables[0];
             }
             return UsersTable;
         }
 
         internal string GetClientDBFile(string _User)
         {
-            if(_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
+            if (_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
 
             switch (_User.ToUpper())
             {

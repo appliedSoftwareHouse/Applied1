@@ -1,4 +1,5 @@
 ﻿@page
+@using Microsoft.AspNetCore.Components.Web
 @model Applied_WebApplication.Pages.Account.SettingModel
 @{
     var UserName = User.Identity.Name;
@@ -8,7 +9,28 @@
     var CurrencyFormat = MyUserProfile.CurrencyFormat;
     var CurrencyAmount = 123456789.99;
 
+    var DateFormat1 = "dd-MM-yy";
+    var DateFormat2 = "dd-MM-yyyy";
+    var DateFormat3 = "MM-dd-yy";
+    var DateFormat4 = "MM-dd-yyyy";
+    var DateFormat5 = "dd-MMM-yy";
+    var DateFormat6 = "dd-MMM-yyyy";
+
+    var CurrencyFormat1 = "N";
+    var CurrencyFormat2 = "#,0.000";
+    var CurrencyFormat3 = "#,0.00 Rs.";
+    var CurrencyFormat4 = "Rs. #,0";
+
 }
+
+@functions {
+    void GetHello()
+    {
+        var CurrencyFormat = "New Currency format";
+        var DateFormat = "Nes Date format";
+    }
+}
+
 
 
 <div class="mt-3 p-2 bg-success text-white rounded">
@@ -16,36 +38,75 @@
 </div>
 <br />
 
-<div class="input-group mb-3">
-    <div class="input-group-prepend">
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</button>
-        <div class="dropdown-menu">
-            <a class="dropdown-item" href="#">Select Date Format</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("MM/dd/yy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("MM/dd/yyyy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("MMM dd yy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("MMM dd yyyy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("dd/MM/yy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("dd/MM/yyyy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("dd/MMM/yy")</a>
-            <a class="dropdown-item" href="#">@DateTime.Now.ToString("dd/MMM/yyyy")</a>
-            
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Separated link</a>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                    Currency Format
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item">Select Currency Format</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-page="Setting"
+                           asp-page-handler="UpdateCurrencyFormat"
+                           asp-route-id="1"
+                           asp-route-UserName=@User.Identity.Name>
+                            @CurrencyAmount.ToString(CurrencyFormat1) Click it
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-page="Setting"
+                           asp-page-handler="UpdateCurrencyFormat"
+                           asp-route-id="2"
+                           asp-route-UserName=@User.Identity.Name>
+                            @CurrencyAmount.ToString(CurrencyFormat2)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-page="Setting"
+                           asp-page-handler="UpdateCurrencyFormat"
+                           asp-route-id="3"
+                           asp-route-UserName=@User.Identity.Name>
+                            @CurrencyAmount.ToString(CurrencyFormat3)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateCurrencyFormat"
+                           asp-route-id="4"
+                           asp-route-UserName=@User.Identity.Name>
+                            @CurrencyAmount.ToString(CurrencyFormat4)
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="col-2">
+            <div class="dropdown">
+                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                    Date Format
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item">Select Date Format</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat1)</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat2)</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat3)</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat4)</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat5)</a></li>
+                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat6)</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-    <input type="text" class="form-control" aria-label="Text input with dropdown button">
 </div>
 
+<br />
+@DateFormat
+<br />
+@CurrencyFormat
 
-<div class="dropdown">
-    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-        Date Format
-    </button>
-    <ul class="dropdown-menu">
-        <li><a class="dropdown-item" >Profile</a></li>
-        <li><a class="dropdown-item">@CurrencyAmount.ToString(CurrencyFormat)</a></li>
-        <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat)</a></li>
-    </ul>
-</div>
-                    </div>
