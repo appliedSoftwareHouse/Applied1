@@ -60,6 +60,16 @@ namespace Applied_WebApplication.Data
             UserView = UsersTable.AsDataView();
         }
 
+        public DataRow UserRecord(string _UserName)
+        {
+            UserView.RowFilter = "UserID='" + _UserName + "'";
+            if(UserView.Count==1)
+            {
+                return UserView[0].Row;
+            }
+            return UsersTable.NewRow();
+
+        }
         public DataTable UsersDataTable()
         {
             SQLiteConnection UsersConnection = new SQLiteConnection();

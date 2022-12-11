@@ -1,0 +1,26 @@
+﻿@page
+@using Applied_WebApplication.Data;
+@model Applied_WebApplication.Pages.Account.ProfileModel
+@{
+    var UserName = User.Identity.Name;
+    var ProfileDB = new AppliedUsersClass();
+    var MyUserProfile = new UserProfile(ProfileDB.UserRecord(UserName));
+    var CurrencyAmount = 123456789.999;
+}
+
+<div class="mt-3 p-2 bg-success text-white rounded">
+    <h3>PROFILE </h3>
+</div>
+<br />
+
+@MyUserProfile.UserID
+<br />
+@MyUserProfile.UserName
+<br />
+@MyUserProfile.Company
+<br />
+@MyUserProfile.Email
+<br />Date Format :
+@DateTime.Now.ToString(MyUserProfile.DateFormat);
+<br />Currency Format :
+@CurrencyAmount.ToString(MyUserProfile.CurrencyFormat);

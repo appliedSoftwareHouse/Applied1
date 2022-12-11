@@ -16,6 +16,11 @@ namespace Applied_WebApplication.Data
         public string DBFilePath {get; set;}
         public string Company { get; set; }
         public string Designation { get; set; }
+        public string DateFormat { get; set; }
+        public string CurrencyFormat { get; set; }
+
+        private string default_DateFormat = "dd/MM/yyyy";
+        private string default_CurrencyFormat = "N";
 
         public UserProfile()
         {
@@ -26,6 +31,8 @@ namespace Applied_WebApplication.Data
             Role = "Guest";
             Company = "Applied Software House";
             DBFilePath = "";
+            DateFormat = default_DateFormat;
+            CurrencyFormat = default_CurrencyFormat;
         }
 
         public UserProfile(DataRow _Row)
@@ -39,7 +46,9 @@ namespace Applied_WebApplication.Data
                 Role = _Row["Role"].ToString();
                 Company = _Row["Company"].ToString();
                 DBFilePath = _Row["DataFile"].ToString();
-                
+                if(string.IsNullOrEmpty(_Row["DateFormat"].ToString())) { DateFormat = default_DateFormat; } else { DateFormat = _Row["DateFormat"].ToString(); }
+                if (string.IsNullOrEmpty(_Row["CurrencyFormat"].ToString())) { CurrencyFormat = default_CurrencyFormat; } else { CurrencyFormat = _Row["CurrencyFormat"].ToString(); }
+
             }
         }
     }

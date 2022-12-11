@@ -1,6 +1,7 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Data.Entity.Core.Objects;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -46,8 +47,11 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
         }
 
-        public IActionResult OnPostSubmit(Record? _FillRecord)
+        public IActionResult OnPostSubmit(string UserName, Record _FillRecord)
         {
+            COA = new DataTableClass(UserName, Tables.COA.ToString());
+            Validation = new(false);
+
             if (ModelState.IsValid)
             {
                 COA.NewRecord();

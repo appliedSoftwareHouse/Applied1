@@ -16,6 +16,13 @@ namespace Applied_WebApplication.Data
             records = 0;
         }
 
+        public TableValidationClass(bool TrueFalse)
+        {
+            success = TrueFalse;
+            message = string.Empty;
+            records = 0;
+        }
+
         public bool Validation(DataRow Row)
         {
             success = true; ;
