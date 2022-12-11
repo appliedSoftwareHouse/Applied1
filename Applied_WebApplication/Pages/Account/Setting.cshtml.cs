@@ -9,7 +9,19 @@ namespace Applied_WebApplication.Pages.Account
     public class SettingModel : PageModel
     {
         AppliedUsersClass MyUserClass = new();
-        
+        public string CurrencyFormat1 = "N";
+        public string CurrencyFormat2 = "#,0.000";
+        public string CurrencyFormat3 = "#,0.00 Rs.";
+        public string CurrencyFormat4 = "Rs. #,0";
+        public string CurrencyFormat = string.Empty;
+
+        public string DateFormat1 = "dd-MM-yy";
+        public string DateFormat2 = "dd-MM-yyyy";
+        public string DateFormat3 = "MM-dd-yy";
+        public string DateFormat4 = "MM-dd-yyyy";
+        public string DateFormat5 = "dd-MMM-yy";
+        public string DateFormat6 = "dd-MMM-yyyy";
+        public string DateFormat = string.Empty;
 
         public void OnGet()
         {
@@ -17,13 +29,6 @@ namespace Applied_WebApplication.Pages.Account
 
         public IActionResult OnGetUpdateCurrencyFormat(int id, string UserName)
         {
-            
-            string CurrencyFormat1 = "N";
-            string CurrencyFormat2 = "#,0.000";
-            string CurrencyFormat3 = "#,0.00 Rs.";
-            string CurrencyFormat4 = "Rs. #,0";
-            string CurrencyFormat = CurrencyFormat1;
-
             switch (id)
             {
                 case 1:
@@ -48,22 +53,36 @@ namespace Applied_WebApplication.Pages.Account
             return Page();
         }
 
-        public IActionResult OnPostUpdateCurrencyFormat(int id)
+        public IActionResult OnGetUpdateDateFormat(int id, string UserName)
         {
-            return Page();
-        }
+            switch (id)
+            {
+                case 1:
+                    DateFormat = DateFormat1;
+                    break;
+                case 2:
+                    DateFormat = DateFormat2;
+                    break;
+                case 3:
+                    DateFormat = DateFormat3;
+                    break;
+                case 4:
+                    DateFormat = DateFormat4;
+                    break;
+                case 5:
+                    DateFormat = DateFormat5;
+                    break;
+                case 6:
+                    DateFormat = DateFormat6;
+                    break;
 
+                default:
+                    DateFormat = DateFormat1;
+                    break;
+            }
 
-        public IActionResult OnGetUpdateDateFormat(int id)
-        {
-            AppliedUsersClass MyUserClass = new();
-            return Page();
-        }
-
-
-        public IActionResult OnPostUpdateDateFormat(int id)
-        {
-            AppliedUsersClass MyUserClass = new();
+            MyUserClass.AppliedUserCommand.CommandText = "Update [Users] SET [DateFormat]='" + DateFormat + "' WHERE [UserID] ='" + UserName + "'";
+            MyUserClass.AppliedUserCommand.ExecuteNonQuery();
             return Page();
         }
     }

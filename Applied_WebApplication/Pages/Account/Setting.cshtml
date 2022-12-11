@@ -9,28 +9,9 @@
     var CurrencyFormat = MyUserProfile.CurrencyFormat;
     var CurrencyAmount = 123456789.99;
 
-    var DateFormat1 = "dd-MM-yy";
-    var DateFormat2 = "dd-MM-yyyy";
-    var DateFormat3 = "MM-dd-yy";
-    var DateFormat4 = "MM-dd-yyyy";
-    var DateFormat5 = "dd-MMM-yy";
-    var DateFormat6 = "dd-MMM-yyyy";
 
-    var CurrencyFormat1 = "N";
-    var CurrencyFormat2 = "#,0.000";
-    var CurrencyFormat3 = "#,0.00 Rs.";
-    var CurrencyFormat4 = "Rs. #,0";
 
 }
-
-@functions {
-    void GetHello()
-    {
-        var CurrencyFormat = "New Currency format";
-        var DateFormat = "Nes Date format";
-    }
-}
-
 
 
 <div class="mt-3 p-2 bg-success text-white rounded">
@@ -53,7 +34,7 @@
                            asp-page-handler="UpdateCurrencyFormat"
                            asp-route-id="1"
                            asp-route-UserName=@User.Identity.Name>
-                            @CurrencyAmount.ToString(CurrencyFormat1) Click it
+                            @CurrencyAmount.ToString(Model.CurrencyFormat1)
                         </a>
                     </li>
                     <li>
@@ -62,7 +43,7 @@
                            asp-page-handler="UpdateCurrencyFormat"
                            asp-route-id="2"
                            asp-route-UserName=@User.Identity.Name>
-                            @CurrencyAmount.ToString(CurrencyFormat2)
+                            @CurrencyAmount.ToString(Model.CurrencyFormat2)
                         </a>
                     </li>
                     <li>
@@ -71,7 +52,7 @@
                            asp-page-handler="UpdateCurrencyFormat"
                            asp-route-id="3"
                            asp-route-UserName=@User.Identity.Name>
-                            @CurrencyAmount.ToString(CurrencyFormat3)
+                            @CurrencyAmount.ToString(Model.CurrencyFormat3)
                         </a>
                     </li>
                     <li>
@@ -79,7 +60,7 @@
                            asp-page-handler="UpdateCurrencyFormat"
                            asp-route-id="4"
                            asp-route-UserName=@User.Identity.Name>
-                            @CurrencyAmount.ToString(CurrencyFormat4)
+                            @CurrencyAmount.ToString(Model.CurrencyFormat4)
                         </a>
                     </li>
                 </ul>
@@ -93,12 +74,54 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li><a class="dropdown-item">Select Date Format</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat1)</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat2)</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat3)</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat4)</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat5)</a></li>
-                    <li><a class="dropdown-item">@DateTime.Now.ToString(DateFormat6)</a></li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="1"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat1)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="2"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat2)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="3"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat3)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="4"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat4)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="5"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat5)
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" asp-page="Setting"
+                           asp-page-handler="UpdateDateFormat"
+                           asp-route-id="6"
+                           asp-route-UserName=@User.Identity.Name>
+                            @DateTime.Now.ToString(@Model.DateFormat6)
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
