@@ -25,7 +25,6 @@
     <Folder Include="Reports\" />
     <Folder Include="Pages\HR\" />
     <Folder Include="Pages\Stock\" />
-    <Folder Include="Pages\Sales\" />
   </ItemGroup>
 
   <ItemGroup>
