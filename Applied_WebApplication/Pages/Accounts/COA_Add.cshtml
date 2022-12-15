@@ -17,8 +17,8 @@
     <div class="container p-2">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
         <div class="row text-start">
-            <div class="col-2"><label asp-for="_Record.ID">Account ID</label></div>
-            <div class="col-4"><input type="text" class="form-control" id="txtID" name="ID" asp-for="_Record.ID"></div>
+            <div class="col-2" ><label asp-for="_Record.ID">Account ID</label></div>
+            <div class="col-4" readonly><input type="text" class="form-control" id="txtID" name="ID" asp-for="_Record.ID" ></div>
             <div class="col-2"> <label class="col-2 " asp-for="_Record.Code">Account Code</label></div>
             <div class="col-4"> <input type="text" class="form-control" id="txtCode" name="Code" asp-for="_Record.Code"> </div>
         </div>
