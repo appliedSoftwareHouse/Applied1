@@ -31,3 +31,5 @@ https://learn.microsoft.com/en-us/aspnet/core/security/authentication/identity-c
 https://getbootstrap.com/docs/5.0/content/reboot/#headings-and-paragraphs			Sample HTML Tag
 
 https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-7.0   .Net Core 7  c# references
+
+https://www.html-code-generator.com/css/snippets/loading-animation						Good Generator

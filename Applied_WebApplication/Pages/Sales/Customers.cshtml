@@ -9,27 +9,32 @@
 <div class="container bg-success text-white"><h4>Customer</h4></div>
 <br />
 
-<table class="table">
-    <thead>
-        <tr>
-            <th scope="col">Code</th>
-            <th scope="col">Title</th>
-            
-            <th><button type="button" class=btn-primary asp-page="./Customer_Add/" asp-route-UserName=@UserName asp-page-handler="Add"> ADD </button> </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (DataRow _Row in Customer.MyDataTable.Rows)
-        {
+<form method="post">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@_Row["Code"]</td>
-                <td>@_Row["Title"]</td>
-                <td>
-                <a asp-page="./Customer_Edit/" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName asp-page-handler="Edit"> Edit</a> |
-                    <a asp-page="./Customer_Del" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName>Delete </a> |
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                <th scope="col">Code</th>
+                <th scope="col">Title</th>
 
+                <th>
+                    <button class="btn btn-info" class="b-fa fa fa-plus" value="ADD" asp-page="./Customer_Add" asp-route-UserName=@UserName asp-page-handler="Add">
+                    </button>
+                </th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow _Row in Customer.MyDataTable.Rows)
+            {
+                <tr>
+                    <td>@_Row["Code"]</td>
+                    <td>@_Row["Title"]</td>
+                    <td>
+                        <a asp-page="./Customer_Edit" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName asp-page-handler="Edit"> Edit</a> |
+                        <a asp-page="./Customer_Del" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName>Delete </a> |
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</form>

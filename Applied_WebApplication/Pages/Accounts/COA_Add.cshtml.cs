@@ -7,12 +7,12 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class COA_AddModel : PageModel
     {
-        public DataTableClass COA; //= new DataTableClass(Tables.COA.ToString());
-        public DataTableClass COA_Nature; //= new DataTableClass(Tables.COA_Nature.ToString());
-        public DataTableClass COA_Class; //= new DataTableClass(Tables.COA_Class.ToString());
-        public DataTableClass COA_Notes; //= new DataTableClass(Tables.COA_Notes.ToString());
+        public DataTableClass COA; 
+        public DataTableClass COA_Nature; 
+        public DataTableClass COA_Class; 
+        public DataTableClass COA_Notes; 
         public TableValidationClass Validation;
-        public Record _Record; // = new Record();
+        public Record _Record; 
         public string Title_Nature, Title_Class, Title_Notes;
         public IActionResult OnPostAdd(string UserName)
         {
