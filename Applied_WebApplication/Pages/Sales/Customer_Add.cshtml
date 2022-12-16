@@ -2,9 +2,10 @@
 @model Applied_WebApplication.Pages.Sales.Customer_AddModel
 @{
 
-    DataTableClass Customers = new(Tables.Customers.ToString());
-    DataTableClass City = new(Tabless.City.ToString());
+    var UserName = User.Identity.Name;
 
+   
+    
 
 }
 
@@ -15,29 +16,29 @@
 
 
 <div class="col-md-7 col-lg-8">
-    <form class="needs-validation" novalidate="">
+    <form method="post" class="needs-validation" novalidate="">
         <div class="row g-3">
             <div class="col-sm-6">
                 <label for="firstName" class="form-label">ID</label>
-                <input type="text" class="form-control" id="ID" placeholder="" value="" required="">
+                <input type="text" name="ID"  class="form-control" id="ID" placeholder="" value="" required="">
                 <div class="invalid-feedback">
                     Valid first name is required.
                 </div>
             </div>
 
             <div class="col-sm-6">
-                <label for="lastName" class="form-label">Code</label>
-                <input type="text" class="form-control" id="Code" placeholder="" value="" required="">
+                <label for="Code" class="form-label">Code</label>
+                <input type="text" name="Code" class ="form-control" placeholder="" value="" required="">
                 <div class="invalid-feedback">
                     Valid last name is required.
                 </div>
             </div>
 
             <div class="col-12">
-                <label for="username" class="form-label">Customer Name</label>
+                <label for="Title" class="form-label">Customer Name</label>
                 <div class="input-group has-validation">
-                    <span class="input-group-text">@Customers.MyTableName</span>
-                    <input type="text" class="form-control" id="username" placeholder="Username" required="">
+                    <span class="input-group-text">**</span>
+                    <input type="text" name="Title" class="form-control" placeholder="Username" required="">
                     <div class="invalid-feedback">
                         Your username is required.
                     </div>
@@ -45,42 +46,42 @@
             </div>
 
             <div class="col-12">
-                <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
-                <input type="email" class="form-control" id="email" placeholder="you@example.com">
+                <label for="Email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
+                <input type="email" class="form-control" name="Email" placeholder="you@example.com">
                 <div class="invalid-feedback">
                     Please enter a valid email address for shipping updates.
                 </div>
             </div>
 
             <div class="col-12">
-                <label for="address" class="form-label">Address</label>
-                <input type="text" class="form-control" id="address" placeholder="Please address Plot, House and Area." required="">
+                <label for="Address1" class="form-label">Address</label>
+                <input type="text" class="form-control" name="Address1" placeholder="Please address Plot, House and Area." required="">
             </div>
 
             <div class="col-12">
-                <label for="address2" class="form-label">Address 2 <span class="text-muted"></span></label>
-                <input type="text" class="form-control" id="address2" placeholder="please enter Block, Phase, Sector of Area ">
+                <label for="Address2" class="form-label">Address 2 <span class="text-muted"></span></label>
+                <input type="text" class="form-control" name="Address2" placeholder="please enter Block, Phase, Sector of Area ">
             </div>
 
             <div class="col-md-3">
-                <label for="zip" class="form-label">City</label>
-                <input type="text" class="form-control" id="City" placeholder="Enter City Name" required="">
+                <label for="City" class="form-label">City</label>
+                <input type="text" class="form-control" Name="City" placeholder="Enter City Name" required="">
                 <div class="invalid-feedback">
                     City name is required.
                 </div>
             </div>
 
               <div class="col-md-4">
-                <label for="zip" class="form-label">Provience</label>
-                <input type="text" class="form-control" id="City" placeholder="Enter City Name" required="">
+                <label for="State" class="form-label">State</label>
+                <input type="text" class="form-control" Name="State" placeholder="Enter City Name" required="">
                 <div class="invalid-feedback">
                     Provience / State name is required.
                 </div>
             </div>
             
             <div class="col-md-5">
-                <label for="country" class="form-label">Country</label>
-                <select class="form-select" id="country" required="">
+                <label for="Country" class="form-label">Country</label>
+                <select class="form-select" name="Country" required="">
                     <option value="">Choose...</option>
                     <option>Pakistan</option>
                     <option>United Arab Emirates</option>
@@ -98,11 +99,38 @@
                 </div>
             </div>
 
+            <div class="col-md-6">
+                <label for="Contact" class="form-label">Contact Number</label>
+                <input type="text" class="form-control" name="Contact" placeholder="Enter Contact Phone Number" >
+            </div>
+
+            <div class="col-md-6">
+                <label for="Mobile" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" name="Mobile" placeholder="Enter Mobile Phone Name" >
+            </div>
+
+            <div class="col-md-6">
+                <label for="NTN" class="form-label">National Tax Number (TNT)</label>
+                <input type="text" class="form-control" name="NTN" placeholder="Enter National Tax Number" >
+            </div>
+
+            <div class="col-md-6">
+                    <label for="zip" class="form-label">National Identity Card (CNIC)</label>
+                <input type="text" class="form-control" name="CNIC" placeholder="Enter National Identity Card Number" >
+            </div>
+
+            <div class="col-md-12">
+                <label for="Notes" class="form-label">Note / Comments (if any)</label>
+                <textarea class="form-control" name="Notes" rows="3"></textarea>
+            </div>
 
 
-
+            <hr style="width:100%;text-align:center;margin-left:0">
         </div>
-        <button class="w-100 btn btn-primary btn-lg g-2" type="submit">Continue to checkout</button>
+        <div class="row g-md-1">
+        <button class="col-md-6 w-50 btn btn-primary btn-lg g-2" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName  >Save</button>
+            <button class="col-md-6  w-50 btn btn-primary btn-lg g-2" type="button" asp-page="Customers">Back</button>
+        </div>
     </form>
 </div>
 

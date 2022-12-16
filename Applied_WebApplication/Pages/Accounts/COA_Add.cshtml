@@ -12,7 +12,7 @@
 <br />
 
 <form method="post">
-    
+
 
     <div class="container p-2">
     <div class="text-danger" asp-validation-summary="ModelOnly"></div>    
@@ -40,7 +40,7 @@
                     {
                         @foreach (DataRow _Record in Model.COA_Class.MyDataTable.Rows)
                         {
-                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                                    <option value=@_Record["ID"]> @_Record["Title"] </option>
                         }
                     }
                 </select>
@@ -53,7 +53,7 @@
                     {
                         @foreach (DataRow _Record in Model.COA_Nature.MyDataTable.Rows)
                         {
-                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                                    <option value=@_Record["ID"]> @_Record["Title"] </option>
                         }
                     }
                 </select>
@@ -66,7 +66,7 @@
                     {
                         @foreach (DataRow _Record in Model.COA_Notes.MyDataTable.Rows)
                         {
-                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                                    <option value=@_Record["ID"]> @_Record["Title"] </option>
                         }
                     }
                 </select>
