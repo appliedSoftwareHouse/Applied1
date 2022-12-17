@@ -14,7 +14,9 @@ namespace Applied_WebApplication.Pages.Sales
 
         public void OnPostSave(Customer _Record, string UserName)
         {
+            TableValidationClass TableValidation = new();
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+            TableValidation.MyDataTable = Customers.MyDataTable;
 
             Customers.NewRecord();
             Customers.CurrentRow["ID"] = 0;
@@ -30,8 +32,17 @@ namespace Applied_WebApplication.Pages.Sales
             Customers.CurrentRow["NTN"] = _Record.NTN;
             Customers.CurrentRow["CNIC"] = _Record.CNIC;
             Customers.CurrentRow["Notes"] = _Record.Notes;
-            Customers.Save();
+             _Validation =  Customers.Save();
 
+            if(_Validation.MyMessages.Count > 0)
+            {
+                Page();
+
+            }
+            else
+            {
+                RedirectToPage("Customers");
+            }
 
 
         }

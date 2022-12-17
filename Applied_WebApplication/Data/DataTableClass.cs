@@ -7,13 +7,13 @@ namespace Applied_WebApplication.Data
 {
     public class DataTableClass
     {
-        public string MyUserName {get; set;}
-        private TableValidationClass validationClass; 
+        public string MyUserName { get; set; }
+        private TableValidationClass validationClass;
         private ConnectionClass MyConnectionClass = new();
-        public DataTable MyDataTable; 
-        public DataView MyDataView; 
-        public SQLiteConnection MyConnection; 
-        public string MyTableName; 
+        public DataTable MyDataTable;
+        public DataView MyDataView;
+        public SQLiteConnection MyConnection;
+        public string MyTableName;
         public bool IsError = false;
         public string MyMessage = "";
         public string View_Filter { get; set; } = "";
@@ -28,7 +28,7 @@ namespace Applied_WebApplication.Data
             MyUserName = _UserName;
             MyConnectionClass = new(MyUserName);
             MyConnection = MyConnectionClass.AppliedConnection;
-            
+
             MyTableName = _TableName;
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
@@ -76,7 +76,7 @@ namespace Applied_WebApplication.Data
             {
                 if (CurrentRow[_Column.ColumnName] == DBNull.Value)
                 {
-                    if(_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
+                    if (_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
                     if (_Column.DataType.Name == "Int32") { CurrentRow[_Column.ColumnName] = 0; }
                     if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
                 }
@@ -129,7 +129,7 @@ namespace Applied_WebApplication.Data
         {
             int _result = 0;
             string MaxID = string.Empty;
-            _result= (int)table.Compute("MAX(ID)","") + 1;
+            _result = (int)table.Compute("MAX(ID)", "") + 1;
             return _result;
         }
 
@@ -185,7 +185,7 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        
+
         private void CheckError()
         {
             if (MyConnectionClass.AppliedConnection == null) { IsError = true; }
@@ -200,7 +200,7 @@ namespace Applied_WebApplication.Data
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
 
-            if(MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
 
             SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
             SQLiteDataAdapter _Adapter = new(_Command);
@@ -250,8 +250,8 @@ namespace Applied_WebApplication.Data
         {
             bool _result = true;
             string _Filter = MyDataView.RowFilter;
-            MyDataView.RowFilter =_Column + "='" + _ColumnValue + "'";
-            if(MyDataView.Count > 0)
+            MyDataView.RowFilter = _Column + "='" + _ColumnValue + "'";
+            if (MyDataView.Count > 0)
             {
                 _result = false;
             }
@@ -270,39 +270,52 @@ namespace Applied_WebApplication.Data
             return Title;
         }
 
+        public string Title(string _Code)
+        {
+            string Title = "";
+            string Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter = "ID='" + _Code.ToString() + "'";
+            if (MyDataView.Count > 0)
+            { Title = (string)MyDataView[0]["Title"]; }
+            MyDataView.RowFilter = Filter;
+            return Title;
+        }
+
 
         public int ViewRecordCount() { return MyDataView.Count; }
 
         public TableValidationClass Save()
         {
-            validationClass = new TableValidationClass();
-
             if (CurrentRow != null)
             {
-                if (validationClass.Validation(CurrentRow))
-                {
-                    
-                    MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
+                validationClass = new TableValidationClass();
+                MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
-                    if (MyDataView.Count > 0)
+                if (MyDataView.Count > 0)
+                {
+                    validationClass.SQLAction = CommandAction.Update.ToString();
+                    if (validationClass.Validation(CurrentRow))
                     {
                         CommandUpdate();
                         Command_Update.ExecuteNonQuery();
                         GetDataTable();
-
                     }
-                    else
+                }
+
+                if (MyDataView.Count == 0)
+                {
+                    validationClass.SQLAction = CommandAction.Insert.ToString();
+                    if (validationClass.Validation(CurrentRow))
                     {
                         CommandInsert();
                         Command_Insert.ExecuteNonQuery();
                         GetDataTable();
                     }
                 }
+
             }
             return validationClass;
         }
-
-       
 
         #endregion
 
