@@ -229,24 +229,6 @@ namespace Applied_WebApplication.Data
             { MyDataView.RowFilter = Filter; return false; }
         }
 
-        //public void SeekRecord(int _ID)
-        //{
-        //    DataRow row = MyDataTable.NewRow();
-        //    string Filter = MyDataView.RowFilter;
-        //    MyDataView.RowFilter = "ID=" + _ID.ToString();
-
-        //    if (MyDataView.Count > 0)
-        //    { row = MyDataView[0].Row; }
-        //    else
-        //    { row = MyDataTable.NewRow(); }
-
-        //    CurrentRow = row;
-        //    MyDataView.RowFilter = Filter;
-        //    return;
-        //    //return row;
-
-        //}
-
         public DataRow SeekRecord(int _ID)
         {
             DataRow row = MyDataTable.NewRow();
@@ -264,6 +246,18 @@ namespace Applied_WebApplication.Data
             //return row;
         }
 
+        internal bool Seek(string _Column, string _ColumnValue)
+        {
+            bool _result = true;
+            string _Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter =_Column + "='" + _ColumnValue + "'";
+            if(MyDataView.Count > 0)
+            {
+                _result = false;
+            }
+            MyDataView.RowFilter = _Filter;
+            return _result;
+        }
 
         public string Title(int _ID)
         {
@@ -307,6 +301,8 @@ namespace Applied_WebApplication.Data
             }
             return validationClass;
         }
+
+       
 
         #endregion
 

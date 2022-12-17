@@ -18,3 +18,11 @@ public enum Messaages
     Record_not_Saved=101
 
 }
+
+
+public enum CommandAction 
+{
+    Insert,
+    Update,
+    Delete
+}

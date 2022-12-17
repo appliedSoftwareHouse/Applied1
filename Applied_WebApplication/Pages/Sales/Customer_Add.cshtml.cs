@@ -16,6 +16,22 @@ namespace Applied_WebApplication.Pages.Sales
         {
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
 
+            Customers.NewRecord();
+            Customers.CurrentRow["ID"] = 0;
+            Customers.CurrentRow["Code"] = _Record.Code;
+            Customers.CurrentRow["Title"] = _Record.Title;
+            Customers.CurrentRow["Address1"] = _Record.Address1;
+            Customers.CurrentRow["Address2"] = _Record.Address2;
+            Customers.CurrentRow["City"] = _Record.City;
+            Customers.CurrentRow["Country"] = _Record.Country;
+            Customers.CurrentRow["Phone"] = _Record.Phone;
+            Customers.CurrentRow["Mobile"] = _Record.Mobile;
+            Customers.CurrentRow["Email"] = _Record.Email;
+            Customers.CurrentRow["NTN"] = _Record.NTN;
+            Customers.CurrentRow["CNIC"] = _Record.CNIC;
+            Customers.CurrentRow["Notes"] = _Record.Notes;
+            Customers.Save();
+
 
 
         }
@@ -33,7 +49,7 @@ namespace Applied_WebApplication.Pages.Sales
         public string City { get; set; }
         public string State { get; set; }
         public string Country { get; set; }
-        public string Contact { get; set; }
+        public string Phone { get; set; }
         public string Mobile { get; set; }
         public string Email { get; set; }
         public string NTN { get; set; }

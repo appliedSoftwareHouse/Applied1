@@ -37,7 +37,7 @@
             <div class="col-12">
                 <label for="Title" class="form-label">Customer Name</label>
                 <div class="input-group has-validation">
-                    <span class="input-group-text">**</span>
+                    <span class="input-group-text">Customer</span>
                     <input type="text" name="Title" class="form-control" placeholder="Username" required="">
                     <div class="invalid-feedback">
                         Your username is required.
@@ -100,8 +100,8 @@
             </div>
 
             <div class="col-md-6">
-                <label for="Contact" class="form-label">Contact Number</label>
-                <input type="text" class="form-control" name="Contact" placeholder="Enter Contact Phone Number" >
+                <label for="Phone" class="form-label">Contact Phone Number</label>
+                <input type="text" class="form-control" name="Phone" placeholder="Enter Contact Phone Number" >
             </div>
 
             <div class="col-md-6">
@@ -128,8 +128,8 @@
             <hr style="width:100%;text-align:center;margin-left:0">
         </div>
         <div class="row g-md-1">
-        <button class="col-md-6 w-50 btn btn-primary btn-lg g-2" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName  >Save</button>
-            <button class="col-md-6  w-50 btn btn-primary btn-lg g-2" type="button" asp-page="Customers">Back</button>
+        <button class="col-md-6 w-50 m-1 btn btn-primary btn-lg g-2" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName  >Save</button>
+            <button class="col-md-6  w-50 m-1 btn btn-primary btn-lg g-2" type="button" asp-page="Customers">Back</button>
         </div>
     </form>
 </div>
