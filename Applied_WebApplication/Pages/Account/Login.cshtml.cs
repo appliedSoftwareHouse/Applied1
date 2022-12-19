@@ -65,11 +65,12 @@ namespace Applied_WebApplication.Pages
 
         public class Credential
         {
-            [Required]
+            [Required (ErrorMessage ="User Name is required")]
             public string Username { get; set; } = "User Name";
 
             [Required]
             [DataType(DataType.Password)]
+
             public string Password { get; set; } = string.Empty;
         }
     }

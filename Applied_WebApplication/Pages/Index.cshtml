@@ -1,30 +1,16 @@
 ﻿@page
 @using System.Security.Claims
+@using Applied_WebApplication.Data;
 @using System.Linq;
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    
-    string MyCompany = "Applied Software House";
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        foreach (Claim _Claim in User.Claims)
-        {
-            var asd = _Claim.ValueType;
-
-            if (_Claim.Type == "Company")
-            {
-                MyCompany = _Claim.Value;
-                break;
-            }
-        }
-    }
+    string MyCompany = UserProfile.GetClaim(User);
 }
 
 
-<div class="mt-4 p-5 bg-primary text-white rounded">
-    <h3>WELL COME 2</h3>
+<div class="mt-4 p-3 bg-success text-white rounded">
+    <h3>@MyCompany</h3>
     <p> APPLIED SOFTWARE HOUSE <spin class="text-decoration-underline">is a Software Development Company</spin></p>
 </div>
 <br />
@@ -33,14 +19,3 @@
     <p>For 30 years, Applied Software House providing Desktop Software Solution, Now we are developing a web base Accounting Software for small and mediam scale organization.</p>
     <footer class="blockquote-footer">It is Under Development.</footer>
 </blockquote>
-
-<div class="alert alert-success">
-  <strong>Success!</strong> @MyCompany
-</div>
-
-<br />
-
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-  @MyCompany
-</button>

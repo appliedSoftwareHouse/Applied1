@@ -82,7 +82,7 @@ namespace Applied_WebApplication.Data
 
                     if (Seek("Code", Row["Code"].ToString()))
                     {
-                        MyMessages.Add(new Message() { success = false, ErrorID = 104, message = "Code is already assigned. Dublicate not allowed." });
+                        MyMessages.Add(new Message() { success = false, ErrorID = 104, message = "Code is already assigned. Duplicate value not allowed." });
                     }
 
                     if (Row["Title"] == DBNull.Value)
@@ -93,7 +93,7 @@ namespace Applied_WebApplication.Data
 
                     if (Seek("Title", Row["Title"].ToString()))
                     {
-                        MyMessages.Add(new Message() { success = false, ErrorID = 106, message = "Title is already assigned. dublicate not allowed." });
+                        MyMessages.Add(new Message() { success = false, ErrorID = 106, message = "Title is already assigned. duplicate value not allowed." });
                     }
                 }
                 #endregion

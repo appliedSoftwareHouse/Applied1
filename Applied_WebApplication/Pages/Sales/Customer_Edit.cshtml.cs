@@ -7,5 +7,12 @@ namespace Applied_WebApplication.Pages.Sales
         public void OnGet()
         {
         }
+
+        public void OnPostAdd()
+        {
+
+
+        }
+
     }
 }

@@ -17,9 +17,10 @@
             <tr>
                 <th scope="col">Code</th>
                 <th scope="col">Title</th>
-
-                <th>
-                    <button class="btn btn-info"  asp-page="./Customer_Add" asp-route-UserName=@UserName asp-page-handler="Add" value="ADD">
+                <th scope="auto">
+                    <button class="btn-success" value="ADD"
+                            asp-page="./Customer_Add" asp-route-UserName=@UserName asp-page-handler="Add">
+                        ADD
                     </button>
                 </th>
                 

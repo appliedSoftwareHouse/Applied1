@@ -1,18 +1,24 @@
 using Applied_WebApplication.Data;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.InteropServices;
 using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Sales
 {
     public class Customer_AddModel : PageModel
     {
-
         public Customer Record = new();
         public bool IsError = false;
         public List<Message> ErrorMessages;
-
         public void OnGet()
+        {
+
+        }
+        public void OnPostAdd(string UserName)
         {
         }
 
@@ -43,20 +49,26 @@ namespace Applied_WebApplication.Pages.Sales
             if (IsError)
             {
                 ErrorMessages = Customers.TableValidation.MyMessages;
-                Page();
+                RedirectToPage("Customer_Edit","Add",_Record);
             }
-            else { RedirectToPage("Customers"); }
-
+            else
+            {
+                RedirectToPage("Customers");
+            }
+            
         }
+
+        
 
     }
 
 
     public class Customer
     {
-        
+
         public int ID { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Customer Code is required")]
+
         public string Code { get; set; }
         [Required(ErrorMessage = "Customer Title or name is required")]
         public string Title { get; set; }

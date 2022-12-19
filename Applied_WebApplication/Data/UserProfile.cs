@@ -53,5 +53,19 @@ namespace Applied_WebApplication.Data
 
             }
         }
+
+        public static string GetClaim(ClaimsPrincipal _ClaimPrincipal)
+        {
+            string Result = "Applied Software House?";
+            foreach (Claim _Claim in _ClaimPrincipal.Claims)
+            {
+                if (_Claim.Type == "Company")
+                {
+                    Result = _Claim.Value;
+                    break;
+                }
+            }
+            return Result;
+        }
     }
 }
