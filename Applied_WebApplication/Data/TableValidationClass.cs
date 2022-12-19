@@ -75,14 +75,25 @@ namespace Applied_WebApplication.Data
                 #region Insert
                 if (SQLAction == CommandAction.Insert.ToString())
                 {
+                    if(Row["Code"]==DBNull.Value)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Null value of Code is not allowed." });
+                    }
+
                     if (Seek("Code", Row["Code"].ToString()))
                     {
-                        MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Code is already assigned" });
+                        MyMessages.Add(new Message() { success = false, ErrorID = 104, message = "Code is already assigned. Dublicate not allowed." });
                     }
+
+                    if (Row["Title"] == DBNull.Value)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 105, message = "Null value of Code is not allowed." });
+                    }
+
 
                     if (Seek("Title", Row["Title"].ToString()))
                     {
-                        MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Title is already assigned" });
+                        MyMessages.Add(new Message() { success = false, ErrorID = 106, message = "Title is already assigned. dublicate not allowed." });
                     }
                 }
                 #endregion

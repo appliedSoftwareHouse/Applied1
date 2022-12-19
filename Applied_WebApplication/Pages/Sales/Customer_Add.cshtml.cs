@@ -28,6 +28,7 @@ namespace Applied_WebApplication.Pages.Sales
             Customers.CurrentRow["Address1"] = _Record.Address1;
             Customers.CurrentRow["Address2"] = _Record.Address2;
             Customers.CurrentRow["City"] = _Record.City;
+            Customers.CurrentRow["State"] = _Record.State;
             Customers.CurrentRow["Country"] = _Record.Country;
             Customers.CurrentRow["Phone"] = _Record.Phone;
             Customers.CurrentRow["Mobile"] = _Record.Mobile;
@@ -53,10 +54,11 @@ namespace Applied_WebApplication.Pages.Sales
 
     public class Customer
     {
+        
         public int ID { get; set; }
         [Required]
         public string Code { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Customer Title or name is required")]
         public string Title { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
