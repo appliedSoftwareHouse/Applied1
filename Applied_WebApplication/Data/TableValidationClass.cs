@@ -5,54 +5,50 @@ namespace Applied_WebApplication.Data
 {
     public class TableValidationClass
     {
-        public bool success { get; set; }
-        public string[] message { get; set; }
-        public int ErrorID { get; set; }
-        public int records { get; set; }
         public string SQLAction { get; set; }
-        public List<Message> MyMessages = new List<Message>();
         public DataTable MyDataTable { get; set; }
+        public List<Message> MyMessages = new List<Message>();
 
         public TableValidationClass()
         {
-            success = true;
         }
 
-        public TableValidationClass(CommandAction _Action)
+        public bool Success()
         {
-            success = true;
-        }
-
-        public TableValidationClass(bool TrueFalse)
-        {
-            success = TrueFalse;
-
+            if(MyMessages.Count > 0)
+            { return true; }
+            else
+            { return false; }
         }
 
         public bool Validation(DataRow Row)
         {
-            if (Row == null) { return false; }                                              // Return false if row is null
-            if (MyDataTable == null) { return false; }                              // Return false if Data Table is null
-            if(SQLAction == null) { return false; }                                     // Return is SQL Command Action is not define.
+            MyMessages = new List<Message>();
+            if (Row == null)  {
+                Message MyMessage = new Message() { success = false, ErrorID = 10, message = "Current row is null" };
+                return false;  }                                              // Return false if row is null
+
+            if(SQLAction == null) {
+                Message MyMessage = new Message() { success = false, ErrorID = 10, message = "Current row is null" };
+                return false; }                                     // Return is SQL Command Action is not define.
             //================================================================================================== 
 
-            MyMessages = new List<Message>();
-
-
             #region Table COA
-            if (MyDataTable.TableName == Tables.COA.ToString())
+            if (Row.Table.TableName == Tables.COA.ToString())
             {
+                MyMessages = new List<Message>();
 
                 if (SQLAction == CommandAction.Insert.ToString())
                 {
                     if (Row["Code"].ToString().Trim().Length != 6)                  // Code
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 101, message = "Code Length must be 6 Character" };
+
+                        MyMessages.Add(new Message() { success = false, ErrorID = 101, message = "Code Length must be 6 Character" });
                     }
 
                     if (Row["Title"].ToString().Trim().Length == 0)             // Title
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 102, message = "Title Length can not be null" };
+                        MyMessages.Add(new Message() { success = false, ErrorID = 102, message = "Title Length can not be null" });
                     }
                 }
 
@@ -60,12 +56,12 @@ namespace Applied_WebApplication.Data
                 {
                     if (Row["Code"].ToString().Trim().Length != 6)                  // Code
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 101, message = "Code Length must be 6 Character" };
+                        MyMessages.Add(new Message() { success = false, ErrorID = 101, message = "Code Length must be 6 Character" });
                     }
 
                     if (Row["Title"].ToString().Trim().Length == 0)             // Title
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 102, message = "Title Length can not be null" };
+                        MyMessages.Add(new Message() { success = false, ErrorID = 102, message = "Title Length can not be null" });
                     }
                 }
             }
@@ -74,18 +70,19 @@ namespace Applied_WebApplication.Data
             #region Customer
             if (MyDataTable.TableName == Tables.Customers.ToString())
             {
-                
+                MyMessages = new List<Message>();
+
                 #region Insert
                 if (SQLAction == CommandAction.Insert.ToString())
                 {
-                    if (_Table.Seek("Code", Row["Code"].ToString()))
+                    if (Seek("Code", Row["Code"].ToString()))
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 103, message = "Code is already assigned" };
+                        MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Code is already assigned" });
                     }
 
-                    if (_Table.Seek("Title", Row["Title"].ToString()))
+                    if (Seek("Title", Row["Title"].ToString()))
                     {
-                        Message MyMessage = new Message() { success = false, ErrorID = 103, message = "Title is already assigned" };
+                        MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Title is already assigned" });
                     }
                 }
                 #endregion
@@ -96,31 +93,23 @@ namespace Applied_WebApplication.Data
 
 
                 }
-
                 #endregion
-
-
             }
-
-
-
-
-
-
             #endregion
 
-
-            if (MyMessages.Count > 0)
-            {
-                success = false;
-            }
-            else
-            {
-                success = true;
-            }
-            return success;
+            if(MyMessages.Count > 0) { return false; } else { return true; }
         }
 
+        private bool Seek(string _Column, string _Value)
+        {
+            if(MyDataTable!=null)
+            {
+                DataView _DataView = MyDataTable.AsDataView();
+                _DataView.RowFilter = _Column + "='" + _Value + "'";
+                if(_DataView.Count > 0) { return true; } else { return false; }
+            }
+            return false;               // Default value    
+        }
 
         public class Message
         {

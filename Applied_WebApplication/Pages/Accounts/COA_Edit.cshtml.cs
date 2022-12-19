@@ -62,10 +62,10 @@ namespace Applied_WebApplication.Pages.Accounts
                 COA.CurrentRow["Class"] = _FillRecord.COA_Class;
                 COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
                 COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
-                Validation = COA.Save();
+                COA.Save();
             }
 
-            if (Validation.success)
+            if (COA.TableValidation.Success())
             {
                 return RedirectToPage("COA");
             }

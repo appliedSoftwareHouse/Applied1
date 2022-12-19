@@ -8,11 +8,11 @@ namespace Applied_WebApplication.Data
     public class DataTableClass
     {
         public string MyUserName { get; set; }
-        private TableValidationClass validationClass;
         private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
+        public TableValidationClass TableValidation;
         public string MyTableName;
         public bool IsError = false;
         public string MyMessage = "";
@@ -72,7 +72,7 @@ namespace Applied_WebApplication.Data
         {
             CurrentRow = MyDataTable.NewRow();
 
-            foreach (DataColumn _Column in CurrentRow.Table.Columns)
+            foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
             {
                 if (CurrentRow[_Column.ColumnName] == DBNull.Value)
                 {
@@ -284,17 +284,18 @@ namespace Applied_WebApplication.Data
 
         public int ViewRecordCount() { return MyDataView.Count; }
 
-        public TableValidationClass Save()
+        public void Save()
         {
+            TableValidation = new TableValidationClass();
             if (CurrentRow != null)
             {
-                validationClass = new TableValidationClass();
+                TableValidation.MyDataTable = CurrentRow.Table;
                 MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
                 if (MyDataView.Count > 0)
                 {
-                    validationClass.SQLAction = CommandAction.Update.ToString();
-                    if (validationClass.Validation(CurrentRow))
+                    TableValidation.SQLAction = CommandAction.Update.ToString();
+                    if (TableValidation.Validation(CurrentRow))
                     {
                         CommandUpdate();
                         Command_Update.ExecuteNonQuery();
@@ -304,8 +305,8 @@ namespace Applied_WebApplication.Data
 
                 if (MyDataView.Count == 0)
                 {
-                    validationClass.SQLAction = CommandAction.Insert.ToString();
-                    if (validationClass.Validation(CurrentRow))
+                    TableValidation.SQLAction = CommandAction.Insert.ToString();
+                    if (TableValidation.Validation(CurrentRow))
                     {
                         CommandInsert();
                         Command_Insert.ExecuteNonQuery();
@@ -314,7 +315,6 @@ namespace Applied_WebApplication.Data
                 }
 
             }
-            return validationClass;
         }
 
         #endregion

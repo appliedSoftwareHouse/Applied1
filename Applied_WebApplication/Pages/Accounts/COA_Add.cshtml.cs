@@ -50,7 +50,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostSubmit(string UserName, Record _FillRecord)
         {
             COA = new DataTableClass(UserName, Tables.COA.ToString());
-            Validation = new(false);
+            
 
             if (ModelState.IsValid)
             {
@@ -62,11 +62,11 @@ namespace Applied_WebApplication.Pages.Accounts
                 COA.CurrentRow["Class"] = _FillRecord.COA_Class;
                 COA.CurrentRow["Notes"] = _FillRecord.COA_Notes;
                 COA.CurrentRow["OPENING_BALANCE"] = _FillRecord.OBal;
-                Validation = COA.Save();
+                COA.Save();
 
             }
 
-            if (Validation.success)
+            if (COA.TableValidation.MyMessages.Count==0)                    // Save Sucessfully
             {
                 return RedirectToPage("COA");
             }

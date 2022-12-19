@@ -1,9 +1,11 @@
 ﻿@page
 @using System.Data
+@using Applied_WebApplication.Data
 @model Applied_WebApplication.Pages.Sales.CustomersModel
 @{
-    DataTableClass Customer = new(Tables.Customers.ToString());
+    
     var UserName = User.Identity.Name;
+    DataTableClass Customer = new(UserName, Tables.Customers.ToString());
 }
 
 <div class="container bg-success text-white"><h4>Customer</h4></div>

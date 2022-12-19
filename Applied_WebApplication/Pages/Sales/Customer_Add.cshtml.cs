@@ -1,12 +1,16 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Sales
 {
     public class Customer_AddModel : PageModel
     {
-        
+
         public Customer Record = new();
+        public bool IsError = false;
+        public List<Message> ErrorMessages;
 
         public void OnGet()
         {
@@ -14,9 +18,8 @@ namespace Applied_WebApplication.Pages.Sales
 
         public void OnPostSave(Customer _Record, string UserName)
         {
-            TableValidationClass TableValidation = new();
+
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
-            TableValidation.MyDataTable = Customers.MyDataTable;
 
             Customers.NewRecord();
             Customers.CurrentRow["ID"] = 0;
@@ -32,18 +35,16 @@ namespace Applied_WebApplication.Pages.Sales
             Customers.CurrentRow["NTN"] = _Record.NTN;
             Customers.CurrentRow["CNIC"] = _Record.CNIC;
             Customers.CurrentRow["Notes"] = _Record.Notes;
-             _Validation =  Customers.Save();
+            Customers.Save();
 
-            if(_Validation.MyMessages.Count > 0)
+            IsError = Customers.TableValidation.Success();
+
+            if (IsError)
             {
+                ErrorMessages = Customers.TableValidation.MyMessages;
                 Page();
-
             }
-            else
-            {
-                RedirectToPage("Customers");
-            }
-
+            else { RedirectToPage("Customers"); }
 
         }
 
@@ -53,7 +54,9 @@ namespace Applied_WebApplication.Pages.Sales
     public class Customer
     {
         public int ID { get; set; }
+        [Required]
         public string Code { get; set; }
+        [Required]
         public string Title { get; set; }
         public string Address1 { get; set; }
         public string Address2 { get; set; }
