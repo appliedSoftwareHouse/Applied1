@@ -8,7 +8,7 @@
     DataTableClass Customer = new(UserName, Tables.Customers.ToString());
 }
 
-<div class="container bg-success text-white"><h4>Customer</h4></div>
+<div class="container bg-primary text-white"><h4>Customer</h4></div>
 <br />
 
 <form method="post">
@@ -18,8 +18,8 @@
                 <th scope="col">Code</th>
                 <th scope="col">Title</th>
                 <th scope="auto">
-                    <button class="btn-success" value="ADD"
-                            asp-page="./Customer_Add" asp-route-UserName=@UserName asp-page-handler="Add">
+                    <button class="btn-primary" value="ADD"
+                            asp-page="./Customer" asp-route-UserName=@UserName asp-page-handler="Add">
                         ADD
                     </button>
                 </th>
@@ -33,8 +33,8 @@
                     <td>@_Row["Code"]</td>
                     <td>@_Row["Title"]</td>
                     <td>
-                        <a asp-page="./Customer_Edit" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName asp-page-handler="Edit"> Edit</a> |
-                        <a asp-page="./Customer_Del" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName>Delete </a> |
+                        <a asp-page="./Customer"  asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
+                        <a asp-page="./Customer"  asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Delete">Delete </a> 
                     </td>
                 </tr>
             }

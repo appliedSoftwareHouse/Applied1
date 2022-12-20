@@ -19,7 +19,7 @@
             <tr>
                 <th>   <a> Code </a> </th>
                 <th>    <a>Title   </a> </th>
-                <th><button class=btn-primary asp-page="./COA_Add/" asp-route-UserName=@UserName asp-page-handler="Add"> ADD </button> </th>
+                <th><button class=btn-primary asp-page="./AccountHead" asp-route-UserName=@UserName asp-page-handler="Add"> ADD </button> </th>
             </tr>
         </thead>
         <tbody>
@@ -29,8 +29,8 @@
                     <td>  @_Record["Code"] </td>
                     <td>  @_Record["Title"] </td>
                     <td>
-                        <a asp-page="./COA_Edit/" asp-route-id=@_Record["ID"] asp-route-UserName=@UserName asp-page-handler="Edit"> Edit</a> |
-                        <a asp-page="./COA_Del" asp-route-id=@_Record["ID"]>Delete </a> |
+                        <a asp-page="./AccountHead" asp-route-id=@_Record["ID"] asp-route-UserName=@UserName asp-page-handler="Edit"> Edit</a> |
+                        <a asp-page="./AccountHead" asp-route-id=@_Record["ID"] asp-route-UserName=@UserName asp-page-handler="Delete"> Delete</a>
                     </td>
                 </tr>
             }

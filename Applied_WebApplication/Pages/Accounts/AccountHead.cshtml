@@ -1,0 +1,60 @@
+﻿@page
+@using System.Data
+@using Applied_WebApplication.Data
+@model Applied_WebApplication.Pages.Accounts.AccountHeadModel
+@{
+
+    var UserName = User.Identity.Name;
+    var COA = new DataTableClass(UserName, Tables.COA.ToString());
+    var COA_Nature = new DataTableClass(UserName, Tables.COA_Nature.ToString());
+    var COA_Class = new DataTableClass(UserName, Tables.COA_Class.ToString());
+    var COA_Notes = new DataTableClass(UserName, Tables.COA_Notes.ToString());
+
+}
+
+
+<div class=container>
+    <div class="row g-2">
+        <div class="col-12 bg-primary text-center text-white p-1"><h4>Chart of Account - Head</h4></div>
+    </div>
+</div>
+
+<div class="container p-3">
+    <div class="row g-3">
+        <div class="col-sm-2">
+            <label>ID</label>
+            <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+        </div>
+        <div class="col-sm-2">
+            <label>Code</label>
+            <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+        </div>
+        <div class="col-sm-8">
+            <label>Title of Account</label>
+            <input type="text" class="form-control" placeholder="Title of Account" aria-label="Last name">
+        </div>
+    </div>
+</div>
+<div class="row g-3 ">
+    <div class="input-group mb-3">
+        <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
+        <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
+            <option selected>@Model.Record.Class</option>
+            @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
+            {
+                <option value=@_Record["ID"]> @_Record["Title"] </option>
+            }
+        </select>
+    </div>
+
+
+
+
+
+
+</div>
+
+
+
+
+

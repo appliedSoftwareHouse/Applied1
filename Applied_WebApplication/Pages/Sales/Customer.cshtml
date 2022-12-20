@@ -17,60 +17,54 @@
 
 
 <div class="col-md-7 col-lg-8">
-    <form method="post" class="needs-validation" novalidate="">
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
-<!-- Show Messages of Error.-->
-@if (Model.IsError)
-{
-    <div class="container">
-
-        @foreach(TableValidationClass.Message _Error in Model.ErrorMessages)
+        <!-- Show Messages of Error.-->
+        @if (Model.IsError)
         {
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-            @_Error.message;
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
+            <div class="container">
+                @foreach (TableValidationClass.Message _Error in Model.ErrorMessages)
+                {
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        @_Error.message;
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
 
+                }
+            </div>
+            if (Customers.CurrentRow == null) { Customers.NewRecord(); }
+            List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
+            foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
+            {
+                if (_KeyValue.Key == "Code") { Model.Record.Code = _KeyValue.Value; }
+                if (_KeyValue.Key == "Title") { Model.Record.Title = _KeyValue.Value; }
+                if (_KeyValue.Key == "Email") { Model.Record.Email = _KeyValue.Value; }
+                if (_KeyValue.Key == "Address1") { Model.Record.Address1 = _KeyValue.Value; }
+                if (_KeyValue.Key == "Address2") { Model.Record.Address2 = _KeyValue.Value; }
+                if (_KeyValue.Key == "City") { Model.Record.City = _KeyValue.Value; }
+                if (_KeyValue.Key == "State") { Model.Record.State = _KeyValue.Value; }
+                if (_KeyValue.Key == "Country") { Model.Record.Country = _KeyValue.Value; }
+                if (_KeyValue.Key == "Phone") { Model.Record.Phone = _KeyValue.Value; }
+                if (_KeyValue.Key == "Mobile") { Model.Record.Mobile = _KeyValue.Value; }
+                if (_KeyValue.Key == "NTN") { Model.Record.NTN = _KeyValue.Value; }
+                if (_KeyValue.Key == "CNIC") { Model.Record.CNIC = _KeyValue.Value; }
+                if (_KeyValue.Key == "Notes") { Model.Record.Notes = _KeyValue.Value; }
+            }
         }
-    </div>
-
-    if (Customers.CurrentRow == null) { Customers.NewRecord(); }
-
-    List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-
-    foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-    {
-        if (_KeyValue.Key == "Code") { Model.Record.Code = _KeyValue.Value; }
-        if (_KeyValue.Key == "Title") { Model.Record.Title = _KeyValue.Value; }
-        if (_KeyValue.Key == "Email") { Model.Record.Email = _KeyValue.Value; }
-        if (_KeyValue.Key == "Address1") { Model.Record.Address1 = _KeyValue.Value; }
-        if (_KeyValue.Key == "Address2") { Model.Record.Address2 = _KeyValue.Value; }
-        if (_KeyValue.Key == "City") { Model.Record.City = _KeyValue.Value; }
-        if (_KeyValue.Key == "State") { Model.Record.State = _KeyValue.Value; }
-        if (_KeyValue.Key == "Country") { Model.Record.Country = _KeyValue.Value; }
-        if (_KeyValue.Key == "Phone") { Model.Record.Phone = _KeyValue.Value; }
-        if (_KeyValue.Key == "Mobile") { Model.Record.Mobile = _KeyValue.Value; }
-        if (_KeyValue.Key == "NTN") { Model.Record.NTN = _KeyValue.Value; }
-        if (_KeyValue.Key == "CNIC") { Model.Record.CNIC = _KeyValue.Value; }
-        if (_KeyValue.Key == "Notes") { Model.Record.Notes = _KeyValue.Value; }
-    }
-}
-
-
+        
         <div class="row g-3">
             <div class="col-sm-6">
                 <label asp-for=@Model.Record.ID class="form-label">ID</label>
-                <input type="text" asp-for=@Model.Record.ID name="ID" class="form-control" id="firstName" placeholder="" value=@Model.Record.ID required="">
-                <div class="invalid-feedback">
-                    Valid first name is required.
-                </div>
+                <input type="text" asp-for=@Model.Record.ID name="ID" class="form-control" placeholder="" value=@Model.Record.ID>
             </div>
-            
+
             <div class="col-sm-6">
-                <label asp-for=@Model.Record.Code class="form-label">Code</label>
-                <input type="text" asp-for=@Model.Record.Code name="Code" class="form-control" placeholder=" " value="@Model.Record.Code" required="">
-                <div class="invalid-feedback">
-                    Valid last name is required.
+                <label asp-for=@Model.Record.Code class="form-label">Customer Code</label>
+                <div class="input-group has-validation">
+                    <span class="input-group-text">Code</span>
+                    <input type="text" asp-for=@Model.Record.Code name="Code" class="form-control" placeholder="Customer Code" value=@Model.Record.Code required="">
+                    <span class="text-danger" asp-validation-for=@Model.Record.Code> </span>
                 </div>
             </div>
 
@@ -78,34 +72,30 @@
                 <label asp-for=@Model.Record.Title class="form-label">Customer Name</label>
                 <div class="input-group has-validation">
                     <span class="input-group-text">Customer</span>
-                    <input type="text" asp-for=@Model.Record.Title name="Title" class="form-control" placeholder="Username" value=@Model.Record.Title required="">
-                    <div class="invalid-feedback">
-                        Your username is required.
-                    </div>
+                    <input type="text" asp-for=@Model.Record.Title name="Title" class="form-control" placeholder="Customer Name" value=@Model.Record.Title required="">
+                    <span class="text-danger" asp-validation-for=@Model.Record.Title> </span>
                 </div>
             </div>
 
             <div class="col-12">
                 <label asp-for=@Model.Record.Email class="form-label">Email <span class="text-muted">(Optional)</span></label>
-                <input type="email" asp-for=@Model.Record.Email class="form-control" name="Email" value=@Model.Record.Email  placeholder="you@example.com">
-                <div class="invalid-feedback">
-                    Please enter a valid email address for shipping updates.
-                </div>
+                <input type="email" asp-for=@Model.Record.Email name="Email" value=@Model.Record.Email class="form-control" placeholder="you@example.com">
+                <span class="text-danger" asp-validation-for=@Model.Record.Email> </span>
             </div>
 
             <div class="col-12">
                 <label asp-for=@Model.Record.Address1 class="form-label">Address</label>
-                <input type="text" asp-for=@Model.Record.Address1  class="form-control" name="Address1" value=@Model.Record.Address1 placeholder="Please address Plot, House and Area." required="">
+                <input type="text" asp-for=@Model.Record.Address1 class="form-control" name="Address1" value=@Model.Record.Address1 placeholder="Address Line 1" required="">
             </div>
 
             <div class="col-12">
                 <label asp-for=@Model.Record.Address2 class="form-label">Address 2 <span class="text-muted"></span></label>
-                <input type="text" asp-for=@Model.Record.Address2 value=@Model.Record.Address2 class ="form-control" name="Address2" placeholder="Please address Plot, House and Area." required="">
+                <input type="text" asp-for=@Model.Record.Address2 value=@Model.Record.Address2 class="form-control" name="Address2" placeholder="Address Line 2" >
             </div>
 
             <div class="col-md-3">
                 <label asp-for=@Model.Record.City class="form-label">City</label>
-                <input type="text" asp-for=@Model.Record.City class="form-control" Name="City" value=@Model.Record.City  placeholder="Enter City Name" required="">
+                <input type="text" asp-for=@Model.Record.City class="form-control" Name="City" value=@Model.Record.City placeholder="Enter City Name" required="">
                 <div class="invalid-feedback">
                     City name is required.
                 </div>
@@ -113,7 +103,7 @@
 
             <div class="col-md-4">
                 <label asp-for=@Model.Record.State class="form-label">State</label>
-                <input type="text" asp-for=@Model.Record.State value=@Model.Record.State class="form-control" Name="State" placeholder="Enter City Name" required="">
+                <input type="text" asp-for=@Model.Record.State value=@Model.Record.State class="form-control" Name="State" placeholder="Enter City Name" >
                 <div class="invalid-feedback">
                     Provience / State name is required.
                 </div>
@@ -121,7 +111,7 @@
 
             <div class="col-md-5">
                 <label asp-for=@Model.Record.Country class="form-label">Country</label>
-                <select class="form-select" name="Country" asp-for=@Model.Record.Country required="">
+                <select class="form-select" name="Country" asp-for=@Model.Record.Country >
                     <option value=@Model.Record.Country>Choose...</option>
                     <option>Pakistan</option>
                     <option>United Arab Emirates</option>
@@ -165,11 +155,18 @@
             </div>
 
 
-            <hr style="width:100%;text-align:center;margin-left:0">
+            <hr style="width:50%;text-align:center;margin-left:0">
         </div>
         <div class="row g-md-1">
+            @if(Model.PageAction=="Delete")
+            {
+                <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete" asp-route-UserName=@UserName>Delete</button>
+            }
+            else
+            {
             <button class="btn btn-primary p-1" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName>Save</button>
             <button class="btn btn-primary p-1" type="submit" asp-page="Customers">Back</button>
+            }
         </div>
     </form>
 </div>

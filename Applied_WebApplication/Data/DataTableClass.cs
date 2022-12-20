@@ -125,6 +125,20 @@ namespace Applied_WebApplication.Data
 
         }
 
+        public void Delete()
+        {
+            CommandDelete();
+            int records = Command_Delete.ExecuteNonQuery();
+            if (records == 1)
+            {
+                MyMessage = string.Concat(records.ToString(), " has been deleted.");
+            }
+            if (records> 1)
+            {
+                MyMessage = string.Concat(records.ToString(), " have been deleted.");
+            }
+        }
+
         private static int NewID(DataTable table)
         {
             int _result = 0;
@@ -224,7 +238,9 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
             if (MyDataView.Count > 0)
-            { MyDataView.RowFilter = Filter; return true; }
+            {
+                MyDataView.RowFilter = Filter; return true;
+            }
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
