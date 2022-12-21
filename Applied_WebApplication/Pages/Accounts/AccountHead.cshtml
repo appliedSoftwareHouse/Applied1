@@ -10,51 +10,100 @@
     var COA_Class = new DataTableClass(UserName, Tables.COA_Class.ToString());
     var COA_Notes = new DataTableClass(UserName, Tables.COA_Notes.ToString());
 
+    if (Model.PageAction == "Edit")
+    {
+        COA.SeekRecord(Model.RecordID);
+    }
+
+    if (Model.PageAction == "Add")
+    {
+        COA.NewRecord();
+    }
+
+    if (COA.CurrentRow != null)
+    {
+        Model.Record.ID = (int)COA.CurrentRow["ID"];
+        Model.Record.Code = (string)COA.CurrentRow["Code"];
+        Model.Record.Title = (string)COA.CurrentRow["Title"];
+        Model.Record.Class = (int)COA.CurrentRow["Class"];
+        Model.Record.Nature = (int)COA.CurrentRow["Nature"];
+        Model.Record.Notes = (int)COA.CurrentRow["Notes"];
+    }
 }
 
-
-<div class=container>
+<div class="container">
     <div class="row g-2">
         <div class="col-12 bg-primary text-center text-white p-1"><h4>Chart of Account - Head</h4></div>
+        @Model.PageAction
     </div>
 </div>
 
 <div class="container p-3">
-    <div class="row g-3">
-        <div class="col-sm-2">
-            <label>ID</label>
-            <input type="text" class="form-control" placeholder="First name" aria-label="First name">
+    <form method="post">
+
+        <!-- id, Code adn Title Text Box  -->
+        <div class="row g-3">
+            <div class="col-sm-2">
+                <label asp-for=@Model.Record.ID>ID</label>
+                <input type="text" asp-for=@Model.Record.ID name="ID" value=@Model.Record.ID class="form-control" placeholder="Record ID" readonly>
+            </div>
+            <div class="col-sm-2">
+                <label asp-for=@Model.Record.Code>Code</label>
+                <input type="text" asp-for=@Model.Record.Code name="Code" value=@Model.Record.Code class="form-control" placeholder="Account Code">
+            </div>
+            <div class="col-sm-8">
+                <label asp-for=@Model.Record.Title>Title of Account</label>
+                <input type="text" asp-for=@Model.Record.Title name="Title" Value=@Model.Record.Title class="form-control" placeholder="Title of Account">
+            </div>
         </div>
-        <div class="col-sm-2">
-            <label>Code</label>
-            <input type="text" class="form-control" placeholder="Last name" aria-label="Last name">
+
+
+        <!-- Class, Nature and Notes Dropdown-->
+        <div class="container p-3">
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
+                        <option selected>@Model.Record.Class</option>
+                        @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Nature of Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Nature" asp-for=@Model.Record.Nature>
+                        <option selected>@Model.Record.Nature</option>
+                        @foreach (DataRow _Record in COA_Nature.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Notes of Financial Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Notes" asp-for=@Model.Record.Notes>
+                        <option selected>@Model.Record.Notes</option>
+                        @foreach (DataRow _Record in COA_Notes.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
         </div>
-        <div class="col-sm-8">
-            <label>Title of Account</label>
-            <input type="text" class="form-control" placeholder="Title of Account" aria-label="Last name">
-        </div>
-    </div>
-</div>
-<div class="row g-3 ">
-    <div class="input-group mb-3">
-        <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
-        <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
-            <option selected>@Model.Record.Class</option>
-            @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
+
+        <!-- submit buttons-->
+        <div class="container p-3">
+            @if (Model.PageAction == "Delete")
             {
-                <option value=@_Record["ID"]> @_Record["Title"] </option>
+                <div class="btn btn-danger" type="submit" asp-page-handler=@Model.Record.ID  >DELETE  </div>
             }
-        </select>
-    </div>
-
-
-
-
-
-
+        </div>
+    </form>
 </div>
-
-
-
-
-
