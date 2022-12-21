@@ -1,10 +1,7 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Primitives;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.InteropServices;
 using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Sales
@@ -14,11 +11,11 @@ namespace Applied_WebApplication.Pages.Sales
         public Customer Record = new();
         public bool IsError = false;
         public List<Message> ErrorMessages;
-        public string PageAction { get; set; } = "Add";
+        public string MyPageAction { get; set; } = "Add";
         
         public void OnGetEdit(string UserName, int id)
         {
-            PageAction = "Edit";
+            MyPageAction = "Edit";
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
             Customers.SeekRecord(id);
             Record.ID = id;
@@ -40,7 +37,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         public void OnGetDelete(string UserName, int id)
         {
-            PageAction = "Delete";
+            MyPageAction = "Delete";
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
             Customers.SeekRecord(id);
             Record.ID = id;

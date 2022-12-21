@@ -23,6 +23,26 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
 
+
+        public DataTableClass(string _UserName, Tables _Tables)
+        {
+            MyUserName = _UserName;
+            MyConnectionClass = new(MyUserName);
+            MyConnection = MyConnectionClass.AppliedConnection;
+
+            MyTableName = _Tables.ToString();
+            GetDataTable();                                                                                   // Load DataTable and View
+            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
+            CheckError();
+
+            Command_Update = new SQLiteCommand(MyConnection);
+            Command_Delete = new SQLiteCommand(MyConnection);
+            Command_Insert = new SQLiteCommand(MyConnection);
+
+
+        }
+
+
         public DataTableClass(string _UserName, string _TableName)
         {
             MyUserName = _UserName;

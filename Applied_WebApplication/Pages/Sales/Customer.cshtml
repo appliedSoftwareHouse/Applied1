@@ -157,7 +157,7 @@
             <hr style="width:50%;text-align:center;margin-left:0">
         </div>
         <div class="row g-md-1">
-            @if(Model.PageAction=="Delete")
+            @if (Model.MyPageAction == "Delete")
             {
                 <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete" asp-route-UserName=@UserName>Delete</button>
             }

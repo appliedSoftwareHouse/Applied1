@@ -1,50 +1,93 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
+using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
     public class AccountHeadModel : PageModel
     {
-        public string PageAction { get; set;  } = string.Empty;
-        public AccounHead Record { get; set; }
-        public int RecordID { get; set; } = 0;
-
-        public void OnGet()
-        {
-        }
+        public AccounHead Record = new();
+        public string MyPageAction { get; set; } = "Add";
+        public int RecordID = 0;
+        public bool IsError;
+        public List<Message> ErrorMessages;
 
         public void OnPostAdd()
         {
-            PageAction = "Add";
-
+            MyPageAction = "Add";
             Record = new AccounHead();
         }
 
         public void OnGetEdit(string UserName, int id)
         {
-            PageAction = "Edit";
+            MyPageAction = "Edit";
             RecordID = id;
-            Record = new AccounHead();
+            DataTableClass COA = new(UserName, Tables.COA);
+            COA.SeekRecord(RecordID);
+            Record.ID = (int)COA.CurrentRow["ID"];
+            Record.Code = (string)COA.CurrentRow["Code"];
+            Record.Title = (string)COA.CurrentRow["Title"];
+            Record.Class = (int)COA.CurrentRow["Class"];
+            Record.Nature = (int)COA.CurrentRow["Nature"];
+            Record.Notes = (int)COA.CurrentRow["Notes"];
         }
 
-        public void OnGetDelete(string UserName, int id)
+        public IActionResult OnPostSave(AccounHead _Record, string UserName)
         {
-            PageAction = "Delete";
-            RecordID = id;
-            Record = new AccounHead();
+            RecordID = _Record.ID;
+            DataTableClass COA = new(UserName, Tables.COA);
+            if (COA.Seek(RecordID))
+            {
+                COA.SeekRecord(RecordID);
+                //COA.CurrentRow["ID"] = RecordID;
+            }
+            else
+            {
+                COA.NewRecord();
+                COA.CurrentRow["ID"] = 0;
+            }
+
+            COA.CurrentRow["Code"] = _Record.Code;
+            COA.CurrentRow["Title"] = _Record.Title;
+            COA.CurrentRow["Class"] = _Record.Class;
+            COA.CurrentRow["Nature"] = _Record.Nature;
+            COA.CurrentRow["Notes"] = _Record.Notes;
+            COA.CurrentRow["Opening_Balance"] = _Record.OBal;
+            COA.Save();
+            ErrorMessages = COA.TableValidation.MyMessages;
+            if (ErrorMessages.Count == 0) { return RedirectToPage("COA"); } else { IsError = true; }
+            return Page();
+        }
+
+        public IActionResult OnGetDelete(AccounHead _Record, string UserName)
+        {
+            RecordID = _Record.ID;
+            DataTableClass COA = new(UserName, Tables.COA);
+            if (COA.Seek(RecordID))
+            {
+                COA.SeekRecord(RecordID);                   // Assign a record for delete
+                COA.Delete();                                           // Delete a record.
+                return RedirectToPage("COA");
+            }
+
+            return Page();
         }
 
 
         public class AccounHead
         {
-            public int ID;
-            public string Code;
-            public string Title;
-            public int Nature;
-            public int Class;
-            public int Notes;
-            public decimal OBal;
+
+            public int ID { get; set; }
+            [Required]
+            public string Code { get; set; }
+            [Required]
+            public string Title { get; set; }
+            public int Nature { get; set; }
+            public int Class { get; set; }
+            public int Notes { get; set; }
+            public decimal OBal { get; set; }
         }
     }
 }
