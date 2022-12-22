@@ -275,8 +275,20 @@ namespace Applied_WebApplication.Data
             { row = MyDataView[0].Row; }
             else
             { row = MyDataTable.NewRow(); }
-
             CurrentRow = row;
+
+            foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
+            {
+                if (CurrentRow[_Column.ColumnName] == DBNull.Value)
+                {
+                    if (_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
+                    if (_Column.DataType.Name == "Int32") { CurrentRow[_Column.ColumnName] = 0; }
+                    if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
+                }
+            }
+
+
+            
             MyDataView.RowFilter = Filter;
             return row;
             //return row;

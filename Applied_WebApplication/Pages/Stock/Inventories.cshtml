@@ -1,0 +1,42 @@
+﻿@page
+@using System.Data
+@model Applied_WebApplication.Pages.Stock.InventoriesModel
+@{
+    var UserName = User.Identity.Name;
+    var Inventory = new DataTableClass(UserName, Tables.Inventory);
+}
+
+<div class="container">
+    <div class="row g-2">
+        <div class="col-12 bg-primary text-center text-white p-1"><h4>INVENTORY</h4></div>
+    </div>
+</div>
+
+<form method="post">
+    <div class="container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>
+                        <button class="btn-primary" value="ADD" asp-page="./Inventory" asp-route-UserName=@UserName asp-page-handler="Add">  ADD </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow _Row in Inventory.MyDataTable.Rows)
+                {
+                    <tr>
+                        <td> @_Row["Code"]</td>
+                        <td> @_Row["Title"]</td>
+                        <td>
+                            <a asp-page="./Inventory" asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
+                            <a asp-page="./Inventory" asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Delete">Delete </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
