@@ -88,11 +88,11 @@ namespace Applied_WebApplication.Pages.Sales
             Customers.CurrentRow["Notes"] = _Record.Notes;
             Customers.Save();
 
-            IsError = Customers.TableValidation.Success();
+            IsError = Customers.Validation.Success();
 
             if (IsError)
             {
-                ErrorMessages = Customers.TableValidation.MyMessages;
+                ErrorMessages = Customers.Validation.MyMessages;
                 return Page();
             }
             else

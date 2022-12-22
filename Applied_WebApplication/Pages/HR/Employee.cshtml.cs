@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Applied_WebApplication.Pages
+namespace Applied_WebApplication.Pages.HR
 {
-   
-    public class HumanResourcesModel : PageModel
+    public class EmployeeModel : PageModel
     {
         public void OnGet()
         {

@@ -56,7 +56,7 @@ namespace Applied_WebApplication.Pages.Accounts
             COA.CurrentRow["Notes"] = _Record.Notes;
             COA.CurrentRow["Opening_Balance"] = _Record.OBal;
             COA.Save();
-            ErrorMessages = COA.TableValidation.MyMessages;
+            ErrorMessages = COA.Validation.MyMessages;
             if (ErrorMessages.Count == 0) { return RedirectToPage("COA"); } else { IsError = true; }
             return Page();
         }

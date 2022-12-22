@@ -17,20 +17,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
         }
 
-        public void OnGetEdit(string UserName, int id)
-        {
-            MyPageAction = "Edit";
-            DataTableClass Inventory = new DataTableClass(UserName, Tables.Inventory);
-            Inventory.SeekRecord(id);
-
-            Record.ID = (int)Inventory.CurrentRow["ID"];
-            Record.Code = (string)Inventory.CurrentRow["Code"];
-            Record.Title = (string)Inventory.CurrentRow["Title"];
-            Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
-            Record.UOM = (int)Inventory.CurrentRow["UOM"];
-            Record.Notes = (string)Inventory.CurrentRow["Notes"];
-
-        }
+       
 
         public void OnGetAdd(string UserName)
         {
@@ -44,11 +31,37 @@ namespace Applied_WebApplication.Pages.Stock
             Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
             Record.UOM = (int)Inventory.CurrentRow["UOM"];
             Record.Notes = (string)Inventory.CurrentRow["Notes"];
-
         }
 
+        public void OnGetEdit(string UserName, int id)
+        {
+            MyPageAction = "Edit";
+            DataTableClass Inventory = new DataTableClass(UserName, Tables.Inventory);
+            Inventory.SeekRecord(id);
 
-        public void OnPostSave(Inventory _Record, string UserName)
+            Record.ID = (int)Inventory.CurrentRow["ID"];
+            Record.Code = (string)Inventory.CurrentRow["Code"];
+            Record.Title = (string)Inventory.CurrentRow["Title"];
+            Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
+            Record.UOM = (int)Inventory.CurrentRow["UOM"];
+            Record.Notes = (string)Inventory.CurrentRow["Notes"];
+        }
+
+        public void OnGetDelete(string UserName, int id)
+        {
+            MyPageAction = "Delete";
+            DataTableClass Inventory = new DataTableClass(UserName, Tables.Inventory);
+            Inventory.SeekRecord(id);
+
+            Record.ID = (int)Inventory.CurrentRow["ID"];
+            Record.Code = (string)Inventory.CurrentRow["Code"];
+            Record.Title = (string)Inventory.CurrentRow["Title"];
+            Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
+            Record.UOM = (int)Inventory.CurrentRow["UOM"];
+            Record.Notes = (string)Inventory.CurrentRow["Notes"];
+        }
+
+        public IActionResult OnPostSave(Inventory _Record, string UserName)
         {
             DataTableClass Inventory = new(UserName, Tables.Inventory);
 
@@ -64,6 +77,32 @@ namespace Applied_WebApplication.Pages.Stock
             }
             Inventory.CurrentRow["Code"] = _Record.Code;
             Inventory.CurrentRow["Title"] = _Record.Title;
+            Inventory.CurrentRow["SubCategory"] = _Record.SubCategory;
+            Inventory.CurrentRow["UOM"] = _Record.UOM;
+            Inventory.CurrentRow["Notes"] = _Record.Notes;
+            Inventory.Save();
+            IsError = Inventory.Validation.Success();
+            if (IsError)
+            {
+                return Page();
+            }
+            else
+            {
+                return RedirectToPage("Inventories");
+            }
+        }
+
+        public IActionResult OnPostDelete(Inventory _Record, string UserName)
+        {
+            DataTableClass Inventory = new(UserName, Tables.Inventory);
+
+            if (Inventory.Seek(_Record.ID))
+            {
+                Inventory.SeekRecord(_Record.ID);
+                Inventory.Delete();
+            }
+
+            return RedirectToPage("Inventories");
         }
 
 
