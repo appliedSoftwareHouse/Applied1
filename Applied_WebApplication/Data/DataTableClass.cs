@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Data
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
-        public TableValidationClass Validation;
+        public TableValidationClass TableValidation;
         public string MyTableName;
         public bool IsError = false;
         public string MyMessage = "";
@@ -334,16 +334,16 @@ namespace Applied_WebApplication.Data
 
         public void Save()
         {
-            Validation = new TableValidationClass();
+            TableValidation = new TableValidationClass();
             if (CurrentRow != null)
             {
-                Validation.MyDataTable = CurrentRow.Table;
+                TableValidation.MyDataTable = CurrentRow.Table;
                 MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
                 if (MyDataView.Count > 0)
                 {
-                    Validation.SQLAction = CommandAction.Update.ToString();
-                    if (Validation.Validation(CurrentRow))
+                    TableValidation.SQLAction = CommandAction.Update.ToString();
+                    if (TableValidation.Validation(CurrentRow))
                     {
                         CommandUpdate();
                         Command_Update.ExecuteNonQuery();
@@ -353,8 +353,8 @@ namespace Applied_WebApplication.Data
 
                 if (MyDataView.Count == 0)
                 {
-                    Validation.SQLAction = CommandAction.Insert.ToString();
-                    if (Validation.Validation(CurrentRow))
+                    TableValidation.SQLAction = CommandAction.Insert.ToString();
+                    if (TableValidation.Validation(CurrentRow))
                     {
                         CommandInsert();
                         Command_Insert.ExecuteNonQuery();

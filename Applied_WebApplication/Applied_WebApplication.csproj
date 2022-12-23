@@ -17,12 +17,13 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.0-preview.1.22109.13" />
-    <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.1" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Reports\" />
+    <Folder Include="Pages\HR\" />
   </ItemGroup>
 
   <ItemGroup>
