@@ -17,4 +17,19 @@
     <Folder Include="Properties\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="ds_COA.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ds_COA.xsd</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="ds_COA.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ds_COA.Designer.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
+
 </Project>

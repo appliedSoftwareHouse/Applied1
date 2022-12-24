@@ -1,0 +1,7 @@
+﻿namespace AppliedReporting
+{
+}
+
+namespace AppliedReporting
+{
+}

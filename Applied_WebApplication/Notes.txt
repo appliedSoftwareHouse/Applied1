@@ -20,6 +20,19 @@ SQLite Database Engine
 Install-Package System.Data.SQLite -Version 1.0.115.5
 ===============================================
 
+Reporting Support Tools
+========================================================================
+NuGet\Install-Package AspNetCore.Reporting -Version 2.1.0
+NuGet\Install-Package System.Drawing.Common -Version 7.0.0
+NuGet\Install-Package System.Text.Encoding.CodePages -Version 7.0.0
+========================================================================
+
+SQLite ODBC Driver
+====================================================
+http://www.ch-werner.de/sqliteodbc/
+====================================================
+
+
 Useful Links
 ===============================================================
 https://getbootstrap.com/docs/5.0/forms/input-group/			TextBox Buttons Bootstrip 5
@@ -33,3 +46,5 @@ https://getbootstrap.com/docs/5.0/content/reboot/#headings-and-paragraphs			Samp
 https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-7.0   .Net Core 7  c# references
 
 https://www.html-code-generator.com/css/snippets/loading-animation						Good Generator
+
+http://blog.geveo.com/IntegratingRDLCReportsToNetCoreProjects							Report Writing Tools

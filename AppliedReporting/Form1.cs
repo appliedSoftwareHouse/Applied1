@@ -1,3 +1,5 @@
+using System.Data.SQLite;
+
 namespace AppliedReporting
 {
     public partial class Form1 : Form
@@ -16,14 +18,16 @@ namespace AppliedReporting
             MyConnection = new(DBPath);
             try
             {
+                MyConnection = new SQLiteConnection("Data Source="+DBPath);
                 MyConnection.Open();
                 ConnectionStatus = "DB Connection is Open";
+                lblConnection.Text = MyConnection.State.ToString();
 
             }
-            catch (Exception e)
+            catch (Exception ee)
             {
-                ConnectionStatus = "DB Connection has error: " + e.Message;
-                
+                ConnectionStatus = "DB Connection has error: " + ee.Message;
+                lblConnection.Text = "DB Connection not establised";
             }
             
         }
