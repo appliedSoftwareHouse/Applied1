@@ -1,10 +1,13 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Data;
 using System.Data.SQLite;
 using System.Security.Principal;
 using System.Text;
+using Applied_WebApplication.Data;
 
 namespace Applied_WebApplication.Data
 {
+
     public class DataTableClass
     {
         public string MyUserName { get; set; }
@@ -86,8 +89,6 @@ namespace Applied_WebApplication.Data
             SeekRecord(_ID);
         }
 
-
-
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -153,7 +154,7 @@ namespace Applied_WebApplication.Data
             {
                 MyMessage = string.Concat(records.ToString(), " has been deleted.");
             }
-            if (records> 1)
+            if (records > 1)
             {
                 MyMessage = string.Concat(records.ToString(), " have been deleted.");
             }
@@ -288,7 +289,7 @@ namespace Applied_WebApplication.Data
             }
 
 
-            
+
             MyDataView.RowFilter = Filter;
             return row;
             //return row;
@@ -366,6 +367,21 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
+
+
+        public static DataTable GetAppliedTable(string UserName, string _Text)
+        {
+            ConnectionClass _Connection = new(UserName);
+            SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
+            DataSet _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet);
+            if (_DataSet.Tables.Count > 0)
+            {
+                return _DataSet.Tables[0];
+            }
+            return new DataTable();
+
+        }
 
 
         //======================================================== eof

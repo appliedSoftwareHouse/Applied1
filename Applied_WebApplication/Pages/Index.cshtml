@@ -6,8 +6,8 @@
 @{
     ViewData["Title"] = "Home page";
     string MyCompany = UserProfile.GetClaim(User);
+    var UserName = User.Identity.Name;
 }
-
 
 <div class="mt-4 p-3 bg-success text-white rounded">
     <h3>@MyCompany</h3>
@@ -15,11 +15,11 @@
 </div>
 <br />
 
-
 <blockquote class="blockquote">
     <p>For 30 years, Applied Software House providing Desktop Software Solution, Now we are developing a web base Accounting Software for small and mediam scale organization.</p>
     <footer class="blockquote-footer">It is Under Development.</footer>
 </blockquote>
 
-
-
+<form method="post">
+<input type="submit" class="btn btn-primary" value="Print" asp-page-handler="Print" asp-route-UserName=@UserName/>
+</form>

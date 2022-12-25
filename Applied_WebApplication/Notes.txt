@@ -48,3 +48,6 @@ https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-7.
 https://www.html-code-generator.com/css/snippets/loading-animation						Good Generator
 
 http://blog.geveo.com/IntegratingRDLCReportsToNetCoreProjects							Report Writing Tools
+
+https://social.msdn.microsoft.com/Forums/en-US/59aaca9a-10c7-485c-8079-a43a9fa24220/aspnetcorereporting?forum=aspcomponetdiscussion
+Report Print 
