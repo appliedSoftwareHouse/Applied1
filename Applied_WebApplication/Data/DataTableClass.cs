@@ -368,6 +368,8 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Static Function
+
 
         public static DataTable GetAppliedTable(string UserName, string _Text)
         {
@@ -383,6 +385,24 @@ namespace Applied_WebApplication.Data
 
         }
 
+        public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
+        {
+            if(UserName == null) { return ""; }
+            string _Text = string.Concat("SELECT [",_Column,"] From [", _Table, "] where ID=", ID.ToString());
+            ConnectionClass _Connection = new(UserName);
+            SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
+            DataSet _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet);
+            if (_DataSet.Tables.Count > 0)
+            {
+                return _DataSet.Tables[0].Rows[0][0].ToString();
+            }
+            return "";
+
+
+        }
+
+        #endregion
 
         //======================================================== eof
     }

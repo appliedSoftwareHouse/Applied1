@@ -114,6 +114,14 @@ namespace Applied_WebApplication.Data
                     return ".\\wwwroot\\SQLiteDB\\Applied.db";
             }
         }
+
+        public static string GetUserValue(string UserName, string _Column)
+        {
+            AppliedUsersClass UserClass = new();
+            DataRow _Row = UserClass.UserRecord(UserName);
+            return _Row[_Column].ToString();
+        }
+
     }
 }
 

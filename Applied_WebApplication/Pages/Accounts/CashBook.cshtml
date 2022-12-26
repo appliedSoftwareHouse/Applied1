@@ -1,39 +1,90 @@
 ﻿@page
 @using System.Data;
+@using Applied_WebApplication.Data
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
 @{
     var UserName = User.Identity.Name;
     DataTableClass COA = new(UserName, Tables.COA);
     COA.MyDataView.RowFilter = "Nature=2";
-    //DataTableClass Ledger = new DataTableClass(UserName, Tables.Ledger);
-
-
+    var IntValue = 5323.55;
+    var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");
 }
 
-<div class="container p-3 bg-primary text-white rounded">
-    <label>CASH BOOK</label>
-    <div class="col-12 align-content-sm-end">
-        <div class="dropdown">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                Dropdown button
-            </button>
-            <ul class="dropdown-menu" aria-labelledby="mnuButtonCashBook">
-                @foreach (DataRow _Row in COA.MyDataView.ToTable().Rows)
+<form method="get">
+    <div class="container p-2 bg-primary text-white rounded">
+        <div class="row ">
+            <div class="col-8">
+                <label>CASH BOOK</label>
+            </div>
+            <div class="col-4">
+                @if (Model.IsSelected==false)
                 {
-                    <li><a class="dropdown-item" asp-route-id=@_Row["ID"] asp-page="CashBook" >@_Row["Title"]</a></li>
+                    <div class="dropdown ">
+                        <button class="btn btn-outline-primary text-white dropdown-toggle float-end" type="button" id="BtnCashBook" data-bs-toggle="dropdown" aria-expanded="false">
+                            SELECT : Cash Book
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="mnuButtonCashBook">
+                            @foreach (DataRow _Row in COA.MyDataView.ToTable().Rows)
+                            {<li><a class="dropdown-item" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName asp-page="CashBook">@_Row["Title"]</a></li>}
+                        </ul>
+                    </div>
                 }
-            </ul>
+            </div>
         </div>
-
-        @if(Model.IsSelected)
-        {
-            
-            
-            
-            <a>Selected</a>
-        }
-        
-
-        <!---row / Container div end--->
     </div>
-</div>
+</form>
+@if (Model.IsSelected)
+{
+        <div class="table-responsive">
+            <table class="table caption-top">
+                <caption>@Model.BookTitle</caption>
+                <thead>
+                    <tr>
+                        <th style="width:10%">Date</th>
+                        <th style="width:10%">Vou No</th>
+                        <th style="width:44%">Description</th>
+                        <th style="width:10%">Debit</th>
+                        <th style="width:10%">Credit</th>
+                        <th style="width:10%">Balance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>11-Dec-2022</td>
+                        <td>22-11-00001</td>
+                        <td>This is Testing of Description</td>
+                        <td class="align-content-end">@IntValue.ToString(NumFormat)</td>
+                        <td>0.00</td>
+                        <td>1,345,765.00</td>
+                    </tr>
+                    <tr>
+                        <td>12-Dec-2022</td>
+                        <td>22-11-00002</td>
+                        <td>This is Testing of Description</td>
+                        <td>0.00</td>
+                        <td>1,245,852.00</td>
+                        <td>1,345,852.00</td>
+                    </tr>
+                    <tr>
+                        <td>13-Dec-2022</td>
+                        <td>22-11-00003</td>
+                        <td>This is Testing of Description</td>
+                        <td>3,456.00</td>
+                        <td>0.00</td>
+                        <td>1,346,789.00</td>
+                    <tr>
+                        <td>15-Dec-2022</td>
+                        <td>22-11-00004</td>
+                        <td>This is Testing of Description</td>
+                        <td>12,456.00</td>
+                        <td>0.00</td>
+                        <td>1,345,765.00</td>
+                    </tr>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+}
+
+
+<!---row / Container div end--->

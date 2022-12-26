@@ -9,19 +9,22 @@ namespace Applied_WebApplication.Pages.Account
     public class SettingModel : PageModel
     {
         AppliedUsersClass MyUserClass = new();
+        public string CurrencyFormat = string.Empty;
         public string CurrencyFormat1 = "N";
         public string CurrencyFormat2 = "#,0.000";
         public string CurrencyFormat3 = "#,0.00 Rs.";
         public string CurrencyFormat4 = "Rs. #,0";
-        public string CurrencyFormat = string.Empty;
+        public string CurrencyFormat5 = "#,##0";
+        public string CurrencyFormat6 = "#,##0.00";
 
+        public string DateFormat = string.Empty;
         public string DateFormat1 = "dd-MM-yy";
         public string DateFormat2 = "dd-MM-yyyy";
         public string DateFormat3 = "MM-dd-yy";
         public string DateFormat4 = "MM-dd-yyyy";
         public string DateFormat5 = "dd-MMM-yy";
         public string DateFormat6 = "dd-MMM-yyyy";
-        public string DateFormat = string.Empty;
+        
 
         public void OnGet()
         {
@@ -43,6 +46,13 @@ namespace Applied_WebApplication.Pages.Account
                 case 4:
                     CurrencyFormat = CurrencyFormat4;
                     break;
+                case 5:
+                    CurrencyFormat = CurrencyFormat5;
+                    break;
+                case 6:
+                    CurrencyFormat = CurrencyFormat6;
+                    break;
+
                 default:
                     CurrencyFormat = CurrencyFormat1;
                     break;
