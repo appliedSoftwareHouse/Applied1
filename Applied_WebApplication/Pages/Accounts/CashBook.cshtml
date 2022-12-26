@@ -1,0 +1,39 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.CashBookModel
+@{
+    var UserName = User.Identity.Name;
+    DataTableClass COA = new(UserName, Tables.COA);
+    COA.MyDataView.RowFilter = "Nature=2";
+    //DataTableClass Ledger = new DataTableClass(UserName, Tables.Ledger);
+
+
+}
+
+<div class="container p-3 bg-primary text-white rounded">
+    <label>CASH BOOK</label>
+    <div class="col-12 align-content-sm-end">
+        <div class="dropdown">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                Dropdown button
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="mnuButtonCashBook">
+                @foreach (DataRow _Row in COA.MyDataView.ToTable().Rows)
+                {
+                    <li><a class="dropdown-item" asp-route-id=@_Row["ID"] asp-page="CashBook" >@_Row["Title"]</a></li>
+                }
+            </ul>
+        </div>
+
+        @if(Model.IsSelected)
+        {
+            
+            
+            
+            <a>Selected</a>
+        }
+        
+
+        <!---row / Container div end--->
+    </div>
+</div>

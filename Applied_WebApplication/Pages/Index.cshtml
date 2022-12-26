@@ -21,5 +21,11 @@
 </blockquote>
 
 <form method="post">
-<input type="submit" class="btn btn-primary" value="Print" asp-page-handler="Print" asp-route-UserName=@UserName/>
+<input type="submit" class="btn btn-primary" value="Print" asp-page=".\PrintReports\PrintReport" asp-page-handler="COAList"  asp-route-UserName=@UserName/>
+</form>
+<br />
+
+
+<form method="post">
+<input type="submit" class="btn btn-primary" value="Cash Book" asp-page=".\Accounts\CashBook" asp-route-UserName=@UserName/>
 </form>

@@ -18,17 +18,17 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="DataSet1.Designer.cs">
+    <Compile Update="ds_COA.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
-      <DependentUpon>DataSet1.xsd</DependentUpon>
+      <DependentUpon>ds_COA.xsd</DependentUpon>
     </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="DataSet1.xsd">
+    <None Update="ds_COA.xsd">
       <Generator>MSDataSetGenerator</Generator>
-      <LastGenOutput>DataSet1.Designer.cs</LastGenOutput>
+      <LastGenOutput>ds_COA.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

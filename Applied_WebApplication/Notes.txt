@@ -25,6 +25,7 @@ Reporting Support Tools
 NuGet\Install-Package AspNetCore.Reporting -Version 2.1.0
 NuGet\Install-Package System.Drawing.Common -Version 7.0.0
 NuGet\Install-Package System.Text.Encoding.CodePages -Version 7.0.0
+NuGet\Install-Package System.Security.Permissions -Version 7.0.0
 ========================================================================
 
 SQLite ODBC Driver

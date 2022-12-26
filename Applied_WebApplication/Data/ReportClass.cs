@@ -3,34 +3,36 @@ using Microsoft.AspNetCore;
 using System.Data;
 using System.Text;
 
+
 namespace Applied_WebApplication.Data
 {
     public class ReportClass 
     {
         private string mimtype = "";
         private int extension = 1;
-        public string UserName { get; set; }
-        public string MyReportPath { get; set; }
-        public string MyPrintReportPath { get; set; }
-        public string DataSourceName { get; set; }
-        public Dictionary<string, string> Parameters { get; set;  } = new Dictionary<string, string>();
-        public FileType RenderFileType { get; set; }
-        public Tables DataTableName { get; set; }
-        public string CommandText { get; set; }
-        public string MyMessage { get; set; }
-        public FileStream MyFileStream { get; set; }
-        public byte[] MyBytes { get; set; }
+        public string UserName { get; set; }                     // Current User Name
+        public string MyReportPath { get; set; }               // RDLC report name with path
+        public string MyPrintReportPath { get; set; }       // Path or location to print report.
+        public string DataSourceName { get; set; }          // Datasource DataSet name exact in RDLC
+        public Dictionary<string, string> Parameters { get; set;  } = new Dictionary<string, string>();     // Reports Paramates
+        public FileType RenderFileType { get; set; }                        // Rendered file type pdf, word, excel
+        public Tables DataTableName { get; set; }                         // Name of DataTable ontain from erum Table.
+        public string CommandText { get; set; }                             // commad for factch date from DB
+        public string MyMessage { get; set; }                                // Store message of the class
+        public FileStream MyFileStream { get; set; }                      // File Stream Object
+        public byte[] MyBytes { get; set; }                                     // Rendered file bytes for view or print report
 
         public ReportClass()
         {
-            MyReportPath = string.Concat(Directory.GetCurrentDirectory(),"\\wwwroot\\");
-            
+            MyReportPath =   string.Concat(Directory.GetCurrentDirectory(),"\\wwwroot\\");
         }
 
         public void GetReport()
         {
             if (File.Exists(MyReportPath))
             {
+                if(!Directory.Exists(MyPrintReportPath)) { Directory.CreateDirectory(MyPrintReportPath); }                                           // Create a Directory if not existed.
+
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
                 LocalReport _Report = new LocalReport(MyReportPath);

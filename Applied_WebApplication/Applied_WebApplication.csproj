@@ -27,16 +27,14 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
-    <Folder Include="Reports\" />
     <Folder Include="Pages\HR\" />
+    <Folder Include="Reports\" />
+    <Folder Include="wwwroot\Reports\PrintReports\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="wwwroot\Reports\Report1.rdlc">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    <None Include="wwwroot\Reports\Report1.rdlc" />
   </ItemGroup>
 
 </Project>
