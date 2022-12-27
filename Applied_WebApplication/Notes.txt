@@ -52,3 +52,5 @@ http://blog.geveo.com/IntegratingRDLCReportsToNetCoreProjects							Report Writi
 
 https://social.msdn.microsoft.com/Forums/en-US/59aaca9a-10c7-485c-8079-a43a9fa24220/aspnetcorereporting?forum=aspcomponetdiscussion
 Report Print 
+
+https://geoprocessing.online/					Useful Tools 
