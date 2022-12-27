@@ -27,14 +27,16 @@ namespace Applied_WebApplication.Pages.PrintReports
         public IActionResult OnPostCOAList(string UserName)
         {
             var RootPath = MyEnvironment.WebRootPath;
-
             ReportClass MyReport = new ReportClass();
+            MyReport.ReportFilter.TableName = Tables.COA;
+            MyReport.ReportFilter.dt_From = new DateTime(2022, 12, 1);
+            MyReport.ReportFilter.dt_To = new DateTime(2022, 12, 31);
             MyReport.UserName = UserName;
             MyReport.MyReportPath = string.Concat(MyReport.MyReportPath, "Reports\\", "Report1.rdlc");
             MyReport.MyPrintReportPath = String.Concat(RootPath, "\\MyReport\\PrintReports\\", UserName, "\\");
             MyReport.RenderFileType = ReportClass.FileType.pdf;
             MyReport.DataSourceName = "DataSet1";
-            MyReport.CommandText = "SELECT ID, CODE, TITLE FROM [COA]";
+            MyReport.CommandText = DataTableClass.GetQueryText(MyReport.ReportFilter); //  "SELECT ID, CODE, TITLE FROM [COA]";
             MyReport.Parameters.Add("UserName", UserName);
             MyReport.GetReport();
             return new FileContentResult(MyReport.MyBytes, "application/pdf");

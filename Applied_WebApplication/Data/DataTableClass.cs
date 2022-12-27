@@ -371,8 +371,9 @@ namespace Applied_WebApplication.Data
         #region Static Function
 
 
-        public static DataTable GetAppliedTable(string UserName, string _Text)
+        public static DataTable GetAppliedTable(string UserName, ReportClass.Filters ReportFilter)
         {
+            string _Text = GetQueryText(ReportFilter);
             ConnectionClass _Connection = new(UserName);
             SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
             DataSet _DataSet = new DataSet();
@@ -385,10 +386,33 @@ namespace Applied_WebApplication.Data
 
         }
 
+        public static string GetQueryText(ReportClass.Filters ReportFilter)
+        {
+            var string DateFormat = "yyyy-MM-dd";
+            if(ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
+            string _TableName = ReportFilter.TableName.ToString();
+            string _TableColumns = ReportFilter.Columns;
+            StringBuilder _Text = new();
+            StringBuilder _Where = new();
+
+            _Text.Append("SELECT ");
+            _Text.Append(_TableColumns);
+            _Text.Append(" FROM [" + _TableName + "]");
+
+            if (ReportFilter.dt_From != null) { _Where.Append("Vou_Date>=" + ReportFilter.dt_From.ToString(DateFormat));}
+            if (ReportFilter.dt_To != null) { _Where.Append("Vou_Date<=" + ReportFilter.dt_To.ToString(DateFormat));}
+            
+
+
+            
+            
+            return String.Concat(_Text.ToString(),_Where.ToString());
+        }
+
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
         {
-            if(UserName == null) { return ""; }
-            string _Text = string.Concat("SELECT [",_Column,"] From [", _Table, "] where ID=", ID.ToString());
+            if (UserName == null) { return ""; }
+            string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
             ConnectionClass _Connection = new(UserName);
             SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
             DataSet _DataSet = new DataSet();
