@@ -388,25 +388,32 @@ namespace Applied_WebApplication.Data
 
         public static string GetQueryText(ReportClass.Filters ReportFilter)
         {
-            var string DateFormat = "yyyy-MM-dd";
-            if(ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
+            string DateFormat = "yyyy-MM-dd";
+            if (ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
             string _TableName = ReportFilter.TableName.ToString();
             string _TableColumns = ReportFilter.Columns;
-            StringBuilder _Text = new();
+            StringBuilder _SQL = new();
             StringBuilder _Where = new();
 
-            _Text.Append("SELECT ");
-            _Text.Append(_TableColumns);
-            _Text.Append(" FROM [" + _TableName + "]");
+            _SQL.Append("SELECT ");
+            _SQL.Append(_TableColumns);
+            _SQL.Append(" FROM [" + _TableName + "]");
 
-            if (ReportFilter.dt_From != null) { _Where.Append("Vou_Date>=" + ReportFilter.dt_From.ToString(DateFormat));}
-            if (ReportFilter.dt_To != null) { _Where.Append("Vou_Date<=" + ReportFilter.dt_To.ToString(DateFormat));}
-            
+            if (ReportFilter.dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.dt_From.ToString(DateFormat)); }
+            if (ReportFilter.dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.dt_To.ToString(DateFormat)); }
+            if (ReportFilter.n_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.n_ID.ToString() + " AND"); }
+            if (ReportFilter.n_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.n_COA.ToString() + " AND"); }
+            if (ReportFilter.n_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.n_Customer.ToString() + " AND") ; }
+            if (ReportFilter.n_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.n_Project.ToString() + " AND"); }
+            if (ReportFilter.n_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.n_Employee.ToString() + " AND"); }
+            if (ReportFilter.n_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.n_InvCategory.ToString() + " AND"); }
+            if (ReportFilter.n_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.n_InvSubCategory.ToString() + " AND"); }
+            if (ReportFilter.n_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.n_Inventory.ToString() + " AND"); }
+            if (_Where.Length > 0) { _Where.Insert(0," WHERE "); } 
+            string Where = _Where.ToString();
+            if(Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }                    
 
-
-            
-            
-            return String.Concat(_Text.ToString(),_Where.ToString());
+            return string.Concat(_SQL.ToString(), Where);
         }
 
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)

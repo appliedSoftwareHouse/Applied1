@@ -100,6 +100,8 @@ namespace Applied_WebApplication.Data
             public string Columns = "*";
             public DateTime dt_From;
             public DateTime dt_To;
+            public int n_ID;
+            public int n_COA;
             public int n_Customer;
             public int n_Employee;
             public int n_Project;
