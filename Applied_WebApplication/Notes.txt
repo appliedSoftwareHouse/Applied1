@@ -54,3 +54,5 @@ https://social.msdn.microsoft.com/Forums/en-US/59aaca9a-10c7-485c-8079-a43a9fa24
 Report Print 
 
 https://geoprocessing.online/					Useful Tools 
+
+https://www.dbsofts.com/articles/ms_excel_to_sqlite/				Excel to SQLite
