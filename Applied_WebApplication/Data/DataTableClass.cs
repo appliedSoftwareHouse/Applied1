@@ -45,7 +45,6 @@ namespace Applied_WebApplication.Data
 
         }
 
-
         public DataTableClass(string _UserName, string _TableName)
         {
             MyUserName = _UserName;
@@ -388,6 +387,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetQueryText(ReportClass.Filters ReportFilter)
         {
+            // Create a query to fatch data from Data Table for Display Reports.
             string DateFormat = "yyyy-MM-dd";
             if (ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
             string _TableName = ReportFilter.TableName.ToString();
@@ -403,22 +403,24 @@ namespace Applied_WebApplication.Data
             if (ReportFilter.dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.dt_To.ToString(DateFormat)); }
             if (ReportFilter.n_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.n_ID.ToString() + " AND"); }
             if (ReportFilter.n_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.n_COA.ToString() + " AND"); }
-            if (ReportFilter.n_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.n_Customer.ToString() + " AND") ; }
+            if (ReportFilter.n_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.n_Customer.ToString() + " AND"); }
             if (ReportFilter.n_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.n_Project.ToString() + " AND"); }
             if (ReportFilter.n_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.n_Employee.ToString() + " AND"); }
             if (ReportFilter.n_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.n_InvCategory.ToString() + " AND"); }
             if (ReportFilter.n_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.n_InvSubCategory.ToString() + " AND"); }
             if (ReportFilter.n_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.n_Inventory.ToString() + " AND"); }
-            if (_Where.Length > 0) { _Where.Insert(0," WHERE "); } 
+            if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
             string Where = _Where.ToString();
-            if(Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }                    
+            if (Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }
 
             return string.Concat(_SQL.ToString(), Where);
         }
 
+
+        // Get Value of any column from any Data Table.
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
         {
-            if (UserName == null) { return ""; }
+            if (UserName == null) { return ""; } if(ID==0) { return ""; }
             string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
             ConnectionClass _Connection = new(UserName);
             SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
@@ -430,6 +432,43 @@ namespace Applied_WebApplication.Data
             }
             return "";
 
+
+        }
+
+        public static DataTable ConvertLedger(string UserName, DataTable _Table)
+        {
+            DataTableClass Ledger = new(UserName, Tables.view_Ledger);
+            DataTable _Ledger = Ledger.MyDataTable.Clone();
+            Ledger = null;
+
+            if(_Table.TableName == "CashBook")
+            {
+                DataView _DataView = _Table.AsDataView();
+                _DataView.Sort = "Vou_Date";
+
+                decimal Debit = 0M;
+                decimal Credit = 0M;
+                decimal Balance = 0M;
+
+                foreach (DataRow _Row in _DataView.ToTable().Rows)
+                {
+                    Debit = decimal.Parse(_Row["DR"].ToString());
+                    Credit = decimal.Parse(_Row["CR"].ToString());
+                    Balance = Balance + (Debit - Credit);
+
+                    DataRow _NewRow = _Ledger.NewRow();
+                    _NewRow["ID"] = _Row["ID"];
+                    _NewRow["Vou_Type"] = "Cash";
+                    _NewRow["Vou_Date"] = _Row["Vou_Date"];
+                    _NewRow["Vou_No"] = _Row["Vou_No"];
+                    _NewRow["Description"] = _Row["Description"];
+                    _NewRow["DR"] = _Row["DR"];
+                    _NewRow["CR"] = _Row["CR"];
+                    _NewRow["BAL"] = Balance;
+                    _Ledger.Rows.Add(_NewRow);
+                }
+            }
+            return _Ledger;
 
         }
 

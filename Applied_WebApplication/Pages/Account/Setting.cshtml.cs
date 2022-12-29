@@ -10,12 +10,14 @@ namespace Applied_WebApplication.Pages.Account
     {
         AppliedUsersClass MyUserClass = new();
         public string CurrencyFormat = string.Empty;
-        public string CurrencyFormat1 = "N";
+        public string CurrencyFormat1 = "#,0";
         public string CurrencyFormat2 = "#,0.000";
         public string CurrencyFormat3 = "#,0.00 Rs.";
-        public string CurrencyFormat4 = "Rs. #,0";
-        public string CurrencyFormat5 = "#,##0";
-        public string CurrencyFormat6 = "#,##0.00";
+        public string CurrencyFormat4 = "#,0 Rs.";
+        public string CurrencyFormat5 = "Rs. #,0";
+        public string CurrencyFormat6 = "Rs. #,0.00";
+        public string CurrencyFormat7 = "#,##0";
+        public string CurrencyFormat8 = "#,##0.00";
 
         public string DateFormat = string.Empty;
         public string DateFormat1 = "dd-MM-yy";
@@ -51,6 +53,14 @@ namespace Applied_WebApplication.Pages.Account
                     break;
                 case 6:
                     CurrencyFormat = CurrencyFormat6;
+                    break;
+
+                case 7:
+                    CurrencyFormat = CurrencyFormat7;
+                    break;
+
+                case 8:
+                    CurrencyFormat = CurrencyFormat8;
                     break;
 
                 default:

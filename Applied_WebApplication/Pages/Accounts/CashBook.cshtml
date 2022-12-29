@@ -4,87 +4,136 @@
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
 @{
     var UserName = User.Identity.Name;
+    var Variable = new List<object> { Model.MyParameters };
     DataTableClass COA = new(UserName, Tables.COA);
-    COA.MyDataView.RowFilter = "Nature=2";
-    var IntValue = 5323.55;
-    var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");
+
+    COA.MyDataView.RowFilter = "Nature=1";                                                                                  // Filter only Cash in Hand Accounts for Dropdown Menu.
+    var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");                 // Get format of Currency to display
+    var DateFormat = AppliedUsersClass.GetUserValue(UserName, "DateFormat");                        // Get format of Number to Display
+
+    if (Model.MyParameters.IsSelected)
+    {
+        var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
+        var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
+
+        DataTableClass CashBook = new(UserName, Tables.CashBook);
+        CashBook.MyDataView.Sort = "Vou_Date";
+        CashBook.MyDataView.RowFilter = "BookID=" + Model.MyParameters.CashBookID + " AND Vou_Date>='" + Date1 + "' AND Vou_Date <='" + Date2 + "'";
+        Model.CashBookLedger = DataTableClass.ConvertLedger(UserName, CashBook.MyDataView.ToTable());
+        Model.MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", Model.MyParameters.CashBookID);
+        Variable = new List<object> { Model.MyParameters };
+
+    }
+
 }
+<style>
+    #MyTable {
+        background-color: antiquewhite
+    }
+</style>
+
 
 <form method="get">
-    <div class="container p-2 bg-primary text-white rounded">
-        <div class="row ">
-            <div class="col-8">
-                <label>CASH BOOK</label>
-            </div>
-            <div class="col-4">
-                @if (Model.IsSelected==false)
-                {
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+    @if (Model.MyParameters.IsSelected == false)
+    {
+        <div class="container p-2 bg-primary text-white rounded">
+            <div class="row ">
+                <div class="col-8">
+                    <label>CASH BOOK</label>
+                </div>
+                <div class="col-4">
                     <div class="dropdown ">
-                        <button class="btn btn-outline-primary text-white dropdown-toggle float-end" type="button" id="BtnCashBook" data-bs-toggle="dropdown" aria-expanded="false">
+                        <button class="btn btn-outline-primary text-white dropdown-toggle float-end"
+                            type="button" id="BtnCashBook" data-bs-toggle="dropdown" aria-expanded="false">
                             SELECT : Cash Book
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="mnuButtonCashBook">
                             @foreach (DataRow _Row in COA.MyDataView.ToTable().Rows)
-                            {<li><a class="dropdown-item" asp-route-id=@_Row["ID"] asp-route-UserName=@UserName asp-page="CashBook">@_Row["Title"]</a></li>}
+                            {
+                                <li>
+                                    <a class="dropdown-item" name="CashBookID"
+                               asp-route-id=@_Row["ID"]
+                               asp-route-UserName=@UserName
+                               asp-page="CashBook">
+                                        @_Row["Title"]
+                                    </a>
+                                </li>
+                            }
                         </ul>
                     </div>
-                }
+                </div>
             </div>
         </div>
-    </div>
-</form>
-@if (Model.IsSelected)
-{
-        <div class="table-responsive">
-            <table class="table caption-top">
-                <caption>@Model.BookTitle</caption>
+    }
+    else
+    {
+        <div class="container g-2 p-2 bg-primary text-white rounded">
+            <div class="row d-flex ">
+                <div class="col-4">
+                    <h4 name="BookTitle">@Model.MyParameters.BookTitle</h4>
+                </div>
+                <div class="col-2"> <input type="date" name="MinDate" value=@Model.MyParameters.MinDate.ToString("yyyy-MM-dd") /></div>
+                <div class="col-2"> <input type="date" name="MaxDate" value=@Model.MyParameters.MaxDate.ToString("yyyy-MM-dd") /></div>
+                <div class="col-2">
+                    <button class="btn btn-primary" type="post" name="BookTitle" 
+                        asp-route-UserName=@UserName 
+                        asp-route-Parameters=@Model.MyParameters
+                        asp-page-handler="Refresh"
+                        asp-page="CashBook">
+                        REFRESH
+                    </button>
+
+                </div>
+                <div class="col-2 float-end">
+                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd" asp-route-UserName=@UserName asp-page="CashBookAdd">ADD</button>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (Model.MyParameters.IsSelected)
+    {
+        <div>
+            <table class="table" id="MyTable">
                 <thead>
                     <tr>
                         <th style="width:10%">Date</th>
                         <th style="width:10%">Vou No</th>
-                        <th style="width:44%">Description</th>
-                        <th style="width:10%">Debit</th>
-                        <th style="width:10%">Credit</th>
-                        <th style="width:10%">Balance</th>
+                        <th style="width:40%">Description</th>
+                        <th style="width:10%; text-align: right">Debit</th>
+                        <th style="width:10%; text-align: right">Credit</th>
+                        <th style="width:10%; text-align: right">Balance</th>
+                        <th style="width:10%; text-align: right">ADD</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>11-Dec-2022</td>
-                        <td>22-11-00001</td>
-                        <td>This is Testing of Description</td>
-                        <td class="align-content-end">@IntValue.ToString(NumFormat)</td>
-                        <td>0.00</td>
-                        <td>1,345,765.00</td>
-                    </tr>
-                    <tr>
-                        <td>12-Dec-2022</td>
-                        <td>22-11-00002</td>
-                        <td>This is Testing of Description</td>
-                        <td>0.00</td>
-                        <td>1,245,852.00</td>
-                        <td>1,345,852.00</td>
-                    </tr>
-                    <tr>
-                        <td>13-Dec-2022</td>
-                        <td>22-11-00003</td>
-                        <td>This is Testing of Description</td>
-                        <td>3,456.00</td>
-                        <td>0.00</td>
-                        <td>1,346,789.00</td>
-                    <tr>
-                        <td>15-Dec-2022</td>
-                        <td>22-11-00004</td>
-                        <td>This is Testing of Description</td>
-                        <td>12,456.00</td>
-                        <td>0.00</td>
-                        <td>1,345,765.00</td>
-                    </tr>
-                    </tr>
+
+                    @foreach (DataRow _Row in Model.CashBookLedger.Rows)
+                    {
+                        <tr>
+                            <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                            <td>@_Row["Vou_No"].ToString()</td>
+                            <td>@_Row["Description"].ToString()</td>
+                            <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
+                            <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+
+                            @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
+                            {
+                                <td style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                            }
+                            else
+                            {
+                                <td class="text-danger" style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                            }
+                            <td>Edit | Delete</td>
+
+                        </tr>
+                    }
                 </tbody>
             </table>
         </div>
-}
-
+    }
+</form>
 
 <!---row / Container div end--->

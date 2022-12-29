@@ -22,11 +22,14 @@ namespace Applied_WebApplication.Data
         public FileStream MyFileStream { get; set; }                      // File Stream Object
         public byte[] MyBytes { get; set; }                                     // Rendered file bytes for view or print report
         public Filters ReportFilter { get; set; }                               // SQL query Filters
+        public Tables PrintDataTable { get; set; }                   // Data Table Set for print report.
+        
 
         public ReportClass()
         {
             MyReportPath =   string.Concat(Directory.GetCurrentDirectory(),"\\wwwroot\\");
             ReportFilter = new Filters();
+
         }
 
         public void GetReport()
@@ -38,7 +41,7 @@ namespace Applied_WebApplication.Data
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
                 LocalReport _Report = new LocalReport(MyReportPath);                                                                                                // Create Report Object.
-                _Report.AddDataSource(DataSourceName, ReportDataTable(ReportFilter));                                                                                    // Create DataTabel and inject in report.
+                _Report.AddDataSource(DataSourceName, ReportDataTable());                                                                                    // Create DataTabel and inject in report.
                 var result = _Report.Execute(GetRenderType(RenderFileType.ToString()), extension, Parameters, mimtype);
 
                 byte[] bytes = result.MainStream;
@@ -61,7 +64,7 @@ namespace Applied_WebApplication.Data
         }
 
 
-        public DataTable ReportDataTable(Filters ReportFilter)
+        private DataTable ReportDataTable()
         {
             return DataTableClass.GetAppliedTable(UserName, ReportFilter);
         }

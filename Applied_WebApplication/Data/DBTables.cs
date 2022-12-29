@@ -6,6 +6,7 @@ public enum Tables
     COA_Nature = 102,
     COA_Class = 103,
     COA_Notes = 104,
+    CashBook = 105,
 
     Customers = 201,
     City = 202,
@@ -17,7 +18,9 @@ public enum Tables
     Inv_Packing = 304,
     Inv_UOM = 305,
 
-    Ledger = 401
+    Ledger = 401,
+    view_Ledger = 402
+
 
 }
 

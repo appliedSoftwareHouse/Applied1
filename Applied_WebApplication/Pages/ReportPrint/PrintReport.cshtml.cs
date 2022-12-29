@@ -2,7 +2,7 @@ using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Applied_WebApplication.Pages.PrintReports
+namespace Applied_WebApplication.Pages.ReportPrint
 {
     public class COAListModel : PageModel
     {
