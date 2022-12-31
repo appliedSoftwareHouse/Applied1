@@ -4,6 +4,8 @@ using System.Data.SQLite;
 using System.Security.Principal;
 using System.Text;
 using Applied_WebApplication.Data;
+using System.ServiceModel.Security;
+using static Applied_WebApplication.Data.ReportClass;
 
 namespace Applied_WebApplication.Data
 {
@@ -41,8 +43,6 @@ namespace Applied_WebApplication.Data
             Command_Update = new SQLiteCommand(MyConnection);
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
-
-
         }
 
         public DataTableClass(string _UserName, string _TableName)
@@ -469,8 +469,21 @@ namespace Applied_WebApplication.Data
                 }
             }
             return _Ledger;
-
         }
+
+        public static DataTable GetRecords(string UserName, Tables _TableName, string _Filter)
+        {
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = _Filter;
+            return _Table.MyDataView.ToTable();
+        }
+
+        public static DataRow NewRecord(string UserName, Tables _TableName)
+        {
+            DataTableClass _Table = new(UserName, _TableName);
+            return _Table.NewRecord();
+        }
+
 
         #endregion
 

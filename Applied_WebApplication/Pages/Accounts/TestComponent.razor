@@ -1,0 +1,46 @@
+﻿@using Applied_WebApplication.Pages.Accounts
+@using System.Data
+@code {
+    [Parameter]
+    public CashBookModel.ReportParameters MyParameters { get; set; }
+
+            
+
+}
+
+<div class="accordion" id="accordionExample">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                @MyParameters.BookTitle;
+            </button>
+        </h2>
+    </div>
+    <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+        <div class="accordion-body">
+            
+            @MyParameters.Row["ID"] = 0;
+            @MyParameters.Row["Vou_No"] = 0;
+            @MyParameters.Row["Vou_Date"] = DateTime.Now;
+            @MyParameters.Row["BookID"] = 0;
+            @MyParameters.Row["COA"] = 0;
+            @MyParameters.Row["Ref_No"] = "Ref Number";
+            @MyParameters.Row["DR"] = 0.00;
+            @MyParameters.Row["CR"] = 12345.800;
+            @MyParameters.Row["Description"] = "Description";
+            @MyParameters.Row["Comments"] = "Comments;
+            @MyParameters.Row["Customer"] = 0;
+            @MyParameters.Row["Project"] = 0;
+            @MyParameters.Row["Employee"] = 0;
+            
+            @foreach (DataColumn item in MyParameters.Row.Table.Columns)
+            {
+                @MyParameters.Row[item.ColumnName]
+                <br />
+            }
+
+
+        </div>
+    </div>
+</div>
+

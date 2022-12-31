@@ -1,6 +1,7 @@
 ﻿using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
 using Microsoft.AspNetCore.Identity;
 using System.Data;
+using System.Data.Common;
 using System.Data.SQLite;
 using DataSet = System.Data.DataSet;
 
@@ -42,6 +43,15 @@ namespace Applied_WebApplication.Data
             SQLiteCommand _Command = new();
             SQLiteConnection _Connection = new SQLiteConnection("Data Source=" + DBFile_Path); _Connection.Open();
         }
+
+
+        public static SQLiteConnection AppConnection(string UserName)
+        {
+            ConnectionClass _ConnectionClass = new(UserName);                           // Establishe Connection Class
+            return _ConnectionClass.AppliedConnection;
+        }
+
+
     }           // END()
 
     public class AppliedUsersClass

@@ -1,139 +1,152 @@
 ﻿@page
 @using System.Data;
 @using Applied_WebApplication.Data
+@using Microsoft.Extensions.Primitives
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
 @{
     var UserName = User.Identity.Name;
-    var Variable = new List<object> { Model.MyParameters };
-    DataTableClass COA = new(UserName, Tables.COA);
-
-    COA.MyDataView.RowFilter = "Nature=1";                                                                                  // Filter only Cash in Hand Accounts for Dropdown Menu.
+    var CashCode = 1;
+    var COA = DataTableClass.GetRecords(UserName, Tables.COA, "Nature=" + CashCode.ToString());                            // Nature 1 is Cash in Hand ID in COA Nature Table.
     var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");                 // Get format of Currency to display
     var DateFormat = AppliedUsersClass.GetUserValue(UserName, "DateFormat");                        // Get format of Number to Display
+    var LedgerClass = new Ledger(UserName);
+    var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
+    var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
 
-    if (Model.MyParameters.IsSelected)
+    if (Model.MyParameters.IsSelected || Model.MyParameters.IsAdd)
     {
-        var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
-        var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
-
-        DataTableClass CashBook = new(UserName, Tables.CashBook);
-        CashBook.MyDataView.Sort = "Vou_Date";
-        CashBook.MyDataView.RowFilter = "BookID=" + Model.MyParameters.CashBookID + " AND Vou_Date>='" + Date1 + "' AND Vou_Date <='" + Date2 + "'";
-        Model.CashBookLedger = DataTableClass.ConvertLedger(UserName, CashBook.MyDataView.ToTable());
-        Model.MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", Model.MyParameters.CashBookID);
-        Variable = new List<object> { Model.MyParameters };
-
+        LedgerClass.TableName = Tables.CashBook;
+        LedgerClass.Date_From = DateTime.Parse(Date1);
+        LedgerClass.Date_To = DateTime.Parse(Date2);
+        LedgerClass.Sort = "Vou_Date";
+        Model.Cashbook = LedgerClass.Records;
+        Model.MyParameters.Row = DataTableClass.NewRecord(UserName, Tables.CashBook);
     }
 
 }
 <style>
     #MyTable {
-        background-color: antiquewhite
+        overflow: auto;
+        height: 600px;
+        background-color: lightcyan
     }
+
 </style>
 
 
-<form method="get">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-    @if (Model.MyParameters.IsSelected == false)
-    {
-        <div class="container p-2 bg-primary text-white rounded">
-            <div class="row ">
-                <div class="col-8">
-                    <label>CASH BOOK</label>
-                </div>
-                <div class="col-4">
-                    <div class="dropdown ">
-                        <button class="btn btn-outline-primary text-white dropdown-toggle float-end"
-                            type="button" id="BtnCashBook" data-bs-toggle="dropdown" aria-expanded="false">
-                            SELECT : Cash Book
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="mnuButtonCashBook">
-                            @foreach (DataRow _Row in COA.MyDataView.ToTable().Rows)
-                            {
-                                <li>
-                                    <a class="dropdown-item" name="CashBookID"
+<form method="post">
+    <div class="container p-2 bg-primary text-white rounded">
+        <div class="row d-flex justify-content-between align-items-center">
+            <div class="col-4">
+                <label>CASH BOOK</label>
+            </div>
+            <div class="col-2" style="float: right">
+                <label for="From">From</label>
+                <input type="date" id="From" name="MinDate" min="2020-01-01" value=@Date1 />
+            </div>
+            <div class="col-2" style="float: left">
+                <label for="To">To</label>
+                <input type="date" id="To" name="MaxDate" min="2020-01-01" value=@Date2 />
+            </div>
+            <div class="col-2">
+                @if (Model.MyParameters.CashBookID > 0)
+                {
+                    <button class="btn btn-outline-info rounded" type="submit" name="Refresh" style="float: right"
+                        asp-route-UserName=@UserName
+                        asp-page-handler="Refresh">
+                        REFRESH
+                    </button>
+                }
+            </div>
+
+            <div class="col-2">
+                <div class="dropdown">
+                    <button class="btn btn-outline-primary text-white dropdown-toggle float-end"
+                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        @Model.MyParameters.BookTitle
+                    </button>
+
+                    <ul class="dropdown-menu">
+                        @foreach (DataRow _Row in COA.Rows)
+                        {
+                            <li>
+                                <a class="dropdown-item"
                                asp-route-id=@_Row["ID"]
                                asp-route-UserName=@UserName
                                asp-page="CashBook">
-                                        @_Row["Title"]
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
+                                    @_Row["Title"]
+                                </a>
+                            </li>
+                        }
+                    </ul>
                 </div>
+                <input name="CashBookID" value=@Model.MyParameters.CashBookID hidden />                  <!--  Generate CashBookID i-->
+                <input type="text" name="BookTitle" value=@Model.MyParameters.BookTitle hidden />
             </div>
         </div>
-    }
-    else
-    {
-        <div class="container g-2 p-2 bg-primary text-white rounded">
-            <div class="row d-flex ">
-                <div class="col-4">
-                    <h4 name="BookTitle">@Model.MyParameters.BookTitle</h4>
-                </div>
-                <div class="col-2"> <input type="date" name="MinDate" value=@Model.MyParameters.MinDate.ToString("yyyy-MM-dd") /></div>
-                <div class="col-2"> <input type="date" name="MaxDate" value=@Model.MyParameters.MaxDate.ToString("yyyy-MM-dd") /></div>
-                <div class="col-2">
-                    <button class="btn btn-primary" type="post" name="BookTitle" 
-                        asp-route-UserName=@UserName 
-                        asp-route-Parameters=@Model.MyParameters
-                        asp-page-handler="Refresh"
-                        asp-page="CashBook">
-                        REFRESH
-                    </button>
+    </div>
 
-                </div>
-                <div class="col-2 float-end">
-                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd" asp-route-UserName=@UserName asp-page="CashBookAdd">ADD</button>
-                </div>
-            </div>
-        </div>
-    }
-
-    @if (Model.MyParameters.IsSelected)
-    {
-        <div>
-            <table class="table" id="MyTable">
-                <thead>
-                    <tr>
-                        <th style="width:10%">Date</th>
-                        <th style="width:10%">Vou No</th>
-                        <th style="width:40%">Description</th>
-                        <th style="width:10%; text-align: right">Debit</th>
-                        <th style="width:10%; text-align: right">Credit</th>
-                        <th style="width:10%; text-align: right">Balance</th>
-                        <th style="width:10%; text-align: right">ADD</th>
-                    </tr>
-                </thead>
-                <tbody>
-
-                    @foreach (DataRow _Row in Model.CashBookLedger.Rows)
-                    {
+    <!-- ADD CASH BOOK RECORD -->
+    <div>
+        @if (Model.MyParameters.IsAdd)
+        {
+            
+            <component type="typeof(TestComponent)" render-mode="Static" param-MyParameters=@Model.MyParameters />
+        }
+    </div>
+    <!-- SHOW CASH BOOK RECORD -->
+    <div>
+        @if (Model.MyParameters.IsSelected)
+        {
+            <div>
+                <table class="table" id="MyTable">
+                    <thead>
                         <tr>
-                            <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
-                            <td>@_Row["Vou_No"].ToString()</td>
-                            <td>@_Row["Description"].ToString()</td>
-                            <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
-                            <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
-
-                            @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
-                            {
-                                <td style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                            }
-                            else
-                            {
-                                <td class="text-danger" style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                            }
-                            <td>Edit | Delete</td>
-
+                            <th style="width:10%">Date</th>
+                            <th style="width:10%">Vou No</th>
+                            <th style="width:40%">Description</th>
+                            <th style="width:10%; text-align: right">Debit</th>
+                            <th style="width:10%; text-align: right">Credit</th>
+                            <th style="width:10%; text-align: right">Balance</th>
+                            <th style="width:10%; text-align: right">
+                                <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+                                    asp-route-UserName=@UserName
+                                    asp-route-Variables=@Model.MyParameters
+                                    asp-page-handler="Add"
+                                    asp-page="CashBook">
+                                    ADD
+                                </button>
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    }
+                    </thead>
+                    <tbody>
+
+                        @foreach (DataRow _Row in Model.Cashbook.Rows)
+                        {
+                            <tr>
+                                <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                                <td>@_Row["Vou_No"].ToString()</td>
+                                <td>@_Row["Description"].ToString()</td>
+                                <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
+                                <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+
+                                @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
+                                {
+                                    <td style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                }
+                                else
+                                {
+                                    <td class="text-danger" style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                }
+                                <td>Edit | Delete</td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+    </div>
 </form>
 
 <!---row / Container div end--->
