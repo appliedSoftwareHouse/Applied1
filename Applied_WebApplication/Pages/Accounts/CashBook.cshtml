@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Data
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Primitives
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
@@ -15,6 +16,7 @@
     var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
 
+    Model.Cashbook = LedgerClass.Records;                                                                                                                       // Get record from cashbook to ledger class
 
 
     if (Model.MyParameters.IsSelected || Model.MyParameters.IsAdd)
@@ -31,16 +33,20 @@
         {
             Model.MyParameters.Row["ID"] = 0;
             Model.MyParameters.Row["Vou_No"] = "TEST-002";
-            Model.MyParameters.Row["Vou_Date"] = DateOnly.FromDateTime(DateTime.Now);
+            Model.MyParameters.Row["Vou_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
             Model.MyParameters.Row["BookID"] = Model.MyParameters.CashBookID;
             Model.MyParameters.Row["Description"] = "Testing a record";
-            Model.MyParameters.Row["Description"] = "Comments";
-            Model.MyParameters.Row["Project"] = "Comments";
+            Model.MyParameters.Row["Comments"] = "Comments";
+            Model.MyParameters.Row["Project"] = 0;
+            Model.MyParameters.Row["Employee"] = 0;
         }
 
     }
 
 }
+
+
+
 <style>
     #MyTable {
         overflow: auto;
@@ -58,6 +64,7 @@
                 <label>CASH BOOK</label>
             </div>
             <div class="col-2" style="float: right">
+               
                 <label for="From">From</label>
                 <input type="date" id="From" name="MinDate" min="2020-01-01" value=@Date1 />
             </div>
@@ -68,7 +75,7 @@
             <div class="col-2">
                 @if (Model.MyParameters.CashBookID > 0)
                 {
-                    <button class="btn btn-outline-info rounded" type="submit" name="Refresh" 
+                    <button class="btn btn-outline-info rounded" type="submit" name="Refresh"
                         asp-route-UserName=@UserName
                         asp-page-handler="Refresh">
                         REFRESH
@@ -84,7 +91,7 @@
                     </button>
 
                     <ul class="dropdown-menu">
-                        @foreach (KeyValuePair<int,string> _Key in COATitles)
+                        @foreach (KeyValuePair<int, string> _Key in COATitles)
                         {
                             <li>
                                 <a class="dropdown-item"
@@ -95,17 +102,6 @@
                                 </a>
                             </li>
                         }
-                        @*@foreach (DataRow _Row in COA.Rows)
-                        {
-                            <li>
-                                <a class="dropdown-item"
-                               asp-route-id=@_Row["ID"]
-                               asp-route-UserName=@UserName
-                               asp-page="CashBook">
-                                    @_Row["Title"]
-                                </a>
-                            </li>
-                        }*@
                     </ul>
                 </div>
                 <input name="CashBookID" value=@Model.MyParameters.CashBookID hidden />                  <!--  Generate CashBookID i-->
@@ -118,9 +114,6 @@
     <div>
         @if (Model.MyParameters.IsAdd)
         {
-                
-            
-
             <div class="container">
                 <div>
                     <input type="text"
@@ -187,7 +180,6 @@
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width: 120px" id="Description">Description</span>
@@ -198,6 +190,7 @@
                            aria-label="Description"
                            aria-describedby="Description">
                     </div>
+
                     <div class="input-group mb-3">
                         <span class="input-group-text" style="width: 120px" id="Description">Comments</span>
                         <input type="text"
@@ -211,41 +204,49 @@
 
                 <div class="row">
                     <div class="col input-group mb-3">
-                        <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                        <span class="input-group-text" style="width: 120px" id="Customers">Customers</span>
                         <select class="form-select">
+                            <option selected>@Model.MyParameters.Row["Customer"]</option>
                             @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
                             {
-                                <option>@_Title.Value</option>
+                                <option value=@_Title.Key>@_Title.Value</option>
                             }
                         </select>
                     </div>
+
                     <div class="col input-group mb-3">
-                        <span class="input-group-text" style="width: 120px" id="COAID">Projects</span>
+                        <span class="input-group-text" style="width: 120px" id="Project">Projects</span>
                         <select class="form-select">
+                            <option selected>@Model.MyParameters.Row["Project"]</option>
                             @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
                             {
-                                <option>@_Title.Value</option>
+                                <option value=@_Title.Key>@_Title.Value</option>
                             }
                         </select>
                     </div>
 
                     <div class="row">
                         <div class="col input-group mb-3">
-                            <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                            <span class="input-group-text" style="width: 120px" id="Employee">Employee</span>
                             <select class="form-select">
+                                <option selected>@Model.MyParameters.Row["Employee"]</option>
                                 @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
                                 {
-                                    <option>@_Title.Value</option>
+                                    <option value=@_Title.Key>@_Title.Value</option>
                                 }
                             </select>
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <a><input type="submit" class="btn btn-primary" value="SAVE" asp-page-handler="Save" asp-page="CashBook" /></a>
+                </div>
+
+
             </div>
 
         }
-
-
 
     </div>
     <!-- SHOW CASH BOOK RECORD -->
@@ -293,14 +294,12 @@
                                     <td class="text-danger" style="text-align: right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
                                 }
                                 <td>Edit | Delete</td>
-
                             </tr>
                         }
+
                     </tbody>
                 </table>
             </div>
         }
     </div>
 </form>
-
-<!---row / Container div end--->

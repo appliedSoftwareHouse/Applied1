@@ -1,5 +1,4 @@
 global using Applied_WebApplication.Data;
-global using System.Data;
 using Applied_WebApplication;
 
 var builder = WebApplication.CreateBuilder(args);

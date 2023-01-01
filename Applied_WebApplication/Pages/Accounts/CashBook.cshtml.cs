@@ -71,7 +71,10 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
         }
 
-
+        public IActionResult OnPostSave(string UserName, int id, ReportParameters? Paramaters)
+        {
+            return Page();
+        }
 
         public class ReportParameters
         {

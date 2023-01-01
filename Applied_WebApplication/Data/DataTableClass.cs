@@ -515,7 +515,7 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
-            if(_Table.MyDataTable.Rows.Count > 0)
+            if(_Table.MyDataView.Count > 0)
             { return _Table.MyDataTable.Rows[0]; }
             else { return _Table.MyDataTable.NewRow();}
         }

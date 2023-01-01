@@ -25,7 +25,7 @@ namespace Applied_WebApplication.Data
         {
             if (UserName == null || string.IsNullOrEmpty(UserName)) { return new DataTable(); }
             if (TableName.ToString() == "CashBook") { return GetLedger_CashBook(); }                                // Get Ledger Record from CashBook
-            return new DataTable();
+            return GetEmptyLedger();
         }
 
         private DataTable GetLedger_CashBook()
@@ -100,5 +100,14 @@ namespace Applied_WebApplication.Data
             }
             return _Ledger;
         }
+
+        private DataTable GetEmptyLedger()
+        {
+            DataTableClass _Table = new(UserName, Tables.view_Ledger);
+            DataTable _Ledger = _Table.MyDataTable.Clone();
+            return _Ledger;
+        }
     }
+
+    
 }
