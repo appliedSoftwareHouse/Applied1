@@ -6,6 +6,7 @@ using System.Text;
 using Applied_WebApplication.Data;
 using System.ServiceModel.Security;
 using static Applied_WebApplication.Data.ReportClass;
+using System.Reflection.Metadata;
 
 namespace Applied_WebApplication.Data
 {
@@ -435,6 +436,9 @@ namespace Applied_WebApplication.Data
 
         }
 
+        
+        
+
         public static DataTable ConvertLedger(string UserName, DataTable _Table)
         {
             DataTableClass Ledger = new(UserName, Tables.view_Ledger);
@@ -484,8 +488,40 @@ namespace Applied_WebApplication.Data
             return _Table.NewRecord();
         }
 
+        public static Dictionary<int,string> Titles(string UserName, Tables _TableName)
+        {
+            Dictionary<int, string> Titles = new Dictionary<int, string>();
+            DataTableClass _Table = new(UserName, _TableName);
+            foreach(DataRow _Row in _Table.MyDataTable.Rows)
+            {
+                Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
+            }
+            return Titles;
+        }
+
+        public static Dictionary<int, string> Titles(string UserName, Tables _TableName, string _Filter)
+        {
+            Dictionary<int, string> Titles = new Dictionary<int, string>();
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = _Filter;
+            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
+            {
+                Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
+            }
+            return Titles;
+        }
+
+        public static DataRow GetDataRow(string UserName, Tables _TableName, int ID)
+        {
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
+            if(_Table.MyDataTable.Rows.Count > 0)
+            { return _Table.MyDataTable.Rows[0]; }
+            else { return _Table.MyDataTable.NewRow();}
+        }
 
         #endregion
+        
 
         //======================================================== eof
     }

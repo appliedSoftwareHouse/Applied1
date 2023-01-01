@@ -1,50 +1,59 @@
 ﻿@page
 @model Applied_WebApplication.Pages.AccountsModel
 @{
+    var UserName = User.Identity.Name;
 }
 
 
+<form method="post">
 
-<div class="container p-2 mt-2 bg-success text-white rounded-2">
-    <h2 class="callout">Accounts Department</h2>
-</div>
+    <div class="container p-2 mt-2 bg-success text-white rounded-2">
+        <h2 class="callout">Accounts Department</h2>
+    </div>
 
-<div class="dropdown py-2">
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Directory
-    </button>
-    <ul class="dropdown-menu dropdown-menu-dark">
-        <li><a class="dropdown-item " href=".\Accounts\COA">Chart of Accounts</a></li>
-        <li><a class="dropdown-item" href=".\Accounts\Nature">Nature of Accounts</a></li>
-        <li><a class="dropdown-item" href="Category">Category of Accounts</a></li>
-        <li><a class="dropdown-item" href="Notes">Financial Notes</a></li>
-    </ul>
+    <div class="dropdown py-2">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Directory
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item " href=".\Accounts\COA">Chart of Accounts</a></li>
+            <li><a class="dropdown-item" href=".\Accounts\Nature">Nature of Accounts</a></li>
+            <li><a class="dropdown-item" href="Category">Category of Accounts</a></li>
+            <li><a class="dropdown-item" href="Notes">Financial Notes</a></li>
+        </ul>
 
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Transactions
-    </button>
-    <ul class="dropdown-menu dropdown-menu-dark">
-        <li><a class="dropdown-item active" href=".\Accounts\CashBook">Cash Expense</a></li>
-        <li><a class="dropdown-item" href="#">Cheque</a></li>
-        <li><a class="dropdown-item" href="#">Cheque Return</a></li>
-        <li><a class="dropdown-item" href="#">Bill Payable</a></li>
-        <li><a class="dropdown-item" href="#">Pay Bill</a></li>
-        <li><a class="dropdown-item" href="#">Journal Entry</a></li>
-    </ul>
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Transactions
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item active" href=".\Accounts\CashBook">Cash Expense</a></li>
+            <li><a class="dropdown-item" href="#">Cheque</a></li>
+            <li><a class="dropdown-item" href="#">Cheque Return</a></li>
+            <li><a class="dropdown-item" href="#">Bill Payable</a></li>
+            <li><a class="dropdown-item" href="#">Pay Bill</a></li>
+            <li><a class="dropdown-item" href="#">Journal Entry</a></li>
+        </ul>
 
-    <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-        Reports
-    </button>
-    <ul class="dropdown-menu dropdown-menu-dark">
-        <li><a class="dropdown-item active" href="#">Voucher</a></li>
-        <li><a class="dropdown-item" href="#">General Ledger</a></li>
-        <li><a class="dropdown-item" href="#">Customer Ledger</a></li>
-        <li><a class="dropdown-item" href="#">Vendor Ledger</a></li>
-        <li><a class="dropdown-item" href="#">Trial Balance</a></li>
-        <li><a class="dropdown-item" href="#">Profit & Loss Account</a></li>
-        <li><a class="dropdown-item" href="#">Balance Sheet</a></li>
-        <li><a class="dropdown-item active" href=".\Accounts\COA_Print">Chart of Accounts (List)</a></li>
-    </ul>
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Reports
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item active" href="#">Voucher</a></li>
+            <li><a class="dropdown-item" href="#">General Ledger</a></li>
+            <li><a class="dropdown-item" href="#">Customer Ledger</a></li>
+            <li><a class="dropdown-item" href="#">Vendor Ledger</a></li>
+            <li><a class="dropdown-item" href="#">Trial Balance</a></li>
+            <li><a class="dropdown-item" href="#">Profit & Loss Account</a></li>
+            <li><a class="dropdown-item" href="#">Balance Sheet</a></li>
+            <li>
+                <a class="dropdown-item" type="text/asp"
+                   asp-page=".\ReportPrint\PrintReport" 
+                   asp-page-handler="COAList" 
+                   asp-route-UserName=@UserName>Chart of Accounts (List)</a>
+            </li>
+
+        </ul>
 
 
-</div>
+    </div>
+</form>

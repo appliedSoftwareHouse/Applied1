@@ -11,6 +11,8 @@ public enum Tables
     Customers = 201,
     City = 202,
     Country = 203,
+    Project = 204,
+    Employees = 205,
 
     Inventory = 301,
     Inv_Category = 302,
@@ -20,6 +22,8 @@ public enum Tables
 
     Ledger = 401,
     view_Ledger = 402
+
+
 
 
 }

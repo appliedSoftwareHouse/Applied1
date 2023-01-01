@@ -30,6 +30,18 @@ namespace Applied_WebApplication.Data
             MyReportPath =   string.Concat(Directory.GetCurrentDirectory(),"\\wwwroot\\");
             ReportFilter = new Filters();
 
+            ReportFilter.dt_From = DateTime.Now;
+            ReportFilter.dt_To = DateTime.Now;
+            ReportFilter.n_ID = 0;
+            ReportFilter.n_COA = 0;
+            ReportFilter.n_Customer = 0;
+            ReportFilter.n_Project = 0;
+            ReportFilter.n_Employee = 0;
+            ReportFilter.n_Inventory = 0;
+            ReportFilter.n_InvSubCategory = 0;
+            ReportFilter.n_InvCategory = 0;
+
+
         }
 
         public void GetReport()
@@ -103,14 +115,14 @@ namespace Applied_WebApplication.Data
             public string Columns = "*";
             public DateTime dt_From;
             public DateTime dt_To;
-            public int n_ID;
-            public int n_COA;
-            public int n_Customer;
-            public int n_Employee;
-            public int n_Project;
-            public int n_Inventory;
-            public int n_InvCategory;
-            public int n_InvSubCategory;
+            public int n_ID = 0;
+            public int n_COA = 0;
+            public int n_Customer = 0;
+            public int n_Employee = 0;
+            public int n_Project = 0;
+            public int n_Inventory = 0;
+            public int n_InvCategory = 0;
+            public int n_InvSubCategory = 0;
         }
 
 

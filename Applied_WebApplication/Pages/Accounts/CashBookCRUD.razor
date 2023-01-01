@@ -1,0 +1,136 @@
+﻿@using Applied_WebApplication.Pages.Accounts
+@using Applied_WebApplication.Data
+@using System.Data
+
+@code {
+    [Parameter]
+    public DataRow Row { get; set; }
+    [Parameter]
+    public UserProfile UserData { get; set; }
+}
+
+<form method="post">
+
+    <div class="container">
+        <div>
+            <input type="text"
+                   name="ID"
+                   value=@Row["ID"]
+                   class="form-control"
+                   hidden>
+        </div>
+
+        <div class="row d-flex">
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="VouNo">Vou. No.</span>
+                <input type="text"
+                       name="Vou_No"
+                       value=@Row["Vou_No"]
+                       class="form-control"
+                       placeholder="Voucher No"
+                       aria-label="Vou_No"
+                       aria-describedby="VouNo">
+                <button class="btn btn-outline-secondary" type="button">Auto Generate</button>
+            </div>
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 30%" id="VouDate">Voucher Date</span>
+                <input type="Date"
+                       style="width: 70%"
+                       name="Vou_Date"
+                       value=@(DateTime.Parse(Row["Vou_Date"].ToString()).ToString("yyyy-MM-dd"))
+                       class="form-control"
+                       placeholder="Voucher Date"
+                       aria-describedby="VouDate">
+            </div>
+        </div>
+        <div class="row d-flex">
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="COAID">Account</span>
+                <select class="form-select">
+                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.COA))
+                    {
+                        <option>@_Title.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 30%" id="Debit">Debit</span>
+                <input type="number"
+                       style="width: 70%"
+                       name="Vou_Date"
+                       value=@Row["DR"]
+                       class="form-control"
+                       placeholder="Voucher Date"
+                       aria-describedby="VouDate">
+
+            </div>
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 30%" id="Credit">Credit</span>
+                <input type="number"
+                       style="width: 70%"
+                       name="Vou_Date"
+                       value=@Row["CR"]
+                       class="form-control"
+                       placeholder="Voucher Date"
+                       aria-describedby="VouDate">
+
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="Description">Description</span>
+                <input type="text"
+                       name="Description"
+                       value=@Row["Description"]
+                       class="form-control"
+                       aria-label="Description"
+                       aria-describedby="Description">
+            </div>
+            <div class="input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="Description">Comments</span>
+                <input type="text"
+                       name="Description"
+                       value=@Row["Comments"]
+                       class="form-control"
+                       aria-label="Description"
+                       aria-describedby="Description">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                <select class="form-select">
+                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
+                    {
+                        <option>@_Title.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="col input-group mb-3">
+                <span class="input-group-text" style="width: 120px" id="COAID">Projects</span>
+                <select class="form-select">
+                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
+                    {
+                        <option>@_Title.Value</option>
+                    }
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col input-group mb-3">
+                    <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                    <select class="form-select">
+                        @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
+                        {
+                            <option>@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+        </div>
+    </div>
+    </div>
+
+</form>

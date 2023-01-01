@@ -1,17 +1,21 @@
 ﻿@page
-@using System.Data;
-@using Applied_WebApplication.Data
+@using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Primitives
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
+
+
 @{
     var UserName = User.Identity.Name;
+    var UserData = new UserProfile(UserName);
     var CashCode = 1;
-    var COA = DataTableClass.GetRecords(UserName, Tables.COA, "Nature=" + CashCode.ToString());                            // Nature 1 is Cash in Hand ID in COA Nature Table.
-    var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");                 // Get format of Currency to display
-    var DateFormat = AppliedUsersClass.GetUserValue(UserName, "DateFormat");                        // Get format of Number to Display
+    var COATitles = DataTableClass.Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
+    var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
+    var DateFormat = AppliedUsersClass.GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
     var LedgerClass = new Ledger(UserName);
     var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
+
+
 
     if (Model.MyParameters.IsSelected || Model.MyParameters.IsAdd)
     {
@@ -19,8 +23,21 @@
         LedgerClass.Date_From = DateTime.Parse(Date1);
         LedgerClass.Date_To = DateTime.Parse(Date2);
         LedgerClass.Sort = "Vou_Date";
+        LedgerClass.Filter = string.Concat("BookID=", Model.MyParameters.CashBookID.ToString());
         Model.Cashbook = LedgerClass.Records;
-        Model.MyParameters.Row = DataTableClass.NewRecord(UserName, Tables.CashBook);
+        Model.MyParameters.Row = DataTableClass.GetDataRow(UserName, Tables.CashBook, 0);               // Get New Row from cashbook Table.
+
+        if (Model.MyParameters.IsAdd)
+        {
+            Model.MyParameters.Row["ID"] = 0;
+            Model.MyParameters.Row["Vou_No"] = "TEST-002";
+            Model.MyParameters.Row["Vou_Date"] = DateOnly.FromDateTime(DateTime.Now);
+            Model.MyParameters.Row["BookID"] = Model.MyParameters.CashBookID;
+            Model.MyParameters.Row["Description"] = "Testing a record";
+            Model.MyParameters.Row["Description"] = "Comments";
+            Model.MyParameters.Row["Project"] = "Comments";
+        }
+
     }
 
 }
@@ -35,9 +52,9 @@
 
 
 <form method="post">
-    <div class="container p-2 bg-primary text-white rounded">
-        <div class="row d-flex justify-content-between align-items-center">
-            <div class="col-4">
+    <div class="container p-2 m-3 bg-primary text-white rounded">
+        <div class="row  d-flex justify-content-between align-items-center">
+            <div class="col-4 py-1">
                 <label>CASH BOOK</label>
             </div>
             <div class="col-2" style="float: right">
@@ -51,7 +68,7 @@
             <div class="col-2">
                 @if (Model.MyParameters.CashBookID > 0)
                 {
-                    <button class="btn btn-outline-info rounded" type="submit" name="Refresh" style="float: right"
+                    <button class="btn btn-outline-info rounded" type="submit" name="Refresh" 
                         asp-route-UserName=@UserName
                         asp-page-handler="Refresh">
                         REFRESH
@@ -67,7 +84,18 @@
                     </button>
 
                     <ul class="dropdown-menu">
-                        @foreach (DataRow _Row in COA.Rows)
+                        @foreach (KeyValuePair<int,string> _Key in COATitles)
+                        {
+                            <li>
+                                <a class="dropdown-item"
+                               asp-route-id=@_Key.Key
+                               asp-route-UserName=@UserName
+                               asp-page="CashBook">
+                                    @_Key.Value
+                                </a>
+                            </li>
+                        }
+                        @*@foreach (DataRow _Row in COA.Rows)
                         {
                             <li>
                                 <a class="dropdown-item"
@@ -77,7 +105,7 @@
                                     @_Row["Title"]
                                 </a>
                             </li>
-                        }
+                        }*@
                     </ul>
                 </div>
                 <input name="CashBookID" value=@Model.MyParameters.CashBookID hidden />                  <!--  Generate CashBookID i-->
@@ -90,9 +118,135 @@
     <div>
         @if (Model.MyParameters.IsAdd)
         {
+                
             
-            <component type="typeof(TestComponent)" render-mode="Static" param-MyParameters=@Model.MyParameters />
+
+            <div class="container">
+                <div>
+                    <input type="text"
+                       name="ID"
+                       value=@Model.MyParameters.Row["ID"]
+                       class="form-control"
+                       hidden>
+                </div>
+
+                <div class="row d-flex">
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="VouNo">Vou. No.</span>
+                        <input type="text"
+                           name="Vou_No"
+                           value=@Model.MyParameters.Row["Vou_No"]
+                           class="form-control"
+                           placeholder="Voucher No"
+                           aria-label="Vou_No"
+                           aria-describedby="VouNo">
+                        <button class="btn btn-outline-secondary" type="button">Auto Generate</button>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 30%" id="VouDate">Voucher Date</span>
+                        <input type="Date"
+                           style="width: 70%"
+                           name="Vou_Date"
+                           value=@(DateTime.Parse(Model.MyParameters.Row["Vou_Date"].ToString()).ToString("yyyy-MM-dd"))
+                           class="form-control"
+                           placeholder="Voucher Date"
+                           aria-describedby="VouDate">
+                    </div>
+                </div>
+                <div class="row d-flex">
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="COAID">Account</span>
+                        <select class="form-select">
+                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.COA))
+                            {
+                                <option>@_Title.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 30%" id="Debit">Debit</span>
+                        <input type="number"
+                           style="width: 70%"
+                           name="Vou_Date"
+                           value=@Model.MyParameters.Row["DR"]
+                           class="form-control"
+                           placeholder="Voucher Date"
+                           aria-describedby="VouDate">
+
+                    </div>
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 30%" id="Credit">Credit</span>
+                        <input type="number"
+                           style="width: 70%"
+                           name="Vou_Date"
+                           value=@Model.MyParameters.Row["CR"]
+                           class="form-control"
+                           placeholder="Voucher Date"
+                           aria-describedby="VouDate">
+
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="Description">Description</span>
+                        <input type="text"
+                           name="Description"
+                           value=@Model.MyParameters.Row["Description"]
+                           class="form-control"
+                           aria-label="Description"
+                           aria-describedby="Description">
+                    </div>
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="Description">Comments</span>
+                        <input type="text"
+                           name="Description"
+                           value=@Model.MyParameters.Row["Comments"]
+                           class="form-control"
+                           aria-label="Description"
+                           aria-describedby="Description">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                        <select class="form-select">
+                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
+                            {
+                                <option>@_Title.Value</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col input-group mb-3">
+                        <span class="input-group-text" style="width: 120px" id="COAID">Projects</span>
+                        <select class="form-select">
+                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
+                            {
+                                <option>@_Title.Value</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="row">
+                        <div class="col input-group mb-3">
+                            <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
+                            <select class="form-select">
+                                @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
+                                {
+                                    <option>@_Title.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         }
+
+
+
     </div>
     <!-- SHOW CASH BOOK RECORD -->
     <div>

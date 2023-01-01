@@ -72,7 +72,6 @@ namespace Applied_WebApplication.Data
             UserView = UsersTable.AsDataView();
         }
 
-
         public DataRow UserRecord(string _UserName)
         {
             UserView.RowFilter = "UserID='" + _UserName + "'";
@@ -98,7 +97,6 @@ namespace Applied_WebApplication.Data
             }
             return UsersTable;
         }
-
         internal string GetClientDBFile(string _User)
         {
             if (_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
@@ -124,7 +122,6 @@ namespace Applied_WebApplication.Data
                     return ".\\wwwroot\\SQLiteDB\\Applied.db";
             }
         }
-
         public static string GetUserValue(string UserName, string _Column)
         {
             AppliedUsersClass UserClass = new();
@@ -132,6 +129,7 @@ namespace Applied_WebApplication.Data
             return _Row[_Column].ToString();
         }
 
+        
     }
 }
 

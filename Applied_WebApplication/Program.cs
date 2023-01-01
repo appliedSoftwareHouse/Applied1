@@ -1,7 +1,6 @@
+global using Applied_WebApplication.Data;
+global using System.Data;
 using Applied_WebApplication;
-using Applied_WebApplication.Data;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,7 +17,6 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
     
 
 });
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", Policy => Policy.RequireClaim("Admin"));
@@ -29,9 +27,9 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy("Client", policy => policy.RequireClaim("Client", "Customer"));
 
 });
-
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession();
+
 
 var app = builder.Build();
 var Rootpath = app.Environment.ContentRootPath;
@@ -45,13 +43,10 @@ if (!app.Environment.IsDevelopment())
     
 }
 
-
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-app.UseSession();
+//app.UseSession();
 app.UseCreateDatabase();
 app.UseAuthentication();
 app.UseAuthorization();

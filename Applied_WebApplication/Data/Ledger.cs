@@ -12,14 +12,13 @@ namespace Applied_WebApplication.Data
         public DateTime Date_From { get; set; }
         public DateTime Date_To { get; set; }
         public string Sort { get; set; }
+        public string Filter { get; set; }
         public DataTable Records { get => GetRecords(); }
 
 
         public Ledger(string _UserName)
         {
             UserName = _UserName;
-
-
         }
 
         private DataTable GetRecords()                                                                                                      // Get Records for Ledger.
@@ -31,10 +30,11 @@ namespace Applied_WebApplication.Data
 
         private DataTable GetLedger_CashBook()
         {
-            DataTableClass _Temp = new(UserName, Tables.view_Ledger);
-            DataTable _Ledger = _Temp.MyDataTable.Clone();
-            _Temp = new(UserName, Tables.CashBook);
-            _Temp.MyDataView.Sort = Sort;
+            DataTableClass _Table = new(UserName, Tables.view_Ledger);
+            DataTable _Ledger = _Table.MyDataTable.Clone();
+            _Table = new(UserName, Tables.CashBook);
+            _Table.MyDataView.Sort = Sort;
+            _Table.MyDataView.RowFilter = Filter;
             decimal Balance = 0M;
             bool IsBalance = false;
             bool IsFirstOBal = false;
@@ -42,7 +42,7 @@ namespace Applied_WebApplication.Data
             decimal Credit = 0M;
             DataRow _NewRow;
 
-            foreach (DataRow _Row in _Temp.MyDataView.ToTable().Rows)
+            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
             {
                 if ((DateTime)_Row["Vou_Date"] < Date_From)
                 {
