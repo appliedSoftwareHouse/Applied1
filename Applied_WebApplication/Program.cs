@@ -1,4 +1,5 @@
 global using Applied_WebApplication.Data;
+global using static Applied_WebApplication.Data.TableValidationClass;
 using Applied_WebApplication;
 
 var builder = WebApplication.CreateBuilder(args);

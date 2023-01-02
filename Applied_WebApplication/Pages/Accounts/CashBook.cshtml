@@ -1,10 +1,10 @@
 ﻿@page
 @using System.Data
+@using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Primitives
+@using static Applied_WebApplication.Data.TableValidationClass;
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
-
-
 @{
     var UserName = User.Identity.Name;
     var UserData = new UserProfile(UserName);
@@ -27,22 +27,35 @@
         LedgerClass.Sort = "Vou_Date";
         LedgerClass.Filter = string.Concat("BookID=", Model.MyParameters.CashBookID.ToString());
         Model.Cashbook = LedgerClass.Records;
-        Model.MyParameters.Row = DataTableClass.GetDataRow(UserName, Tables.CashBook, 0);               // Get New Row from cashbook Table.
+        Model.MyParameters.RecordID = 0;
+        DataRow Row = DataTableClass.GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
 
-        if (Model.MyParameters.IsAdd)
+        if (Model.MyParameters.Reload)
         {
-            Model.MyParameters.Row["ID"] = 0;
-            Model.MyParameters.Row["Vou_No"] = "TEST-002";
-            Model.MyParameters.Row["Vou_Date"] = DateTime.Now.ToString("yyyy-MM-dd");
-            Model.MyParameters.Row["BookID"] = Model.MyParameters.CashBookID;
-            Model.MyParameters.Row["Description"] = "Testing a record";
-            Model.MyParameters.Row["Comments"] = "Comments";
-            Model.MyParameters.Row["Project"] = 0;
-            Model.MyParameters.Row["Employee"] = 0;
+            List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
+            foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
+            {
+                if (_KeyValue.Key == "CashBookID") { Model.MyRecord.BookID = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "ID") { Model.MyRecord.ID = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Code") { Model.MyRecord.Code = _KeyValue.Value; }
+                if (_KeyValue.Key == "Vou_No") { Model.MyRecord.Vou_No = _KeyValue.Value; }
+                if (_KeyValue.Key == "Vou_Date") { Model.MyRecord.Vou_Date = DateTime.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Ref_No") { Model.MyRecord.Ref_No = _KeyValue.Value; }
+                if (_KeyValue.Key == "DR") { Model.MyRecord.DR = decimal.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "CR") { Model.MyRecord.CR = decimal.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "COA") { Model.MyRecord.COA = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Customer") { Model.MyRecord.Customer = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Project") { Model.MyRecord.Project = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Employee") { Model.MyRecord.Employee = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "Description") { Model.MyRecord.Description = _KeyValue.Value; }
+                if (_KeyValue.Key == "Comments") { Model.MyRecord.Comments = _KeyValue.Value; }
+
+                if (_KeyValue.Key == "CashBookID") { Model.MyParameters.CashBookID = int.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "MinDate") { Model.MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
+                if (_KeyValue.Key == "MaxDate") { Model.MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
+            }
         }
-
     }
-
 }
 
 
@@ -50,21 +63,22 @@
 <style>
     #MyTable {
         overflow: auto;
-        height: 600px;
         background-color: lightcyan
     }
 
 </style>
-
+<div class="flex--item1 fl-shrink0">
+    <div class="favicon favicon-stackexchangemeta" title="Meta Stack Exchange"></div>
+</div>
 
 <form method="post">
-    <div class="container p-2 m-3 bg-primary text-white rounded">
+    <div class="container p-1 mt-2 mb-2 bg-primary text-white rounded">
         <div class="row  d-flex justify-content-between align-items-center">
             <div class="col-4 py-1">
                 <label>CASH BOOK</label>
             </div>
             <div class="col-2" style="float: right">
-               
+
                 <label for="From">From</label>
                 <input type="date" id="From" name="MinDate" min="2020-01-01" value=@Date1 />
             </div>
@@ -114,11 +128,24 @@
     <div>
         @if (Model.MyParameters.IsAdd)
         {
+            if (Model.MyParameters.IsError)
+            {
+                <div class="container mt-2 mb-2 align-content-center bg-info ">
+                    @foreach (Message Errormsg in Model.ErrorMessages)
+                    {
+                        <div style="padding: 5px;"> @Errormsg.message   </div>
+                    }
+
+                </div>
+            }
+
+
             <div class="container">
                 <div>
                     <input type="text"
                        name="ID"
-                       value=@Model.MyParameters.Row["ID"]
+                       asp-for=@Model.MyRecord.ID
+                       value=@Model.MyRecord.ID
                        class="form-control"
                        hidden>
                 </div>
@@ -128,7 +155,8 @@
                         <span class="input-group-text" style="width: 120px" id="VouNo">Vou. No.</span>
                         <input type="text"
                            name="Vou_No"
-                           value=@Model.MyParameters.Row["Vou_No"]
+                           asp-for=@Model.MyRecord.Vou_No
+                           value=@Model.MyRecord.Vou_No
                            class="form-control"
                            placeholder="Voucher No"
                            aria-label="Vou_No"
@@ -140,19 +168,22 @@
                         <input type="Date"
                            style="width: 70%"
                            name="Vou_Date"
-                           value=@(DateTime.Parse(Model.MyParameters.Row["Vou_Date"].ToString()).ToString("yyyy-MM-dd"))
+                           asp-for=@Model.MyRecord.Vou_Date
+                           value=@(DateTime.Parse(Model.MyRecord.Vou_Date.ToString()).ToString("yyyy-MM-dd"))
                            class="form-control"
                            placeholder="Voucher Date"
                            aria-describedby="VouDate">
                     </div>
                 </div>
+
                 <div class="row d-flex">
                     <div class="col input-group mb-3">
                         <span class="input-group-text" style="width: 120px" id="COAID">Account</span>
-                        <select class="form-select">
+                        <select class="form-select" name="COA" asp-for=@Model.MyRecord.COA>
+                            <option selected>@Model.MyRecord.COA</option>
                             @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.COA))
                             {
-                                <option>@_Title.Value</option>
+                                <option value=@_Title.Key>@_Title.Value</option>
                             }
                         </select>
                     </div>
@@ -160,8 +191,9 @@
                         <span class="input-group-text" style="width: 30%" id="Debit">Debit</span>
                         <input type="number"
                            style="width: 70%"
-                           name="Vou_Date"
-                           value=@Model.MyParameters.Row["DR"]
+                           name="DR"
+                           asp-for=@Model.MyRecord.DR
+                           value=@Model.MyRecord.DR
                            class="form-control"
                            placeholder="Voucher Date"
                            aria-describedby="VouDate">
@@ -171,8 +203,9 @@
                         <span class="input-group-text" style="width: 30%" id="Credit">Credit</span>
                         <input type="number"
                            style="width: 70%"
-                           name="Vou_Date"
-                           value=@Model.MyParameters.Row["CR"]
+                           name="CR"
+                           asp-for=@Model.MyRecord.CR
+                           value=@Model.MyRecord.CR
                            class="form-control"
                            placeholder="Voucher Date"
                            aria-describedby="VouDate">
@@ -185,17 +218,19 @@
                         <span class="input-group-text" style="width: 120px" id="Description">Description</span>
                         <input type="text"
                            name="Description"
-                           value=@Model.MyParameters.Row["Description"]
+                           asp-for=@Model.MyRecord.Description
+                           value=@Model.MyRecord.Description
                            class="form-control"
                            aria-label="Description"
                            aria-describedby="Description">
                     </div>
 
                     <div class="input-group mb-3">
-                        <span class="input-group-text" style="width: 120px" id="Description">Comments</span>
+                        <span class="input-group-text" style="width: 120px" asp-for=@Model.MyRecord.Comments id="Description">Comments</span>
                         <input type="text"
-                           name="Description"
-                           value=@Model.MyParameters.Row["Comments"]
+                           name="Comments"
+                           asp-for=@Model.MyRecord.Comments
+                           value=@Model.MyRecord.Comments
                            class="form-control"
                            aria-label="Description"
                            aria-describedby="Description">
@@ -205,8 +240,8 @@
                 <div class="row">
                     <div class="col input-group mb-3">
                         <span class="input-group-text" style="width: 120px" id="Customers">Customers</span>
-                        <select class="form-select">
-                            <option selected>@Model.MyParameters.Row["Customer"]</option>
+                        <select class="form-select" asp-for=@Model.MyRecord.Customer name="Customer">
+                            <option selected>@Model.MyRecord.Customer</option>
                             @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
                             {
                                 <option value=@_Title.Key>@_Title.Value</option>
@@ -216,8 +251,8 @@
 
                     <div class="col input-group mb-3">
                         <span class="input-group-text" style="width: 120px" id="Project">Projects</span>
-                        <select class="form-select">
-                            <option selected>@Model.MyParameters.Row["Project"]</option>
+                        <select class="form-select" asp-for=@Model.MyRecord.Project name="Project">
+                            <option selected>@Model.MyRecord.Project</option>
                             @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
                             {
                                 <option value=@_Title.Key>@_Title.Value</option>
@@ -228,25 +263,36 @@
                     <div class="row">
                         <div class="col input-group mb-3">
                             <span class="input-group-text" style="width: 120px" id="Employee">Employee</span>
-                            <select class="form-select">
-                                <option selected>@Model.MyParameters.Row["Employee"]</option>
+                            <select class="form-select" asp-for=@Model.MyRecord.Employee name="Employee">
+                                <option selected>@Model.MyRecord.Employee</option>
                                 @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
                                 {
                                     <option value=@_Title.Key>@_Title.Value</option>
                                 }
                             </select>
                         </div>
+
+                        <span class="input-group-text" style="width: 120px" id="Description">Reference</span>
+                        <input type="text"
+                           name="Ref_No"
+                           asp-for=@Model.MyRecord.Ref_No
+                           value=@Model.MyRecord.Ref_No
+                           class="form-control"
+                           aria-label="Description"
+                           aria-describedby="Description">
+
                     </div>
                 </div>
 
                 <div class="row">
-                    <a><input type="submit" class="btn btn-primary" value="SAVE" asp-page-handler="Save" asp-page="CashBook" /></a>
+                    <div class="col-1"> <input class="btn btn-primary" type="submit" asp-route-UserName=@UserName asp-page-handler="Save" value="Save">  </div>
+                    <div class="col-1"> <input class="btn btn-primary" type="submit" asp-page="CashBook" value="Back">  </div>
                 </div>
-
-
             </div>
-
         }
+
+
+
 
     </div>
     <!-- SHOW CASH BOOK RECORD -->

@@ -1,5 +1,4 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using System.Data;
+﻿using System.Data;
 
 namespace Applied_WebApplication.Data
 {
@@ -15,7 +14,7 @@ namespace Applied_WebApplication.Data
 
         public bool Success()
         {
-            if(MyMessages.Count > 0)
+            if (MyMessages.Count > 0)
             { return true; }
             else
             { return false; }
@@ -24,13 +23,17 @@ namespace Applied_WebApplication.Data
         public bool Validation(DataRow Row)
         {
             MyMessages = new List<Message>();
-            if (Row == null)  {
+            if (Row == null)
+            {
                 Message MyMessage = new Message() { success = false, ErrorID = 10, message = "Current row is null" };
-                return false;  }                                              // Return false if row is null
+                return false;
+            }                                              // Return false if row is null
 
-            if(SQLAction == null) {
+            if (SQLAction == null)
+            {
                 Message MyMessage = new Message() { success = false, ErrorID = 10, message = "Current row is null" };
-                return false; }                                     // Return is SQL Command Action is not define.
+                return false;
+            }                                     // Return is SQL Command Action is not define.
             //================================================================================================== 
 
             #region Table COA
@@ -75,7 +78,7 @@ namespace Applied_WebApplication.Data
                 #region Insert
                 if (SQLAction == CommandAction.Insert.ToString())
                 {
-                    if(Row["Code"]==DBNull.Value)
+                    if (Row["Code"] == DBNull.Value)
                     {
                         MyMessages.Add(new Message() { success = false, ErrorID = 103, message = "Null value of Code is not allowed." });
                     }
@@ -108,16 +111,63 @@ namespace Applied_WebApplication.Data
             }
             #endregion
 
-            if(MyMessages.Count > 0) { return false; } else { return true; }
+            #region CashBook
+            if (MyDataTable.TableName == Tables.CashBook.ToString())
+            {
+                MyMessages = new List<Message>();
+                #region Insert
+                if (SQLAction == CommandAction.Insert.ToString())
+                {
+                    if (Seek("ID", Row["ID"].ToString()))
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10501, message = "Dublicate of ID found." });
+                    }
+
+                    if (Row["Vou_No"].ToString().Length == 0)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10507, message = "Enter Valid Voucher Number." });
+                    }
+
+                    if (Seek("Vou_No", Row["Vou_No"].ToString()))
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10502, message = "Dublicate of Voucher No found." });
+                    }
+
+                    if ((int)Row["COA"] == 0)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10505, message = "Accounts Head must be selected." });
+                    }
+
+                    if ((decimal)Row["DR"] > 0 && (decimal)Row["CR"] > 0)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10503, message = "Only Debit or Credit must be more more than Zero." });
+                    }
+
+                    if ((decimal)Row["DR"] == 0 && (decimal)Row["CR"] == 0)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10504, message = "Must be enter Debit or Credit Amount" });
+                    }
+
+               
+                    if (Row["Description"].ToString().Length == 0)
+                    {
+                        MyMessages.Add(new Message() { success = false, ErrorID = 10506, message = "Description must be some charactors." });
+                    }
+                }
+                #endregion
+            }
+
+            #endregion
+            if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
         private bool Seek(string _Column, string _Value)
         {
-            if(MyDataTable!=null)
+            if (MyDataTable != null)
             {
                 DataView _DataView = MyDataTable.AsDataView();
                 _DataView.RowFilter = _Column + "='" + _Value + "'";
-                if(_DataView.Count > 0) { return true; } else { return false; }
+                if (_DataView.Count > 0) { return true; } else { return false; }
             }
             return false;               // Default value    
         }
