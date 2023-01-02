@@ -26,19 +26,10 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostRefresh(string UserName)
         {
-
-            //List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-            //foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-            //{
-            //    if (_KeyValue.Key == "CashBookID") { MyParameters.CashBookID = int.Parse(_KeyValue.Value); }
-            //    if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
-            //    if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
-            //}
             MyParameters.IsSelected = true;
             MyParameters.Reload = true;
             MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
             return Page();
-
         }
 
         public IActionResult OnPostAdd(string UserName, ReportParameters? Paramaters)

@@ -7,6 +7,8 @@ public enum Tables
     COA_Class = 103,
     COA_Notes = 104,
     CashBook = 105,
+    WriteCheques = 106,
+    Taxes =107,
 
     Customers = 201,
     City = 202,

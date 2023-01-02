@@ -31,7 +31,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             
             public int ID { get; set; }
-            public string TType { get; set; }
+            public string TranType { get; set; }
             public DateOnly TranDate { get; set; }
             public int Bank { get; set; }
             public int Customer { get; set; }
@@ -42,6 +42,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public decimal TaxableAmount { get; set; }
             public decimal TaxRate { get; set; }
             public decimal TaxAmount { get; set; }
+            public decimal Status { get; set; }
             public string Description { get; set; }
         }
     }
