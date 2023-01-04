@@ -45,3 +45,12 @@ public enum CommandAction
     Update,
     Delete
 }
+
+public enum ChequeStatus
+{
+    Submitted,
+    Clear,
+    Bounced,
+    Return,
+    Lost
+}

@@ -9,18 +9,39 @@
     var Cheques = new DataTableClass(UserName, Tables.WriteCheques);
     var TitleBank = Titles(UserName, Tables.COA, string.Concat("Nature=", BankNatureID.ToString()));
     var TitleCompany = Titles(UserName, Tables.Customers);
+    var TitleProject = Titles(UserName, Tables.Project);
+    var TitleEmployee = Titles(UserName, Tables.Employees);
     var TitleTaxes = Titles(UserName, Tables.Taxes);
 }
 
 @functions {
     public bool LocalSave(DataRow _DataRow)
     {
-
-
         return true;
     }
+
+    public decimal GetTaxAmount(decimal Taxable, decimal Rate)
+    {
+        decimal _Amount = Taxable * Rate;
+        return _Amount;
+    }
+
     // Add code here.
 }
+
+
+<style>
+    .input-group-text
+    {
+        width: 30%
+    }
+
+    .form-control
+    {
+        width: 70%
+    }
+
+</style>
 
 <div class="container p-2 mt-2 mb-2 bg-primary text-white rounded">
     <h4>CHEQUES</h4>
@@ -36,7 +57,6 @@
         }
     </div>
 }
-
 <!-- END ERROR AREA -->
 <!-- END CHEQUE AREA -->
 <div class="accordion" id="accordionExample">
@@ -50,15 +70,191 @@
             <div class="accordion-body">
                 <!-- write a cheque start-->
                 <form method="post">
-                    <div class="container">
-                        <div class="flex-row">
+                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+                    <div class="container p-3">
+
+                        <div class="row">
                             <div class="col-6">
-                                <div class="input-group">
-                                    <spen class="input-group-text" id="TranType">Transaction Type</spen>
-                                    <input type="text" name="Trantype" asp-for=@Model.variables.TranType value=@Model.variables.TranType />
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputTranType" asp-validation-for=@Model.variables.TranType>Transaction Type</span>
+                                    <select class="form-select" name="TranType" value=@Model.variables.TranType>
+                                        <option selected>Select .....</option>
+                                        <option value="1">Cheque</option>
+                                        <option value="2">Income Tax</option>
+                                        <option value="3">Sales Tax</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-6">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputTranDate" asp-validation-for=@Model.variables.TranDate>Transaction Date</span>
+                                    <input type="Date"
+                                           name="TranDate"
+                                           asp-for=@Model.variables.TranDate
+                                           value=@Model.variables.TranDate.ToString("yyyy-MM-dd")
+                                           class="form-control">
                                 </div>
                             </div>
                         </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputBank">Bank</span>
+                            <select class="form-select" name="Bank" asp-for=@Model.variables.Bank>
+                                <option selected>@Model.variables.Bank</option>
+                                @foreach (KeyValuePair<int, string> Title in TitleBank)
+                                {
+                                    <option value=@Title.Key>@Title.Value</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputchqDate">Cheque Date</span>
+                                    <input type="Date"
+                                           name="ChqDate"
+                                           asp-for=@Model.variables.ChqDate
+                                           value=@Model.variables.ChqDate.ToString("yyyy-MM-dd")
+                                           class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputChqNo">Cheque No.</span>
+                                    <input type="text"
+                                           name="ChqNo"
+                                           asp-for=@Model.variables.ChqNo
+                                           value=@Model.variables.ChqNo
+                                           class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputChqAmount">Amount</span>
+                                    <input type="number"
+                                           name="ChqAmount"
+                                           asp-for=@Model.variables.ChqAmount
+                                           value=@Model.variables.ChqAmount
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputWHTTax">Withholding Income Tax</span>
+                            <input type="number"
+                                   name="TaxableAmount1"
+                                   asp-for=@Model.variables.TaxableAmount1
+                                   value=@Model.variables.TaxableAmount1
+                                   class="form-control">
+
+
+                            <select class="form-select"
+                                    name="TaxRate1"
+                                    asp-for=@Model.variables.TaxRate1>
+                                <option selected>@Model.variables.TaxRate1</option>
+                                @foreach (KeyValuePair<int, string> Title in TitleTaxes)
+                                {
+                                    <option value=@Title.Key>@Title.Value</option>
+                                }
+                            </select>
+
+                            <input type="number"
+                                   name="TaxAmount1"
+                                   asp-for=@Model.variables.TaxAmount1
+                                   value=@Model.variables.TaxAmount1
+                                   class="form-control">
+
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputSalesTax">Sales Tax</span>
+                            <input type="number"
+                                   name="TaxableAmount2"
+                                   asp-for=@Model.variables.TaxableAmount2
+                                   value=@Model.variables.TaxableAmount2
+                                   placeholder="Taxable Amount"
+                                   class="form-control">
+                            <select class="form-select"
+                                    name="Bank"
+                                    asp-for=@Model.variables.TaxRate2>
+                                <option selected>@Model.variables.TaxRate2</option>
+                                @foreach (KeyValuePair<int, string> Title in TitleTaxes)
+                                {
+                                    <option value=@Title.Key>@Title.Value</option>
+                                }
+                            </select>
+
+
+
+                            <input type="number"
+                                   name="TaxableAmount2"
+                                   asp-for=@Model.variables.TaxableAmount2
+                                   value=@Model.variables.TaxableAmount2
+                                   placeholder="Tax Amount"
+                                   class="form-control">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputCustomer">Company (in favour of)</span>
+                            <select class="form-select" name="Customer" asp-for=@Model.variables.Customer>
+                                <option selected>@Model.variables.Customer</option>
+                                @foreach (KeyValuePair<int, string> Title in TitleCompany)
+                                {
+                                    <option value=@Title.Key>@Title.Value</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="inputProject">Project (Cost Center)</span>
+                            <select class="form-select" name="Project" asp-for=@Model.variables.Project>
+                                <option selected>@Model.variables.Project</option>
+                                @foreach (KeyValuePair<int, string> Title in TitleProject)
+                                {
+                                    <option value=@Title.Key>@Title.Value</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-8">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputDescription">Description</span>
+                                    <input type="text"
+                                           name="Description"
+                                           asp-for=@Model.variables.Description
+                                           value=@Model.variables.Description
+                                           class="form-control">
+                                </div>
+                            </div>
+
+                            <div class="col-4">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="inputStatus">Status</span>
+                                    <input type="text"
+                                           name="Status"
+                                           asp-for=@Model.variables.Status
+                                           value=@Model.variables.Status
+                                           class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-1">
+                                <input class="btn btn-primary" type="submit" name="Save" asp-page-handler="Save" asp-route-UserName=@UserName value="SAVE" />
+                            </div>
+                            <div class="col-1">
+                                <input class="btn btn-primary" type="submit" name="Back" asp-page="#Home" asp-route-UserName=@UserName value="BACK" />
+                            </div>
+                        </div>
+
                     </div>
                 </form>
                 <!-- write a cheque END-->

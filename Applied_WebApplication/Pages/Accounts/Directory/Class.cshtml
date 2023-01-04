@@ -1,0 +1,31 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.Directory.ClassModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleClass = DataTableClass.Titles(UserName, Tables.COA_Class);
+}
+
+<div class="container bg-primary p-1, mt-1 mb-2">
+    <h3>CLASS OF ACCOUNTS</h3>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>Code</th>
+            <th>Title</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (KeyValuePair<int, string> _Title in TitleClass)
+        {
+        <tr>
+                <td>@_Title.Key</td>
+                <td>@_Title.Value</td>
+        </tr>
+        }
+
+    </tbody>
+
+</table>

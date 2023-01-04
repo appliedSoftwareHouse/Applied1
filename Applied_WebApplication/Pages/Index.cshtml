@@ -10,25 +10,102 @@
     var UserName = User.Identity.Name;
 }
 
-<div class="mt-4 p-3 bg-success text-white rounded">
+<div class="mt-4 p-2 bg-success text-white rounded">
     <h3>@MyCompany</h3>
     <p> APPLIED SOFTWARE HOUSE <spin class="text-decoration-underline">is a Software Development Company</spin></p>
 </div>
 <br />
 
+<!--  carousel -->
+<style>
+    .carousel-img {
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        object-fit: cover;
+    }
+
+    .carousel-inner {
+        width: 1200px;
+        height: 360px
+    }
+
+    #Mycarousel
+    {
+        width: 1220px;
+        height: 370px
+    }
+
+
+</style>
+
+<div class="container" id="Mycarousel">
+
+    <div id="carouselExampleFade" class="carousel slide carousel-fade">
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="./Images/Picture5.jpg" class="carousel-img" alt="image">
+            </div>
+            <div class="carousel-item">
+                <img src="./Images/Picture2.jpg" class="carousel-img" alt="image">
+            </div>
+            <div class="carousel-item">
+                <img src="./Images/Picture3.jpg" class="carousel-img" alt="image">
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleFade" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+
+</div>
+<!--  carousel END -->
+
 <blockquote class="blockquote">
-    <p>For 30 years, Applied Software House providing Desktop Software Solution, Now we are developing a web base Accounting Software for small and mediam scale organization.</p>
-    <footer class="blockquote-footer">It is Under Development.</footer>
+    <p>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and mediam scale organization.</p>
+    <footer class="blockquote-footer align-content-center">It is Under Development.</footer>
 </blockquote>
 
 <form method="post">
-    <div class="d-flex flex-row bd-highlight mb-3">
+    <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
         <div class="p-2 bd-highlight">
             <input type="submit" class="btn btn-primary" value="Cash Book" asp-page=".\Accounts\CashBook" asp-route-UserName=@UserName />
-            </div>
+        </div>
         <div class="p-2 bd-highlight">
-            <input type="submit" class="btn btn-primary" value="Write Cheque" asp-page=".\Accounts\WriteCheque" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Bank Book" asp-page=".\Accounts\BankBook" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" 
+                class="btn btn-primary" 
+                value="Write Cheque" 
+                asp-page=".\Accounts\WriteCheque" 
+                />
+                </div>
+            <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Book a Bill" asp-page=".\Accounts\BookBill" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Payment" asp-page=".\Accounts\Payment" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Suppliers" asp-route-UserName=@UserName />
+        </div>
+        <div class="p-2 bd-highlight">
+            <input type="submit" class="btn btn-primary" value="Vendors" asp-page=".\Sales\Vendors" asp-route-UserName=@UserName />
         </div>
     </div>
 </form>
+
+
 

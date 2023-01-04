@@ -46,7 +46,7 @@ https://getbootstrap.com/docs/5.0/content/reboot/#headings-and-paragraphs			Samp
 
 https://learn.microsoft.com/en-us/aspnet/core/mvc/views/razor?view=aspnetcore-7.0   .Net Core 7  c# references
 
-https://www.html-code-generator.com/css/snippets/loading-animation						Good Generator
+https://www.html-code-generator.com/css/snippets/loading-animation						Gode Generator
 
 http://blog.geveo.com/IntegratingRDLCReportsToNetCoreProjects							Report Writing Tools
 
@@ -56,3 +56,11 @@ Report Print
 https://geoprocessing.online/					Useful Tools 
 
 https://www.dbsofts.com/articles/ms_excel_to_sqlite/				Excel to SQLite
+
+https://source.unsplash.com/1200x360/?Warehouse,Inventory
+
+https://getbootstrap.com/docs/5.0/forms/form-control/						Search and Filter Titles
+
+https://stackoverflow.com/questions/61742499/how-to-call-a-function-from-button-in-net-core-razor-page   Button function jQuery
+
+[Range(typeof(DateTime), "1/2/2004", "3/4/2004", ErrorMessage = "Value for {0} must be between {1} and {2}")]
