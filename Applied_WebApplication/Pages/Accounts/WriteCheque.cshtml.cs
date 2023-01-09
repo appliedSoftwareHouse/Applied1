@@ -1,101 +1,79 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Linq;
-using static Applied_WebApplication.Data.CreateTablesClass; 
-
 
 namespace Applied_WebApplication.Pages.Accounts
 {
     public class WriteChequeModel : PageModel
     {
-        public Variables variables = new();
-        public List<Message> ErrorMessages;
+        [BindProperty]
+        public Chequeinfo Cheque { get; set;} = new();
+        public List<Chequeinfo> ChequeList = new();
+        public List<Message> ErrorMessages = new List<Message>();
+        public bool IsLoad { get; set; } = false;
 
-        public void OnGet(string UserName)
+
+        public void OnGet(string Username)
         {
-            ErrorMessages = new List<Message>();
-            variables = new Variables();
-            variables.TranDate = DateTime.Now;
-            variables.ChqDate = DateTime.Now;
-            variables.TranType = 1;
+            if (Cheque == null) { Cheque = new Chequeinfo(); }
+            var _TaxRate1 = 0.00M;
+            var _TaxRate2 = 0.00M;
+
+            Cheque.Code = "New Code";
+            Cheque.Customer = 25;
+            Cheque.Bank = 4;
+
+            if (Cheque.TaxRate1 != 0)
+            {
+                _TaxRate1 = (int.Parse(DataTableClass.GetColumnValue(Username, Tables.Taxes, "Rate", Cheque.TaxRate1)));
+                Cheque.TaxAmount1 = Cheque.TaxableAmount1 * (_TaxRate1 / 100.00M);
+            }
+            if (Cheque.TaxRate2 != 0)
+            {
+                _TaxRate2 = (int.Parse(DataTableClass.GetColumnValue(Username, Tables.Taxes, "Rate", Cheque.TaxRate2)));
+                Cheque.TaxAmount2 = Cheque.TaxableAmount2 * (_TaxRate2 / 100.00M);
+            }
         }
 
-        public void OnGetLoad(string UserName)
+        public IActionResult OnPost()
         {
-            ErrorMessages = new List<Message>();
-            variables = new Variables();
-            variables.TranDate = DateTime.Now;
-            variables.ChqDate = DateTime.Now;
-            variables.TranType = 1;
+            // Validation of Record code type here.
+            ChequeList.Add(Cheque);
+            return Page();
         }
 
-        public void OnPost()
+        public class Chequeinfo
         {
-            ErrorMessages = new List<Message>();
-            variables = new Variables();
-            variables.TranDate = DateTime.Now;
-            variables.ChqDate = DateTime.Now;
-            variables.TranType = 1;
-        }
+            public bool ChqArea { get; set; }
+            public bool ListArea { get; set; } 
+            public bool ErrorArea { get; set; } 
 
-        public void OnPostSave(string UserName, Variables variables)
-        {
-            List<DataSet> Records = new List<DataSet>();
-
-            DataTableClass Cheques = new(UserName, Tables.WriteCheques);
-            Cheques.NewRecord();
-            Cheques.CurrentRow["ID"] = variables.ID;
-            Cheques.CurrentRow["TranType"] = variables.ID;
-            Cheques.CurrentRow["TranDate"] = variables.ID;
-            Cheques.CurrentRow["ChqNo"] = variables.ID;
-            Cheques.CurrentRow["ChqDate"] = variables.ID;
-            Cheques.CurrentRow["ChqAmount"] = variables.ID;
-            Cheques.CurrentRow["COA"] = variables.ID;
-            Cheques.CurrentRow["Project"] = variables.ID;
-            Cheques.CurrentRow["Employee"] = variables.ID;
-            Cheques.CurrentRow["Project"] = variables.ID;
-
-
-
-
-            variables = new Variables();
-            ErrorMessages = new List<Message>();
-        }
-                
-        public class Variables
-        {
-            public bool ChqArea { get; set; } = true;
-            public bool ListArea { get; set; } = false;
-            public bool ErrorArea { get; set; } = true;
-
-            
             public int ID { get; set; }
-            [Range (1,3) ]
+            public string Code { get; set; }
             public int TranType { get; set; }
             public DateTime TranDate { get; set; }
             public int Bank { get; set; }
             public int Customer { get; set; }
             public int Project { get; set; }
-            public int Employees { get; set; }
+            public int Employee { get; set; }
             public DateTime ChqDate { get; set; }
             public string ChqNo { get; set; }
-            public string ChqAmount { get; set; }
+            public decimal ChqAmount { get; set; }
             public int TaxType { get; set; }
+            public int Status { get; set; }
+            public string Description { get; set; }
 
             // WHT Income Tax
-            
+
             public decimal TaxableAmount1 { get; set; }
-            public decimal TaxRate1 { get; set; }
+            public int TaxRate1 { get; set; }
             public decimal TaxAmount1 { get; set; }
 
             // Sales Tax
             public decimal TaxableAmount2 { get; set; }
-            public decimal TaxRate2 { get; set; }
+            public int TaxRate2 { get; set; }
             public decimal TaxAmount2 { get; set; }
-            public decimal Status { get; set; }
-            public string Description { get; set; }
+
         }
     }
 }

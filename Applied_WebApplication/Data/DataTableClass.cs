@@ -7,6 +7,7 @@ using Applied_WebApplication.Data;
 using System.ServiceModel.Security;
 using static Applied_WebApplication.Data.ReportClass;
 using System.Reflection.Metadata;
+using System.IO;
 
 namespace Applied_WebApplication.Data
 {
@@ -28,14 +29,13 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
-
+        
 
         public DataTableClass(string _UserName, Tables _Tables)
         {
             MyUserName = _UserName;
             MyConnectionClass = new(MyUserName);
             MyConnection = MyConnectionClass.AppliedConnection;
-
             MyTableName = _Tables.ToString();
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
@@ -89,6 +89,7 @@ namespace Applied_WebApplication.Data
             SeekRecord(_ID);
         }
 
+       
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -287,12 +288,8 @@ namespace Applied_WebApplication.Data
                     if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
                 }
             }
-
-
-
             MyDataView.RowFilter = Filter;
             return row;
-            //return row;
         }
 
         internal bool Seek(string _Column, string _ColumnValue)
@@ -421,7 +418,8 @@ namespace Applied_WebApplication.Data
         // Get Value of any column from any Data Table.
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
         {
-            if (UserName == null) { return ""; } if(ID==0) { return ""; }
+            if (UserName == null) { return ""; }
+            if (ID == 0) { return ""; }
             string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
             ConnectionClass _Connection = new(UserName);
             SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
@@ -432,12 +430,10 @@ namespace Applied_WebApplication.Data
                 return _DataSet.Tables[0].Rows[0][0].ToString();
             }
             return "";
-
-
         }
 
-        
-        
+
+
 
         public static DataTable ConvertLedger(string UserName, DataTable _Table)
         {
@@ -445,7 +441,7 @@ namespace Applied_WebApplication.Data
             DataTable _Ledger = Ledger.MyDataTable.Clone();
             Ledger = null;
 
-            if(_Table.TableName == "CashBook")
+            if (_Table.TableName == "CashBook")
             {
                 DataView _DataView = _Table.AsDataView();
                 _DataView.Sort = "Vou_Date";
@@ -488,11 +484,11 @@ namespace Applied_WebApplication.Data
             return _Table.NewRecord();
         }
 
-        public static Dictionary<int,string> Titles(string UserName, Tables _TableName)
+        public static Dictionary<int, string> Titles(string UserName, Tables _TableName)
         {
             Dictionary<int, string> Titles = new Dictionary<int, string>();
             DataTableClass _Table = new(UserName, _TableName);
-            foreach(DataRow _Row in _Table.MyDataTable.Rows)
+            foreach (DataRow _Row in _Table.MyDataTable.Rows)
             {
                 Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
             }
@@ -515,14 +511,42 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
-            if(_Table.MyDataView.Count > 0)
+            if (_Table.MyDataView.Count > 0)
             { return _Table.MyDataTable.Rows[0]; }
-            else { return _Table.MyDataTable.NewRow();}
+            else { return _Table.MyDataTable.NewRow(); }
+        }
+
+        public static Dictionary<int,string> GetList(string UserName, Tables _TableName, string Filter)
+        {
+            Dictionary<int, string> _List = new();
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = Filter;
+            DataTable _TempTable = _Table.MyDataView.ToTable();
+
+            foreach (DataRow Row in _TempTable.Rows)
+            {
+                _List.Add((int)Row["ID"], Row["Title"].ToString());
+            }
+            return _List;
         }
 
         #endregion
-        
 
+        public static string GetTitle(string UserName, Tables _TableName, int ID)
+        {
+            string _Title = string.Empty;
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
+            if(_Table.MyDataView.Count>0)
+            {
+                _Title = _Table.MyDataView[0]["Title"].ToString();
+            }
+            else
+            {
+                _Title = "Select...";
+            }
+            return _Title;
+        }
         //======================================================== eof
     }
 }

@@ -64,3 +64,7 @@ https://getbootstrap.com/docs/5.0/forms/form-control/						Search and Filter Tit
 https://stackoverflow.com/questions/61742499/how-to-call-a-function-from-button-in-net-core-razor-page   Button function jQuery
 
 [Range(typeof(DateTime), "1/2/2004", "3/4/2004", ErrorMessage = "Value for {0} must be between {1} and {2}")]
+
+hsf steel industries
+
+https://www.youtube.com/watch?v=T-e554Zt3n4				.Net core 6 App CRUD

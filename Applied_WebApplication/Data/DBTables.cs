@@ -9,12 +9,16 @@ public enum Tables
     CashBook = 105,
     WriteCheques = 106,
     Taxes =107,
+    ChequeTranType = 108,
+    ChequeStatus = 109,
+    
 
     Customers = 201,
     City = 202,
     Country = 203,
     Project = 204,
     Employees = 205,
+
 
     Inventory = 301,
     Inv_Category = 302,
@@ -24,20 +28,7 @@ public enum Tables
 
     Ledger = 401,
     view_Ledger = 402
-
-
-
-
 }
-
-
-public enum Messaages
-{
-    Record_Saved = 100,
-    Record_not_Saved = 101
-
-}
-
 
 public enum CommandAction
 {
@@ -48,9 +39,23 @@ public enum CommandAction
 
 public enum ChequeStatus
 {
-    Submitted,
-    Clear,
-    Bounced,
-    Return,
-    Lost
+    Submitted = 1,
+    Clear =2,
+    Bounced =3,
+    Return =4,
+    Lost =5
 }
+
+public enum ChequeTranType
+{
+    Cheque = 1,
+    WHT=2,
+    SRB=3,
+    PST=4,
+    BST=5,
+    KSR=6,
+}
+
+
+
+

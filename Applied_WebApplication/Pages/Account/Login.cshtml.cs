@@ -67,7 +67,6 @@ namespace Applied_WebApplication.Pages
 
             [Required]
             [DataType(DataType.Password)]
-
             public string Password { get; set; } = string.Empty;
         }
     }

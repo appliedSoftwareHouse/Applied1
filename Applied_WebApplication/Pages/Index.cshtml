@@ -30,12 +30,10 @@
         height: 360px
     }
 
-    #Mycarousel
-    {
+    #Mycarousel {
         width: 1220px;
         height: 370px
     }
-
 
 </style>
 
@@ -71,7 +69,7 @@
     <footer class="blockquote-footer align-content-center">It is Under Development.</footer>
 </blockquote>
 
-<form method="post">
+<form method="get">
     <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
         <div class="p-2 bd-highlight">
             <input type="submit" class="btn btn-primary" value="Cash Book" asp-page=".\Accounts\CashBook" asp-route-UserName=@UserName />
@@ -80,13 +78,12 @@
             <input type="submit" class="btn btn-primary" value="Bank Book" asp-page=".\Accounts\BankBook" asp-route-UserName=@UserName />
         </div>
         <div class="p-2 bd-highlight">
-            <input type="submit" 
-                class="btn btn-primary" 
-                value="Write Cheque" 
-                asp-page=".\Accounts\WriteCheque" 
-                />
-                </div>
-            <div class="p-2 bd-highlight">
+            <input type="submit"
+                   class="btn btn-primary"
+                   value="Write Cheque"
+                   asp-page=".\Accounts\WriteCheque" />
+        </div>
+        <div class="p-2 bd-highlight">
             <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" asp-route-UserName=@UserName />
         </div>
         <div class="p-2 bd-highlight">
@@ -108,4 +105,13 @@
 </form>
 
 
+<form method="get">
+    <div class="p-2 bd-highlight">
+        <input type="submit"
+               class="btn btn-primary"
+               value="Write Cheque 2"
+               asp-page=".\Accounts\WriteCheque2" />
+    </div>
+</form>
 
+            

@@ -71,7 +71,7 @@ namespace Applied_WebApplication.Data
             #endregion
 
             #region Customer
-            if (MyDataTable.TableName == Tables.Customers.ToString())
+            if (Row.Table.TableName == Tables.Customers.ToString())
             {
                 MyMessages = new List<Message>();
 
@@ -112,7 +112,7 @@ namespace Applied_WebApplication.Data
             #endregion
 
             #region CashBook
-            if (MyDataTable.TableName == Tables.CashBook.ToString())
+            if (Row.Table.TableName == Tables.CashBook.ToString())
             {
                 MyMessages = new List<Message>();
                 #region Insert
@@ -148,7 +148,7 @@ namespace Applied_WebApplication.Data
                         MyMessages.Add(new Message() { success = false, ErrorID = 10504, message = "Must be enter Debit or Credit Amount" });
                     }
 
-               
+
                     if (Row["Description"].ToString().Length == 0)
                     {
                         MyMessages.Add(new Message() { success = false, ErrorID = 10506, message = "Description must be some charactors." });
@@ -158,6 +158,31 @@ namespace Applied_WebApplication.Data
             }
 
             #endregion
+
+            #region Write Cheque
+            if (Row.Table.TableName == Tables.WriteCheques.ToString())
+            {
+                MyMessages = new List<Message>();
+
+                if (SQLAction == CommandAction.Insert.ToString())
+                {
+                    if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { success = false, ErrorID = 10801, message = "Dublicate of ID found." }); }
+                    if ((decimal)Row["ChqAmount"] == 0) { MyMessages.Add(new Message() { success = false, ErrorID = 10802, message = "Cheque amount can not be null" }); }
+                    if ((int)Row["Bank"] == 0) { MyMessages.Add(new Message() { success = false, ErrorID = 10803, message = "Bank must be selected." }); }
+                    if (Row["Status"].ToString() == "") { MyMessages.Add(new Message() { success = false, ErrorID = 10804, message = "Cheque Status must be selected." }); }
+                }
+
+                if (SQLAction == CommandAction.Update.ToString())
+                {
+                    if ((decimal)Row["ChqAmount"] == 0) { MyMessages.Add(new Message() { success = false, ErrorID = 10802, message = "Cheque amount can not be null" }); }
+                    if ((int)Row["Bank"] == 0) { MyMessages.Add(new Message() { success = false, ErrorID = 10803, message = "Bank must be selected." }); }
+                    if ((int)Row["Status"] == 0) { MyMessages.Add(new Message() { success = false, ErrorID = 10804, message = "Cheque Status must be selected." }); }
+                }
+            }
+            #endregion
+
+
+            //=========================================================  result.....
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
@@ -177,6 +202,16 @@ namespace Applied_WebApplication.Data
             public bool success { get; set; } = false;
             public string message { get; set; } = string.Empty;
             public int ErrorID { get; set; } = 0;
+        }
+
+        public static List<Message> Validate(DataRow Row, CommandAction Action)
+        {
+            List<Message> MyMessages = new List<Message>();
+            TableValidationClass MyValidation = new();
+            MyValidation.SQLAction = Action.ToString();
+            MyValidation.Validation(Row);
+            MyMessages = MyValidation.MyMessages;
+            return MyMessages;
         }
     }
 }

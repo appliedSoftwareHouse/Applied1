@@ -7,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); ;
+builder.Services.AddSession();
+builder.Services.AddSingleton<IAppliedDependency, AppliedDependency>();
+builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); 
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
     options.Cookie.Name = "MyCookieAuth";
@@ -46,7 +48,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-//app.UseSession();
+app.UseSession();
 app.UseCreateDatabase();
 app.UseAuthentication();
 app.UseAuthorization();

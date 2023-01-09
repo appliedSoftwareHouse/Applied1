@@ -1,304 +1,189 @@
 ﻿@page
 @using System.Data;
+@using Microsoft.Extensions.Primitives
 @using static Applied_WebApplication.Data.TableValidationClass;
 @using static Applied_WebApplication.Data.DataTableClass;
 @model Applied_WebApplication.Pages.Accounts.WriteChequeModel
 @{
     var UserName = User.Identity.Name;
     var BankNatureID = 2;
-    var Cheques = new DataTableClass(UserName, Tables.WriteCheques);
-    var TitleBank = Titles(UserName, Tables.COA, string.Concat("Nature=", BankNatureID.ToString()));
-    var TitleCompany = Titles(UserName, Tables.Customers);
-    var TitleProject = Titles(UserName, Tables.Project);
-    var TitleEmployee = Titles(UserName, Tables.Employees);
-    var TitleTaxes = Titles(UserName, Tables.Taxes);
-}
+    
+   var TitleBank =  GetTitle(UserName, Tables.COA, Model.Cheque.Bank);
+   var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Cheque.Customer);
+   var TitleProject = GetTitle(UserName, Tables.Project, Model.Cheque.Project);
+   var TitleEmployee = GetTitle(UserName, Tables.Employees, Model.Cheque.Employee);
+   var TitleStatus = GetTitle(UserName, Tables.Employees, Model.Cheque.Status);
+   
 
-@functions {
-    public bool LocalSave(DataRow _DataRow)
-    {
-        return true;
-    }
 
-    public decimal GetTaxAmount(decimal Taxable, decimal Rate)
-    {
-        decimal _Amount = Taxable * Rate;
-        return _Amount;
-    }
-
-    // Add code here.
 }
 
 
 <style>
-    .input-group-text
-    {
+    .input-group-prepend {
         width: 30%
     }
 
-    .form-control
-    {
+    .form-control {
         width: 70%
     }
 
 </style>
 
-<div class="container p-2 mt-2 mb-2 bg-primary text-white rounded">
-    <h4>CHEQUES</h4>
-</div>
+<form method="post">
+    <div asp-validation-summary="ModelOnly"></div>
+    <div class="container">
 
-<!-- START ERROR AREA-->
-@if (Model.variables.ErrorArea)
-{
-    <div class="container mt-2 mb-2 align-content-center bg-info ">
-        @foreach (Message Errormsg in Model.ErrorMessages)
-        {
-            <div style="padding: 5px;"> @Errormsg.message   </div>
-        }
-    </div>
-}
-<!-- END ERROR AREA -->
-<!-- END CHEQUE AREA -->
-<div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Write a Cheque
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <!-- write a cheque start-->
-                <form method="post">
-                    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-                    <div class="container p-3">
-
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputTranType" asp-validation-for=@Model.variables.TranType>Transaction Type</span>
-                                    <select class="form-select" name="TranType" value=@Model.variables.TranType>
-                                        <option selected>Select .....</option>
-                                        <option value="1">Cheque</option>
-                                        <option value="2">Income Tax</option>
-                                        <option value="3">Sales Tax</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-6">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputTranDate" asp-validation-for=@Model.variables.TranDate>Transaction Date</span>
-                                    <input type="Date"
-                                           name="TranDate"
-                                           asp-for=@Model.variables.TranDate
-                                           value=@Model.variables.TranDate.ToString("yyyy-MM-dd")
-                                           class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputBank">Bank</span>
-                            <select class="form-select" name="Bank" asp-for=@Model.variables.Bank>
-                                <option selected>@Model.variables.Bank</option>
-                                @foreach (KeyValuePair<int, string> Title in TitleBank)
-                                {
-                                    <option value=@Title.Key>@Title.Value</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputchqDate">Cheque Date</span>
-                                    <input type="Date"
-                                           name="ChqDate"
-                                           asp-for=@Model.variables.ChqDate
-                                           value=@Model.variables.ChqDate.ToString("yyyy-MM-dd")
-                                           class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputChqNo">Cheque No.</span>
-                                    <input type="text"
-                                           name="ChqNo"
-                                           asp-for=@Model.variables.ChqNo
-                                           value=@Model.variables.ChqNo
-                                           class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputChqAmount">Amount</span>
-                                    <input type="number"
-                                           name="ChqAmount"
-                                           asp-for=@Model.variables.ChqAmount
-                                           value=@Model.variables.ChqAmount
-                                           class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputWHTTax">Withholding Income Tax</span>
-                            <input type="number"
-                                   name="TaxableAmount1"
-                                   asp-for=@Model.variables.TaxableAmount1
-                                   value=@Model.variables.TaxableAmount1
-                                   class="form-control">
-
-
-                            <select class="form-select"
-                                    name="TaxRate1"
-                                    asp-for=@Model.variables.TaxRate1>
-                                <option selected>@Model.variables.TaxRate1</option>
-                                @foreach (KeyValuePair<int, string> Title in TitleTaxes)
-                                {
-                                    <option value=@Title.Key>@Title.Value</option>
-                                }
-                            </select>
-
-                            <input type="number"
-                                   name="TaxAmount1"
-                                   asp-for=@Model.variables.TaxAmount1
-                                   value=@Model.variables.TaxAmount1
-                                   class="form-control">
-
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputSalesTax">Sales Tax</span>
-                            <input type="number"
-                                   name="TaxableAmount2"
-                                   asp-for=@Model.variables.TaxableAmount2
-                                   value=@Model.variables.TaxableAmount2
-                                   placeholder="Taxable Amount"
-                                   class="form-control">
-                            <select class="form-select"
-                                    name="Bank"
-                                    asp-for=@Model.variables.TaxRate2>
-                                <option selected>@Model.variables.TaxRate2</option>
-                                @foreach (KeyValuePair<int, string> Title in TitleTaxes)
-                                {
-                                    <option value=@Title.Key>@Title.Value</option>
-                                }
-                            </select>
-
-
-
-                            <input type="number"
-                                   name="TaxableAmount2"
-                                   asp-for=@Model.variables.TaxableAmount2
-                                   value=@Model.variables.TaxableAmount2
-                                   placeholder="Tax Amount"
-                                   class="form-control">
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputCustomer">Company (in favour of)</span>
-                            <select class="form-select" name="Customer" asp-for=@Model.variables.Customer>
-                                <option selected>@Model.variables.Customer</option>
-                                @foreach (KeyValuePair<int, string> Title in TitleCompany)
-                                {
-                                    <option value=@Title.Key>@Title.Value</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="input-group mb-3">
-                            <span class="input-group-text" id="inputProject">Project (Cost Center)</span>
-                            <select class="form-select" name="Project" asp-for=@Model.variables.Project>
-                                <option selected>@Model.variables.Project</option>
-                                @foreach (KeyValuePair<int, string> Title in TitleProject)
-                                {
-                                    <option value=@Title.Key>@Title.Value</option>
-                                }
-                            </select>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-8">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputDescription">Description</span>
-                                    <input type="text"
-                                           name="Description"
-                                           asp-for=@Model.variables.Description
-                                           value=@Model.variables.Description
-                                           class="form-control">
-                                </div>
-                            </div>
-
-                            <div class="col-4">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="inputStatus">Status</span>
-                                    <input type="text"
-                                           name="Status"
-                                           asp-for=@Model.variables.Status
-                                           value=@Model.variables.Status
-                                           class="form-control">
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-1">
-                                <input class="btn btn-primary" type="submit" name="Save" asp-page-handler="Save" asp-route-UserName=@UserName value="SAVE" />
-                            </div>
-                            <div class="col-1">
-                                <input class="btn btn-primary" type="submit" name="Back" asp-page="#Home" asp-route-UserName=@UserName value="BACK" />
-                            </div>
-                        </div>
-
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Tran ID</span>
                     </div>
-                </form>
-                <!-- write a cheque END-->
+                    <input class="form-control" type="text" asp-for="@Model.Cheque.Code" name="Code" value="@Model.Cheque.Code" placeholder="Tranaction Code (ID)" />
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingTwo">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                <span>List of Written Cheques</span>
-            </button>
-        </h2>
-        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 10%">Date</th>
-                            <th style="width: 30%">Paid to</th>
-                            <th style="width: 20%">Bank</th>
-                            <th style="width: 10%">Cheque No</th>
-                            <th style="width: 10%">Cheque Date</th>
-                            <th style="width: 10%">Cheque Amount</th>
-                            <th class="m-2" style="width: 10%; float:right">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (DataRow _Row in Cheques.MyDataTable.Rows)
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Tran Date</span>
+                    </div>
+                    <input class="form-control" type="date" name="TranDate" asp-for="@Model.Cheque.TranDate" value=@Model.Cheque.TranDate.ToString("yyyy-MM-dd")/>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Bank</span>
+                    </div>
+                    <select class="form-select" id="ChequeBank" name="Bank" asp-for="@Model.Cheque.Bank">
+                        <option selected>@TitleBank</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.COA, "Nature=" + BankNatureID.ToString()))
                         {
-                            <tr>
-                                <td>@_Row["TranDate"]</td>
-                                <td>@_Row["Company"]</td>
-                                <td>@_Row["Bank"]</td>
-                                <td>@_Row["ChqNo"]</td>
-                                <td>@_Row["ChqDate"]</td>
-                                <td>@_Row["ChqAmount"]</td>
-                                <td>@_Row["Status"]</td>
-                            </tr>
+                            <option value=@item.Key>@item.Value</option>
                         }
-                    </tbody>
-                </table>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Chque No</span>
+                    </div>
+                    <input class=" form-control" type="text" name="ChqNo" asp-for="@Model.Cheque.ChqNo" value="@Model.Cheque.ChqNo" placeholder="Cheque No." />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Chque Date</span>
+                    </div>
+                    <input class="form-control" type="Date" name="ChqDate" asp-for="@Model.Cheque.ChqDate" value=@Model.Cheque.ChqDate.ToString("yyyy-MM-dd") placeholder="Cheque Date" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Chq Amount</span>
+                    </div>
+
+                    <input class="form-control" type="number" name="ChqAmount" asp-for="@Model.Cheque.ChqAmount" value="@Model.Cheque.ChqAmount" placeholder="Cheque Amount" />
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Customer</span>
+                    </div>
+                    <select class="form-select" id="inputGroupCustomer" name="Customer" asp-for="@Model.Cheque.Customer">
+                        <option selected>@TitleCompany</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Customers, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Project</span>
+                    </div>
+                    <select class="form-select" id="inputGroupCustomer" name="Project" asp-for="@Model.Cheque.Project">
+                        <option selected>@TitleProject</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Project, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Employee</span>
+                    </div> 
+                    <select class="form-select" id="inputGroupCustomer" name="Employee" asp-for="@Model.Cheque.Employee">
+                        <option selected>@TitleEmployee</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Employees, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Employee</span>
+                    </div>
+                    <select class="form-select" id="inputGroupStatus" name="Status" asp-for="@Model.Cheque.Status">
+                        <option selected>@TitleStatus</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.ChequeStatus, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Tran ID</span>
+                    </div>
+                    <input class="form-control" type="text" asp-for="@Model.Cheque.Description" name="Description" value="@Model.Cheque.Description" placeholder="Description or comments" />
+                </div>
+            </div>
+            
+        </div>
+
+        <!--Endrow-->
+    </div>
+    <!--End contaier-->
+    <hr />
+
+
+
+    <hr />
+    <div class="container">
+        <div class="row">
+            <div class="col-1">
+                <input type="submit" class="btn btn-primary" value="SAVE" />
             </div>
         </div>
     </div>
+</form>
 
-</div>
+
+
+
 
