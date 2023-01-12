@@ -5,6 +5,9 @@ using AspNetCore.Reporting;
 using System.Drawing.Text;
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using System.Configuration;
 
 namespace Applied_WebApplication.Pages
 {
@@ -27,6 +30,13 @@ namespace Applied_WebApplication.Pages
         {
 
         }
+
+        public async Task<IActionResult> OnPostWChequeAsync(string username)
+        {
+            await Task.Delay(1000);
+            return RedirectToPage("/Accounts/WriteCheque", new { UserName = username});
+        }
+
 
 
     }

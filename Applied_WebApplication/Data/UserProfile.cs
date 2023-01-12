@@ -9,7 +9,6 @@ namespace Applied_WebApplication.Data
 {
     public class UserProfile
     {
-
         public ClaimsIdentity UserIdentity;
         public string UserID { get; set; }
         public string UserName { get; set; }
@@ -21,11 +20,8 @@ namespace Applied_WebApplication.Data
         public string Designation { get; set; }
         public string DateFormat { get; set; }
         public string CurrencyFormat { get; set; }
-
         private string default_DateFormat = "dd/MM/yyyy";
         private string default_CurrencyFormat = "N";
-
-
 
         public UserProfile()
         {
@@ -82,6 +78,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetClaim(ClaimsPrincipal _ClaimPrincipal)
         {
+            // Get a Company name to display at main page of the App.
             string Result = "Applied Software House?";
             foreach (Claim _Claim in _ClaimPrincipal.Claims)
             {

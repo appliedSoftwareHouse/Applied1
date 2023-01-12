@@ -27,7 +27,7 @@
                 @foreach (TableValidationClass.Message _Error in Model.ErrorMessages)
                 {
                     <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        @_Error.message;
+                        @_Error.Msg;
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 }

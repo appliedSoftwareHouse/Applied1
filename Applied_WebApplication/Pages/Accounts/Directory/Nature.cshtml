@@ -2,7 +2,7 @@
 @model Applied_WebApplication.Pages.Accounts.Directory.NatureModel
 @{
     var UserName = User.Identity.Name;
-    var TitleClass = DataTableClass.Titles(UserName, Tables.COA_Nature);
+    var TitleClass = Titles(UserName, Tables.COA_Nature);
 }
 
 <div class="container bg-primary p-1, mt-1 mb-2">

@@ -1,6 +1,7 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using static Applied_WebApplication.Data.AppFunctions;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -34,10 +35,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             //MyReport.ReportFilter.dt_To = new DateTime(2022, 12, 31);
             MyReport.UserName = UserName;
             MyReport.MyReportPath = string.Concat(MyReport.MyReportPath, "Reports\\", "Report1.rdlc");
-            MyReport.MyPrintReportPath = String.Concat(RootPath, "\\MyReport\\PrintReports\\", UserName, "\\");
+            MyReport.MyPrintReportPath = string.Concat(RootPath, "\\MyReport\\PrintReports\\", UserName, "\\");
             MyReport.RenderFileType = ReportClass.FileType.pdf;
             MyReport.DataSourceName = "DataSet1";
-            MyReport.CommandText = DataTableClass.GetQueryText(MyReport.ReportFilter); //  "SELECT ID, CODE, TITLE FROM [COA]";
+            MyReport.CommandText = GetQueryText(MyReport.ReportFilter); //  "SELECT ID, CODE, TITLE FROM [COA]";
             MyReport.Parameters.Add("UserName", UserName);
             MyReport.GetReport();
             return new FileContentResult(MyReport.MyBytes, "application/pdf");

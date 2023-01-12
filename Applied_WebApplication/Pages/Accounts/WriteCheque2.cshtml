@@ -1,4 +1,5 @@
 ﻿@page
+@using static Applied_WebApplication.Data.AppFunctions;
 @model Applied_WebApplication.Pages.Accounts.WriteCheque2Model
 @{
     var UserName = User.Identity.Name;
@@ -39,7 +40,7 @@
                 <label for="exampleDataList" class="form-label">Bank</label>
                 <input class="form-control" list="datalistOptions" name="Bank" placeholder="Type to search...">
                 <datalist id="datalistOptions">
-                    @foreach (KeyValuePair<int,string> item in DataTableClass.GetList(UserName,Tables.COA,"Nature=2"))
+                    @foreach (KeyValuePair<int,string> item in GetList(UserName,Tables.COA,"Nature=2"))
                     {
                         <option value=@item.Value></option>
                     }

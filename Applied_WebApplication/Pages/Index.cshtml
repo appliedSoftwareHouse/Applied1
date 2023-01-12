@@ -8,6 +8,7 @@
     ViewData["Title"] = "Home page";
     string MyCompany = UserProfile.GetClaim(User);
     var UserName = User.Identity.Name;
+    var username = User.Identity.Name;
 }
 
 <div class="mt-4 p-2 bg-success text-white rounded">
@@ -69,7 +70,7 @@
     <footer class="blockquote-footer align-content-center">It is Under Development.</footer>
 </blockquote>
 
-<form method="get">
+<form method="post">
     <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
         <div class="p-2 bd-highlight">
             <input type="submit" class="btn btn-primary" value="Cash Book" asp-page=".\Accounts\CashBook" asp-route-UserName=@UserName />
@@ -81,7 +82,8 @@
             <input type="submit"
                    class="btn btn-primary"
                    value="Write Cheque"
-                   asp-page=".\Accounts\WriteCheque" />
+                   asp-route-UserName="@UserName"
+                   asp-page-handler="WCheque">
         </div>
         <div class="p-2 bd-highlight">
             <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" asp-route-UserName=@UserName />

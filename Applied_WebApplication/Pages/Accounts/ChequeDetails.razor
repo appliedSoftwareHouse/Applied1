@@ -1,0 +1,47 @@
+﻿@using System.Data
+@using static Applied_WebApplication.Data.AppFunctions;
+
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th style="width: 10%">Code</th>
+            <th style="width: 10%">Chq No</th>
+            <th style="width: 10%">Chq Date</th>
+            <th style="width: 10%">Chq Amount</th>
+            <th style="width: 20%">Pay To Company</th>
+            <th style="width: 20%; text-align: right">Taxable Amount</th>
+            <th style="width: 10%; text-align: right">Tax Rate</th>
+            <th style="width: 10%; text-align: right">Tax Amont</th>
+        </tr>
+    </thead>
+    <tbody>
+
+        @foreach (DataRow Row in GetRecords(UserName, Tables.WriteCheques, string.Concat("Code='", Code, "'")).Rows)
+        {
+            string Company = @GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
+            decimal Rate = (decimal)Row["TaxRate"] / 100;
+            <tr>
+                <td>@Row["Code"]</td>
+                <td>@Row["ChqNo"]</td>
+                <td>@DateTime.Parse(Row["ChqDate"].ToString()).ToString("dd-MMM-yyyy")</td>
+                <td style="text-align: right">@decimal.Parse(Row["ChqAmount"].ToString()).ToString("#,##0.00")</td>
+                <td>@Company</td>
+                <td style="text-align: right">@decimal.Parse(Row["TaxableAmount"].ToString()).ToString("#,##0.00")</td>
+                <td style="text-align: right">@decimal.Parse(Rate.ToString()).ToString("##0.00%")</td>
+                <td style="text-align: right">@decimal.Parse(Row["TaxAmount"].ToString()).ToString("#,##0.00")</td>
+            </tr>
+        }
+    </tbody>
+
+
+</table>
+
+
+@code {
+    [Parameter] public string UserName { get; set; }
+    [Parameter] public string Code { get; set; }
+    //string UserName = "Admin";
+    //string Code = "CHQ-000001";
+
+}

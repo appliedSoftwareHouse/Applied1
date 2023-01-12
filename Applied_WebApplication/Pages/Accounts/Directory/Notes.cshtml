@@ -1,8 +1,9 @@
 ﻿@page
+@using static Applied_WebApplication.Data.AppFunctions;
 @model Applied_WebApplication.Pages.Accounts.Directory.NotesModel
 @{
     var UserName = User.Identity.Name;
-    var TitleClass = DataTableClass.Titles(UserName, Tables.COA_Notes);
+    var TitleClass = Titles(UserName, Tables.COA_Notes);
 }
 
 <div class="container bg-primary p-1, mt-1 mb-2">

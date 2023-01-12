@@ -4,12 +4,13 @@
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Primitives
 @using static Applied_WebApplication.Data.TableValidationClass;
+@using static Applied_WebApplication.Data.AppFunctions;
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
 @{
     var UserName = User.Identity.Name;
     var UserData = new UserProfile(UserName);
     var CashCode = 1;
-    var COATitles = DataTableClass.Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
+    var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
     var NumFormat = AppliedUsersClass.GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
     var DateFormat = AppliedUsersClass.GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
     var LedgerClass = new Ledger(UserName);
@@ -28,7 +29,7 @@
         LedgerClass.Filter = string.Concat("BookID=", Model.MyParameters.CashBookID.ToString());
         Model.Cashbook = LedgerClass.Records;
         Model.MyParameters.RecordID = 0;
-        DataRow Row = DataTableClass.GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
+        DataRow Row = GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
 
         if (Model.MyParameters.Reload)
         {
@@ -133,7 +134,7 @@
                 <div class="container mt-2 mb-2 align-content-center bg-info ">
                     @foreach (Message Errormsg in Model.ErrorMessages)
                     {
-                        <div style="padding: 5px;"> @Errormsg.message   </div>
+                        <div style="padding: 5px;"> @Errormsg.Msg   </div>
                     }
 
                 </div>
@@ -181,7 +182,7 @@
                         <span class="input-group-text" style="width: 120px" id="COAID">Account</span>
                         <select class="form-select" name="COA" asp-for=@Model.MyRecord.COA>
                             <option selected>@Model.MyRecord.COA</option>
-                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.COA))
+                            @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.COA))
                             {
                                 <option value=@_Title.Key>@_Title.Value</option>
                             }
@@ -242,7 +243,7 @@
                         <span class="input-group-text" style="width: 120px" id="Customers">Customers</span>
                         <select class="form-select" asp-for=@Model.MyRecord.Customer name="Customer">
                             <option selected>@Model.MyRecord.Customer</option>
-                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
+                            @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Customers))
                             {
                                 <option value=@_Title.Key>@_Title.Value</option>
                             }
@@ -253,7 +254,7 @@
                         <span class="input-group-text" style="width: 120px" id="Project">Projects</span>
                         <select class="form-select" asp-for=@Model.MyRecord.Project name="Project">
                             <option selected>@Model.MyRecord.Project</option>
-                            @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
+                            @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Project))
                             {
                                 <option value=@_Title.Key>@_Title.Value</option>
                             }
@@ -265,7 +266,7 @@
                             <span class="input-group-text" style="width: 120px" id="Employee">Employee</span>
                             <select class="form-select" asp-for=@Model.MyRecord.Employee name="Employee">
                                 <option selected>@Model.MyRecord.Employee</option>
-                                @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
+                                @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Employees))
                                 {
                                     <option value=@_Title.Key>@_Title.Value</option>
                                 }

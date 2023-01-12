@@ -1,23 +1,38 @@
-﻿@page
+﻿@page 
 @using System.Data;
 @using Microsoft.Extensions.Primitives
+@using Applied_WebApplication.Data;
+@using static Applied_WebApplication.Data.AppFunctions;
 @using static Applied_WebApplication.Data.TableValidationClass;
 @using static Applied_WebApplication.Data.DataTableClass;
 @model Applied_WebApplication.Pages.Accounts.WriteChequeModel
 @{
     var UserName = User.Identity.Name;
+    var username = User.Identity.Name;
     var BankNatureID = 2;
-    
-   var TitleBank =  GetTitle(UserName, Tables.COA, Model.Cheque.Bank);
-   var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Cheque.Customer);
-   var TitleProject = GetTitle(UserName, Tables.Project, Model.Cheque.Project);
-   var TitleEmployee = GetTitle(UserName, Tables.Employees, Model.Cheque.Employee);
-   var TitleStatus = GetTitle(UserName, Tables.Employees, Model.Cheque.Status);
-   
 
+    var TitleBank = GetTitle(UserName, Tables.COA, Model.Cheque.Bank);
+    var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Cheque.Customer);
+    var TitleProject = GetTitle(UserName, Tables.Project, Model.Cheque.Project);
+    var TitleEmployee = GetTitle(UserName, Tables.Employees, Model.Cheque.Employee);
+    var TitleStatus = GetTitle(UserName, Tables.Employees, Model.Cheque.Status);
+    var TitleTax1 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxRate1);
+    var TitleTax2 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxRate2);
+    var _TaxRate1 = 0M;
+    var _TaxRate2 = 0M;
 
+    if (Model.Cheque.TaxRate1 != 0)
+    {
+        _TaxRate1 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxRate1)));
+        Model.Cheque.TaxAmount1 = Model.Cheque.TaxableAmount1 * (_TaxRate1 / 100.00M);
+    }
+
+    if (Model.Cheque.TaxRate2 != 0)
+    {
+        _TaxRate2 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxRate2)));
+        Model.Cheque.TaxAmount1 = Model.Cheque.TaxableAmount1 * (_TaxRate2 / 100.00M);
+    }
 }
-
 
 <style>
     .input-group-prepend {
@@ -30,17 +45,38 @@
 
 </style>
 
+<div class="container bg-info mt-1 mb-2 p-2 content-center">
+    <label>WRITE A CHEQUE</label>
+
+
+</div>
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    foreach (Message message in Model.ErrorMessages)
+    {
+        <div class="error-msg rounded">
+            @message.Msg
+        </div>
+    }
+
+}
+
+
 <form method="post">
-    <div asp-validation-summary="ModelOnly"></div>
+    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
     <div class="container">
+
+        <div > <input hidden class="button" type="text" name="ID" /></div>
 
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Tran ID</span>
+                        <span class="input-group-text">Ref Code</span>
                     </div>
                     <input class="form-control" type="text" asp-for="@Model.Cheque.Code" name="Code" value="@Model.Cheque.Code" placeholder="Tranaction Code (ID)" />
+                    <span asp-validation-for="@Model.Cheque.Code"></span>
                 </div>
             </div>
             <div class="col-4">
@@ -48,7 +84,8 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Tran Date</span>
                     </div>
-                    <input class="form-control" type="date" name="TranDate" asp-for="@Model.Cheque.TranDate" value=@Model.Cheque.TranDate.ToString("yyyy-MM-dd")/>
+                    <input class="form-control" type="date" name="TranDate" asp-for="@Model.Cheque.TranDate" value=@Model.Cheque.TranDate.ToString("yyyy-MM-dd") />
+                    <span asp-validation-for="@Model.Cheque.TranDate"></span>
                 </div>
             </div>
             <div class="col-4">
@@ -74,6 +111,7 @@
                         <span class="input-group-text">Chque No</span>
                     </div>
                     <input class=" form-control" type="text" name="ChqNo" asp-for="@Model.Cheque.ChqNo" value="@Model.Cheque.ChqNo" placeholder="Cheque No." />
+                    <span asp-validation-for="@Model.Cheque.ChqNo"></span>
                 </div>
             </div>
             <div class="col-4">
@@ -82,6 +120,7 @@
                         <span class="input-group-text">Chque Date</span>
                     </div>
                     <input class="form-control" type="Date" name="ChqDate" asp-for="@Model.Cheque.ChqDate" value=@Model.Cheque.ChqDate.ToString("yyyy-MM-dd") placeholder="Cheque Date" />
+                    <span asp-validation-for="@Model.Cheque.ChqDate"></span>
                 </div>
             </div>
             <div class="col-4">
@@ -91,6 +130,7 @@
                     </div>
 
                     <input class="form-control" type="number" name="ChqAmount" asp-for="@Model.Cheque.ChqAmount" value="@Model.Cheque.ChqAmount" placeholder="Cheque Amount" />
+                    <span asp-validation-for="@Model.Cheque.ChqAmount"></span>
                 </div>
             </div>
         </div>
@@ -128,7 +168,7 @@
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Employee</span>
-                    </div> 
+                    </div>
                     <select class="form-select" id="inputGroupCustomer" name="Employee" asp-for="@Model.Cheque.Employee">
                         <option selected>@TitleEmployee</option>
                         @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Employees, ""))
@@ -139,12 +179,11 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Employee</span>
+                        <span class="input-group-text">Status</span>
                     </div>
                     <select class="form-select" id="inputGroupStatus" name="Status" asp-for="@Model.Cheque.Status">
                         <option selected>@TitleStatus</option>
@@ -158,12 +197,89 @@
             <div class="col-8">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Tran ID</span>
+                        <span class="input-group-text" asp-validation-for="@Model.Cheque.Description">Tran ID</span>
                     </div>
                     <input class="form-control" type="text" asp-for="@Model.Cheque.Description" name="Description" value="@Model.Cheque.Description" placeholder="Description or comments" />
+                    <span asp-validation-for="@Model.Cheque.Description"></span>
                 </div>
             </div>
-            
+        </div>
+        <hr />
+
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">WHT Tax</span>
+                    </div>
+                    <select class="form-select" id="inputGroupTacable1" name="TaxRate1" asp-for="@Model.Cheque.TaxRate1">
+                        <option selected>@TitleTax1</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Taxes, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Taxable Amount</span>
+                    </div>
+                    <input class="form-control" placeholder="WHT Taxable Amount"
+                           type="text"
+                           name="TaxableAmount1"
+                           asp-for="@Model.Cheque.TaxableAmount1"
+                           value="@Model.Cheque.TaxableAmount1" />
+                </div>
+                <span asp-validation-for="@Model.Cheque.TaxableAmount1"></span>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Tax Amount</span>
+                    </div>
+                    <input readonly class="form-control" type="text" asp-for="@Model.Cheque.TaxAmount1" name="TaxAmount" value=@Model.Cheque.TaxAmount1 placeholder="WHT Taxable Amount" />
+                </div>
+            </div>
+        </div>
+        <hr />
+
+        <div class="row mb-2">
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Sales Tax</span>
+                    </div>
+                    <select class="form-select" id="inputGroupTaxRate2" name="TaxRate2" asp-for="@Model.Cheque.TaxRate2">
+                        <option selected>@TitleTax2</option>
+                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Taxes, ""))
+                        {
+                            <option value=@item.Key>@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Taxable Amount</span>
+                    </div>
+                    <input class="form-control" placeholder="WHT Taxable Amount"
+                           type="text"
+                           name="TaxableAmount2"
+                           asp-for="@Model.Cheque.TaxableAmount2"
+                           value="@Model.Cheque.TaxableAmount2" />
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Tax Amount</span>
+                    </div>
+                    <input readonly class="form-control" type="text" asp-for="@Model.Cheque.TaxAmount2" name="TaxAmount" value=@Model.Cheque.TaxAmount2 placeholder="Sales Taxable Amount" />
+                </div>
+            </div>
         </div>
 
         <!--Endrow-->
@@ -171,19 +287,28 @@
     <!--End contaier-->
     <hr />
 
+    @{
+        string Code = @Model.Cheque.Code;
+ }
 
+    @if (Model.IsSaved)
+    {
+            <component type="typeof(ChequeDetails)" render-mode="Static" param-UserName=@UserName param-Code=@Model.Cheque.Code/>
+    }
 
     <hr />
     <div class="container">
         <div class="row">
             <div class="col-1">
-                <input type="submit" class="btn btn-primary" value="SAVE" />
+                @if (Model.IsSaved)
+                {
+                    <input type="submit" class="btn btn-primary" value="Back" />
+                }
+                else
+                {
+                    <input type="submit" class="btn btn-primary" value="SAVE" asp-route-username="@username" asp-page-handler="Save" />
+                }
             </div>
         </div>
     </div>
 </form>
-
-
-
-
-

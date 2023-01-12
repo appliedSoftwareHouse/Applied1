@@ -1,6 +1,7 @@
 ﻿@using Applied_WebApplication.Pages.Accounts
 @using Applied_WebApplication.Data
 @using System.Data
+@using static Applied_WebApplication.Data.AppFunctions;
 
 @code {
     [Parameter]
@@ -50,7 +51,7 @@
             <div class="col input-group mb-3">
                 <span class="input-group-text" style="width: 120px" id="COAID">Account</span>
                 <select class="form-select">
-                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.COA))
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.COA))
                     {
                         <option>@_Title.Value</option>
                     }
@@ -106,7 +107,7 @@
             <div class="col input-group mb-3">
                 <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
                 <select class="form-select">
-                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Customers))
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Customers))
                     {
                         <option>@_Title.Value</option>
                     }
@@ -115,7 +116,7 @@
             <div class="col input-group mb-3">
                 <span class="input-group-text" style="width: 120px" id="COAID">Projects</span>
                 <select class="form-select">
-                    @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Project))
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Project))
                     {
                         <option>@_Title.Value</option>
                     }
@@ -126,7 +127,7 @@
                 <div class="col input-group mb-3">
                     <span class="input-group-text" style="width: 120px" id="COAID">Customers</span>
                     <select class="form-select">
-                        @foreach (KeyValuePair<int, string> _Title in DataTableClass.Titles(UserData.UserName, Tables.Employees))
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserData.UserName, Tables.Employees))
                         {
                             <option>@_Title.Value</option>
                         }

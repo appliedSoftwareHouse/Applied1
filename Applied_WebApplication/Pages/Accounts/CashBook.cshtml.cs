@@ -1,9 +1,8 @@
-using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Primitives;
 using System.Data;
-using static Applied_WebApplication.Data.TableValidationClass;
+using static Applied_WebApplication.Data.AppFunctions;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -18,7 +17,7 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             MyParameters.IsSelected = true;
             MyParameters.CashBookID = id;
-            MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", id);
+            MyParameters.BookTitle =GetColumnValue(UserName, Tables.COA, "Title", id);
             DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
             MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
             MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
@@ -30,7 +29,7 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             MyParameters.IsSelected = true;
             MyParameters.Reload = true;
-            MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
+            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
             return Page();
         }
 
@@ -45,7 +44,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
                 if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
             }
-            MyParameters.BookTitle = DataTableClass.GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
+            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
             return Page();
         }
 
@@ -119,8 +118,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 return Page();
             }
         }
-
-        
 
         public class ReportParameters
         {

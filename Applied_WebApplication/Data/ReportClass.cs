@@ -1,8 +1,9 @@
 ﻿using AspNetCore.Reporting;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Text;
-
+using static Applied_WebApplication.Data.AppFunctions;
 
 namespace Applied_WebApplication.Data
 {
@@ -78,7 +79,7 @@ namespace Applied_WebApplication.Data
 
         private DataTable ReportDataTable()
         {
-            return DataTableClass.GetAppliedTable(UserName, ReportFilter);
+            return GetAppliedTable(UserName, ReportFilter);
         }
 
         private RenderType GetRenderType(string reportType)

@@ -1,8 +1,9 @@
 ﻿@page
+
 @model Applied_WebApplication.Pages.Accounts.Directory.ClassModel
 @{
     var UserName = User.Identity.Name;
-    var TitleClass = DataTableClass.Titles(UserName, Tables.COA_Class);
+    var TitleClass = Titles(UserName, Tables.COA_Class);
 }
 
 <div class="container bg-primary p-1, mt-1 mb-2">

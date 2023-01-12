@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using static Applied_WebApplication.Data.AppFunctions;
 using System;
 
 namespace Applied_WebApplication.Data

@@ -26,7 +26,6 @@ namespace Applied_WebApplication.Pages.Account
         public string DateFormat4 = "MM-dd-yyyy";
         public string DateFormat5 = "dd-MMM-yy";
         public string DateFormat6 = "dd-MMM-yyyy";
-        
 
         public void OnGet()
         {
