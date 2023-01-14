@@ -4,7 +4,7 @@
 
 <table class="table table-hover">
     <thead>
-        <tr>
+        <tr class="bg-dark text-white">
             <th style="width: 10%">Code</th>
             <th style="width: 10%">Chq No</th>
             <th style="width: 10%">Chq Date</th>
@@ -16,7 +16,6 @@
         </tr>
     </thead>
     <tbody>
-
         @foreach (DataRow Row in GetRecords(UserName, Tables.WriteCheques, string.Concat("Code='", Code, "'")).Rows)
         {
             string Company = @GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
@@ -41,7 +40,4 @@
 @code {
     [Parameter] public string UserName { get; set; }
     [Parameter] public string Code { get; set; }
-    //string UserName = "Admin";
-    //string Code = "CHQ-000001";
-
 }

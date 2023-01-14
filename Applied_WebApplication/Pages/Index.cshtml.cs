@@ -31,10 +31,10 @@ namespace Applied_WebApplication.Pages
 
         }
 
-        public async Task<IActionResult> OnPostWChequeAsync(string username)
+        public async Task<IActionResult> OnPostWChequeAsync(string ChqCode)
         {
-            await Task.Delay(1000);
-            return RedirectToPage("/Accounts/WriteCheque", new { UserName = username});
+            await Task.Delay(100);
+            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode});
         }
 
 

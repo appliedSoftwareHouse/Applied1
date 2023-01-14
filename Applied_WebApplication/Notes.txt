@@ -68,3 +68,7 @@ https://stackoverflow.com/questions/61742499/how-to-call-a-function-from-button-
 hsf steel industries
 
 https://www.youtube.com/watch?v=T-e554Zt3n4				.Net core 6 App CRUD
+
+https://www.codeguru.com/dotnet/asp-net-cookies/				Cookies 
+
+https://codepen.io/mukeshm280/pen/GRKyZVq						Number Formatted.

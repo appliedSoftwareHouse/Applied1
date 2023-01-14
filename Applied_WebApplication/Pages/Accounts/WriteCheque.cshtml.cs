@@ -3,16 +3,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using static Applied_WebApplication.Data.AppFunctions;
 using System.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Newtonsoft.Json.Linq;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
+using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
     public class WriteChequeModel : PageModel
     {
+        #region Start
         [BindProperty]
         public Chequeinfo Cheque { get; set; } = new();
         public List<DataRow> ChequeList = new();
@@ -23,74 +26,84 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public DateTime FiscalYearDate1 = new DateTime(2022, 7, 1);                     // In future, has to get from user profile table
         public DateTime FiscalYearDate2 = new DateTime(2023, 6, 30);                   // In future, has to get from user profile table
-        
-        public void OnGet(string username)
+
+        #endregion
+
+        public void OnGet(string ChqCode)
         {
-            string UserName = username;
+            string UserName = HttpContext.User.Identity.Name;
 
             if (UserName == null)
             {
                 ErrorMessages.Add(new Message { Success = false, ErrorID = 10, Msg = "User Name is not define...." });
                 return;
             }
-            if (Cheque == null) { Cheque = new Chequeinfo(); }
 
-            Cheque.Code = "CHQ-000001";
-            Cheque.Customer = 0;
-            Cheque.Bank = 15;
-            Cheque.ChqNo = "A-789456123";
-            Cheque.ChqAmount = 125800;
-            Cheque.Customer = 14;
-            Cheque.TranDate = new DateTime(2023, 1, 12);
-            Cheque.ChqDate = new DateTime(2023, 1, 15);
-            Cheque.Description = "Paid to Mr. Ather for payment of stock purchased.";
-            Cheque.Status = 1;
-            Cheque.TaxableAmount1 = 125800;
-            Cheque.TaxableAmount2 = 25600;
-            Cheque.Employee = 2;
-            Cheque.TaxRate1 = 4;
-            Cheque.TaxRate2 = 1;
-
-            if (Cheque.TaxRate1 != 0)
+            if (ChqCode == "New Code" || string.IsNullOrEmpty(ChqCode))
             {
-                decimal _TaxRate1 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxRate1)));
+                Cheque = new Chequeinfo();
+                Cheque.Code = ChqCode;
+            }
+            else
+            {
+                IsSaved = true;
+                Cheque = GetChequeInfo(UserName, ChqCode);
+                // Fatch a record from DataBase.
+            }
+
+            if (Cheque.TaxID1 != 0)
+            {
+                decimal _TaxRate1 = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxID1)));
                 Cheque.TaxAmount1 = Cheque.TaxableAmount1 * (_TaxRate1 / 100.00M);
             }
-            if (Cheque.TaxRate2 != 0)
+            if (Cheque.TaxID2 != 0)
             {
-                decimal _TaxRate2 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxRate2)));
+                decimal _TaxRate2 = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxID2)));
                 Cheque.TaxAmount2 = Cheque.TaxableAmount2 * (_TaxRate2 / 100.00M);
             }
         }
 
-        public IActionResult OnPostSave(string UserName)
+
+        public IActionResult OnPostSave()
         {
+            string UserName = User.Identity.Name;            // Get User Name from Identity                  
 
             bool IsValadated = RowValidate(Cheque);
             if (IsValadated)
             {
                 DataTableClass Table = new(UserName, Tables.WriteCheques);
-                List<DataRow> ChequeRows = new();
+                Table.MyDataView.RowFilter = String.Concat("Code='", Cheque.Code, "'");
+
+                if (Table.MyDataView.Count > 0) { IsExist = true; } else { IsExist = false; }
+
                 DataRow Row1, Row2, Row3;
-                Row1 = Table.NewRecord();
-                Row2 = Table.NewRecord();
-                Row3 = Table.NewRecord();
 
-                Table.MyDataView.RowFilter = string.Concat("Code='", Cheque.Code, "'");
-
-                if (Table.MyDataView.Count > 0)
+                if (IsExist)
                 {
-                    int i = 1;
-                    foreach (DataRow Row in Table.MyDataView.ToTable().Rows)
-                    {
-                        if (i == 1) { Row1 = Row; }
-                        if (i == 2) { Row2 = Row; }
-                        if (i == 3) { Row3 = Row; }
-                        i += 1;
-                    }
+                    DataRow Row;
+
+                    Row = Table.MyDataView[0].Row;
+                    if (Row != null) { Row1 = Row; } else { Row1 = Table.NewRecord(); }
+                    
+                    Row = Table.MyDataView[1].Row;
+                    if (Row != null) { Row2 = Row; } else { Row2 = Table.NewRecord(); }
+
+                    Row = Table.MyDataView[2].Row;
+                    if (Row != null) { Row3 = Row; } else { Row3 = Table.NewRecord(); }
+                }
+                else
+                {
+                    Row1 = Table.NewRecord();
+                    Row2 = Table.NewRecord();
+                    Row3 = Table.NewRecord();
+
+                    Row1["ID"] = 0;
+                    Row2["ID"] = 0;
+                    Row3["ID"] = 0;
+
+                    // check either code is alresady exisit or not
                 }
 
-                Row1["ID"] = Cheque.ID;
                 Row1["Code"] = Cheque.Code;
                 Row1["TranType"] = 1;
                 Row1["TranDate"] = Cheque.TranDate;
@@ -103,17 +116,16 @@ namespace Applied_WebApplication.Pages.Accounts
                 Row1["Project"] = Cheque.Project;
                 Row1["Status"] = Cheque.Status;
                 Row1["Description"] = Cheque.Description;
-                Row1["TaxType"] = 0;
+                Row1["TaxID"] = 0;
                 Row1["TaxableAmount"] = 0;
                 Row1["TaxRate"] = 0;
                 Row1["TaxAmount"] = 0;
 
-                if (Cheque.TaxRate1 != 0)
+                if (Cheque.TaxID1 != 0)
                 {
-
-                    Row2["ID"] = Cheque.ID;
+                    
                     Row2["Code"] = Cheque.Code;
-                    Row2["TranType"] = int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxRate1));
+                    Row2["TranType"] = int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxID1));
                     Row2["TranDate"] = Cheque.TranDate;
                     Row2["Bank"] = Cheque.Bank;
                     Row2["ChqNo"] = Cheque.ChqNo;
@@ -124,17 +136,17 @@ namespace Applied_WebApplication.Pages.Accounts
                     Row2["Project"] = Cheque.Project;
                     Row2["Status"] = Cheque.Status;
                     Row2["Description"] = Cheque.Description;
-                    Row2["TaxType"] = Cheque.TaxRate1;
+                    Row2["TaxID"] = Cheque.TaxID1;
                     Row2["TaxableAmount"] = Cheque.TaxableAmount1;
-                    Row2["TaxRate"] = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxRate1)));
+                    Row2["TaxRate"] = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxID1)));
                     Row2["TaxAmount"] = (decimal)Row2["TaxableAmount"] * ((decimal)Row2["TaxRate"] / 100);
                 }
 
-                if (Cheque.TaxRate2 != 0)
+                if (Cheque.TaxID2 != 0)
                 {
-                    Row3["ID"] = Cheque.ID;
+                    
                     Row3["Code"] = Cheque.Code;
-                    Row3["TranType"] = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxRate2)));
+                    Row3["TranType"] = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxID2)));
                     Row3["TranDate"] = Cheque.TranDate;
                     Row3["Bank"] = Cheque.Bank;
                     Row3["ChqNo"] = Cheque.ChqNo;
@@ -145,26 +157,27 @@ namespace Applied_WebApplication.Pages.Accounts
                     Row3["Project"] = Cheque.Project;
                     Row3["Status"] = Cheque.Status;
                     Row3["Description"] = Cheque.Description;
-                    Row3["TaxType"] = Cheque.TaxRate2;
+                    Row3["TaxID"] = Cheque.TaxID2;
                     Row3["TaxableAmount"] = Cheque.TaxableAmount2;
-                    Row3["TaxRate"] = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxRate2)));
+                    Row3["TaxRate"] = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Cheque.TaxID2)));
                     Row3["TaxAmount"] = (decimal)Row3["TaxableAmount"] * ((decimal)Row3["TaxRate"] / 100);
                 }
 
                 Table.CurrentRow = Row1;
                 Table.Save();
+
+                //Table.CurrentRow = Row2; 
                 Table = new(UserName, Tables.WriteCheques)
                 {
                     CurrentRow = Row2
                 };
-
-                //Table.CurrentRow = Row2; 
                 Table.Save();
+
+                //Table.CurrentRow = Row3; 
                 Table = new(UserName, Tables.WriteCheques)
                 {
                     CurrentRow = Row3
                 };
-
                 Table.Save();
 
                 if (Table.TableValidation.MyMessages.Count > 0)
@@ -179,6 +192,12 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return Page();
         }
+
+        public IActionResult OnPostBack()
+        {
+            return RedirectToPage("/Index");
+        }
+
         private bool RowValidate(Chequeinfo cheque)
         {
 
@@ -231,12 +250,14 @@ namespace Applied_WebApplication.Pages.Accounts
             // WHT Income Tax
 
             public decimal TaxableAmount1 { get; set; }
-            public int TaxRate1 { get; set; }
+            public int TaxID1 { get; set; }
+            public decimal TaxRate1 { get; set; }
             public decimal TaxAmount1 { get; set; }
 
             // Sales Tax
             public decimal TaxableAmount2 { get; set; }
-            public int TaxRate2 { get; set; }
+            public int TaxID2 { get; set; }
+            public decimal TaxRate2 { get; set; }
             public decimal TaxAmount2 { get; set; }
 
         }

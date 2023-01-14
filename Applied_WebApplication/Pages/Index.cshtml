@@ -82,7 +82,7 @@
             <input type="submit"
                    class="btn btn-primary"
                    value="Write Cheque"
-                   asp-route-UserName="@UserName"
+                   asp-route-ChqCode="CHQ-000001"
                    asp-page-handler="WCheque">
         </div>
         <div class="p-2 bd-highlight">
@@ -105,15 +105,3 @@
         </div>
     </div>
 </form>
-
-
-<form method="get">
-    <div class="p-2 bd-highlight">
-        <input type="submit"
-               class="btn btn-primary"
-               value="Write Cheque 2"
-               asp-page=".\Accounts\WriteCheque2" />
-    </div>
-</form>
-
-            

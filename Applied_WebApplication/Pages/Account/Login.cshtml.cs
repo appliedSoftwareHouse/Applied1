@@ -13,10 +13,10 @@ namespace Applied_WebApplication.Pages
         public Credential MyCredential { get; set; }
         public string Username { get; set; }
         private AppliedUsersClass UserTableClass = new();                       // Make Connection and get Applied Users Table.
-        
 
         public void OnGet()
         {
+            
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -50,8 +50,6 @@ namespace Applied_WebApplication.Pages
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
-
-                    //Username = User.Identity.Name;
 
                     return RedirectToPage("/Index",uprofile.UserName);
                 }

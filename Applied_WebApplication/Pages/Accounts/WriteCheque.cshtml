@@ -1,4 +1,4 @@
-﻿@page 
+﻿@page
 @using System.Data;
 @using Microsoft.Extensions.Primitives
 @using Applied_WebApplication.Data;
@@ -16,21 +16,19 @@
     var TitleProject = GetTitle(UserName, Tables.Project, Model.Cheque.Project);
     var TitleEmployee = GetTitle(UserName, Tables.Employees, Model.Cheque.Employee);
     var TitleStatus = GetTitle(UserName, Tables.Employees, Model.Cheque.Status);
-    var TitleTax1 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxRate1);
-    var TitleTax2 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxRate2);
-    var _TaxRate1 = 0M;
-    var _TaxRate2 = 0M;
+    var TitleTax1 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxID1);
+    var TitleTax2 = GetTitle(UserName, Tables.Employees, Model.Cheque.TaxID2);
 
-    if (Model.Cheque.TaxRate1 != 0)
+    if (Model.Cheque.TaxID1 != 0)
     {
-        _TaxRate1 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxRate1)));
-        Model.Cheque.TaxAmount1 = Model.Cheque.TaxableAmount1 * (_TaxRate1 / 100.00M);
+        Model.Cheque.TaxRate1 = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxID1)));
+        Model.Cheque.TaxAmount1 = Model.Cheque.TaxableAmount1 * (Model.Cheque.TaxRate1 / 100.00M);
     }
 
-    if (Model.Cheque.TaxRate2 != 0)
+    if (Model.Cheque.TaxID2 != 0)
     {
-        _TaxRate2 = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxRate2)));
-        Model.Cheque.TaxAmount1 = Model.Cheque.TaxableAmount1 * (_TaxRate2 / 100.00M);
+        Model.Cheque.TaxRate2 = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxID2)));
+        Model.Cheque.TaxAmount2 = Model.Cheque.TaxableAmount2 * (Model.Cheque.TaxRate2 / 100.00M);
     }
 }
 
@@ -67,7 +65,7 @@
     <div class="text-danger" asp-validation-summary="ModelOnly"></div>
     <div class="container">
 
-        <div > <input hidden class="button" type="text" name="ID" /></div>
+        <div> <input hidden class="button" type="text" name="ID" /></div>
 
         <div class="row mb-2">
             <div class="col-4">
@@ -103,7 +101,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
@@ -134,7 +131,6 @@
                 </div>
             </div>
         </div>
-
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
@@ -205,14 +201,13 @@
             </div>
         </div>
         <hr />
-
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">WHT Tax</span>
                     </div>
-                    <select class="form-select" id="inputGroupTacable1" name="TaxRate1" asp-for="@Model.Cheque.TaxRate1">
+                    <select class="form-select" id="inputGroupTacable1" name="TaxID1" asp-for="@Model.Cheque.TaxID1">
                         <option selected>@TitleTax1</option>
                         @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Taxes, ""))
                         {
@@ -224,13 +219,18 @@
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Taxable Amount</span>
+                        <span class="input-group-text">Amount</span>
                     </div>
                     <input class="form-control" placeholder="WHT Taxable Amount"
                            type="text"
                            name="TaxableAmount1"
                            asp-for="@Model.Cheque.TaxableAmount1"
                            value="@Model.Cheque.TaxableAmount1" />
+                    <input class="form-control"
+                           placeholder="Tax Rate" readonly
+                           name="TaxRate1"
+                           asp-for="@Model.Cheque.TaxRate1"
+                           value="@Model.Cheque.TaxRate1" />
                 </div>
                 <span asp-validation-for="@Model.Cheque.TaxableAmount1"></span>
             </div>
@@ -244,14 +244,13 @@
             </div>
         </div>
         <hr />
-
         <div class="row mb-2">
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
                         <span class="input-group-text">Sales Tax</span>
                     </div>
-                    <select class="form-select" id="inputGroupTaxRate2" name="TaxRate2" asp-for="@Model.Cheque.TaxRate2">
+                    <select class="form-select" id="inputGroupTaxRate2" name="TaxID2" asp-for="@Model.Cheque.TaxID2">
                         <option selected>@TitleTax2</option>
                         @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.Taxes, ""))
                         {
@@ -263,13 +262,18 @@
             <div class="col-4">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text">Taxable Amount</span>
+                        <span class="input-group-text">Amount</span>
                     </div>
                     <input class="form-control" placeholder="WHT Taxable Amount"
                            type="text"
                            name="TaxableAmount2"
                            asp-for="@Model.Cheque.TaxableAmount2"
                            value="@Model.Cheque.TaxableAmount2" />
+                    <input class="form-control"
+                           placeholder="Tax Rate" readonly
+                           name="TaxRate1"
+                           asp-for="@Model.Cheque.TaxRate2"
+                           value="@Model.Cheque.TaxRate2" />
                 </div>
             </div>
             <div class="col-4">
@@ -289,26 +293,23 @@
 
     @{
         string Code = @Model.Cheque.Code;
- }
+    }
 
     @if (Model.IsSaved)
     {
-            <component type="typeof(ChequeDetails)" render-mode="Static" param-UserName=@UserName param-Code=@Model.Cheque.Code/>
+        <component type="typeof(ChequeDetails)" render-mode="Static" param-UserName=@UserName param-Code=@Model.Cheque.Code />
     }
 
     <hr />
+
     <div class="container">
-        <div class="row">
-            <div class="col-1">
-                @if (Model.IsSaved)
-                {
-                    <input type="submit" class="btn btn-primary" value="Back" />
-                }
-                else
-                {
-                    <input type="submit" class="btn btn-primary" value="SAVE" asp-route-username="@username" asp-page-handler="Save" />
-                }
+        <div class="row d-flex">
+            <div class="col">
+            <input type="submit" class="btn btn-primary" value="SAVE" asp-page-handler="Save" />
+            <input type="submit" class="btn btn-primary" value="BACK" asp-page-handler="Back" />
             </div>
         </div>
     </div>
+
+
 </form>

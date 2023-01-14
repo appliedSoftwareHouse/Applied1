@@ -1,6 +1,7 @@
 ﻿using System.Data.SQLite;
 using System.Data;
 using System.Text;
+using Applied_WebApplication.Pages;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 
@@ -11,6 +12,50 @@ namespace Applied_WebApplication.Data
 
         #region Static Function
         
+        public static Pages.Accounts.WriteChequeModel.Chequeinfo  GetChequeInfo(string UserName, string ChqCode)
+        {
+            Pages.Accounts.WriteChequeModel.Chequeinfo Cheque = new();
+            DataTableClass Table = new(UserName, Tables.WriteCheques);
+            Table.MyDataView.RowFilter = string.Concat("Code='", ChqCode, "'");
+            if(Table.MyDataView.Count>0)
+            {
+                DataRow Row = Table.MyDataView[0].Row;
+                if ((int)Row["TranType"]==1) 
+                {
+                    Cheque.ID = (int)Row["ID"];
+                    Cheque.Code = Row["Code"].ToString();
+                    Cheque.TranType = (int)Row["TranType"];
+                    Cheque.TranDate = DateTime.Parse(Row["TranDate"].ToString());
+                    Cheque.Bank = (int)Row["Bank"];
+                    Cheque.Customer = (int)Row["Company"];
+                    Cheque.ChqDate = DateTime.Parse(Row["ChqDate"].ToString());
+                    Cheque.ChqNo = Row["ChqNo"].ToString();
+                    Cheque.ChqAmount = decimal.Parse(Row["ChqAmount"].ToString());
+                    Cheque.Status = (int)Row["Status"];
+                    Cheque.Project = (int)Row["Project"];
+                    Cheque.Employee = (int)Row["Employee"];
+                    Cheque.Description = Row["Description"].ToString();
+                }
+
+                if (Table.MyDataView[1] != null)
+                {
+                    Row = Table.MyDataView[1].Row;
+                    Cheque.TaxID1 = (int)Row["TaxID"];
+                    Cheque.TaxableAmount1 = decimal.Parse(Row["TaxableAmount"].ToString());
+                    Cheque.TaxAmount1 = decimal.Parse(Row["TaxAmount"].ToString());
+                }
+
+                if (Table.MyDataView[2] != null)
+                {
+                    Row = Table.MyDataView[2].Row;
+                    Cheque.TaxID2 = (int)Row["TaxID"];
+                    Cheque.TaxableAmount2 = decimal.Parse(Row["TaxableAmount"].ToString());
+                    Cheque.TaxAmount2 = decimal.Parse(Row["TaxAmount"].ToString());
+                }
+            }
+            return Cheque;
+        }
+
         public static AppliedDependency AppGlobals = new();
 
         public static DataTable GetAppliedTable(string UserName, ReportClass.Filters ReportFilter)

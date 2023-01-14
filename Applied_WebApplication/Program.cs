@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddSession();
 builder.Services.AddSingleton<IAppliedDependency, AppliedDependency>();
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddRazorPages().AddRazorRuntimeCompilation(); 
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
@@ -30,7 +31,6 @@ builder.Services.AddAuthorization(options =>
 
 });
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddSession();
 
 
 var app = builder.Build();
