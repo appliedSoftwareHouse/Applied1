@@ -25,7 +25,7 @@
       }
     },
     "WSL": {
-      "commandName": "WSL2",
+      "CommandName": "WSL2",
       "launchBrowser": true,
       "launchUrl": "https://localhost:7281",
       "environmentVariables": {

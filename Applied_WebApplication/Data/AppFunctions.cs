@@ -11,7 +11,14 @@ namespace Applied_WebApplication.Data
     {
 
         #region Static Function
-        
+
+        public static string GetUserValue(string UserName, string _Column)
+        {
+            AppliedUsersClass UserClass = new();
+            DataRow _Row = UserClass.UserRecord(UserName);
+            return _Row[_Column].ToString();
+        }
+
         public static Pages.Accounts.WriteChequeModel.Chequeinfo  GetChequeInfo(string UserName, string ChqCode)
         {
             Pages.Accounts.WriteChequeModel.Chequeinfo Cheque = new();
@@ -233,6 +240,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetNewChqCode()
         {
+            // Temporary codes. in future it has to be developed.
             string _ChqCode = "<<New>>";
             return _ChqCode;
         }

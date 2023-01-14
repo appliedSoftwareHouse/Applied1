@@ -8,25 +8,30 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class CashBookModel : PageModel
     {
-        public Record MyRecord = new(); 
+        [BindProperty]
+        public ReportParameters MyParameters { get; set; }
+        public string UserName;
+        public BookRecord MyRecord = new();
         public DataTable Cashbook = new DataTable();
-        public ReportParameters MyParameters = new();
         public List<Message> ErrorMessages;
 
-        public void OnGet(string UserName, int id, ReportParameters? Paramaters)
+        public void OnGet(int id)
         {
-            MyParameters.IsSelected = true;
+            UserName = User.Identity.Name;
+            MyParameters = new ReportParameters();
+            MyParameters.IsSelected = false;
             MyParameters.CashBookID = id;
-            MyParameters.BookTitle =GetColumnValue(UserName, Tables.COA, "Title", id);
+            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id);
             DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
             MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
             MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
             _Table = null;                                                                                                                                                   // dispose off
-
+            if(id>0) { MyParameters.IsSelected = true; }
         }
 
-        public IActionResult OnPostRefresh(string UserName)
+        public IActionResult OnPostRefresh()
         {
+            UserName = User.Identity.Name;
             MyParameters.IsSelected = true;
             MyParameters.Reload = true;
             MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
@@ -48,20 +53,8 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
         }
 
-        public IActionResult OnPostEdit(string UserName, int id, ReportParameters? Paramaters)
-        {
-
-
-            return Page();
-        }
-
-        public IActionResult OnPostDelete(string UserName, int id, ReportParameters? Paramaters)
-        {
-
-
-            return Page();
-        }
-
+       
+      
         public IActionResult OnPostSave(string UserName)
         {
             List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
@@ -104,7 +97,7 @@ namespace Applied_WebApplication.Pages.Accounts
             CashBook.Save();
 
             ErrorMessages = CashBook.TableValidation.MyMessages;
-            if(ErrorMessages.Count == 0)
+            if (ErrorMessages.Count == 0)
             {
                 MyParameters.IsSelected = true;
                 return Page();
@@ -119,21 +112,23 @@ namespace Applied_WebApplication.Pages.Accounts
             }
         }
 
+
+        [BindProperties]
         public class ReportParameters
         {
             public int RecordID { get; set; }
-            public bool IsSelected { get; set; } = false;
-            public bool IsAdd { get; set; } = false;
-            public bool IsError { get; set; } = false;
-            public bool Reload { get; set; } = false;
+            public bool IsSelected { get; set; } 
+            public bool IsAdd { get; set; } 
+            public bool IsError { get; set; } 
+            public bool Reload { get; set; } 
+            public string BookTitle { get; set; }
             public int CashBookID { get; set; }
-            public string BookTitle { get; set; } = "Select....";
-            public DateTime MinDate { get; set; } = DateTime.Now;
-            public DateTime MaxDate { get; set; } = DateTime.Now;
-            
+            public DateTime MinDate { get; set; } 
+            public DateTime MaxDate { get; set; }
+
         }
 
-        public class Record
+        public class BookRecord
         {
             public int ID { get; set; }
             public string Code { get; set; }

@@ -11,14 +11,13 @@ public enum Tables
     Taxes =107,
     ChequeTranType = 108,
     ChequeStatus = 109,
-    
+    TaxTypeTitle = 110,
 
     Customers = 201,
     City = 202,
     Country = 203,
     Project = 204,
     Employees = 205,
-
 
     Inventory = 301,
     Inv_Category = 302,
