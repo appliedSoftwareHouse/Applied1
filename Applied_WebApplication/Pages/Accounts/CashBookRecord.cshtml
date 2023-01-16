@@ -1,0 +1,193 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.CashBookRecordModel
+@{
+    var UserName = User.Identity.Name;
+
+    var TitleCOA = GetTitle(UserName, Tables.COA, Model.BookRecord.COA);
+    var TitleProject = GetTitle(UserName, Tables.COA, Model.BookRecord.Project);
+    var TitleEmployee = GetTitle(UserName, Tables.COA, Model.BookRecord.Employee);
+    var TitleCustomer = GetTitle(UserName, Tables.COA, Model.BookRecord.Customer);
+
+    var Vou_Date = DateTime.Parse(Model.BookRecord.Vou_Date.ToString()).ToString("yyyy-MM-dd");
+
+}
+
+<style>
+    .input-group-text {
+        width: 30%
+    }
+
+    .form-control {
+        width: 70%
+    }
+
+    #Comments{
+        width: 15%
+    }
+
+
+</style>
+
+
+<div class="container AppHeading">
+        <h4>CASH BOOK RECORD</h4>
+</div>
+
+@if(Model.IsError)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}
+
+
+
+
+<form method="post">
+
+    <div class="container">
+        <div>
+        <div> <input type="text" hidden name="ID" value=@Model.BookRecord.ID class="form-control"> </div>
+        <div> <input type="text" hidden name="BookID" value=@Model.BookRecord.BookID class="form-control"> </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Vou_No">Vou. No.</span>
+                    <input type="text"
+                           name="Vou_No"
+                           value="@Model.BookRecord.Vou_No"
+                           class="form-control"
+                           placeholder="Voucher No">
+                    <button name="auto" class="btn btn-outline-secondary" type="button">Auto</button>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Vou_Date">Date</span>
+                    <input type="Date"
+                           name="Vou_Date"
+                           value="@Vou_Date"
+                           class="form-control"
+                           placeholder="Voucher Date">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Customer">Company</span>
+                    <select class="form-select" name="Customer" asp-for="@Model.BookRecord.Customer">
+                        <option selected>@TitleCustomer</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="COA">Account</span>
+                    <select class="form-select" name="COA" asp-for="@Model.BookRecord.COA">
+                        <option selected>@TitleCOA</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Debit">Debit</span>
+                    <input type="number"
+                           name="DR"
+                           value="@Model.BookRecord.DR"
+                           class="form-control"
+                           placeholder="Voucher Date" />
+                </div>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Credit">Credit</span>
+                    <input type="number"
+                           name="CR"
+                           value="@Model.BookRecord.CR"
+                           class="form-control"
+                           placeholder="Voucher Date"
+                           aria-describedby="VouDate">
+
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="COAID">Projects</span>
+                    <select class="form-select" name="Project" asp-for="@Model.BookRecord.Project">
+                        <option selected>@TitleProject</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col">
+                <div class="col-6 input-group mb-3">
+                    <span class="input-group-text"  id="COAID">Employee</span>
+                    <select class="form-select" name="Employee" asp-for="@Model.BookRecord.Employee">
+                        <option selected>@TitleEmployee</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="RefNo">Reference</span>
+                    <input type="text"
+                           name="Ref_No"
+                           value="@Model.BookRecord.DR"
+                           class="form-control"
+                           placeholder="Voucher Date" />
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Description">Description</span>
+                    <input type="text"
+                           name="Description"
+                           value="@Model.BookRecord.Description"
+                           class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Comments">Comments</span>
+                    <input type="text"
+                           name="Comments"
+                           value="@Model.BookRecord.Comments"
+                           class="form-control">
+                </div>
+            </div>
+        </div>
+
+        <!--BUTTON-->
+
+        <div class="row">
+            <div class="col">
+                <input class="btn btn-primary" type="submit" value="SAVE" asp-page-handler="Save" />
+                <input class="btn btn-primary" type="submit" value="Back" asp-page-handler="Back" />
+            </div>
+        </div>
+    </div>
+
+</form>

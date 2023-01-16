@@ -37,8 +37,6 @@
     }
 
     #MyBlock {
-
-
     }
 
 </style>
@@ -71,27 +69,23 @@
 <!--  carousel END -->
 
 <blockquote class="blockquote">
-    <p>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and mediam scale organization.</p>
+    <p>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and medium scale organization.</p>
     <footer class="blockquote-footer align-content-center">It is Under Development.</footer>
 </blockquote>
 
 <form method="post">
     <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="T e s t" formmethod="get" asp-page=".\Accounts\ChequeList"/>
+            <input type="submit" class="btn btn-primary" value="T e s t" asp-page-handler="Test" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Cash Book" formmethod="get" asp-page=".\Accounts\CashBook"/>
+            <input type="submit" class="btn btn-primary" value="Cash Book" asp-page-handler="CashBook" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Bank Book" asp-page=".\Accounts\BankBook" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Bank Book" asp-page-handler="BankBook" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit"
-                   class="btn btn-primary"
-                   value="Write Cheque"
-                   asp-route-ChqCode=""
-                   asp-page-handler="WCheque">
+            <input type="submit" class="btn btn-primary" value="Write Cheque" asp-page-handler="WCheque">
         </div>
         <div class="p-2 d-inline-block">
             <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" asp-route-UserName=@UserName />
@@ -106,7 +100,7 @@
             <input type="submit" class="btn btn-primary" value="Payment" asp-page=".\Accounts\Payment" asp-route-UserName=@UserName />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Suppliers" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Customers" asp-route-UserName=@UserName />
         </div>
         <div class="p-2 d-inline-block">
             <input type="submit" class="btn btn-primary" value="Vendors" asp-page=".\Sales\Vendors" asp-route-UserName=@UserName />

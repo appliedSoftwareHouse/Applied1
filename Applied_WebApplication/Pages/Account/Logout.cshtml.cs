@@ -9,12 +9,10 @@ namespace Applied_WebApplication.Pages.Account
     public class LogoutModel : PageModel
     {
 
-        public async void OnGetAsync()
+        public async Task<IActionResult> OnGet()
         {
             await HttpContext.SignOutAsync();
-            RedirectToPage("/Account/Login");
-            
-            
+            return RedirectToPage("Login");
         }
         
 

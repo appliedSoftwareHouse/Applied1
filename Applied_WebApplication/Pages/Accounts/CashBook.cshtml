@@ -16,8 +16,8 @@
     var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
     var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
-    var select = "Select.......?";
     Model.Cashbook = LedgerClass.Records;    // Get record from cashbook to ledger class [here return nill records]
+    var AddRecord = Model.MyRecord;
 
 
     if (Model.MyParameters.IsSelected || Model.MyParameters.IsAdd)
@@ -29,7 +29,8 @@
         LedgerClass.Filter = string.Concat("BookID=", Model.MyParameters.CashBookID.ToString());
         Model.Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
         Model.MyParameters.RecordID = 0;
-        DataRow Row = GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
+        AddRecord = new CashBookModel.BookRecord();
+        //DataRow Row = GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
     }
 }
 
@@ -58,9 +59,9 @@
 </style>
 
 <form method="post">
-    <div class="container p-1 mt-2 mb-2 bg-primary text-white rounded">
+    <div class="container p-1 mt-2 mb-2 bg-info text-white rounded">
 
-        <div class="p-2 d-inline-block w-25">
+        <div class="p-2 d-inline-block w-25 text-primary">
             <label>CASH BOOK</label>
         </div>
         <div class="p-2 d-inline-block">
@@ -83,7 +84,11 @@
         </div>
         <div class="p-2 d-inline-block float-end">
             <div class="dropdown">
-                <button class="btn btn-outline-primary text-white dropdown-toggle float-end"
+                @{
+                    string BookTitle = "Select...";
+                }
+
+                <button class="dropdown-toggle btn btn-primary"
                         type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     @if (@Model.MyParameters.BookTitle.Length > 0)
                     {
@@ -91,7 +96,7 @@
                     }
                     else
                     {
-                        @select
+                        @BookTitle
                     }
 
                 </button>
@@ -117,17 +122,6 @@
 
     </div>
 
-    
-    <!-- ADD CASH BOOK RECORD -->
-    <div>
-
-
-        @if (Model.MyParameters.IsAdd)
-        {
-            <component type="typeof(CashBookCRUD)" render-mode="Static" param-Row=@Model.MyRecord param-UserName=@UserName />
-        }
-
-    </div>
     <!-- SHOW CASH BOOK RECORD -->
     <div>
         @if (Model.MyParameters.IsSelected)
@@ -142,12 +136,10 @@
                             <th style="width:10%; text-align: right">Debit</th>
                             <th style="width:10%; text-align: right">Credit</th>
                             <th style="width:10%; text-align: right">Balance</th>
+                            <!--CASH BOOK ADD BUTTON-->
                             <th style="width:10%; text-align: right">
-                                <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                                    asp-route-UserName=@UserName
-                                    asp-route-Variables=@Model.MyParameters
-                                    asp-page-handler="Add"
-                                    asp-page="CashBook">
+                                <button class="btn btn-primary float-end" type="Submit" id="btnAdd" 
+                                    asp-page-handler="Add">
                                     ADD
                                 </button>
                             </th>
@@ -172,7 +164,10 @@
                                 {
                                     <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
                                 }
-                                <td>Edit | Delete</td>
+                                <td>
+                                    <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"]  asp-page-handler="Edit"> Edit</a> |
+                                    <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
+                                </td>
                             </tr>
                         }
 

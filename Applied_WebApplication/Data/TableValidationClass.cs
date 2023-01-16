@@ -128,7 +128,7 @@ namespace Applied_WebApplication.Data
             {
                 if (Seek("ID", Row["ID"].ToString()))
                 {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10501, Msg = "Dublicate of ID found." });
+                    MyMessages.Add(new Message() { Success = false, ErrorID = 10501, Msg = "Duplicate of ID found." });
                 }
 
                 if (Row["Vou_No"].ToString().Length == 0)
@@ -138,7 +138,7 @@ namespace Applied_WebApplication.Data
 
                 if (Seek("Vou_No", Row["Vou_No"].ToString()))
                 {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10502, Msg = "Dublicate of Voucher No found." });
+                    MyMessages.Add(new Message() { Success = false, ErrorID = 10502, Msg = "Duplicate of Voucher No found." });
                 }
 
                 if ((int)Row["COA"] == 0)
@@ -168,7 +168,7 @@ namespace Applied_WebApplication.Data
             MyMessages = new List<Message>();
             //if (SQLAction == CommandAction.Insert.ToString())
             //{
-            //    if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 10801, Msg = "Dublicate of ID found." }); }
+            //    if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 10801, Msg = "Duplicate of ID found." }); }
             //}
             //if (SQLAction == CommandAction.Update.ToString())
             //{

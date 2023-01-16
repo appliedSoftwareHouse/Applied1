@@ -8,7 +8,8 @@ namespace Applied_WebApplication.Pages.Sales
 {
     public class Customer_AddModel : PageModel
     {
-        public Customer Record = new();
+        [BindProperty]
+        public Customer Record { get; set; }
         public bool IsError = false;
         public List<Message> ErrorMessages;
         public string MyPageAction { get; set; } = "Add";
@@ -18,20 +19,23 @@ namespace Applied_WebApplication.Pages.Sales
             MyPageAction = "Edit";
             DataTableClass Customers = new(UserName, Tables.Customers.ToString());
             Customers.SeekRecord(id);
-            Record.ID = id;
-            Record.Code = Customers.CurrentRow["Code"].ToString();
-            Record.Title = Customers.CurrentRow["Title"].ToString();
-            Record.Address1 = Customers.CurrentRow["Address1"].ToString();
-            Record.Address2 = Customers.CurrentRow["Address2"].ToString();
-            Record.City = Customers.CurrentRow["City"].ToString();
-            Record.State = Customers.CurrentRow["State"].ToString();
-            Record.Country = Customers.CurrentRow["Country"].ToString();
-            Record.Phone = Customers.CurrentRow["Phone"].ToString();
-            Record.Mobile = Customers.CurrentRow["Mobile"].ToString();
-            Record.NTN = Customers.CurrentRow["NTN"].ToString();
-            Record.CNIC = Customers.CurrentRow["CNIC"].ToString();
-            Record.Notes = Customers.CurrentRow["Notes"].ToString();
-            Record.Email = Customers.CurrentRow["Email"].ToString();
+            Record = new()
+            {
+                ID = id,
+                Code = Customers.CurrentRow["Code"].ToString(),
+                Title = Customers.CurrentRow["Title"].ToString(),
+                Address1 = Customers.CurrentRow["Address1"].ToString(),
+                Address2 = Customers.CurrentRow["Address2"].ToString(),
+                City = Customers.CurrentRow["City"].ToString(),
+                State = Customers.CurrentRow["State"].ToString(),
+                Country = Customers.CurrentRow["Country"].ToString(),
+                Phone = Customers.CurrentRow["Phone"].ToString(),
+                Mobile = Customers.CurrentRow["Mobile"].ToString(),
+                NTN = Customers.CurrentRow["NTN"].ToString(),
+                CNIC = Customers.CurrentRow["CNIC"].ToString(),
+                Notes = Customers.CurrentRow["Notes"].ToString(),
+                Email = Customers.CurrentRow["Email"].ToString()
+            };
 
         }
 
@@ -119,10 +123,7 @@ namespace Applied_WebApplication.Pages.Sales
 
     public class Customer
     {
-
         public int ID { get; set; }
-
-        
         [Required(ErrorMessage = "Customer Code is required")]
         public string Code { get; set; }
 

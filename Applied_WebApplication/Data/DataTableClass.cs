@@ -94,6 +94,7 @@ namespace Applied_WebApplication.Data
                     if (_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
                     if (_Column.DataType.Name == "Int32") { CurrentRow[_Column.ColumnName] = 0; }
                     if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
+                    if (_Column.DataType.Name == "DateTime") { CurrentRow[_Column.ColumnName] = DateTime.Now; }
                 }
             }
             return CurrentRow;
@@ -284,6 +285,7 @@ namespace Applied_WebApplication.Data
                     if (_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
                     if (_Column.DataType.Name == "Int32") { CurrentRow[_Column.ColumnName] = 0; }
                     if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
+                    if (_Column.DataType.Name == "DateTime") { CurrentRow[_Column.ColumnName] = DateTime.Now; }
                 }
             }
             MyDataView.RowFilter = Filter;
@@ -329,6 +331,7 @@ namespace Applied_WebApplication.Data
 
         public void Save()
         {
+            IsError = false;
             TableValidation = new TableValidationClass();
             if (CurrentRow != null)
             {
@@ -356,6 +359,8 @@ namespace Applied_WebApplication.Data
                         GetDataTable();
                     }
                 }
+
+                if(TableValidation.MyMessages.Count>0) { IsError = true; }
 
             }
         }

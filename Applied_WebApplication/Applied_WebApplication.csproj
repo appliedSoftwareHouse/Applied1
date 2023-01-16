@@ -19,6 +19,7 @@
     <Content Remove="wwwroot\SQLiteDB\Altamash.db" />
     <Content Remove="wwwroot\SQLiteDB\Amcorp.db" />
     <Content Remove="wwwroot\SQLiteDB\Guest.DB" />
+    <Content Remove="wwwroot\SQLiteDB\HFSSteel.DB" />
     <Content Remove="wwwroot\SQLiteDB\Test.db" />
     <Content Remove="wwwroot\SQLiteDB\Winmark.db" />
   </ItemGroup>

@@ -10,30 +10,24 @@
     DataTableClass Customers = new(UserName, Tables.Customers.ToString());
 }
 
-<div class="container bg-sucess g-4 p-1">
+<div class="container AppHeading">
     <h3>CUSTOMER - ADD</h3>
 </div>
 <br />
 
+@if (Model.IsError)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}
 
 <div class="col-md-7 col-lg-8">
     <form method="post">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
 
         <!-- Show Messages of Error.-->
-        @if (Model.IsError)
+        @*if (Customers.CurrentRow == null) { Customers.NewRecord(); } else
         {
-            <div class="container">
-                @foreach (TableValidationClass.Message _Error in Model.ErrorMessages)
-                {
-                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                        @_Error.Msg;
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                }
-            </div>
-            if (Customers.CurrentRow == null) { Customers.NewRecord(); }
-            List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
+        List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
             foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
             {
                 if (_KeyValue.Key == "Code") { Model.Record.Code = _KeyValue.Value; }
@@ -51,7 +45,7 @@
                 if (_KeyValue.Key == "Notes") { Model.Record.Notes = _KeyValue.Value; }
             }
         }
-        
+*@
         <div class="row g-3">
             <div class="col-sm-6">
                 <label asp-for=@Model.Record.ID class="form-label">ID</label>
@@ -113,6 +107,7 @@
                 <select class="form-select" name="Country" asp-for=@Model.Record.Country >
                     <option value=@Model.Record.Country>Choose...</option>
                     <option>Pakistan</option>
+                    <option>Muzambique</option>
                     <option>United Arab Emirates</option>
                     <option>Saudia Arabia</option>
                     <option>Qatar</option>
@@ -157,15 +152,15 @@
             <hr style="width:50%;text-align:center;margin-left:0">
         </div>
         <div class="row g-md-1">
-            @if (Model.MyPageAction == "Delete")
-            {
-                <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete" asp-route-UserName=@UserName>Delete</button>
-            }
-            else
-            {
-            <button class="btn btn-primary p-1" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName>Save</button>
-            <button class="btn btn-primary p-1" type="submit" asp-page="Customers">Back</button>
-            }
+                        @if (Model.MyPageAction == "Delete")
+                        {
+                            <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete" asp-route-UserName=@UserName>Delete</button>
+                        }
+                        else
+                        {
+                        <button class="btn btn-primary p-1" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName>Save</button>
+                        <button class="btn btn-primary p-1" type="submit" asp-page="Customers">Back</button>
+                        }
         </div>
     </form>
 </div>

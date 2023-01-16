@@ -21,20 +21,25 @@ namespace Applied_WebApplication.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnPostTest()
         {
-
+            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = "" });
         }
 
-        public void OnPOST()
+        public IActionResult OnPostCashBook()
         {
-
+            return RedirectToPage("/Accounts/Cashbook", routeValues: new { ChqCode = "" });
         }
 
-        public async Task<IActionResult> OnPostWChequeAsync(string ChqCode)
+        public IActionResult OnPostBankBook()
         {
-            await Task.Delay(100);
-            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode});
+            return RedirectToPage("/Accounts/Bankbook", routeValues: new { ChqCode = "" });
+        }
+
+
+        public IActionResult OnPostWCheque()
+        {
+            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = ""});
         }
 
 

@@ -1,0 +1,14 @@
+﻿@code {
+    [Parameter] public List<Message> Errors { get; set; }
+}
+
+<div class="container">
+    @foreach (TableValidationClass.Message _Error in Errors)
+    {
+        <div class="error-msg"> @_Error.Msg; </div>
+    }
+</div>
+<hr />
+
+
+<!-- Show Errors  -->

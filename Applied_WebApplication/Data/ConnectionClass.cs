@@ -118,6 +118,9 @@ namespace Applied_WebApplication.Data
                 case "WINMARK":
                     return ".\\wwwroot\\SQLiteDB\\Winmark.db";
 
+                case "HFSSTEEL":
+                    return ".\\wwwroot\\SQLiteDB\\HFSSteel.DB";
+
                 default:
                     return ".\\wwwroot\\SQLiteDB\\Applied.db";
             }

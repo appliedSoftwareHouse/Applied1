@@ -11,24 +11,57 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public ReportParameters MyParameters { get; set; }
         public string UserName;
-        public BookRecord MyRecord = new();
+        public BookRecord MyRecord { get; set; }
         public DataTable Cashbook = new DataTable();
         public List<Message> ErrorMessages;
+
+        public void OnGetRefresh(int id)
+        {
+            UserName = User.Identity.Name;
+            MyParameters = new ReportParameters
+            {
+                IsSelected = true,
+                CashBookID = id,
+                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
+                MinDate = (DateTime.Now),
+                MaxDate = (DateTime.Now)
+            };
+
+            DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
+            if (_Table.MyDataTable.Rows.Count > 0)
+            {
+                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
+                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
+            }
+        }
+
 
         public void OnGet(int id)
         {
             UserName = User.Identity.Name;
-            MyParameters = new ReportParameters();
-            MyParameters.IsSelected = false;
-            MyParameters.CashBookID = id;
-            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id);
+            MyParameters = new ReportParameters
+            {
+                IsSelected = false,
+                CashBookID = id,
+                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
+                MinDate = (DateTime.Now),
+                MaxDate = (DateTime.Now)
+            };
+
             DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
-            MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
-            MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
-            _Table = null;                                                                                                                                                   // dispose off
-            if(id>0) { MyParameters.IsSelected = true; }
+            if (_Table.MyDataTable.Rows.Count > 0)
+            {
+                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
+                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
+            }
+            
+            if (id > 0) { MyParameters.IsSelected = true; }
         }
 
+        public void OnPost()
+        {
+
+        }
         public IActionResult OnPostRefresh()
         {
             UserName = User.Identity.Name;
@@ -37,47 +70,24 @@ namespace Applied_WebApplication.Pages.Accounts
             MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
             return Page();
         }
-
-        public IActionResult OnPostAdd(string UserName, ReportParameters? Paramaters)
+        public IActionResult OnPostAdd()
         {
-            MyParameters.IsAdd = true;
-            MyParameters.IsSelected = false;
-            List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-            foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-            {
-                if (_KeyValue.Key == "CashBookID") { MyParameters.CashBookID = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
-            }
-            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
-            return Page();
+            //MyParameters.IsAdd = true;
+            //MyParameters.IsSelected = false;
+            //List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
+            //foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
+            //{
+            //    if (_KeyValue.Key == "CashBookID") { MyParameters.CashBookID = int.Parse(_KeyValue.Value); }
+            //    if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
+            //    if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
+            //}
+            //MyParameters.CashBookID = id;
+            //MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
+            return RedirectToPage("CashBookRecord", new { id = MyParameters.CashBookID });
         }
-
-       
-      
-        public IActionResult OnPostSave(string UserName)
+        public IActionResult OnPostSave(BookRecord MyRecord)
         {
-            List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-            foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-            {
-                if (_KeyValue.Key == "CashBookID") { MyRecord.BookID = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "ID") { MyRecord.ID = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Code") { MyRecord.Code = _KeyValue.Value; }
-                if (_KeyValue.Key == "Vou_No") { MyRecord.Vou_No = _KeyValue.Value; }
-                if (_KeyValue.Key == "Vou_Date") { MyRecord.Vou_Date = DateTime.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Ref_No") { MyRecord.Ref_No = _KeyValue.Value; }
-                if (_KeyValue.Key == "DR") { MyRecord.DR = decimal.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "CR") { MyRecord.CR = decimal.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "COA") { MyRecord.COA = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Customer") { MyRecord.Customer = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Project") { MyRecord.Project = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Employee") { MyRecord.Employee = int.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "Description") { MyRecord.Description = _KeyValue.Value; }
-                if (_KeyValue.Key == "Comments") { MyRecord.Comments = _KeyValue.Value; }
-
-                if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
-                if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
-            }
+            UserName = User.Identity.Name;
 
             DataTableClass CashBook = new(UserName, Tables.CashBook);
             CashBook.NewRecord();
@@ -112,22 +122,28 @@ namespace Applied_WebApplication.Pages.Accounts
             }
         }
 
+        public void OnGetSave()
+        {
+
+
+        }
 
         [BindProperties]
         public class ReportParameters
         {
             public int RecordID { get; set; }
-            public bool IsSelected { get; set; } 
-            public bool IsAdd { get; set; } 
-            public bool IsError { get; set; } 
-            public bool Reload { get; set; } 
+            public bool IsSelected { get; set; }
+            public bool IsAdd { get; set; }
+            public bool IsError { get; set; }
+            public bool Reload { get; set; }
             public string BookTitle { get; set; }
             public int CashBookID { get; set; }
-            public DateTime MinDate { get; set; } 
+            public DateTime MinDate { get; set; }
             public DateTime MaxDate { get; set; }
 
         }
 
+        [BindProperties]
         public class BookRecord
         {
             public int ID { get; set; }

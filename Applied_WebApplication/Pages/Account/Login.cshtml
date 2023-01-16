@@ -6,25 +6,42 @@
     DataTableClass _Table = new DataTableClass(Tables.COA.ToString());
 }
 
-<div class="container border"  style="padding:20px" >
+<style>
+.Login-Container{
+            background: #F8FFFB;
+            padding-top: 15px;
+            padding-bottom: 15px;
+            width: 800px
+}
+
+.c1{
+    width: 300px
+}
+
+.c2{
+    width: 500px
+}
+</style>
+
+<div class="container border Login-Container">
     <form method="post">
     <div class="text-danger" asp-validation-summary="ModelOnly" ></div>
 
-        <div class="form-group row">
-             <div class="col-3">    <label asp-for="MyCredential.Username"></label></div>
-             <div class="col-5">  <input type="text" asp-for="MyCredential.Username" class="form-control" /></div>
+        <div class="form-group row mb-2">
+            <div class="c1"> <label asp-for="MyCredential.Username"></label></div>
+             <div class="c2">  <input type="text" asp-for="MyCredential.Username" class="form-control" /></div>
             <span class="text-danger" asp-validation-for="MyCredential.Username"></span>
         </div>
         
 
-        <div class="form-group row">
-            <div class="col-3">   <label asp-for="MyCredential.Password"></label>  </div>
-             <div class="col-5">   <input type="password" asp-for="MyCredential.Password" class="form-control" /> </div>
+        <div class="form-group row mb-2">
+            <div class="c1">   <label asp-for="MyCredential.Password"></label></div>
+             <div class="c2">   <input type="password" asp-for="MyCredential.Password" class="form-control" /> </div>
              <span class="text-danger" asp-validation-for="MyCredential.Password"></span>
         </div>
 
         <div class="form-group row">
-             <div class="col-5">  <input type="submit"  class="btn btn-primary" value="Login" />   </div>
+             <div class="col-2">  <input type="submit"  class="btn btn-primary" value="Login" />   </div>
         </div>
 
     </form>

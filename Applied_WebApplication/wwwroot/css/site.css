@@ -29,4 +29,19 @@ body {
     padding-left: 10px;
 }
 
+.AppHeading {
+    margin-top: 1px;
+    margin-bottom: 10px;
+    padding-left: 20px;
+    padding-bottom: 5px;
+    padding-top: 10px;
+    background-color: darkorchid;
+    color: whitesmoke;
+    border-block: double;
+}
+
+    .AppHeading:hover {
+        background-color: slateblue;
+    }
+
 

@@ -11,7 +11,6 @@ builder.Services.AddSession();
 builder.Services.AddSingleton<IAppliedDependency, AppliedDependency>();
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 builder.Services.AddRazorPages();
-//builder.Services.AddRazorPages().AddRazorRuntimeCompilation();
 builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", options =>
 {
     options.Cookie.Name = "MyCookieAuth";
