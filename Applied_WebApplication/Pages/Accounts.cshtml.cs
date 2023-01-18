@@ -8,9 +8,9 @@ namespace Applied_WebApplication.Pages
    
     public class AccountsModel : PageModel
     {
-        public IActionResult OnGetSubmit(string? _UserName)
+        public IActionResult OnGetSubmit()
         {
-            return RedirectToPage("COA_Add", _UserName);
+            return RedirectToPage("AccountHead");
         }
 
     }

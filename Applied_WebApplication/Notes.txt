@@ -33,6 +33,11 @@ SQLite ODBC Driver
 http://www.ch-werner.de/sqliteodbc/
 ====================================================
 
+PDF Converter
+=====================================================
+NuGet\Install-Package FreeSpire.PDF -Version 8.6.0
+=====================================================
+
 
 Useful Links
 ===============================================================
@@ -72,3 +77,5 @@ https://www.youtube.com/watch?v=T-e554Zt3n4				.Net core 6 App CRUD
 https://www.codeguru.com/dotnet/asp-net-cookies/				Cookies 
 
 https://codepen.io/mukeshm280/pen/GRKyZVq						Number Formatted.
+
+https://www.e-iceblue.com/Introduce/free-pdf-component.html				PDF API Free

@@ -9,8 +9,8 @@ namespace AppliedReporting
             InitializeComponent();
         }
 
-        public string DBPath = "D:\\APPLIED\\Applied_WebApplication\\wwwroot\\SQLiteDB\\Applied.db";
-        public System.Data.SQLite.SQLiteConnection MyConnection { get; set; }
+        public string DBPath = "G:\\APPLIED\\APPLIED\\Applied_WebApplication\\wwwroot\\SQLiteDB\\Applied.db";
+        public SQLiteConnection MyConnection { get; set; }
         public string ConnectionStatus = "";
 
         private void Form1_Load(object sender, EventArgs e)
@@ -27,7 +27,7 @@ namespace AppliedReporting
             catch (Exception ee)
             {
                 ConnectionStatus = "DB Connection has error: " + ee.Message;
-                lblConnection.Text = "DB Connection not establised";
+                lblConnection.Text = "DB Connection not establised. " + DBPath;
             }
             
         }

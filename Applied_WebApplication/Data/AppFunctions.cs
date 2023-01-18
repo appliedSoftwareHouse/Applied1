@@ -63,13 +63,13 @@ namespace Applied_WebApplication.Data
             return Cheque;
         }
 
-        public static AppliedDependency AppGlobals = new();
+        public readonly static AppliedDependency AppGlobals = new();
 
-        public static DataTable GetAppliedTable(string UserName, ReportClass.Filters ReportFilter)
+        public static DataTable GetAppliedTable(string UserName, ReportClass.ReportFilters ReportFilter)
         {
-            string _Text = GetQueryText(ReportFilter);
+            string CommandText = GetQueryText(ReportFilter);
             ConnectionClass _Connection = new(UserName);
-            SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
+            SQLiteDataAdapter _Adapter = new(CommandText, _Connection.AppliedConnection);
             DataSet _DataSet = new DataSet();
             _Adapter.Fill(_DataSet);
             if (_DataSet.Tables.Count > 0)
@@ -80,7 +80,7 @@ namespace Applied_WebApplication.Data
 
         }
 
-        public static string GetQueryText(ReportClass.Filters ReportFilter)
+        public static string GetQueryText(ReportClass.ReportFilters ReportFilter)
         {
             // Create a query to fatch data from Data Table for Display Reports.
             string DateFormat = "yyyy-MM-dd";
@@ -106,7 +106,8 @@ namespace Applied_WebApplication.Data
             if (ReportFilter.n_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.n_Inventory.ToString() + " AND"); }
             if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
             string Where = _Where.ToString();
-            if (Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }
+            //if (Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }
+            if (Where.EndsWith("AND")) { Where = Where[..^3]; }
 
             return string.Concat(_SQL.ToString(), Where);
         }
@@ -132,20 +133,19 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass Ledger = new(UserName, Tables.view_Ledger);
             DataTable _Ledger = Ledger.MyDataTable.Clone();
+            //decimal Debit = 0M;
+            //decimal Credit = 0M;
+            decimal Balance = 0M;
 
             if (_Table.TableName == "CashBook")
             {
                 DataView _DataView = _Table.AsDataView();
                 _DataView.Sort = "Vou_Date";
 
-                decimal Debit = 0M;
-                decimal Credit = 0M;
-                decimal Balance = 0M;
-
                 foreach (DataRow _Row in _DataView.ToTable().Rows)
                 {
-                    Debit = decimal.Parse(_Row["DR"].ToString());
-                    Credit = decimal.Parse(_Row["CR"].ToString());
+                    decimal Debit = decimal.Parse(_Row["DR"].ToString());
+                    decimal Credit = decimal.Parse(_Row["CR"].ToString());
                     Balance += (Debit - Credit);
 
                     DataRow _NewRow = _Ledger.NewRow();
@@ -154,8 +154,8 @@ namespace Applied_WebApplication.Data
                     _NewRow["Vou_Date"] = _Row["Vou_Date"];
                     _NewRow["Vou_No"] = _Row["Vou_No"];
                     _NewRow["Description"] = _Row["Description"];
-                    _NewRow["DR"] = _Row["DR"];
-                    _NewRow["CR"] = _Row["CR"];
+                    _NewRow["DR"] = Debit;
+                    _NewRow["CR"] = Credit;
                     _NewRow["BAL"] = Balance;
                     _Ledger.Rows.Add(_NewRow);
                 }
@@ -244,16 +244,7 @@ namespace Applied_WebApplication.Data
             string _ChqCode = "<<New>>";
             return _ChqCode;
         }
-
-        private static int NewID(DataTable table)
-        {
-            if (table.Rows.Count > 0)
-            {
-                int _result = (int)table.Compute("MAX(ID)", "") + 1;
-                return _result;
-            }
-            else { return 1; }
-        }
+       
 
 
         #endregion

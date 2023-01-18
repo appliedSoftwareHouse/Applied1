@@ -6,7 +6,7 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    string MyCompany = UserProfile.GetClaim(User);
+    string MyCompany = UserProfile.GetCompanyName(User);
     var UserName = User.Identity.Name;
     var username = User.Identity.Name;
 }

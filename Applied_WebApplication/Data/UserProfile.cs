@@ -76,7 +76,7 @@ namespace Applied_WebApplication.Data
             }
         }
 
-        public static string GetClaim(ClaimsPrincipal _ClaimPrincipal)
+        public static string GetCompanyName(ClaimsPrincipal _ClaimPrincipal)
         {
             // Get a Company name to display at main page of the App.
             string Result = "Applied Software House?";

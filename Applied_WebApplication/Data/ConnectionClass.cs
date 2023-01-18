@@ -101,29 +101,16 @@ namespace Applied_WebApplication.Data
         {
             if (_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
 
-            switch (_User.ToUpper())
+            return _User.ToUpper() switch
             {
-                case "ADMIN":
-                    return ".\\wwwroot\\SQLiteDB\\Applied.db";
-
-                case "AMCORP":
-                    return ".\\wwwroot\\SQLiteDB\\Amcorp.db";
-
-                case "ALTAMASH":
-                    return ".\\wwwroot\\SQLiteDB\\Altamash.db";
-
-                case "GUEST":
-                    return ".\\wwwroot\\SQLiteDB\\Guest.db";
-
-                case "WINMARK":
-                    return ".\\wwwroot\\SQLiteDB\\Winmark.db";
-
-                case "HFSSTEEL":
-                    return ".\\wwwroot\\SQLiteDB\\HFSSteel.DB";
-
-                default:
-                    return ".\\wwwroot\\SQLiteDB\\Applied.db";
-            }
+                "ADMIN" => ".\\wwwroot\\SQLiteDB\\Applied.db",
+                "AMCORP" => ".\\wwwroot\\SQLiteDB\\Amcorp.db",
+                "ALTAMASH" => ".\\wwwroot\\SQLiteDB\\Altamash.db",
+                "GUEST" => ".\\wwwroot\\SQLiteDB\\Guest.db",
+                "WINMARK" => ".\\wwwroot\\SQLiteDB\\Winmark.db",
+                "HFSSTEEL" => ".\\wwwroot\\SQLiteDB\\HFSSteel.db",
+                _ => ".\\wwwroot\\SQLiteDB\\Applied.db",
+            };
         }
         
         

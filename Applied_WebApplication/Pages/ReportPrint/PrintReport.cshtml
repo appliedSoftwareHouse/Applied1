@@ -1,9 +1,11 @@
 ﻿@page
 @model Applied_WebApplication.Pages.ReportPrint.COAListModel
 @{
-
-
+    var UserName = User.Identity.Name;
+    var PDFFile = Model.MyReport.OutputFileLink;
 }
 
 
-Report Print 
+<div class="container bg-info">
+    <iframe src=@Url.Content(PDFFile) width="100%" height="600px"> This is Testing.</iframe>
+</div>

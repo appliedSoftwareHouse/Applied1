@@ -8,12 +8,15 @@ namespace Applied_WebApplication.Data
     public class Ledger
     {
         public string UserName { get; set; }
+        public int COA { get; set; }
         public Tables TableName { get; set; }
         public DateTime Date_From { get; set; }
         public DateTime Date_To { get; set; }
         public string Sort { get; set; }
         public string Filter { get; set; }
         public DataTable Records { get => GetRecords(); }
+        
+
 
 
         public Ledger(string _UserName)
@@ -38,8 +41,8 @@ namespace Applied_WebApplication.Data
             decimal Balance = 0M;
             bool IsBalance = false;
             bool IsFirstOBal = false;
-            decimal Debit = 0M;
-            decimal Credit = 0M;
+            decimal DR = 0.00M;
+            decimal CR = 0.00M;
             DataRow _NewRow;
 
             foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
@@ -81,9 +84,9 @@ namespace Applied_WebApplication.Data
                             }
                         }
 
-                        Debit = decimal.Parse(_Row["DR"].ToString());
-                        Credit = decimal.Parse(_Row["CR"].ToString());
-                        Balance = Balance + (Debit - Credit);
+                        DR = decimal.Parse(_Row["DR"].ToString());
+                        CR = decimal.Parse(_Row["CR"].ToString());
+                        Balance += (DR - CR);
 
                         _NewRow = _Ledger.NewRow();
                         _NewRow["ID"] = _Row["ID"];

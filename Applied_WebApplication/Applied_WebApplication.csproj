@@ -9,17 +9,20 @@
 
   <ItemGroup>
     <Compile Remove="Reports\**" />
+    <Compile Remove="wwwroot\Reports\PrintReports\**" />
     <Content Remove="Reports\**" />
+    <Content Remove="wwwroot\Reports\PrintReports\**" />
     <EmbeddedResource Remove="Reports\**" />
+    <EmbeddedResource Remove="wwwroot\Reports\PrintReports\**" />
     <None Remove="Reports\**" />
+    <None Remove="wwwroot\Reports\PrintReports\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\Reports\Report1.rdlc" />
     <Content Remove="wwwroot\SQLiteDB\Altamash.db" />
     <Content Remove="wwwroot\SQLiteDB\Amcorp.db" />
     <Content Remove="wwwroot\SQLiteDB\Guest.DB" />
-    <Content Remove="wwwroot\SQLiteDB\HFSSteel.DB" />
+    <Content Remove="wwwroot\SQLiteDB\HFSSteel.db" />
     <Content Remove="wwwroot\SQLiteDB\Test.db" />
     <Content Remove="wwwroot\SQLiteDB\Winmark.db" />
   </ItemGroup>
@@ -35,12 +38,11 @@
 
   <ItemGroup>
     <Folder Include="Pages\HR\" />
-    <Folder Include="wwwroot\Reports\PrintReports\" />
+    <Folder Include="wwwroot\PrintedReports\HFSSteel\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="wwwroot\Reports\Report1.rdlc" />
   </ItemGroup>
 
 </Project>
