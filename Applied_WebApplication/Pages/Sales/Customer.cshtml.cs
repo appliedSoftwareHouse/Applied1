@@ -17,7 +17,7 @@ namespace Applied_WebApplication.Pages.Sales
         public void OnGetEdit(string UserName, int id)
         {
             MyPageAction = "Edit";
-            DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+            DataTableClass Customers = new(UserName, Tables.Customers);
             Customers.SeekRecord(id);
             Record = new()
             {
@@ -42,7 +42,7 @@ namespace Applied_WebApplication.Pages.Sales
         public void OnGetDelete(string UserName, int id)
         {
             MyPageAction = "Delete";
-            DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+            DataTableClass Customers = new(UserName, Tables.Customers);
             Customers.SeekRecord(id);
             Record.ID = id;
             Record.Code = Customers.CurrentRow["Code"].ToString();
@@ -64,7 +64,7 @@ namespace Applied_WebApplication.Pages.Sales
         public IActionResult OnPostSave(Customer _Record, string UserName)
         {
             
-            DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+            DataTableClass Customers = new(UserName, Tables.Customers);
 
             
             if(Customers.Seek(_Record.ID))
@@ -108,7 +108,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostDelete(Customer _Record, string UserName)
         {
-            DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+            DataTableClass Customers = new(UserName, Tables.Customers);
 
             if (Customers.Seek(_Record.ID))
             {

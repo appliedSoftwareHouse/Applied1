@@ -8,6 +8,8 @@ namespace Applied_WebApplication.Data
 
     public class DataTableClass
     {
+        #region Initial
+
         public string MyUserName { get; set; }
         private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable;
@@ -23,8 +25,10 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
-        
 
+        #endregion
+
+        #region DataTable
         public DataTableClass(string _UserName, Tables _Tables)
         {
             MyUserName = _UserName;
@@ -39,50 +43,42 @@ namespace Applied_WebApplication.Data
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
         }
-
-        public DataTableClass(string _UserName, string _TableName)
+        public static DataTable GetDataView(string UserName, Tables TableView)                      // Load Database 
         {
-            MyUserName = _UserName;
-            MyConnectionClass = new(MyUserName);
-            MyConnection = MyConnectionClass.AppliedConnection;
-
-            MyTableName = _TableName;
-            GetDataTable();                                                                                   // Load DataTable and View
-            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
-            CheckError();
-
-            Command_Update = new SQLiteCommand(MyConnection);
-            Command_Delete = new SQLiteCommand(MyConnection);
-            Command_Insert = new SQLiteCommand(MyConnection);
-
+            SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+            if (TableView.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
+            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+            SQLiteCommand _Command = new("SELECT * FROM [" + TableView + "]", MyConnection);
+            SQLiteDataAdapter _Adapter = new(_Command);
+            DataSet _DataSet = new();
+            _Adapter.Fill(_DataSet, TableView.ToString());
+            DataTable datatable;
+            if (_DataSet.Tables.Count == 1)
+            {
+                datatable = _DataSet.Tables[0];
+            }
+            else { datatable = new DataTable(); }
+            return datatable;
         }
-        
-        public DataTableClass(string _TableName)
+        private void GetDataTable()
         {
-            MyConnection = MyConnectionClass.AppliedConnection;
-            MyTableName = _TableName;
-            GetDataTable();                                                                                   // Load DataTable and View
-            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
-            CheckError();
+            if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
 
-            Command_Update = new SQLiteCommand(MyConnection);
-            Command_Delete = new SQLiteCommand(MyConnection);
-            Command_Insert = new SQLiteCommand(MyConnection);
-        }
+            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
 
-        public DataTableClass(string _TableName, int _ID)                               // Loan DataTablle and load current row specific by Table Row ID.
-        {
-            MyConnection = MyConnectionClass.AppliedConnection;
-            MyTableName = _TableName;
-            GetDataTable();                                                                                   // Load DataTable and View
-            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
-            CheckError();
-            Command_Update = new SQLiteCommand(MyConnection);
-            Command_Delete = new SQLiteCommand(MyConnection);
-            Command_Insert = new SQLiteCommand(MyConnection);
-            SeekRecord(_ID);
+            SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
+            SQLiteDataAdapter _Adapter = new(_Command);
+            DataSet _DataSet = new();
+            _Adapter.Fill(_DataSet, MyTableName);
+
+            if (_DataSet.Tables.Count == 1)
+            {
+                MyDataTable = _DataSet.Tables[0];
+                MyDataView = MyDataTable.AsDataView();
+            }
+            else { MyDataTable = new DataTable(); }
+            return;
         }
-       
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -99,9 +95,18 @@ namespace Applied_WebApplication.Data
             }
             return CurrentRow;
         }
+        private void CheckError()
+        {
+            if (MyConnectionClass.AppliedConnection == null) { IsError = true; }
+            if (MyTableName == null) { IsError = true; }
+            if (MyTableName.Length == 0) { IsError = true; }
+            if (MyDataTable == null) { IsError = true; }
+            if (MyDataView == null) { IsError = true; }
+            if (CurrentRow == null) { IsError = true; }
+        }
+        #endregion
 
         #region Commands INSERT / UPDATE / DELETE
-
         private void CommandInsert()
         {
             DataColumnCollection _Columns = MyDataTable.Columns;
@@ -140,34 +145,6 @@ namespace Applied_WebApplication.Data
             Command_Insert.Parameters["@ID"].Value = NewID();
 
         }
-
-        public void Delete()
-        {
-            CommandDelete();
-            int records = Command_Delete.ExecuteNonQuery();
-            if (records == 1)
-            {
-                MyMessage = string.Concat(records.ToString(), " has been deleted.");
-            }
-            if (records > 1)
-            {
-                MyMessage = string.Concat(records.ToString(), " have been deleted.");
-            }
-        }
-
-        public int NewID()
-        {
-            if (MyDataTable.Rows.Count > 0)
-            {
-                int _result = (int)MyDataTable.Compute("MAX(ID)", "") + 1;
-                return _result;
-            }
-            else
-            {
-                return 1;
-            }
-        }
-
         private void CommandUpdate()
         {
             DataColumnCollection _Columns = CurrentRow.Table.Columns;
@@ -216,41 +193,7 @@ namespace Applied_WebApplication.Data
             Command_Delete.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
             Command_Delete.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
         }
-
-
         #endregion
-
-
-        private void CheckError()
-        {
-            if (MyConnectionClass.AppliedConnection == null) { IsError = true; }
-            if (MyTableName == null) { IsError = true; }
-            if (MyTableName.Length == 0) { IsError = true; }
-            if (MyDataTable == null) { IsError = true; }
-            if (MyDataView == null) { IsError = true; }
-            if (CurrentRow == null) { IsError = true; }
-        }
-
-        private void GetDataTable()
-        {
-            if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
-
-            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-
-            SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
-            SQLiteDataAdapter _Adapter = new(_Command);
-            DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, MyTableName);
-
-            if (_DataSet.Tables.Count == 1)
-            {
-                MyDataTable = _DataSet.Tables[0];
-                MyDataView = MyDataTable.AsDataView();
-            }
-            else { MyDataTable = new DataTable(); }
-            return;
-        }
-
 
         #region Table's Command
         public bool Seek(int _ID)
@@ -265,7 +208,6 @@ namespace Applied_WebApplication.Data
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
-
         public DataRow SeekRecord(int _ID)
         {
             DataRow row = MyDataTable.NewRow();
@@ -291,7 +233,6 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = Filter;
             return row;
         }
-
         internal bool Seek(string _Column, string _ColumnValue)
         {
             bool _result = true;
@@ -304,7 +245,6 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = _Filter;
             return _result;
         }
-
         public string Title(int _ID)
         {
             string Title = "";
@@ -315,7 +255,6 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = Filter;
             return Title;
         }
-
         public string Title(string _Code)
         {
             string Title = "";
@@ -326,9 +265,10 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = Filter;
             return Title;
         }
-
         public int ViewRecordCount() { return MyDataView.Count; }
+        #endregion
 
+        #region Save / Delete / NewID
         public void Save()
         {
             IsError = false;
@@ -364,10 +304,33 @@ namespace Applied_WebApplication.Data
 
             }
         }
-
+        public void Delete()
+        {
+            CommandDelete();
+            int records = Command_Delete.ExecuteNonQuery();
+            if (records == 1)
+            {
+                MyMessage = string.Concat(records.ToString(), " has been deleted.");
+            }
+            if (records > 1)
+            {
+                MyMessage = string.Concat(records.ToString(), " have been deleted.");
+            }
+        }
+        public int NewID()
+        {
+            if (MyDataTable.Rows.Count > 0)
+            {
+                int _result = (int)MyDataTable.Compute("MAX(ID)", "") + 1;
+                return _result;
+            }
+            else
+            {
+                return 1;
+            }
+        }
         #endregion
 
-        
         //======================================================== eof
     }
 }

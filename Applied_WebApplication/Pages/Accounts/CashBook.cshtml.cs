@@ -72,17 +72,6 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostAdd()
         {
-            //MyParameters.IsAdd = true;
-            //MyParameters.IsSelected = false;
-            //List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-            //foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-            //{
-            //    if (_KeyValue.Key == "CashBookID") { MyParameters.CashBookID = int.Parse(_KeyValue.Value); }
-            //    if (_KeyValue.Key == "MinDate") { MyParameters.MinDate = DateTime.Parse(_KeyValue.Value); }
-            //    if (_KeyValue.Key == "MaxDate") { MyParameters.MaxDate = DateTime.Parse(_KeyValue.Value); }
-            //}
-            //MyParameters.CashBookID = id;
-            //MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
             return RedirectToPage("CashBookRecord", new { id = MyParameters.CashBookID });
         }
         public IActionResult OnPostSave(BookRecord MyRecord)

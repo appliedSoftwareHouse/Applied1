@@ -31,6 +31,8 @@ builder.Services.AddAuthorization(options =>
 
 });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSwaggerGen();
+
 
 
 var app = builder.Build();
@@ -42,7 +44,11 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v2/swagger.json", "SwaggerAPI");
+    });
 }
 
 app.UseHttpsRedirection();

@@ -10,6 +10,8 @@ namespace Applied_WebApplication.Data
 {
     public class ReportClass
     {
+        #region Variables
+
         private readonly string mimtype = "";
         private readonly int extension = 1;
         public string UserName { get; set; }                                             // Current User Name
@@ -17,7 +19,7 @@ namespace Applied_WebApplication.Data
         public string OutputFileName { get; set; }                                    // Output File .pdf, .doc or .xls
         public string OutputFile { get => GetOutputFile(); }                     // Path + file name of printed report PDF/Doc/xls.
         public string OutputPath { get => GetOutputPath(); }                  // Path where to printed report store.
-        public string OutputFileLink { get; set; }                                       // Location to printed report PDF.
+        public string OutputFileLink { get => GetOutputFileLink(); }                                       // Location to printed report PDF.
         public FileType OutputFileType { get; set; }                                  // Rendered file type pdf, word, excel
 
         public string RDLCFilePath { get => AppGlobals.ReportRoot; }    // RDLC report path
@@ -27,6 +29,9 @@ namespace Applied_WebApplication.Data
         public string RDLCDataSet { get; set; }                                         // Datasource DataSet name exact in RDLC
 
         public string CommandText { get; set; }                                        // commad for factch date from DB
+        public string CommandFilter { get; set; }                                        // commad for factch date from DB
+
+      
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public Dictionary<string, string> ReportParameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public string MyMessage { get; set; }                                          // Store message of the class
@@ -52,6 +57,8 @@ namespace Applied_WebApplication.Data
             };
         }
 
+        #endregion
+
         public void GetReport()
         {
             if (!Directory.Exists(GetOutputPath())) { Directory.CreateDirectory(GetOutputPath()); }     // Create a Directory if not existed.
@@ -62,16 +69,15 @@ namespace Applied_WebApplication.Data
             LocalReport _Report = new LocalReport(RDLCFile);                                                                                                // Create Report Object.
             _Report.AddDataSource(RDLCDataSet, GetReportDataTable());                                                                   // Create DataTabel and inject in report.
             var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
-
             byte[] bytes = result.MainStream;
             MyBytes = bytes;
-            using (FileStream fstream = new FileStream(OutputFileName, FileMode.Create))
+            using (FileStream fstream = new FileStream(OutputFile, FileMode.Create))
             {
                 fstream.Write(bytes, 0, bytes.Length);
                 MyFileStream = fstream;
             }
             IsError = false;
-            MyMessage = "Report generated. " + OutputFileName;
+            MyMessage = "Report generated. " + OutputFile;
         }
 
         private DataTable GetReportDataTable()
@@ -96,7 +102,8 @@ namespace Applied_WebApplication.Data
 
         public string GetOutputFileLink()
         {
-            return string.Concat(AppGlobals.PrintedReportPathLink, OutputFileName);
+            string FileName = string.Concat(OutputFileName, ".", OutputFileType.ToString());
+            return string.Concat(AppGlobals.PrintedReportPathLink, UserName, "/", FileName);
         }
 
 

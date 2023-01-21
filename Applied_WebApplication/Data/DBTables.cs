@@ -1,7 +1,11 @@
 ﻿using System.Data;
 
+namespace Applied_WebApplication;
+
 public enum Tables
 {
+    Registry = 1,
+
     COA = 101,
     COA_Nature = 102,
     COA_Class = 103,
@@ -12,6 +16,7 @@ public enum Tables
     ChequeTranType = 108,
     ChequeStatus = 109,
     TaxTypeTitle = 110,
+    
 
     Customers = 201,
     City = 202,
@@ -26,7 +31,16 @@ public enum Tables
     Inv_UOM = 305,
 
     Ledger = 401,
-    view_Ledger = 402
+    view_Ledger = 402,
+
+    PostCashBook = 501,
+    PostBankBook = 502,
+    PostWriteCheque = 503,
+    PostBillReceivable = 504,
+    PostBillPayable = 505,
+    PostPayments = 506,
+    PostReceipts = 507
+
 }
 
 public enum CommandAction
@@ -36,25 +50,28 @@ public enum CommandAction
     Delete
 }
 
-public enum ChequeStatus
+public enum KeyType
 {
-    Submitted = 1,
-    Clear =2,
-    Bounced =3,
-    Return =4,
-    Lost =5
+    Number,
+    Currency,
+    Date,
+    Boolean,
+    Text,
+    UserName,
+    From,
+    To,
+    FromTo,
 }
 
-public enum ChequeTranType
+public enum PostType
 {
-    Cheque = 1,
-    WHT=2,
-    SRB=3,
-    PST=4,
-    BST=5,
-    KSR=6,
+    CashBook,
+    Bankbook,
+    WriteCheque,
+    Receivable,
+    Payable,
+    Payment,
+    Receipt
 }
-
-
 
 

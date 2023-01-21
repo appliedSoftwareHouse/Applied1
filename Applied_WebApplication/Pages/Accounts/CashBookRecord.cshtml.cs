@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.ServiceModel.Security;
+using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Pages.Accounts.CashBookModel;
 
 namespace Applied_WebApplication.Pages.Accounts
@@ -21,17 +20,13 @@ namespace Applied_WebApplication.Pages.Accounts
             DataTableClass Table = new(UserName, Tables.CashBook);
             DataRow Row = Table.NewRecord();
             if (BookRecord == null) { BookRecord = new(); }
-            
-
-            if(id>0) { Row = Table.SeekRecord(id); }
-
             if (Row["Vou_Date"]==DBNull.Value) { Row["Vou_Date"] = DateTime.Now; }
 
             IsAdd = false;
             BookRecord.BookID = id;
             BookRecord.ID = (int)Row["ID"];
             BookRecord.Vou_Date = DateTime.Parse(Row["Vou_Date"].ToString());
-            BookRecord.Vou_No = Row["Vou_No"].ToString();
+            BookRecord.Vou_No = GetNewCashVoucher(UserName);
             BookRecord.COA = (int)Row["COA"];
             BookRecord.Ref_No = Row["Ref_No"].ToString();
             BookRecord.DR = (decimal)Row["DR"];
@@ -68,7 +63,6 @@ namespace Applied_WebApplication.Pages.Accounts
             BookRecord.Employee = (int)Row["Employee"];
         }
 
-
         public IActionResult OnPostSave()
         {
             string UserName = User.Identity.Name;
@@ -102,11 +96,18 @@ namespace Applied_WebApplication.Pages.Accounts
             }
         }
 
-
         public IActionResult OnPostBack()
         {
             return RedirectToPage("CashBook", "Refresh", new { BookRecord.BookID});
         }
+
+        public IActionResult OnPostAutoVoucher()
+        {
+            string UserName = HttpContext.User.Identity.Name;
+            BookRecord.Vou_No = GetNewCashVoucher(UserName);
+            return Page();
+        }
+
 
     }
 }

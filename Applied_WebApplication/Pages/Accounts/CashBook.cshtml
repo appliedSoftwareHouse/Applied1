@@ -40,18 +40,7 @@
     background-color: lightcyan
     }
 
-    .orange{
-    background: #f39c12
-    }
-
-    .blue{
-    background: #4ee6ee
-    }
-
-    .align-right{
-    text-align: right
-    }
-
+    
 
 
     }
@@ -59,6 +48,9 @@
 </style>
 
 <form method="post">
+
+
+    <!--Cash Book Heading Blue Bar-->
     <div class="container p-1 mt-2 mb-2 bg-info text-white rounded">
 
         <div class="p-2 d-inline-block w-25 text-primary">
@@ -123,57 +115,61 @@
     </div>
 
     <!-- SHOW CASH BOOK RECORD -->
-    <div>
-        @if (Model.MyParameters.IsSelected)
-        {
-            <div>
-                <table class="table" id="MyTable">
-                    <thead>
-                        <tr>
-                            <th style="width:10%">Date</th>
-                            <th style="width:10%">Vou No</th>
-                            <th style="width:40%">Description</th>
-                            <th style="width:10%; text-align: right">Debit</th>
-                            <th style="width:10%; text-align: right">Credit</th>
-                            <th style="width:10%; text-align: right">Balance</th>
-                            <!--CASH BOOK ADD BUTTON-->
-                            <th style="width:10%; text-align: right">
-                                <button class="btn btn-primary float-end" type="Submit" id="btnAdd" 
-                                    asp-page-handler="Add">
-                                    ADD
-                                </button>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        @foreach (DataRow _Row in Model.Cashbook.Rows)
-                        {
+    <div class="container">
+        <div class="row">
+            <div class="overflow-auto" style="height:600px">
+            @if (Model.MyParameters.IsSelected)
+            {
+                <div>
+                    <table class="table" id="MyTable">
+                        <thead>
                             <tr>
-                                <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
-                                <td>@_Row["Vou_No"].ToString()</td>
-                                <td>@_Row["Description"].ToString()</td>
-                                <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
-                                <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
-
-                                @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
-                                {
-                                    <td class="align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                                }
-                                else
-                                {
-                                    <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                                }
-                                <td>
-                                    <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"]  asp-page-handler="Edit"> Edit</a> |
-                                    <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
-                                </td>
+                                <th style="width:10%">Date</th>
+                                <th style="width:10%">Vou No</th>
+                                <th style="width:40%">Description</th>
+                                <th style="width:10%; text-align: right">Debit</th>
+                                <th style="width:10%; text-align: right">Credit</th>
+                                <th style="width:10%; text-align: right">Balance</th>
+                                <!--CASH BOOK ADD BUTTON-->
+                                <th style="width:10%; text-align: right">
+                                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+                                        asp-page-handler="Add">
+                                        ADD
+                                    </button>
+                                </th>
                             </tr>
-                        }
+                        </thead>
+                        <tbody>
 
-                    </tbody>
-                </table>
+                            @foreach (DataRow _Row in Model.Cashbook.Rows)
+                            {
+                                <tr>
+                                    <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                                    <td>@_Row["Vou_No"].ToString()</td>
+                                    <td>@_Row["Description"].ToString()</td>
+                                    <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
+                                    <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+
+                                    @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
+                                    {
+                                        <td class="align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                    }
+                                    <td>
+                                        <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
+                                        <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
+                                    </td>
+                                </tr>
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            }
             </div>
-        }
+        </div>
     </div>
 </form>

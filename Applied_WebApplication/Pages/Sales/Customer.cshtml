@@ -7,7 +7,7 @@
 @model Applied_WebApplication.Pages.Sales.Customer_AddModel
 @{
     var UserName = User.Identity.Name;
-    DataTableClass Customers = new(UserName, Tables.Customers.ToString());
+    DataTableClass Customers = new(UserName, Tables.Customers);
 }
 
 <div class="container AppHeading">
@@ -23,29 +23,6 @@
 <div class="col-md-7 col-lg-8">
     <form method="post">
         <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-
-        <!-- Show Messages of Error.-->
-        @*if (Customers.CurrentRow == null) { Customers.NewRecord(); } else
-        {
-        List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-            foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-            {
-                if (_KeyValue.Key == "Code") { Model.Record.Code = _KeyValue.Value; }
-                if (_KeyValue.Key == "Title") { Model.Record.Title = _KeyValue.Value; }
-                if (_KeyValue.Key == "Email") { Model.Record.Email = _KeyValue.Value; }
-                if (_KeyValue.Key == "Address1") { Model.Record.Address1 = _KeyValue.Value; }
-                if (_KeyValue.Key == "Address2") { Model.Record.Address2 = _KeyValue.Value; }
-                if (_KeyValue.Key == "City") { Model.Record.City = _KeyValue.Value; }
-                if (_KeyValue.Key == "State") { Model.Record.State = _KeyValue.Value; }
-                if (_KeyValue.Key == "Country") { Model.Record.Country = _KeyValue.Value; }
-                if (_KeyValue.Key == "Phone") { Model.Record.Phone = _KeyValue.Value; }
-                if (_KeyValue.Key == "Mobile") { Model.Record.Mobile = _KeyValue.Value; }
-                if (_KeyValue.Key == "NTN") { Model.Record.NTN = _KeyValue.Value; }
-                if (_KeyValue.Key == "CNIC") { Model.Record.CNIC = _KeyValue.Value; }
-                if (_KeyValue.Key == "Notes") { Model.Record.Notes = _KeyValue.Value; }
-            }
-        }
-*@
         <div class="row g-3">
             <div class="col-sm-6">
                 <label asp-for=@Model.Record.ID class="form-label">ID</label>

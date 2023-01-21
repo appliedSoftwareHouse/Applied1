@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using System.Configuration;
+using System.Collections.Generic;
 
 namespace Applied_WebApplication.Pages
 {
@@ -23,7 +24,9 @@ namespace Applied_WebApplication.Pages
 
         public IActionResult OnPostTest()
         {
-            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = "" });
+            //asp - page = ".\ReportPrint\PrintReport"
+            //asp - page - handler = "COAList" > Chart of Accounts(List)</ a >
+            return RedirectToPage("/ReportPrint/PrintReport", "Ledger", routeValues: new { COAID=2 });
         }
 
         public IActionResult OnPostCashBook()
@@ -42,6 +45,10 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = ""});
         }
 
+        public IActionResult OnPostPosting()
+        {
+            return RedirectToPage("/Applied/Posting");
+        }
 
 
     }

@@ -4,7 +4,6 @@
     var UserName = User.Identity.Name;
 }
 
-
 <form method="post">
 
     <div class="container p-2 mt-2 bg-success text-white rounded-2">
@@ -12,7 +11,7 @@
     </div>
 
     <div class="dropdown py-2">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
             Directory
         </button>
         <ul class="dropdown-menu dropdown-menu-dark">
@@ -46,13 +45,17 @@
             <li><a class="dropdown-item" href="#">Profit & Loss Account</a></li>
             <li><a class="dropdown-item" href="#">Balance Sheet</a></li>
             <li>
-                <a class="dropdown-item" type="text/asp"
+                <a class="dropdown-item"
                    asp-page=".\ReportPrint\PrintReport" 
                    asp-page-handler="COAList">Chart of Accounts (List)</a>
             </li>
 
         </ul>
+        <hr />
 
+        <div class="container" style="width: 100%; height:700px">
+            <img class="img-fluid" src="/Images/Accounting.jpg" />
+        </div>
 
     </div>
 </form>

@@ -44,4 +44,22 @@ body {
         background-color: slateblue;
     }
 
+    .TextCenter{
+        text-align:center;
+    }
 
+.TextRight {
+    text-align: right
+}
+
+.orange {
+    background: #f39c12
+}
+
+.blue {
+    background: #4ee6ee
+}
+
+.align-right {
+    text-align: right
+}

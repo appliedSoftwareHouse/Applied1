@@ -28,6 +28,13 @@ NuGet\Install-Package System.Text.Encoding.CodePages -Version 7.0.0
 NuGet\Install-Package System.Security.Permissions -Version 7.0.0
 ========================================================================
 
+Swagger
+==========================================================================
+NuGet\Install-Package Swashbuckle.AspNetCore.SwaggerGen -Version 6.5.0
+NuGet\Install-Package Swashbuckle.AspNetCore.SwaggerUI -Version 6.5.0
+===========================================================================
+
+
 SQLite ODBC Driver
 ====================================================
 http://www.ch-werner.de/sqliteodbc/

@@ -56,8 +56,9 @@
                            name="Vou_No"
                            value="@Model.BookRecord.Vou_No"
                            class="form-control"
+                           
                            placeholder="Voucher No">
-                    <button name="auto" class="btn btn-outline-secondary" type="button">Auto</button>
+                    <button name="auto" class="btn btn-outline-secondary" type="submit" asp-page-handler="AutoVoucher">Auto</button>
                 </div>
             </div>
             <div class="col">

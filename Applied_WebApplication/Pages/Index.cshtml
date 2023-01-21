@@ -17,7 +17,7 @@
 </div>
 <br />
 
-<!--  carousel -->
+
 <style>
     .carousel-img {
         width: 100%;
@@ -41,8 +41,8 @@
 
 </style>
 
+<!--  Carousel -->
 <div class="container" id="Mycarousel">
-
     <div id="carouselExampleFade" class="carousel slide carousel-fade">
         <div class="carousel-inner">
             <div class="carousel-item active">
@@ -64,7 +64,6 @@
             <span class="visually-hidden">Next</span>
         </button>
     </div>
-
 </div>
 <!--  carousel END -->
 
@@ -76,7 +75,7 @@
 <form method="post">
     <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="T e s t" asp-page-handler="Test" />
+            <input type="submit" class="btn btn-primary" value="T e s t" asp-page-handler="Posting" />
         </div>
         <div class="p-2 d-inline-block">
             <input type="submit" class="btn btn-primary" value="Cash Book" asp-page-handler="CashBook" />
@@ -88,22 +87,22 @@
             <input type="submit" class="btn btn-primary" value="Write Cheque" asp-page-handler="WCheque">
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice"  />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt"  />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Book a Bill" asp-page=".\Accounts\BookBill" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Book a Bill" asp-page=".\Accounts\BookBill" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Payment" asp-page=".\Accounts\Payment" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Payment" asp-page=".\Accounts\Payment"  />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Customers" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Customers"  />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Vendors" asp-page=".\Sales\Vendors" asp-route-UserName=@UserName />
+            <input type="submit" class="btn btn-primary" value="Vendors" asp-page=".\Sales\Vendors" />
         </div>
     </div>
 </form>

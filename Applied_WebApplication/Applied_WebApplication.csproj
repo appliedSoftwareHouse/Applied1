@@ -8,13 +8,25 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Pages\HR\**" />
     <Compile Remove="Reports\**" />
+    <Compile Remove="wwwroot\PrintedReports\HFSSteel\**" />
+    <Compile Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <Compile Remove="wwwroot\Reports\PrintReports\**" />
+    <Content Remove="Pages\HR\**" />
     <Content Remove="Reports\**" />
+    <Content Remove="wwwroot\PrintedReports\HFSSteel\**" />
+    <Content Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <Content Remove="wwwroot\Reports\PrintReports\**" />
+    <EmbeddedResource Remove="Pages\HR\**" />
     <EmbeddedResource Remove="Reports\**" />
+    <EmbeddedResource Remove="wwwroot\PrintedReports\HFSSteel\**" />
+    <EmbeddedResource Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <EmbeddedResource Remove="wwwroot\Reports\PrintReports\**" />
+    <None Remove="Pages\HR\**" />
     <None Remove="Reports\**" />
+    <None Remove="wwwroot\PrintedReports\HFSSteel\**" />
+    <None Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <None Remove="wwwroot\Reports\PrintReports\**" />
   </ItemGroup>
 
@@ -32,13 +44,15 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.12" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.5.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
     <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Pages\HR\" />
-    <Folder Include="wwwroot\PrintedReports\HFSSteel\" />
+    <Folder Include="DataSets\" />
+    <Folder Include="wwwroot\PrintedReports\Users\" />
   </ItemGroup>
 
   <ItemGroup>

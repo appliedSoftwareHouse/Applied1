@@ -2,6 +2,7 @@ using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Razor.Language.Intermediate;
 using System.Data.SQLite;
 
 namespace Applied_WebApplication.Pages.Account
@@ -29,6 +30,22 @@ namespace Applied_WebApplication.Pages.Account
 
         public void OnGet()
         {
+            var V4 = Registry.GetKey(User.Identity.Name, "CompanyName", KeyType.Text);
+
+
+
+        }
+
+        public void OnPost()
+        {
+            var v1 = Request.Form["Key"];
+            var v2 = Request.Form["Type"];
+            var v3 = Request.Form["Number"];
+            var v4 = Request.Form["Text"];
+            var v5 = Request.Form["Date"];
+            var v6 = Request.Form["Bool"];
+
+            Registry.SetKey(User.Identity.Name, v1, v4, KeyType.Text);
         }
 
         public IActionResult OnGetUpdateCurrencyFormat(int id, string UserName)

@@ -1,14 +1,23 @@
 ﻿using System.Data.SQLite;
 using System.Data;
 using System.Text;
-using Applied_WebApplication.Pages;
-using Microsoft.AspNetCore.Authentication.Cookies;
-
+using System.Text.RegularExpressions;
+using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
 {
     public class AppFunctions
     {
+
+        public static string GetNewCashVoucher(string UserName)
+        {
+            string CashCode = string.Empty;
+
+            DataTableClass CashBook = new(UserName, Tables.CashBook);
+            int MaxNum = int.Parse(CashBook.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+            CashCode = string.Concat("CB-", MaxNum.ToString("000000"));
+            return CashCode;
+        }
 
         #region Static Function
 
@@ -19,15 +28,15 @@ namespace Applied_WebApplication.Data
             return _Row[_Column].ToString();
         }
 
-        public static Pages.Accounts.WriteChequeModel.Chequeinfo  GetChequeInfo(string UserName, string ChqCode)
+        public static Chequeinfo GetChequeInfo(string UserName, string ChqCode)
         {
             Pages.Accounts.WriteChequeModel.Chequeinfo Cheque = new();
             DataTableClass Table = new(UserName, Tables.WriteCheques);
             Table.MyDataView.RowFilter = string.Concat("Code='", ChqCode, "'");
-            if(Table.MyDataView.Count>0)
+            if (Table.MyDataView.Count > 0)
             {
                 DataRow Row = Table.MyDataView[0].Row;
-                if ((int)Row["TranType"]==1) 
+                if ((int)Row["TranType"] == 1)
                 {
                     Cheque.ID = (int)Row["ID"];
                     Cheque.Code = Row["Code"].ToString();
@@ -79,7 +88,6 @@ namespace Applied_WebApplication.Data
             return new DataTable();
 
         }
-
         public static string GetQueryText(ReportClass.ReportFilters ReportFilter)
         {
             // Create a query to fatch data from Data Table for Display Reports.
@@ -129,40 +137,7 @@ namespace Applied_WebApplication.Data
             return "";
         }
 
-        public static DataTable ConvertLedger(string UserName, DataTable _Table)
-        {
-            DataTableClass Ledger = new(UserName, Tables.view_Ledger);
-            DataTable _Ledger = Ledger.MyDataTable.Clone();
-            //decimal Debit = 0M;
-            //decimal Credit = 0M;
-            decimal Balance = 0M;
-
-            if (_Table.TableName == "CashBook")
-            {
-                DataView _DataView = _Table.AsDataView();
-                _DataView.Sort = "Vou_Date";
-
-                foreach (DataRow _Row in _DataView.ToTable().Rows)
-                {
-                    decimal Debit = decimal.Parse(_Row["DR"].ToString());
-                    decimal Credit = decimal.Parse(_Row["CR"].ToString());
-                    Balance += (Debit - Credit);
-
-                    DataRow _NewRow = _Ledger.NewRow();
-                    _NewRow["ID"] = _Row["ID"];
-                    _NewRow["Vou_Type"] = "Cash";
-                    _NewRow["Vou_Date"] = _Row["Vou_Date"];
-                    _NewRow["Vou_No"] = _Row["Vou_No"];
-                    _NewRow["Description"] = _Row["Description"];
-                    _NewRow["DR"] = Debit;
-                    _NewRow["CR"] = Credit;
-                    _NewRow["BAL"] = Balance;
-                    _Ledger.Rows.Add(_NewRow);
-                }
-            }
-            return _Ledger;
-        }
-
+        // Get Data Rows from DataTable by filter conditions.
         public static DataTable GetRecords(string UserName, Tables _TableName, string _Filter)
         {
             DataTableClass _Table = new(UserName, _TableName);
@@ -176,17 +151,21 @@ namespace Applied_WebApplication.Data
             return _Table.NewRecord();
         }
 
+        // Get ID and title from Datatable without Filter
         public static Dictionary<int, string> Titles(string UserName, Tables _TableName)
         {
             Dictionary<int, string> Titles = new Dictionary<int, string>();
             DataTableClass _Table = new(UserName, _TableName);
-            foreach (DataRow _Row in _Table.MyDataTable.Rows)
+            _Table.MyDataView.Sort = "Title";
+
+            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
             {
                 Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
             }
             return Titles;
         }
 
+        // Get ID and title from Datatable with Filter condition
         public static Dictionary<int, string> Titles(string UserName, Tables _TableName, string _Filter)
         {
             Dictionary<int, string> Titles = new Dictionary<int, string>();
@@ -199,6 +178,7 @@ namespace Applied_WebApplication.Data
             return Titles;
         }
 
+        // Get DatRows from DataTable filter by ID=??
         public static DataRow GetDataRow(string UserName, Tables _TableName, int ID)
         {
             DataTableClass _Table = new(UserName, _TableName);
@@ -208,6 +188,7 @@ namespace Applied_WebApplication.Data
             else { return _Table.MyDataTable.NewRow(); }
         }
 
+        // Get Dictionery of ID and title from DataTable for Dropdown List in Razor Pages.
         public static Dictionary<int, string> GetList(string UserName, Tables _TableName, string Filter)
         {
             Dictionary<int, string> _List = new();
@@ -222,6 +203,8 @@ namespace Applied_WebApplication.Data
             return _List;
         }
 
+
+        // Get Singal Title from DataTable by ID=??
         public static string GetTitle(string UserName, Tables _TableName, int ID)
         {
             string _Title;  //= string.Empty;
@@ -238,13 +221,16 @@ namespace Applied_WebApplication.Data
             return _Title;
         }
 
+
+        // Get New Voucher No for White Cheque List
         public static string GetNewChqCode()
         {
             // Temporary codes. in future it has to be developed.
             string _ChqCode = "<<New>>";
             return _ChqCode;
         }
-       
+
+
 
 
         #endregion
