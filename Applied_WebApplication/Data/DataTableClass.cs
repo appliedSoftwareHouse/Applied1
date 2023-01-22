@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
@@ -11,15 +12,14 @@ namespace Applied_WebApplication.Data
         #region Initial
 
         public string MyUserName { get; set; }
-        private ConnectionClass MyConnectionClass = new();
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
         public TableValidationClass TableValidation;
         public string MyTableName;
         public bool IsError = false;
-        public string MyMessage = "";
-        public string View_Filter { get; set; } = "";
+        public string MyMessage;
+        public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
 
         private SQLiteCommand Command_Update;
@@ -31,9 +31,10 @@ namespace Applied_WebApplication.Data
         #region DataTable
         public DataTableClass(string _UserName, Tables _Tables)
         {
+            UserProfile UProfile = new(_UserName);
+            string ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
+            MyConnection = new SQLiteConnection(ConnectionString);
             MyUserName = _UserName;
-            MyConnectionClass = new(MyUserName);
-            MyConnection = MyConnectionClass.AppliedConnection;
             MyTableName = _Tables.ToString();
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
@@ -43,6 +44,7 @@ namespace Applied_WebApplication.Data
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
         }
+
         public static DataTable GetDataView(string UserName, Tables TableView)                      // Load Database 
         {
             SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
@@ -97,7 +99,7 @@ namespace Applied_WebApplication.Data
         }
         private void CheckError()
         {
-            if (MyConnectionClass.AppliedConnection == null) { IsError = true; }
+            if (MyConnection == null) { IsError = true; }
             if (MyTableName == null) { IsError = true; }
             if (MyTableName.Length == 0) { IsError = true; }
             if (MyDataTable == null) { IsError = true; }
@@ -177,9 +179,6 @@ namespace Applied_WebApplication.Data
             _Command.CommandText = _CommandString.ToString();
             Command_Update = _Command;
 
-
-
-
             foreach (DataColumn _Column in _Columns)
             {
                 if (_Column == null) { continue; }
@@ -190,8 +189,15 @@ namespace Applied_WebApplication.Data
         }
         private void CommandDelete()
         {
-            Command_Delete.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
-            Command_Delete.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
+            if ((int)CurrentRow["ID"] > 0)
+            {
+                Command_Delete.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
+                Command_Delete.CommandText = "DELETE FROM [" + MyTableName + "]  WHERE ID=@ID";
+            }
+            else
+            {
+                MyMessage = "Record not deleted.";
+            }
         }
         #endregion
 
@@ -266,6 +272,29 @@ namespace Applied_WebApplication.Data
             return Title;
         }
         public int ViewRecordCount() { return MyDataView.Count; }
+
+        public bool Replace(int _ID, string _Column, object _Value)
+        {
+
+            MyDataView.RowFilter = string.Concat("ID=", _ID.ToString());
+            if (MyDataView.Count == 1)
+            {
+                CurrentRow = MyDataView[0].Row;
+                CurrentRow[_Column] = _Value;
+                Save();
+            }
+            return true;
+        }
+
+        public bool IsRowValid(DataRow Row, CommandAction SQLAction, PostType postType)
+        {
+            TableValidation = new(MyDataTable);
+            TableValidation.SQLAction = SQLAction.ToString();
+            TableValidation.MyVoucherType = postType;
+            bool Result = TableValidation.Validation(Row);
+            return Result;
+        }
+
         #endregion
 
         #region Save / Delete / NewID
@@ -300,7 +329,7 @@ namespace Applied_WebApplication.Data
                     }
                 }
 
-                if(TableValidation.MyMessages.Count>0) { IsError = true; }
+                if (TableValidation.MyMessages.Count > 0) { IsError = true; }
 
             }
         }
@@ -329,6 +358,13 @@ namespace Applied_WebApplication.Data
                 return 1;
             }
         }
+
+        public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
+        {
+            DataTableClass tb_table = new(UserName, table);
+            return tb_table.Replace(_ID, _Column, _Value);
+        }
+
         #endregion
 
         //======================================================== eof

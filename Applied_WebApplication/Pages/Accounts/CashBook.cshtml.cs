@@ -15,26 +15,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public DataTable Cashbook = new DataTable();
         public List<Message> ErrorMessages;
 
-        public void OnGetRefresh(int id)
-        {
-            UserName = User.Identity.Name;
-            MyParameters = new ReportParameters
-            {
-                IsSelected = true,
-                CashBookID = id,
-                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
-                MinDate = (DateTime.Now),
-                MaxDate = (DateTime.Now)
-            };
-
-            DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
-            if (_Table.MyDataTable.Rows.Count > 0)
-            {
-                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
-                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
-            }
-        }
-
+        #region Get / POST
 
         public void OnGet(int id)
         {
@@ -57,10 +38,31 @@ namespace Applied_WebApplication.Pages.Accounts
             
             if (id > 0) { MyParameters.IsSelected = true; }
         }
-
         public void OnPost()
         {
 
+        }
+
+        #endregion
+
+        public void OnGetRefresh(int id)
+        {
+            UserName = User.Identity.Name;
+            MyParameters = new ReportParameters
+            {
+                IsSelected = true,
+                CashBookID = id,
+                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
+                MinDate = (DateTime.Now),
+                MaxDate = (DateTime.Now)
+            };
+
+            DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
+            if (_Table.MyDataTable.Rows.Count > 0)
+            {
+                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
+                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
+            }
         }
         public IActionResult OnPostRefresh()
         {
@@ -111,11 +113,6 @@ namespace Applied_WebApplication.Pages.Accounts
             }
         }
 
-        public void OnGetSave()
-        {
-
-
-        }
 
         [BindProperties]
         public class ReportParameters
@@ -131,7 +128,6 @@ namespace Applied_WebApplication.Pages.Accounts
             public DateTime MaxDate { get; set; }
 
         }
-
         [BindProperties]
         public class BookRecord
         {
@@ -150,6 +146,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int Employee { get; set; }
             public string Description { get; set; }
             public string Comments { get; set; }
+            
         }
     }
 }

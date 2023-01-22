@@ -1,0 +1,47 @@
+﻿@page
+@model Applied_WebApplication.Pages.ReportPrint.GeneralLedgersModel
+@{
+    string UserName = User.Identity.Name;
+}
+
+<div class="container AppHeading">
+    <h3 class="TextCenter">GENERAL LEDGER (Report)</h3>
+</div>
+
+
+
+</style>
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-6">
+                <div class="input-group">
+                    <label class="input-group-text">From</label>
+                    <input type="Date"
+                           name="Dt_From"
+                           value="@Model.Paramaters.Dt_From"
+                           class="form-control"
+                           placeholder="Voucher Date">
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group">
+                    <label class="input-group-text">To</label>
+                    <input type="Date"
+                           name="Dt_To"
+                           value="@Model.Paramaters.Dt_To"
+                           class="form-control"
+                           placeholder="Voucher Date">
+                </div>
+            </div>
+
+            <div class="row mt-1">
+                <div class="col">
+                <input type="submit" class="btn btn-primary" value="PRINT" />
+                </div>
+            </div>
+
+        </div>
+    </div>
+</form>

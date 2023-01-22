@@ -4,61 +4,83 @@ namespace Applied_WebApplication.Data
 {
     public class PostingClass
     {
-        public static bool PostBashBook(string UserName, int id)
+        public static bool PostCashBook(string UserName, int id)
         {
-            var Result = true;
-            DataTableClass Ledger = new(UserName, Tables.Ledger);
-            Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
+            bool Result;
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+            List<Message> ErrorMessages = new List<Message>();
+            List<DataRow> VoucherRows = new();
 
-            if(Ledger.MyDataView.Count==0)
+            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
+            if (tb_Ledger.MyDataView.Count == 0)
             {
-                List<Message> ErrorMessages = new List<Message>();
                 DataRow Row = AppFunctions.GetDataRow(UserName, Tables.CashBook, id);
-
-                Ledger.NewRecord();                                                                                                 // Cash Book DR Entry
-                Ledger.CurrentRow["ID"] = 0;
-                Ledger.CurrentRow["TranID"] = id;
-                Ledger.CurrentRow["Vou_Type"] = "Cash";
-                Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
-                Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
-                Ledger.CurrentRow["SRNo"] = 1;
-                Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
-                Ledger.CurrentRow["BookID"] = Row["BookID"];
-                Ledger.CurrentRow["COA"] = Row["COA"];
-                Ledger.CurrentRow["DR"] = Row["DR"];
-                Ledger.CurrentRow["CR"] = Row["CR"];
-                Ledger.CurrentRow["Customer"] = Row["Customer"];
-                Ledger.CurrentRow["Project"] = Row["Project"];
-                Ledger.CurrentRow["Employee"] = Row["Employee"];
-                Ledger.CurrentRow["Description"] = Row["Description"];
-                Ledger.CurrentRow["Comments"] = Row["Comments"];
-                Ledger.Save();
-                ErrorMessages.AddRange(Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
-
-
-                Ledger.NewRecord();                                                                                                  // Cash Book CR Entry
-                Ledger.CurrentRow["ID"] = 0;
-                Ledger.CurrentRow["TranID"] = id;
-                Ledger.CurrentRow["Vou_Type"] = "Cash";
-                Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
-                Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
-                Ledger.CurrentRow["SRNo"] = 1;
-                Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
-                Ledger.CurrentRow["BookID"] = Row["BookID"];
-                Ledger.CurrentRow["COA"] = Row["BookID"];                                                           // COA => Book ID
-                Ledger.CurrentRow["DR"] = Row["CR"];                                                                    // DR => CR
-                Ledger.CurrentRow["CR"] = Row["DR"];                                                                    // CR => DR
-                Ledger.CurrentRow["Customer"] = Row["Customer"];
-                Ledger.CurrentRow["Project"] = Row["Project"];
-                Ledger.CurrentRow["Employee"] = Row["Employee"];
-                Ledger.CurrentRow["Description"] = Row["Description"];
-                Ledger.CurrentRow["Comments"] = Row["Comments"];
-                Ledger.Save();
-                ErrorMessages.AddRange(Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
-                if(ErrorMessages.Count>0)
+                tb_Ledger.NewRecord();                                                                                                 // Cash Book DR Entry
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = id;
+                tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = 1;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
+                tb_Ledger.CurrentRow["COA"] = Row["COA"];
+                tb_Ledger.CurrentRow["DR"] = Row["DR"];
+                tb_Ledger.CurrentRow["CR"] = Row["CR"];
+                tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
+                tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                if(tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.Bankbook))
                 {
-                    Result = false;
+                    VoucherRows.Add(tb_Ledger.CurrentRow);
                 }
+                else
+                {
+                    ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
+                }
+                
+
+                tb_Ledger.NewRecord();                                                                                                  // Cash Book CR Entry
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = id;
+                tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = 2;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
+                tb_Ledger.CurrentRow["COA"] = Row["BookID"];                                                           // COA => Book ID
+                tb_Ledger.CurrentRow["DR"] = Row["CR"];                                                                    // DR => CR
+                tb_Ledger.CurrentRow["CR"] = Row["DR"];                                                                    // CR => DR
+                tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
+                tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                if (tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.CashBook))
+                {
+                    VoucherRows.Add(tb_Ledger.CurrentRow);
+                }
+                else
+                {
+                    ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
+                }
+
+            }
+            if (ErrorMessages.Count == 0)
+            {
+                Result = true;
+                tb_Ledger.CurrentRow = VoucherRows[0];                  // DR Transaction
+                tb_Ledger.Save();
+                tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
+                tb_Ledger.Save();
+                DataTableClass.Replace(UserName, Tables.CashBook, id, "Status", VoucherStatus.Posted.ToString());
+            }
+            else
+            {
+                Result = false;
             }
             return Result;
         }

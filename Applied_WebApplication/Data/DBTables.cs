@@ -74,4 +74,9 @@ public enum PostType
     Receipt
 }
 
+public enum VoucherStatus
+{
+    Submitted = 1,
+    Posted = 2,
+}
 

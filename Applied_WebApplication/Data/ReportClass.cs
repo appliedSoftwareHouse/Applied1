@@ -44,16 +44,16 @@ namespace Applied_WebApplication.Data
         {
             ReportFilter = new ReportFilters
             {
-                dt_From = DateTime.Now,
-                dt_To = DateTime.Now,
-                n_ID = 0,
-                n_COA = 0,
-                n_Customer = 0,
-                n_Project = 0,
-                n_Employee = 0,
-                n_Inventory = 0,
-                n_InvSubCategory = 0,
-                n_InvCategory = 0
+                Dt_From = DateTime.Now,
+                Dt_To = DateTime.Now,
+                N_ID = 0,
+                N_COA = 0,
+                N_Customer = 0,
+                N_Project = 0,
+                N_Employee = 0,
+                N_Inventory = 0,
+                N_InvSubCategory = 0,
+                N_InvCategory = 0
             };
         }
 
@@ -135,18 +135,18 @@ namespace Applied_WebApplication.Data
 
         public class ReportFilters
         {
-            public Tables TableName;
-            public string Columns = "*";
-            public DateTime dt_From;
-            public DateTime dt_To;
-            public int n_ID = 0;
-            public int n_COA = 0;
-            public int n_Customer = 0;
-            public int n_Employee = 0;
-            public int n_Project = 0;
-            public int n_Inventory = 0;
-            public int n_InvCategory = 0;
-            public int n_InvSubCategory = 0;
+            public Tables TableName { get; set; }
+            public string Columns { get; set; }
+            public DateTime Dt_From { get; set; }
+            public DateTime Dt_To { get; set; }
+            public int N_ID { get; set; }
+            public int N_COA { get; set; }
+            public int N_Customer { get; set; }
+            public int N_Employee { get; set; }
+            public int N_Project { get; set; }
+            public int N_Inventory { get; set; }
+            public int N_InvCategory { get; set; }
+            public int N_InvSubCategory { get; set; }
         }
 
 

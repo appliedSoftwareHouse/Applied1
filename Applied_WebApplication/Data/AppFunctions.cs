@@ -102,16 +102,16 @@ namespace Applied_WebApplication.Data
             _SQL.Append(_TableColumns);
             _SQL.Append(" FROM [" + _TableName + "]");
 
-            if (ReportFilter.dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.dt_From.ToString(DateFormat)); }
-            if (ReportFilter.dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.dt_To.ToString(DateFormat)); }
-            if (ReportFilter.n_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.n_ID.ToString() + " AND"); }
-            if (ReportFilter.n_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.n_COA.ToString() + " AND"); }
-            if (ReportFilter.n_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.n_Customer.ToString() + " AND"); }
-            if (ReportFilter.n_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.n_Project.ToString() + " AND"); }
-            if (ReportFilter.n_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.n_Employee.ToString() + " AND"); }
-            if (ReportFilter.n_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.n_InvCategory.ToString() + " AND"); }
-            if (ReportFilter.n_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.n_InvSubCategory.ToString() + " AND"); }
-            if (ReportFilter.n_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.n_Inventory.ToString() + " AND"); }
+            if (ReportFilter.Dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.Dt_From.ToString(DateFormat)); }
+            if (ReportFilter.Dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.Dt_To.ToString(DateFormat)); }
+            if (ReportFilter.N_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.N_ID.ToString() + " AND"); }
+            if (ReportFilter.N_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.N_COA.ToString() + " AND"); }
+            if (ReportFilter.N_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.N_Customer.ToString() + " AND"); }
+            if (ReportFilter.N_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.N_Project.ToString() + " AND"); }
+            if (ReportFilter.N_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.N_Employee.ToString() + " AND"); }
+            if (ReportFilter.N_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.N_InvCategory.ToString() + " AND"); }
+            if (ReportFilter.N_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.N_InvSubCategory.ToString() + " AND"); }
+            if (ReportFilter.N_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.N_Inventory.ToString() + " AND"); }
             if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
             string Where = _Where.ToString();
             //if (Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }
@@ -183,8 +183,8 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
-            if (_Table.MyDataView.Count > 0)
-            { return _Table.MyDataTable.Rows[0]; }
+            if (_Table.MyDataView.Count == 1)
+            { return _Table.MyDataView[0].Row; }
             else { return _Table.MyDataTable.NewRow(); }
         }
 

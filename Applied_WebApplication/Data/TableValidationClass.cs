@@ -1,5 +1,6 @@
 ﻿using System.Data;
 using Applied_WebApplication.Data;
+using Applied_WebApplication.Pages;
 
 namespace Applied_WebApplication.Data
 {
@@ -7,12 +8,23 @@ namespace Applied_WebApplication.Data
     {
         public string SQLAction { get; set; }
         public DataTable MyDataTable { get; set; }
+
         public List<Message> MyMessages = new List<Message>();
+        public PostType MyVoucherType { get; set; }
+        private DataView MyDataView { get; set; }
 
         public TableValidationClass()
         {
             MyDataTable = new DataTable();
             MyMessages = new List<Message>();
+        }
+
+        public TableValidationClass(DataTable table)
+        {
+            MyDataTable = table;
+            MyDataView = MyDataTable.AsDataView();
+            MyMessages = new List<Message>();
+            SQLAction = string.Empty;
         }
 
         public class Message
@@ -22,6 +34,44 @@ namespace Applied_WebApplication.Data
             public int ErrorID { get; set; } = 0;
         }
 
+        public bool Validation(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (Row == null)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Current row is null" });
+                return false;
+            }   // Return false if row is null
+            if (SQLAction == null)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Database query action is not defined." });
+                return false;
+            }
+            if (MyDataTable== null)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "DataTable is null. define Datatable to validate the record." });
+                return false;
+            }
+            if (MyDataView==null) {if(MyDataTable != null ) { MyDataView = MyDataTable.AsDataView(); }}
+            if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
+            if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
+            if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
+            if (Row.Table.TableName == Tables.WriteCheques.ToString()) { ValidateTable_WriteChq(Row); }
+            if (Row.Table.TableName == Tables.Ledger.ToString()) { ValidateTable_Ledger(Row); }
+            if (MyMessages.Count > 0) { return false; } else { return true; }
+        }
+
+        #region Methods => Seek / Sucess
+        private bool Seek(string _Column, string _Value)
+        {
+            if (MyDataTable != null)
+            {
+                DataView _DataView = MyDataTable.AsDataView();
+                _DataView.RowFilter = _Column + "='" + _Value + "'";
+                if (_DataView.Count > 0) { return true; } else { return false; }
+            }
+            return false;               // Default value    
+        }
         public bool Success()
         {
             if (MyMessages.Count > 0)
@@ -30,28 +80,9 @@ namespace Applied_WebApplication.Data
             { return false; }
         }
 
-        public bool Validation(DataRow Row)
-        {
-            MyMessages = new List<Message>();
-            if (Row == null)
-            {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Current row is null" });
-                return false;
-            }                                      // Return false if row is null
+        #endregion
 
-            if (SQLAction == null)
-            {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Database query action is not defined." });
-                return false;
-            }
-            if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
-            if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
-            if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
-            if (Row.Table.TableName == Tables.WriteCheques.ToString()) { ValidateTable_WriteChq(Row); }
-            if (MyMessages.Count > 0) { return false; } else { return true; }
-        }
-
-
+        #region Validation of Tables
 
         private void ValidateTable_COA(DataRow Row)
         {
@@ -184,25 +215,21 @@ namespace Applied_WebApplication.Data
             //if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 10804, Msg = "Bank must be selected." }); }
             //if (Row["Status"].ToString() == "") { MyMessages.Add(new Message() { Success = false, ErrorID = 1080, Msg = "Cheque Status must be selected." }); }
         }
-
-        private bool Seek(string _Column, string _Value)
+        private void ValidateTable_Ledger(DataRow Row)
         {
-            if (MyDataTable != null)
+            MyMessages = new List<Message>();
+            int VoucherID = (int)Row["TranID"];
+
+            if(MyVoucherType == PostType.CashBook)
             {
-                DataView _DataView = MyDataTable.AsDataView();
-                _DataView.RowFilter = _Column + "='" + _Value + "'";
-                if (_DataView.Count > 0) { return true; } else { return false; }
+                MyDataView.RowFilter = string.Concat("[Vou_Type]='Cash' AND [TranID]=",VoucherID.ToString());
+                if (MyDataView.Count > 0)
+                {
+                    MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher and post again." });
+                }
             }
-            return false;               // Default value    
         }
-        //public static List<Message> Validate(DataRow Row, CommandAction Action)
-        //{
-        //    TableValidationClass MyValidation = new();
-        //    _ = MyValidation.MyMessages;
-        //    MyValidation.SQLAction = Action.ToString();
-        //    MyValidation.Validation(Row);
-        //    List<Message> MyMessages = MyValidation.MyMessages;
-        //    return MyMessages;
-        //}
+        #endregion
+
     }
 }

@@ -123,7 +123,7 @@ namespace Applied_WebApplication.Data
 
             foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
             {
-                if ((DateTime)_Row["Vou_Date"] < Param.Date_From)
+                if ((DateTime)_Row["Vou_Date"] < Param.Date_From)                                               // Skip vouchers if less than from From Date
                 {
                     Balance += ((decimal)_Row["DR"] - (decimal)_Row["CR"]);
                     IsFirstOBal = true;
@@ -142,19 +142,20 @@ namespace Applied_WebApplication.Data
                                 _NewRow["Vou_Date"] = _Row["Vou_Date"];
                                 _NewRow["Vou_No"] = "OBal";
                                 _NewRow["Description"] = "Opening Balance";
-                                if (Balance >= 0)
+                                _NewRow["Status"] = "Posted";
+                                if (Balance >= 0)                                                                       // Debit Amount of Voucher
                                 {
                                     _NewRow["DR"] = Balance;
                                     _NewRow["CR"] = 0;
                                     _NewRow["BAL"] = Balance;
-                                }
+                                }                                                                                           
+                                                                                                                                // Credit Amout of voucher
                                 else
                                 {
                                     _NewRow["DR"] = 0;
                                     _NewRow["CR"] = Balance;
                                     _NewRow["BAL"] = Balance;
                                 }
-
                                 _Ledger.Rows.Add(_NewRow);
                                 IsBalance = true;
                             }
@@ -173,6 +174,7 @@ namespace Applied_WebApplication.Data
                         _NewRow["DR"] = _Row["DR"];
                         _NewRow["CR"] = _Row["CR"];
                         _NewRow["BAL"] = Balance;
+                        _NewRow["Status"] = _Row["Status"];
                         _Ledger.Rows.Add(_NewRow);
                     }
                 }
@@ -195,6 +197,8 @@ namespace Applied_WebApplication.Data
             public string Filter { get; set; }
             public DateTime Date_From { get; set; }
             public DateTime Date_To { get; set; }
+            public string Status { get; set; }
         }
+
     }
 }

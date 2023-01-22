@@ -43,8 +43,8 @@ namespace Applied_WebApplication.Data
             PrintedReportPath = string.Concat(AppRoot, "PrintedReports\\");
             PrintedReportPathLink = "~/PrintedReports/";
             DefaultDB = string.Concat(AppRoot, "SQLiteDB\\");
-            UserDBPath = string.Concat(DefaultPath, "AppliedUsers.db");
-            GuestDBPath = string.Concat(DefaultPath, "Applied.db");
+            UserDBPath = string.Concat(DefaultDB, "AppliedUsers.db");
+            GuestDBPath = string.Concat(DefaultDB, "Applied.db");
             CultureString = "en-EN";
             AppCurture = new CultureInfo(CultureString, false);
             InputDatesFormat = "yyyy-MM-dd";

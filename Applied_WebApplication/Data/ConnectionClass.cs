@@ -1,8 +1,8 @@
-﻿using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
-using System.Data.Common;
 using System.Data.SQLite;
+using System.Security.Principal;
+using static Applied_WebApplication.Data.AppFunctions;
 using DataSet = System.Data.DataSet;
 
 namespace Applied_WebApplication.Data
@@ -18,11 +18,14 @@ namespace Applied_WebApplication.Data
 
         public bool DBFile_Exist { get => File.Exists(DBFile_Path); }
 
+        
+
+
         public ConnectionClass()
         {
             DBFile_Path = UsersTableClass.GetClientDBFile(UserName);
 
-            if (!DBFile_Exist) { CreateAppliedDataBase(); }
+            if (File.Exists(DBFile_Path)) { CreateAppliedDataBase(); }
             AppliedConnection = new("Data Source=" + DBFile_Path);
         }
 
@@ -54,9 +57,12 @@ namespace Applied_WebApplication.Data
 
     }           // END()
 
+
+    
+
     public class AppliedUsersClass
     {
-        public string AppliedUsersFile = ".\\wwwroot\\SQLiteDB\\AppliedUsers.db";                   // Applied Users ID & PW File.
+        public string AppliedUsersFile = AppGlobals.UserDBPath;
         public DataTable UsersTable = new DataTable();
         public readonly DataView UserView = new DataView();
         public SQLiteConnection AppliedUserConnection;
@@ -99,18 +105,12 @@ namespace Applied_WebApplication.Data
         }
         internal string GetClientDBFile(string _User)
         {
-            if (_User == null) { return ".\\wwwroot\\SQLiteDB\\Applied.db"; }
-
-            return _User.ToUpper() switch
+            UserProfile userProfile = new(_User);
+            if (userProfile.DBFilePath == null)
             {
-                "ADMIN" => ".\\wwwroot\\SQLiteDB\\Applied.db",
-                "AMCORP" => ".\\wwwroot\\SQLiteDB\\Amcorp.db",
-                "ALTAMASH" => ".\\wwwroot\\SQLiteDB\\Altamash.db",
-                "GUEST" => ".\\wwwroot\\SQLiteDB\\Guest.db",
-                "WINMARK" => ".\\wwwroot\\SQLiteDB\\Winmark.db",
-                "HFSSTEEL" => ".\\wwwroot\\SQLiteDB\\HFSSteel.db",
-                _ => ".\\wwwroot\\SQLiteDB\\Applied.db",
-            };
+                userProfile = new("Guest");                                             // If Database File not found switch to Guest Profile.
+            }
+            return userProfile.DBFilePath;
         }
         
         

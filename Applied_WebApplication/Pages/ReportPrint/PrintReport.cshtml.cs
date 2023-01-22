@@ -65,7 +65,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.RDLCDataSet = "dsname_Ledger";
             MyReport.ReportFilter.TableName = Tables.Ledger;
             MyReport.ReportFilter.Columns = "*";
-            MyReport.ReportFilter.n_COA = COAID;
+            MyReport.ReportFilter.N_COA = COAID;
             MyReport.CommandText = GetQueryText(MyReport.ReportFilter);
             MyReport.Parameters.Add("UserName", UserName);
             MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));

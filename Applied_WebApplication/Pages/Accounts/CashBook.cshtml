@@ -3,7 +3,6 @@
 @using Microsoft.AspNetCore.Components.Web
 @using Microsoft.AspNetCore.Identity
 @using Microsoft.Extensions.Primitives
-@*using static Applied_WebApplication.Data.TableValidationClass;*@
 @using static Applied_WebApplication.Data.AppFunctions;
 @model Applied_WebApplication.Pages.Accounts.CashBookModel
 @{
@@ -30,7 +29,6 @@
         Model.Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
         Model.MyParameters.RecordID = 0;
         AddRecord = new CashBookModel.BookRecord();
-        //DataRow Row = GetDataRow(UserName, Tables.CashBook, Model.MyParameters.RecordID);               // Get New Row from cashbook Table.
     }
 }
 
@@ -158,11 +156,41 @@
                                     {
                                         <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
                                     }
-                                    <td>
-                                        <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
-                                        <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
-                                    </td>
-                                </tr>
+
+                                        @if (_Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
+                                        {
+                                            <td>
+                                                <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
+                                                <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            <td >
+                                                <button type="button" class="btn btn-link text-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                    Posted
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h3 class="modal-title" id="exampleModalLabel">General Voucher Entry</h3>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Show General Voucher Transaction.
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
                             }
 
                         </tbody>
