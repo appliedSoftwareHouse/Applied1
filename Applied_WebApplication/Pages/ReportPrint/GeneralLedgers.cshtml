@@ -1,47 +1,108 @@
 ﻿@page
 @model Applied_WebApplication.Pages.ReportPrint.GeneralLedgersModel
 @{
-    string UserName = User.Identity.Name;
+    var UserName = User.Identity.Name;
+    var Titles_COA = Titles(UserName, Tables.COA);
+    var Titles_Project = Titles(UserName, Tables.Project);
+    var Titles_Employee = Titles(UserName, Tables.Employees);
+    var Titles_Inventory = Titles(UserName, Tables.Inventory);
+
+    var TitleCOA = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_COA);
+    var TitleCustomer = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Customer);
+    var TitleProject = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Project);
+    var TitleEmployee = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Employee);
+    var TitleInventory = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Inventory);
+
+    var Date1 = Model.Paramaters.Dt_From;
+    var Date2 = Model.Paramaters.Dt_To;
+    
+
 }
+
+<script>
+    $(function(){
+       $('.datepicker').datepicker({
+          format: 'dd-MM-yyyy'
+        });
+    });
+</script>
+
+
 
 <div class="container AppHeading">
     <h3 class="TextCenter">GENERAL LEDGER (Report)</h3>
 </div>
 
-
-
-</style>
-
 <form method="post">
     <div class="container">
         <div class="row">
-            <div class="col-6">
+            <div class="col-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Customer">Account</span>
+                    <select class="form-select" name="N_COA" asp-for="@Model.Paramaters.N_COA">
+                        <option selected>@TitleCOA</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+
+            </div>
+            <div class="col-3">
                 <div class="input-group">
-                    <label class="input-group-text">From</label>
+                    <label class="input-group-text" for="DateFrom">From</label>
                     <input type="Date"
+                           id="DateFrom"
                            name="Dt_From"
-                           value="@Model.Paramaters.Dt_From"
-                           class="form-control"
-                           placeholder="Voucher Date">
+                           value="@Model.Paramaters.Dt_From.ToString(Registry.DateYMD)"
+                           format="dd-MM-yyyy"
+                           class="form-control" 
+                           placeholder="dd-MM-yyyy">
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-3">
                 <div class="input-group">
-                    <label class="input-group-text">To</label>
+                    <label class="input-group-text" for="DateTo">To</label>
                     <input type="Date"
+                        id="DateTo"
                            name="Dt_To"
-                           value="@Model.Paramaters.Dt_To"
+                           value="@Model.Paramaters.Dt_To.ToString(Registry.DateYMD)"
+                           format="dd-MM-yyyy"
                            class="form-control"
                            placeholder="Voucher Date">
                 </div>
             </div>
-
-            <div class="row mt-1">
-                <div class="col">
-                <input type="submit" class="btn btn-primary" value="PRINT" />
-                </div>
+            <div class="col-2">
+                <input type="submit" class="btn btn-primary" value="PRINT" asp-page-handler="GL"/>
             </div>
-
         </div>
+        <div class="row mt-1">
+            <div class="col">
+                <input type="submit" class="btn btn-primary" value="PRINT" />
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+            </div>
+            <div class="col-4">
+            </div>
+        </div>
+
+
     </div>
 </form>

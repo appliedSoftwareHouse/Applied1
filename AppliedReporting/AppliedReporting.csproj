@@ -9,6 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Ledger.rdlc" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Ledger.rdlc">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
   </ItemGroup>
 

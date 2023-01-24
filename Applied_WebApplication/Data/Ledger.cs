@@ -103,7 +103,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.CurrentRow["Description"] = Row["Description"];
                 tb_Ledger.CurrentRow["Comments"] = Row["Ref_No"];
                 tb_Ledger.Save();
-               
+
             }
         }
 
@@ -148,8 +148,8 @@ namespace Applied_WebApplication.Data
                                     _NewRow["DR"] = Balance;
                                     _NewRow["CR"] = 0;
                                     _NewRow["BAL"] = Balance;
-                                }                                                                                           
-                                                                                                                                // Credit Amout of voucher
+                                }
+                                // Credit Amout of voucher
                                 else
                                 {
                                     _NewRow["DR"] = 0;
@@ -187,6 +187,68 @@ namespace Applied_WebApplication.Data
             DataTableClass _Table = new(UserName, Tables.view_Ledger);
             DataTable _Ledger = _Table.MyDataTable.Clone();
             return _Ledger;
+        }
+
+        internal static DataTable GetGL(string userName, ReportClass.ReportFilters paramaters)
+        {
+            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
+            DataTable Result = tb_Ledger.MyDataTable.Clone();
+            tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
+            tb_Ledger.MyDataView.Sort = "Vou_Date";
+            decimal Balance = 0.00M;
+            bool IsOBalEntry = false;
+            DataRow NewRow;
+
+            foreach (DataRow Row in tb_Ledger.MyDataView.ToTable().Rows)
+            {
+
+                DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
+                decimal RowDR = decimal.Parse(Row["DR"].ToString());
+                decimal RowCR = decimal.Parse(Row["CR"].ToString());
+
+
+                if (RowDate < paramaters.Dt_From)
+                {
+                    Balance += RowDR - RowCR;
+                    continue;
+                }      // Skip if date is less from [From]
+                else
+                {
+                    if (RowDate > paramaters.Dt_To) { continue; }                      // Skip if date if more than [To]
+                    if (!IsOBalEntry)
+                    {
+                        NewRow = Result.NewRow();
+                        NewRow["Vou_Date"] = paramaters.Dt_From.AddDays(-1);
+                        NewRow["Vou_No"] = "OBAL";
+                        NewRow["Description"] = "Opening Balance as on " + paramaters.Dt_From.AddDays(-1).ToShortDateString();
+                        if (Balance >= 0) { NewRow["DR"] = Balance; NewRow["CR"] = 0; } else { NewRow["DR"] = 0; NewRow["CR"] = Balance * (-1); }
+                        Result.Rows.Add(NewRow);
+                        IsOBalEntry = true;
+                        //continue;
+                    }
+
+                    NewRow = Result.NewRow();
+                    NewRow["ID"] = Row["ID"];
+                    NewRow["TranID"] = Row["TranID"];
+                    NewRow["Vou_Date"] = Row["Vou_Date"];
+                    NewRow["Vou_No"] = Row["Vou_No"];
+                    NewRow["Vou_Type"] = Row["Vou_Type"];
+                    NewRow["SR_No"] = Row["SR_No"];
+                    NewRow["Ref_No"] = Row["Ref_No"];
+                    NewRow["BookID"] = Row["BookID"];
+                    NewRow["COA"] = Row["COA"];
+                    NewRow["DR"] = Row["DR"];
+                    NewRow["CR"] = Row["CR"];
+                    NewRow["Description"] = Row["Description"];
+                    NewRow["Comments"] = Row["Comments"];
+                    NewRow["Customer"] = Row["Customer"];
+                    NewRow["Project"] = Row["Project"];
+                    NewRow["Employee"] = Row["Employee"];
+                    NewRow["Inventory"] = Row["Inventory"];
+                    Result.Rows.Add(NewRow);
+                }
+            }
+            return Result;
         }
 
         public class LedgerParamaters

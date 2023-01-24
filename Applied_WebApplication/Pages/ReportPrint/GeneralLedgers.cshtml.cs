@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Data;
+using System.Security.Claims;
+using static Applied_WebApplication.Data.ReportClass;
+
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -7,19 +11,37 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
 
         [BindProperty]
-        public ReportClass.ReportFilters  Paramaters{ get; set; }
+        public ReportFilters Paramaters { get; set; }
 
         public void OnGet()
         {
-            Paramaters = new ReportClass.ReportFilters();
+            var UserName = User.Identity.Name;
+            Paramaters = new ReportFilters();
+
+            Paramaters.N_COA = (int)Registry.GetKey(UserName, "GL_COA", KeyType.Number);
+            Paramaters.Dt_From = (DateTime)Registry.GetKey(UserName, "GL_Dt_From", KeyType.Date);
+            Paramaters.Dt_To = (DateTime)Registry.GetKey(UserName, "GL_Dt_To", KeyType.Date);
+
+            if (Paramaters.Dt_From.Year < 2000) { Paramaters.Dt_From = DateTime.Now; }
+            if (Paramaters.Dt_To.Year < 2000) { Paramaters.Dt_To = DateTime.Now; }
+
         }
 
         public void OnPost()
         {
-            DateTime d1 = Paramaters.Dt_From;
-            DateTime d2 = Paramaters.Dt_To;
+
         }
 
+        public IActionResult OnPostGL()
+        {
+            var UserName = User.Identity.Name;
+            Registry.SetKey(UserName, "GL_COA", Paramaters.N_COA, KeyType.Number);
+            Registry.SetKey(UserName, "GL_Dt_From", Paramaters.Dt_From, KeyType.Date);
+            Registry.SetKey(UserName, "GL_Dt_To", Paramaters.Dt_To, KeyType.Date);
+            Paramaters.TableName = Tables.Ledger;
+
+            return RedirectToPage("PrintReport", "GL", new {Paramaters});
+        }
     }
 
 }

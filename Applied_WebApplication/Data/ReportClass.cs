@@ -19,15 +19,15 @@ namespace Applied_WebApplication.Data
         public string OutputFileName { get; set; }                                    // Output File .pdf, .doc or .xls
         public string OutputFile { get => GetOutputFile(); }                     // Path + file name of printed report PDF/Doc/xls.
         public string OutputPath { get => GetOutputPath(); }                  // Path where to printed report store.
-        public string OutputFileLink { get => GetOutputFileLink(); }                                       // Location to printed report PDF.
+        public string OutputFileLink { get => GetOutputFileLink();}                                       // Location to printed report PDF.
         public FileType OutputFileType { get; set; }                                  // Rendered file type pdf, word, excel
 
         public string RDLCFilePath { get => AppGlobals.ReportRoot; }    // RDLC report path
         public string RDLCFile { get => string.Concat(RDLCFilePath, RDLCFileName); }   // RDLC report path + FileName
         public string RDLCFileName { get; set; }                                       // Output File .pdf, .doc or .xls
         public Tables RDLCDataTable { get; set; }                                     // Data Table Set for print report.
+        public DataTable ReportData { get; set; }                                       // DataTable to be perint in RDLC Report.
         public string RDLCDataSet { get; set; }                                         // Datasource DataSet name exact in RDLC
-
         public string CommandText { get; set; }                                        // commad for factch date from DB
         public string CommandFilter { get; set; }                                        // commad for factch date from DB
 
@@ -66,8 +66,9 @@ namespace Applied_WebApplication.Data
 
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
             Encoding.GetEncoding("windows-1252");
-            LocalReport _Report = new LocalReport(RDLCFile);                                                                                                // Create Report Object.
-            _Report.AddDataSource(RDLCDataSet, GetReportDataTable());                                                                   // Create DataTabel and inject in report.
+            LocalReport _Report = new LocalReport(RDLCFile);                                                             // Create Report Object.
+            if(ReportData==null) { ReportData = GetReportDataTable(); }                                             // Get data from default source 
+            _Report.AddDataSource(RDLCDataSet, ReportData);                                                                   // Create DataTabel and inject in report.
             var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
             byte[] bytes = result.MainStream;
             MyBytes = bytes;
@@ -80,7 +81,7 @@ namespace Applied_WebApplication.Data
             MyMessage = "Report generated. " + OutputFile;
         }
 
-        private DataTable GetReportDataTable()
+        public DataTable GetReportDataTable()
         {
             return GetAppliedTable(UserName, ReportFilter);                      // Get a DataTable from AppFuction 
         }
