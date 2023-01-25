@@ -32,8 +32,8 @@ body {
 .AppHeading {
     margin-top: 1px;
     margin-bottom: 10px;
-    padding-left: 20px;
-    padding-bottom: 5px;
+    padding-left: 10px;
+    padding-bottom: 3px;
     padding-top: 10px;
     background-color: darkorchid;
     color: whitesmoke;
@@ -44,9 +44,9 @@ body {
         background-color: slateblue;
     }
 
-    .TextCenter{
-        text-align:center;
-    }
+.TextCenter {
+    text-align: center;
+}
 
 .TextRight {
     text-align: right
@@ -63,3 +63,40 @@ body {
 .align-right {
     text-align: right
 }
+
+.bg-lightblue {
+    background: #e6f2f5;
+    margin-left: auto;
+    margin-right: auto
+}
+
+.text-purpul {
+    color: blueviolet
+}
+
+.Text-Heading2 {
+    text-align: center;
+    padding: 0px;
+    color: #7e02ff;
+}
+
+#btn-menu {
+    width: 120px;
+}
+
+#TableList {
+    width: 100%;
+    border: 5px solid #E0E0F8;
+    padding: 5px;
+    background: #EFFBFB;
+    overflow: scroll
+}
+
+tr:hover {
+    background-color: #D6EEEE;
+
+}
+
+
+box-sizing: border-box;
+

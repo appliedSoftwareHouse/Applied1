@@ -46,89 +46,89 @@
     }
 }
 
-<div class="container">
-    <div class="row g-2">
-        <div class="col-12 bg-primary text-center text-white p-1"><h4>Chart of Account - Head</h4></div>
-    </div>
+<div class="container AppHeading">
+        <h4>Chart of Account - Head</h4>
 </div>
 
+    @if (Model.IsError)
+    {
+        <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+    }
 
-<form method="post">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-    <div class="container p-3">
-        <!-- id, Code adn Title Text Box  -->
-        <div class="row g-3">
-            <div class="col-sm-2" hidden>
-                <label asp-for=@Model.Record.ID>ID</label>
-                <input type="text" asp-for=@Model.Record.ID name="ID" value=@Model.Record.ID class="form-control" placeholder="Record ID">
+    <form method="post">
+        <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+        <div class="container p-3">
+            <!-- id, Code adn Title Text Box  -->
+            <div class="row g-3">
+                <div class="col-sm-2" hidden>
+                    <label asp-for=@Model.Record.ID>ID</label>
+                    <input type="text" asp-for=@Model.Record.ID name="ID" value=@Model.Record.ID class="form-control" placeholder="Record ID">
+                </div>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-2">
+                    <label asp-for=@Model.Record.Code>Code</label>
+                    <input type="text" asp-for=@Model.Record.Code name="Code" value=@Model.Record.Code class="form-control" placeholder="Account Code" required>
+                </div>
+                <div class="col-sm-8">
+                    <label asp-for=@Model.Record.Title>Title of Account</label>
+                    <input type="text" asp-for=@Model.Record.Title name="Title" Value=@Model.Record.Title class="form-control" placeholder="Title of Account" required>
+                </div>
             </div>
-            <div class="col-sm-2"></div>               
-            <div class="col-sm-2">
-                <label asp-for=@Model.Record.Code>Code</label>
-                <input type="text" asp-for=@Model.Record.Code name="Code" value=@Model.Record.Code class="form-control" placeholder="Account Code" required>
-                @*<span asp-validation-for="@Model.Record.Code">- </span>*@
-            </div>
-            <div class="col-sm-8">
-                <label asp-for=@Model.Record.Title>Title of Account</label>
-                <input type="text" asp-for=@Model.Record.Title name="Title" Value=@Model.Record.Title class="form-control" placeholder="Title of Account" required>
-                @*<span asp-validation-for="@Model.Record.Title">- </span>*@
-            </div>
-        </div>
-    </div>
-
-    <!-- Class, Nature and Notes Dropdown-->
-    <div class="container p-3">
-        <div class="row g-3 ">
-            <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
-                    <option selected>@Model.Record.Class</option>
-                    @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
-                    {
-                        <option value=@_Record["ID"]> @_Record["Title"] </option>
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="row g-3 ">
-            <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Nature of Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Nature" asp-for=@Model.Record.Nature>
-                    <option selected>@Model.Record.Nature</option>
-                    @foreach (DataRow _Record in COA_Nature.MyDataTable.Rows)
-                    {
-                        <option value=@_Record["ID"]> @_Record["Title"] </option>
-                    }
-                </select>
-            </div>
-        </div>
-        <div class="row g-3 ">
-            <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Notes of Financial Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Notes" asp-for=@Model.Record.Notes>
-                    <option selected>@Model.Record.Notes</option>
-                    @foreach (DataRow _Record in COA_Notes.MyDataTable.Rows)
-                    {
-                        <option value=@_Record["ID"]> @_Record["Title"] </option>
-                    }
-                </select>
-            </div>
-        </div>
-    </div>
-
-    <!-- submit buttons-->
-    <div class="container p-3">
-        <div class="row">
-            @if (Model.MyPageAction == "Delete")
-            {
-                <div class="col-1"> <input class="btn btn-danger" type="submit" asp-page-handler="Delete" value="Delete">DELETE  </div>
-            }
-            else
-            {
-                <div class="col-1"> <input class="btn btn-success" type="submit" asp-page-handler="Save" value="Save">  </div>
-            }
-            <div class="col-1"> <input class="btn btn-primary" type="submit" asp-page="../Accounts/Directory/COA" value="Back">  </div>
         </div>
 
-    </div>
-</form>
+        <!-- Class, Nature and Notes Dropdown-->
+        <div class="container p-3">
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
+                        <option selected>@Model.Record.Class</option>
+                        @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Nature of Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Nature" asp-for=@Model.Record.Nature>
+                        <option selected>@Model.Record.Nature</option>
+                        @foreach (DataRow _Record in COA_Nature.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="row g-3 ">
+                <div class="input-group mb-3">
+                    <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Notes of Financial Account</label>
+                    <select class="form-select" id="inputCOA_Class" name="Notes" asp-for=@Model.Record.Notes>
+                        <option selected>@Model.Record.Notes</option>
+                        @foreach (DataRow _Record in COA_Notes.MyDataTable.Rows)
+                        {
+                            <option value=@_Record["ID"]> @_Record["Title"] </option>
+                        }
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- submit buttons-->
+        <div class="container p-3">
+            <div class="row">
+                @if (Model.MyPageAction == "Delete")
+                {
+                    <div class="col-1"> <input class="btn btn-danger" type="submit" asp-page-handler="Delete" value="Delete">DELETE  </div>
+                }
+                else
+                {
+                    <div class="col-1"> <input class="btn btn-success" type="submit" asp-page-handler="Save" value="Save">  </div>
+                }
+                <div class="col-1"> <input class="btn btn-primary" type="submit" asp-page="../Accounts/Directory/COA" value="Back">  </div>
+            </div>
+
+        </div>
+    </form>

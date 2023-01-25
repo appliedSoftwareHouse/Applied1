@@ -11,9 +11,8 @@
     var username = User.Identity.Name;
 }
 
-<div class="mt-4 p-2 bg-success text-white rounded">
-    <h3>@MyCompany</h3>
-    <p> APPLIED SOFTWARE HOUSE <spin class="text-decoration-underline">is a Software Development Company</spin></p>
+<div class="mt-3 p-1 bg-success text-white rounded">
+    <h3 class="text-center">@MyCompany</h3>
 </div>
 <br />
 
@@ -73,36 +72,36 @@
 </blockquote>
 
 <form method="post">
-    <div class="d-flex flex-row flex-wrap bd-highlight mb-3">
+    <div class="d-flex flex-row flex-wrap bd-highlight mb-3 justify-content-center">
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="T e s t" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="T e s t" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Cash Book" asp-page-handler="CashBook" />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Cash Book" asp-page-handler="CashBook" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Bank Book" asp-page-handler="BankBook" />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Bank Book" asp-page-handler="BankBook" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Write Cheque" asp-page-handler="WCheque">
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Write Cheque" asp-page-handler="WCheque">
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice"  />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt"  />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Bill Payable" asp-page=".\Accounts\BookBill" />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Bill Payable" asp-page=".\Accounts\BillPayable" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Pay Bill" asp-page=".\Accounts\Payment"  />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Pay Bill" asp-page=".\Accounts\Payment" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Customers"  />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Suppliers" asp-page=".\Sales\Customers" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" class="btn btn-primary" value="Ledger" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
+            <input type="submit" id="btn-menu" class="btn btn-primary" value="Ledger" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
         </div>
     </div>
 </form>

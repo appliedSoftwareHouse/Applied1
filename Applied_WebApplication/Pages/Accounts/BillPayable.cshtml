@@ -1,0 +1,135 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.BillPayableModel
+@{
+}
+
+<style>
+    tr:hover {
+        background-color: #D6EEEE;
+    }
+</style>
+
+<div class="container AppHeading">
+    <h3 class="TextCenter">Bill Payable</h3>
+</div>
+
+@if(Model.ErrorCount>0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"  ></component>
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col">Vou_No</div>
+        <div class="col">Vou_Date</div>
+        <div class="col">Payment Date</div>
+    </div>
+
+    <div class="row">
+        <div class="col">Company List</div>
+        <div class="col">Ref No / DC</div>
+        <div class="col">Tax Ref No.</div>
+    </div>
+    <hr />
+
+    <div class="row">
+        <div class="col">Sr No</div>
+        <div class="col">Inventory</div>
+        <div class="col">Batch</div>
+    </div>
+
+    <div class="row">
+        <div class="col">Qty</div>
+        <div class="col">Rate</div>
+        <div class="col">Amount</div>
+    </div>
+
+
+    <div class="row">
+        <div class="col">Tax</div>
+        <div class="col">Tax Rate</div>
+        <div class="col">Tax Amount</div>
+    </div>
+
+
+</div>
+<hr />
+
+
+<!--Table of Transaction List-->
+<div class="container">
+    <table class="table" id="TableList">
+        <thead class="bg-light">
+            <tr>
+                <th style="width:5%;">SR No</th>
+                <th style ="width:35%;">Inventory</th>
+                <th style="width:10%;">Batch</th>
+                <th style="width:5%; text-align: right">Qty</th>
+                <th style="width:5%; text-align: right">Rate</th>
+                <th style="width:10%; text-align: right">Amount</th>
+                <th style="width:5%; text-align: right">GST</th>
+                <th style="width:10%; text-align: right">GST Rs.</th>
+                <th style="width:10%; text-align: right">Net Rs.</th>
+                <th style="width:5%; text-align: right">Net Rs.</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>1</td>
+                <td>IFFCO : Agaaz Frying 16kg Tin Econo</td>
+                <td>BT:9087654</td>
+                <td style="text-align: right">40</td>
+                <td style="text-align: right">5,950</td>
+                <td style="text-align: right">238,000</td>
+                <td style="text-align: right">17%</td>
+                <td style="text-align: right">40,460</td>
+                <td style="text-align: right">278,460</td>
+                <td style="text-align: right">Edit</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>IFFCO : Agaaz Frying 16kg Tin Econo</td>
+                <td>BT:9087654</td>
+                <td style="text-align: right">40</td>
+                <td style="text-align: right">5,950</td>
+                <td style="text-align: right">238,000</td>
+                <td style="text-align: right">17%</td>
+                <td style="text-align: right">40,460</td>
+                <td style="text-align: right">278,460</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>IFFCO : Agaaz Frying 16kg Tin Econo</td>
+                <td>BT:9087654</td>
+                <td style="text-align: right">40</td>
+                <td style="text-align: right">5,950</td>
+                <td style="text-align: right">238,000</td>
+                <td style="text-align: right">17%</td>
+                <td style="text-align: right">40,460</td>
+                <td style="text-align: right">278,460</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>IFFCO : Agaaz Frying 16kg Tin Econo</td>
+                <td>BT:9087654</td>
+                <td style="text-align: right">40</td>
+                <td style="text-align: right">5,950</td>
+                <td style="text-align: right">238,000</td>
+                <td style="text-align: right">17%</td>
+                <td style="text-align: right">40,460</td>
+                <td style="text-align: right">278,460</td>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>IFFCO : Agaaz Frying 16kg Tin Econo</td>
+                <td>BT:9087654</td>
+                <td style="text-align: right">40</td>
+                <td style="text-align: right">5,950</td>
+                <td style="text-align: right">238,000</td>
+                <td style="text-align: right">17%</td>
+                <td style="text-align: right">40,460</td>
+                <td style="text-align: right">278,460</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

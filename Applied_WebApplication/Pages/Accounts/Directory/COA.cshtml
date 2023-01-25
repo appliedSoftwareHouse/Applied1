@@ -9,31 +9,41 @@
 
 <div class="container AppHeading">
     <h3>CHART OF ACCOUNTS </h3>
-    </div>
-    <br />
+</div>
+
+
+<style>
+
+
+
+</style>
 
 
 <form method="post">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>   <a> Code </a> </th>
-                <th>   <a>Title   </a> </th>
-                <th><button class=btn-primary asp-page="../AccountHead" asp-route-UserName=@UserName asp-page-handler="Add"> ADD </button> </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DataRow _Record in   @COA.MyDataTable.Rows)
-            {
-                <tr>
-                    <td>  @_Record["Code"] </td>
-                    <td>  @_Record["Title"] </td>
-                    <td>
-                        <a asp-page="../AccountHead" asp-route-id=@_Record["ID"]  asp-page-handler="Edit"> Edit</a> |
-                        <a asp-page="../AccountHead" asp-route-id=@_Record["ID"]  asp-page-handler="Delete"> Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <div class="container" id="TableList">
+        <div style="height:100vh">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>   <a> Code </a> </th>
+                        <th>   <a>Title   </a> </th>
+                        <th><button class=btn-primary asp-page="../AccountHead" asp-route-UserName=@UserName asp-page-handler="Add"> ADD </button> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow _Record in @COA.MyDataTable.Rows)
+                    {
+                        <tr>
+                            <td>  @_Record["Code"] </td>
+                            <td>  @_Record["Title"] </td>
+                            <td>
+                                <a asp-page="../AccountHead" asp-route-id=@_Record["ID"] asp-page-handler="Edit"> Edit</a> |
+                                <a asp-page="../AccountHead" asp-route-id=@_Record["ID"] asp-page-handler="Delete"> Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
 </form>
