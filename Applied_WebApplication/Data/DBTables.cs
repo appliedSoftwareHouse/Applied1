@@ -16,6 +16,8 @@ public enum Tables
     ChequeTranType = 108,
     ChequeStatus = 109,
     TaxTypeTitle = 110,
+    BillPayable = 111,
+    BillPayable2 = 112,
     
 
     Customers = 201,
@@ -39,7 +41,11 @@ public enum Tables
     PostBillReceivable = 504,
     PostBillPayable = 505,
     PostPayments = 506,
-    PostReceipts = 507
+    PostReceipts = 507,
+
+    fun_BillPayableAmounts = 601                    // Function of Bill Payable Amount and Tax Amount
+
+
 
 }
 

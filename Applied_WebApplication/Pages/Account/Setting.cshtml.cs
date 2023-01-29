@@ -30,7 +30,7 @@ namespace Applied_WebApplication.Pages.Account
 
         public void OnGet()
         {
-            var V4 = Registry.GetKey(User.Identity.Name, "CompanyName", KeyType.Text);
+            var V4 = AppRegistry.GetKey(User.Identity.Name, "CompanyName", KeyType.Text);
 
 
 
@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Pages.Account
             var v5 = Request.Form["Date"];
             var v6 = Request.Form["Bool"];
 
-            Registry.SetKey(User.Identity.Name, v1, v4, KeyType.Text);
+             AppRegistry.SetKey(User.Identity.Name, v1, v4, KeyType.Text);
         }
 
         public IActionResult OnGetUpdateCurrencyFormat(int id, string UserName)

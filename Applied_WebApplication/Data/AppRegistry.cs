@@ -4,11 +4,37 @@ using System.Security.Permissions;
 
 namespace Applied_WebApplication.Data
 {
-
-
-    public class Registry
+    public interface IAppRegistry
     {
-        public static string DateYMD = "yyyy-MM-dd";
+        public static readonly string DateYMD; 
+        public static readonly string FormatCurrency1; 
+        public static readonly string FormatCurrency2; 
+        public static readonly string FormatDate; 
+        public static readonly string FormatDateY2; 
+        public static readonly string FormatDateM2;
+    }
+
+
+    public class AppRegistry : IAppRegistry
+    {
+        public AppRegistry(string UserName)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+
+            if (!tb_Registry.Seek("FiscalFrom")) { SetKey(UserName, "FiscalFrom", new DateTime(2022, 1, 1), KeyType.Date); }
+            if (!tb_Registry.Seek("FiscalTo")) { SetKey(UserName, "FiscalTo", new DateTime(2025, 12, 31), KeyType.Date); }
+        }
+
+        public static readonly string DateYMD = "yyyy-MM-dd";
+        public static readonly string FormatCurrency1 = "#,##0.00";
+        public static readonly string FormatCurrency2 = "#,##0";
+        public static readonly string FormatDate = "dd-MMM-yyyy";
+        public static readonly string FormatDateY2 = "dd-MMM-yy";
+        public static readonly string FormatDateM2 = "dd-MM-yy";
+        public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
+
+        public static DateTime GetFiscalFrom() { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
+        public static DateTime GetFiscalTo() { return new DateTime(2023, 06, 30); }
 
         public static object GetKey(string UserName, string Key, KeyType keytype)
         {

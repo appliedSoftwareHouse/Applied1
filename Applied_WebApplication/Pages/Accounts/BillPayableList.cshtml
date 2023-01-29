@@ -1,0 +1,13 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.BillPayableListModel
+@{
+}
+
+<div class="container AppHeading">
+    <h3 >BILL PAYABLE (LIST)</h3>
+</div>
+
+<form method="post">
+    <input type="submit" class="btn btn-primary" value="Add" asp-page="BillPayable" asp-route-id="0" />
+    <input type="submit" class="btn btn-primary" value="Edit" asp-page="BillPayable" asp-route-id="1" />
+</form>

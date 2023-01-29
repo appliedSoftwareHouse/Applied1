@@ -34,6 +34,12 @@ namespace Applied_WebApplication.Data
             public int ErrorID { get; set; } = 0;
         }
 
+        public bool Validation(DataRow Row, CommandAction _SQLAction)
+        {
+            SQLAction = _SQLAction.ToString();
+            return Validation(Row);
+        }
+
         public bool Validation(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -58,6 +64,8 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
             if (Row.Table.TableName == Tables.WriteCheques.ToString()) { ValidateTable_WriteChq(Row); }
             if (Row.Table.TableName == Tables.Ledger.ToString()) { ValidateTable_Ledger(Row); }
+            if (Row.Table.TableName == Tables.BillPayable.ToString()) { ValidateTable_BillPayable(Row); }
+            if (Row.Table.TableName == Tables.BillPayable2.ToString()) { ValidateTable_BillPayable2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
@@ -229,6 +237,43 @@ namespace Applied_WebApplication.Data
                 }
             }
         }
+
+        private void ValidateTable_BillPayable(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Duplicate of ID found." });
+            }
+
+            if (string.IsNullOrEmpty(Row["Vou_No"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Number is not define." }); }
+            if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Description must be some charactors." }); }
+            
+            if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom() ) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is less than Fiscal Year Date." }); }
+            if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
+            if ((DateTime)Row["Inv_Date"] < AppRegistry.MinDate) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
+            if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Payment Date is less than invoice date, Enter Valid Date." }); }
+            if ((int)Row["Company"]==0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Comapny is not selected. select any one." }); }
+
+        }
+
+        private void ValidateTable_BillPayable2(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10501, Msg = "Duplicate of ID found." });
+            }
+
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Tax Category is not selected. Select any one." }); }
+            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Inventory Batch is not define. Nil value not allowed." }); }
+            if ((int)Row["Tax"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Tax Category is not selected. Select any one." }); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Quantity value is zero.  Zero value not allowed." }); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Quantity value is zero.  Zero value not allowed." }); }
+
+        }
+
+
         #endregion
 
     }

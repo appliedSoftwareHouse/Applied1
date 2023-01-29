@@ -1,7 +1,6 @@
 ﻿using System.Data.SQLite;
 using System.Data;
 using System.Text;
-using System.Text.RegularExpressions;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
@@ -9,25 +8,63 @@ namespace Applied_WebApplication.Data
     public class AppFunctions
     {
 
+
+        #region New Voucher
         public static string GetNewCashVoucher(string UserName)
         {
-            string CashCode = string.Empty;
+            DataTableClass Table = new(UserName, Tables.CashBook);
+            if (Table.MyDataTable.Rows.Count == 0) { return "CB-000001"; }
+            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+            string NewCode = string.Concat("CB-", MaxNum.ToString("000000"));
+            return NewCode;
+        }
+        public static string GetNewBillPayableVoucher(string UserName)
+        {
+            DataTableClass Table = new(UserName, Tables.BillPayable);
+            if(Table.MyDataTable.Rows.Count==0) { return "BP-000001"; }
+            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+            string NewCode = string.Concat("BP-", MaxNum.ToString("000000"));
+            return NewCode;
+        }
+        #endregion
 
-            DataTableClass CashBook = new(UserName, Tables.CashBook);
-            int MaxNum = int.Parse(CashBook.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
-            CashCode = string.Concat("CB-", MaxNum.ToString("000000"));
-            return CashCode;
+        #region Tax Function
+
+        public static string GetTaxCode(string UserName, int TaxID)
+        {
+            string TaxCode = string.Empty;
+            DataTableClass tb_Tax = new(UserName, Tables.Taxes);
+            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            if(tb_Tax.MyDataView.Count>0) 
+            {
+                TaxCode = tb_Tax.MyDataView[0]["Code"].ToString();
+            }
+            return TaxCode;
         }
 
-        #region Static Function
+        public static decimal GetTaxRate(string UserName, int TaxID)
+        {
+            decimal TaxRate = 0.00M;
+            DataTableClass tb_Tax = new(UserName, Tables.Taxes);
+            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            if (tb_Tax.MyDataView.Count > 0)
+            {
+                TaxRate = (decimal)tb_Tax.MyDataView[0]["Rate"];
+            }
+            return TaxRate;
+        }
 
+
+
+        #endregion
+
+        #region Static Function
         public static string GetUserValue(string UserName, string _Column)
         {
             AppliedUsersClass UserClass = new();
             DataRow _Row = UserClass.UserRecord(UserName);
             return _Row[_Column].ToString();
         }
-
         public static Chequeinfo GetChequeInfo(string UserName, string ChqCode)
         {
             Pages.Accounts.WriteChequeModel.Chequeinfo Cheque = new();
@@ -71,9 +108,7 @@ namespace Applied_WebApplication.Data
             }
             return Cheque;
         }
-
         public readonly static AppliedDependency AppGlobals = new();
-
         public static DataTable GetAppliedTable(string UserName, ReportClass.ReportFilters ReportFilter)
         {
             string CommandText = GetQueryText(ReportFilter);
@@ -119,7 +154,6 @@ namespace Applied_WebApplication.Data
 
             return string.Concat(_SQL.ToString(), Where);
         }
-
         // Get Value of any column from any Data Table.
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
         {
@@ -136,7 +170,6 @@ namespace Applied_WebApplication.Data
             }
             return "";
         }
-
         // Get Data Rows from DataTable by filter conditions.
         public static DataTable GetRecords(string UserName, Tables _TableName, string _Filter)
         {
@@ -234,5 +267,42 @@ namespace Applied_WebApplication.Data
 
 
         #endregion
+
+        #region Compute
+
+        public static int GetMax(string UserName, Tables _Table, string _Column, string _Filter)
+        {
+            DataTableClass Table = new(UserName, _Table);
+            Table.MyDataView.RowFilter = _Filter;
+            if(Table.MyDataView.Count==0) { return 1; }
+            else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
+        }
+
+        public static decimal GetSum(string UserName, Tables _Table, string _Column, string _Filter)
+        {
+            DataTableClass Table = new(UserName, _Table);
+            Table.MyDataView.RowFilter = _Filter;
+            if (Table.MyDataView.Count == 0) { return 0; }
+            else 
+            {
+                var _Sum = Table.MyDataTable.Compute("Sum(" + _Column + ")", _Filter);
+
+                if(_Sum.GetType() == Type.GetType("System.decimal"))
+                {
+                    return (decimal)_Sum;
+                }
+
+                if (_Sum.GetType() == Type.GetType("System.int32"))
+                {
+                    return decimal.Parse(_Sum.ToString());
+                }
+
+                return 0.00M; 
+            }
+        }
+
+
+        #endregion
+
     }
 }

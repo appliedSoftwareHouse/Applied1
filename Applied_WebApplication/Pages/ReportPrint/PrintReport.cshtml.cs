@@ -84,9 +84,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             ReportFilters Filters = new ReportFilters
             {
-                N_COA = (int)Registry.GetKey(UserName, "GL_COA", KeyType.Number),
-                Dt_From = (DateTime)Registry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)Registry.GetKey(UserName, "GL_Dt_To", KeyType.Date)
+                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date)
             };
 
 

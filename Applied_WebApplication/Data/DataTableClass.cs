@@ -36,6 +36,7 @@ namespace Applied_WebApplication.Data
             MyConnection = new SQLiteConnection(ConnectionString);
             MyUserName = _UserName;
             MyTableName = _Tables.ToString();
+            TableValidation = new();
             GetDataTable();                                                                                   // Load DataTable and View
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
@@ -214,6 +215,20 @@ namespace Applied_WebApplication.Data
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
+
+        public bool Seek(string _Code)
+        {
+            string Filter = MyDataView.RowFilter;
+            MyDataView.RowFilter = String.Concat("Code='",_Code,"'");
+
+            if (MyDataView.Count > 0)
+            {
+                MyDataView.RowFilter = Filter; return true;
+            }
+            else
+            { MyDataView.RowFilter = Filter; return false; }
+        }
+
         public DataRow SeekRecord(int _ID)
         {
             DataRow row = MyDataTable.NewRow();
