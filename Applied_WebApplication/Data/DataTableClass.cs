@@ -133,8 +133,7 @@ namespace Applied_WebApplication.Data
                 else
                 { _CommandString.Append(") "); }
             }
-
-            //_CommandString.Remove(_CommandString.ToString().Trim().Length - 1, 1);
+            
             _Command.CommandText = _CommandString.ToString();
 
             foreach (DataColumn _Column in _Columns)
@@ -145,8 +144,8 @@ namespace Applied_WebApplication.Data
             }
 
             Command_Insert = _Command;
-            Command_Insert.Parameters["@ID"].Value = NewID();
-
+            CurrentRow["ID"] = NewID();
+            Command_Insert.Parameters["@ID"].Value = CurrentRow["ID"];
         }
         private void CommandUpdate()
         {

@@ -301,6 +301,12 @@ namespace Applied_WebApplication.Data
             }
         }
 
+        internal static DataRow GetNewRow(string UserName, Tables _Table)
+        {
+            DataTableClass Table = new(UserName, _Table);
+            return Table.NewRecord();
+        }
+
 
         #endregion
 

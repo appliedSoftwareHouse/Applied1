@@ -10,6 +10,7 @@
     var TitleInventory = GetTitle(UserName, Tables.Taxes, Model.Variables.Inventory);
     var CurrencyFormat = AppRegistry.FormatCurrency1;
 
+    
 
 }
 
@@ -210,7 +211,7 @@
                 <div class="col">
                     <div class="input-group">
                         <span class="input-group-text">Tax Rate %</span>
-                        <input type="text" class="form-control" asp-for="@Model.Variables.Tax_Rate" id="TaxRate">
+                        <input type="text" class="form-control" name="Tax_Rate" asp-for="@Model.Variables.Tax_Rate"  id="TaxRate">
                         <input type="text" class="form-control" id="TaxAmount" asp-for="@Model.Variables.TaxAmount" readonly />
                     </div>
                 </div>
@@ -264,8 +265,6 @@
 
 </script>
 
-
-
 <!--Table of Transaction List-->
 @if (Model.BillRecords != null)
 {
@@ -314,7 +313,7 @@
                                     <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
                                 </a>
                                 <a asp-page="BillPayable" asp-page-handler="Delete" asp-route-id=@Row["TranID"] asp-route-Srno=@Row["ID"]>
-                                    <i class="bi bi-trash text-primary"></i>
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                             </td>                            
                         </tr>
@@ -343,3 +342,6 @@
         <hr />
     }
 }
+
+
+                        

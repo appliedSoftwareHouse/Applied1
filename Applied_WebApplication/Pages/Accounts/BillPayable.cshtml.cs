@@ -1,9 +1,11 @@
+using AspNetCore.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.ServiceModel.Security;
+using System.Xml.Linq;
 using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Pages.Accounts
@@ -13,6 +15,8 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public MyParameters Variables { get; set; } = new();
         public DataTable BillRecords { get; set; }
+        public DataTable tb_BillPay1 { get; set; }
+        public DataTable tb_BillPay2 { get; set; }
 
         public List<Message> ErrorMessages = new();
         public int ErrorCount { get => ErrorMessages.Count; }
@@ -21,24 +25,20 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet(int? id)
         {
-            id ??= 1;                                           // Assign Zero if id = null;
+            id ??= 0;                                           // Assign Zero if id = null;
             SetVariable((int)id);
         }
 
-        public void OnGetEdit(int id, int Srno)
+        public IActionResult OnGetEdit(int id, int Srno)
         {
             SetVariable(id, Srno);
+            return Page();
         }
-        public void OnGetNew()
+        public IActionResult OnPostNew()
         {
             SetVariable(Variables.ID, 0);
+            return Page();
         }
-
-        public void OnPostNew()
-        {
-            SetVariable(Variables.ID, 0);
-        }
-
         public IActionResult OnPostSave()
         {
             string UserName = User.Identity.Name;
@@ -71,13 +71,18 @@ namespace Applied_WebApplication.Pages.Accounts
             Row2["Tax_Rate"] = Variables.Tax_Rate;
             Row2["Description"] = Variables.Description2;
 
-            CommandAction SQLAction; if ((int)Row1["ID"] == 0) { SQLAction = CommandAction.Insert; } else { SQLAction = CommandAction.Update; }
+            CommandAction SQLAction;
+            if ((int)Row1["ID"] == 0) { SQLAction = CommandAction.Insert; } else { SQLAction = CommandAction.Update; }
             bool BillValid1 = BillPay1.TableValidation.Validation(Row1, SQLAction);
+
+            if ((int)Row2["ID"] == 0) { SQLAction = CommandAction.Insert; } else { SQLAction = CommandAction.Update; }
             bool BillValid2 = BillPay2.TableValidation.Validation(Row2, SQLAction);
 
             if (BillValid1 && BillValid2)
             {
                 BillPay1.Save();
+
+                Row2["TranID"] = BillPay1.CurrentRow["ID"];                                                                 // Assign a TranID value from New ID of Bill Payable
                 BillPay2.Save();
                 return RedirectToPage("BillPayable", routeValues: new { id = (int)Row1["ID"] });
 
@@ -94,8 +99,6 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("./BillPayableList");
 
         }
-
-
 
         #endregion
 
@@ -123,118 +126,153 @@ namespace Applied_WebApplication.Pages.Accounts
                 BillRecords = BillPay2.MyDataView.ToTable();
                 SetVariablesRows(Row1, Row2);
             }
-
-            TotInvoice();
-
         }
-        public void SetVariable(int id, int Srno)
+        public void SetVariable(int id, int id2)
         {
             string UserName = User.Identity.Name;
             DataTableClass BillPay1 = new(UserName, Tables.BillPayable);
             DataTableClass BillPay2 = new(UserName, Tables.BillPayable2);
+
+            BillPay2.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
+            BillRecords = BillPay2.MyDataView.ToTable();                                                            // DataTabale for Table Rows
+
             DataRow Row1, Row2;
 
             BillPay1.MyDataView.RowFilter = string.Concat("ID=", id.ToString());
             Row1 = BillPay1.MyDataView[0].Row;
+            
 
-            if (Srno != 0)
+
+            if (id2 != 0)
             {
-                BillPay2.MyDataView.RowFilter = string.Concat("ID=", Srno.ToString());
+                BillPay2.MyDataView.RowFilter = string.Concat("ID=", id2.ToString());
                 Row2 = BillPay2.MyDataView[0].Row;
             }
             else
             {
                 Row2 = BillPay2.NewRecord();
+                Row2["TranID"] = Variables.ID;
+                Row2["SR_No"] = MaxSrNo();
+                BillPay2.MyDataTable.Rows.Add(Row2);
             }
-            
+
             SetVariablesRows(Row1, Row2);                                                                                   // Assign values to Model Variables.
+            TotInvoice();                                                                                                                   // Compute Bill Total Amount
 
+            BillPay2.MyDataView.Sort = "SR_No";
             BillPay2.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
-            BillRecords = BillPay2.MyDataView.ToTable();                                                            // DataTabale for Table Rows
+            BillRecords = BillPay2.MyDataView.ToTable();
 
-            TotInvoice();                                                                                                                  // Compute Bill Total Amount
         }
         private void SetVariablesRows(DataRow? Row1, DataRow? Row2)
         {
             string UserName = User.Identity.Name;
-            if (Row2["Description"] == DBNull.Value) { Row2["Description"] = string.Empty; }
-
-            if (Row1 == null)
+            bool IsNewVoucher = false; if (Row1 == null) { IsNewVoucher = true; }
+            Row1 ??= AppFunctions.GetNewRow(UserName, Tables.BillPayable);
+            Variables = new();
+            if (IsNewVoucher)
             {
-                Variables = new()
-                {
-                    ID = 0,
-                    Vou_No = AppFunctions.GetNewBillPayableVoucher(UserName),
-                    Vou_Date = DateTime.Now,
-                    Pay_Date = DateTime.Now,
-                    Company = 0,
-                    Ref_No = string.Empty,
-                    Inv_No = string.Empty,
-                    Inv_Date = DateTime.Now,
-                    Amount = 0.00M,
-                    Description = string.Empty,
-                    Comments = string.Empty,
-
-                    ID2 = 0,
-                    TranID = 0,
-                    SR_No = 1,
-                    Inventory = 0,
-                    Batch = string.Empty,
-                    Qty = 0.00M,
-                    Rate = 0.00M,
-                    Tax = 0,
-                    Tax_Rate = 0.00M,
-                    Description2 = string.Empty
-                };
+                Variables.ID = 0;
+                Variables.Vou_No = AppFunctions.GetNewBillPayableVoucher(UserName);
+                Variables.Vou_Date = DateTime.Now;
+                Variables.Pay_Date = DateTime.Now;
+                Variables.Company = 0;
+                Variables.Ref_No = string.Empty;
+                Variables.Inv_No = string.Empty;
+                Variables.Inv_Date = DateTime.Now;
+                Variables.Amount = 0.00M;
+                Variables.Description = string.Empty;
+                Variables.Comments = string.Empty;
             }
             else
             {
-                Variables = new()
-                {
-                    ID = (int)Row1["ID"],
-                    Vou_No = (string)Row1["Vou_No"],
-                    Vou_Date = (DateTime)Row1["Vou_Date"],
-                    Pay_Date = (DateTime)Row1["Pay_Date"],
-                    Company = (int)Row1["Company"],
-                    Ref_No = (string)Row1["Ref_No"],
-                    Inv_No = (string)Row1["Inv_No"],
-                    Inv_Date = (DateTime)Row1["Inv_Date"],
-                    Amount = (decimal)Row1["Amount"],
-                    Description = (string)Row1["Description"],
-                    Comments = (string)Row1["Comments"],
+                if (Row1["Description"] == DBNull.Value) { Row1["Description"] = string.Empty; }
+                if (Row1["Comments"] == DBNull.Value) { Row1["Comments"] = string.Empty; }
 
-                    ID2 = (int)Row2["ID"],
-                    TranID = (int)Row2["TranID"],
-                    SR_No = (int)Row2["Sr_No"],
-                    Inventory = (int)Row2["Inventory"],
-                    Batch = (string)Row2["Batch"],
-                    Qty = (decimal)Row2["Qty"],
-                    Rate = (decimal)Row2["Rate"],
-                    Tax = (int)Row2["Tax"],
-                    Tax_Rate = (decimal)Row2["Tax_Rate"],
-                    Description2 = (string)Row2["Description"]
-                };
-
-                Variables.TranAmount = Variables.Qty * Variables.Rate;
-                Variables.Amount = Variables.TranAmount;
-                Variables.TaxAmount = (Variables.TranAmount * AppFunctions.GetTaxRate(UserName, Variables.Tax)) / 100;
-                Variables.NetAmount = Variables.TranAmount + Variables.TaxAmount;
-                Variables.Tax_Rate = AppFunctions.GetTaxRate(UserName, Variables.Tax);
-
-                if(Variables.ID2==0)
-                {
-                    Variables.SR_No = MaxSrNo();
-                }
+                Variables.ID = (int)Row1["ID"];
+                Variables.Vou_No = (string)Row1["Vou_No"];
+                Variables.Vou_Date = (DateTime)Row1["Vou_Date"];
+                Variables.Pay_Date = (DateTime)Row1["Pay_Date"];
+                Variables.Company = (int)Row1["Company"];
+                Variables.Ref_No = (string)Row1["Ref_No"];
+                Variables.Inv_No = (string)Row1["Inv_No"];
+                Variables.Inv_Date = (DateTime)Row1["Inv_Date"];
+                Variables.Amount = (decimal)Row1["Amount"];
+                Variables.Description = (string)Row1["Description"];
+                Variables.Comments = (string)Row1["Comments"];
             }
+
+            // ========================================================================================== New Transaction (Record)
+            bool IsNewRecord = false; if (Row2 == null || (int)Row2["ID"]==0) { IsNewRecord = true; }
+            Row2 ??= AppFunctions.GetNewRow(UserName, Tables.BillPayable2);
+
+            if (Row2["Description"] == DBNull.Value) { Row2["Description"] = string.Empty; }
+            if (Row2["Description"] == DBNull.Value) { Row2["Description"] = string.Empty; }
+
+            if (IsNewRecord)
+            {
+                Variables.ID2 = 0;
+                Variables.TranID = Variables.ID;
+                Variables.SR_No = 0;
+                Variables.Inventory = 0;
+                Variables.Batch = string.Empty;
+                Variables.Qty = 0.00M;
+                Variables.Rate = 0.00M;
+                Variables.Tax = 0;
+                Variables.Tax_Rate = 0.00M;
+                Variables.Description2 = string.Empty;
+                if (Variables.ID2 == 0) { Variables.SR_No = MaxSrNo(); }                    // Get A Max SR No.
+
+            }
+            else
+            {
+                Variables.ID2 = (int)Row2["ID"];
+                Variables.TranID = (int)Row2["TranID"];
+                Variables.SR_No = (int)Row2["Sr_No"];
+                Variables.Inventory = (int)Row2["Inventory"];
+                Variables.Batch = (string)Row2["Batch"];
+                Variables.Qty = (decimal)Row2["Qty"];
+                Variables.Rate = (decimal)Row2["Rate"];
+                Variables.Tax = (int)Row2["Tax"];
+                Variables.Tax_Rate = (decimal)Row2["Tax_Rate"];
+                Variables.Description2 = (string)Row2["Description"];
+                
+            }
+
+            //-----------------------------------------------------------------------------------  CALCUALT Transaction total
+            Variables.TranAmount = Variables.Qty * Variables.Rate;
+            Variables.Amount = Variables.TranAmount;
+            Variables.TaxAmount = (Variables.TranAmount * AppFunctions.GetTaxRate(UserName, Variables.Tax)) / 100;
+            Variables.NetAmount = Variables.TranAmount + Variables.TaxAmount;
+            Variables.Tax_Rate = AppFunctions.GetTaxRate(UserName, Variables.Tax);
+            // ------------------------------------------------------------------------------------------------------- Get Bill Records.
+            
+            BillRecords = 
+            
+            BillRecords = AppFunctions.GetRecords(UserName, Tables.BillPayable2, "TranID=" + Variables.ID);
+
+
+
+
         }
+        
 
         private int MaxSrNo()
         {
             string UserName = User.Identity.Name;
-            DataTableClass BillPay2 = new(UserName, Tables.BillPayable2);
-            BillPay2.MyDataView.RowFilter = string.Concat("TranID=", Variables.ID);
-            BillRecords = BillPay2.MyDataView.ToTable();                                                            // DataTabale for Table Rows
-            int _MaxSrNo = (int)BillRecords.Compute("Max(Sr_No)", "");
+            DataTableClass Temp1 = new(UserName, Tables.BillPayable2);
+            Temp1.MyDataView.RowFilter = string.Concat("TranID=", Variables.ID);
+            var Temp2 = Temp1.MyDataView.ToTable();
+            int _MaxSrNo = 0;
+            try
+            {
+                _MaxSrNo = (int)Temp2.Compute("Max(Sr_No)", "TranID=" + Variables.ID);
+            }
+            catch (Exception)
+            {
+                _MaxSrNo = 0;
+            }
+
             return _MaxSrNo + 1;
         }
 
@@ -247,8 +285,6 @@ namespace Applied_WebApplication.Pages.Accounts
             Variables.TotInv = Variables.TotAmt + Variables.TotTax;
         }
     }
-
-
 
     #endregion
 

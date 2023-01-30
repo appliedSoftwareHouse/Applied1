@@ -53,12 +53,12 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Database query action is not defined." });
                 return false;
             }
-            if (MyDataTable== null)
+            if (MyDataTable == null)
             {
                 MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "DataTable is null. define Datatable to validate the record." });
                 return false;
             }
-            if (MyDataView==null) {if(MyDataTable != null ) { MyDataView = MyDataTable.AsDataView(); }}
+            if (MyDataView == null) { if (MyDataTable != null) { MyDataView = MyDataTable.AsDataView(); } }
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
             if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
@@ -228,9 +228,9 @@ namespace Applied_WebApplication.Data
             MyMessages = new List<Message>();
             int VoucherID = (int)Row["TranID"];
 
-            if(MyVoucherType == PostType.CashBook)
+            if (MyVoucherType == PostType.CashBook)
             {
-                MyDataView.RowFilter = string.Concat("[Vou_Type]='Cash' AND [TranID]=",VoucherID.ToString());
+                MyDataView.RowFilter = string.Concat("[Vou_Type]='Cash' AND [TranID]=", VoucherID.ToString());
                 if (MyDataView.Count > 0)
                 {
                     MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher and post again." });
@@ -243,34 +243,47 @@ namespace Applied_WebApplication.Data
             MyMessages = new List<Message>();
             if (SQLAction == CommandAction.Insert.ToString())
             {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Duplicate of ID found." });
+                if ((int)Row["ID"] != 0)
+                {
+                    MyDataView.RowFilter = String.Concat("ID=", Row["ID"].ToString());
+                    if (MyDataView.Count > 0)
+                    {
+                        MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Duplicate of ID found." + Row.Table.TableName });
+                    }
+                }
             }
 
             if (string.IsNullOrEmpty(Row["Vou_No"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Number is not define." }); }
             if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Description must be some charactors." }); }
-            
-            if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom() ) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is less than Fiscal Year Date." }); }
+
+            if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom()) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is less than Fiscal Year Date." }); }
             if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
             if ((DateTime)Row["Inv_Date"] < AppRegistry.MinDate) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
             if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Payment Date is less than invoice date, Enter Valid Date." }); }
-            if ((int)Row["Company"]==0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Comapny is not selected. select any one." }); }
+            if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Comapny is not selected. select any one." }); }
 
         }
 
         private void ValidateTable_BillPayable2(DataRow Row)
         {
             MyMessages = new List<Message>();
+
             if (SQLAction == CommandAction.Insert.ToString())
             {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10501, Msg = "Duplicate of ID found." });
+                if ((int)Row["ID"] != 0)
+                {
+                    MyDataView.RowFilter = String.Concat("ID=", Row["ID"].ToString());
+                    if (MyDataView.Count > 0)
+                    {
+                        MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Duplicate of ID found." + Row.Table.TableName });
+                    }
+                }
             }
-
-            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Tax Category is not selected. Select any one." }); }
-            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Inventory Batch is not define. Nil value not allowed." }); }
-            if ((int)Row["Tax"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Tax Category is not selected. Select any one." }); }
-            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Quantity value is zero.  Zero value not allowed." }); }
-            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Quantity value is zero.  Zero value not allowed." }); }
-
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Inventory is not selected. Select any one." }); }
+            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Inventory Batch is not define. Nil value not allowed." }); }
+            if ((int)Row["Tax"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Tax Category is not selected. Select any one." }); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
         }
 
 
