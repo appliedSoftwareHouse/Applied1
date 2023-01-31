@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Applied_WebApplication.Pages;
+using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
@@ -349,14 +350,27 @@ namespace Applied_WebApplication.Data
         }
         public void Delete()
         {
+            IsError = true;
+            TableValidation.MyMessages = new List<Message>();
             CommandDelete();
-            int records = Command_Delete.ExecuteNonQuery();
+            int records = 0;
+            try
+            {
+                records = Command_Delete.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                TableValidation.MyMessages.Add(new Message() { Success = false, ErrorID = 1, Msg = "Transaction FAIL to delete!!!!!. Contact to administrator.." });
+                throw;
+            }
             if (records == 1)
             {
+                IsError = false;
                 MyMessage = string.Concat(records.ToString(), " has been deleted.");
             }
             if (records > 1)
             {
+                IsError = false;
                 MyMessage = string.Concat(records.ToString(), " have been deleted.");
             }
         }

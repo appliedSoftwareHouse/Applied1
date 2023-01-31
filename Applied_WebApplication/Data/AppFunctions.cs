@@ -278,26 +278,15 @@ namespace Applied_WebApplication.Data
             else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
         }
 
-        public static decimal GetSum(string UserName, Tables _Table, string _Column, string _Filter)
+        public static object GetSum(string UserName, Tables _Table, string _Column, string _Filter)
         {
             DataTableClass Table = new(UserName, _Table);
             Table.MyDataView.RowFilter = _Filter;
             if (Table.MyDataView.Count == 0) { return 0; }
             else 
             {
-                var _Sum = Table.MyDataTable.Compute("Sum(" + _Column + ")", _Filter);
-
-                if(_Sum.GetType() == Type.GetType("System.decimal"))
-                {
-                    return (decimal)_Sum;
-                }
-
-                if (_Sum.GetType() == Type.GetType("System.int32"))
-                {
-                    return decimal.Parse(_Sum.ToString());
-                }
-
-                return 0.00M; 
+                var _sum = Table.MyDataTable.Compute("Sum(" + _Column + ")", _Filter);
+                return decimal.Parse(_sum.ToString());
             }
         }
 

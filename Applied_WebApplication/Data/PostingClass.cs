@@ -11,7 +11,7 @@ namespace Applied_WebApplication.Data
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
 
-            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
+            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND VouType='Cash' ");
             if (tb_Ledger.MyDataView.Count == 0)
             {
                 DataRow Row = AppFunctions.GetDataRow(UserName, Tables.CashBook, id);
@@ -83,6 +83,30 @@ namespace Applied_WebApplication.Data
                 Result = false;
             }
             return Result;
+        }
+
+        internal static void PostBillPayable(string UserName, int id)
+        {
+            bool Result;
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+            List<Message> ErrorMessages = new List<Message>();
+            List<DataRow> VoucherRows = new();
+            
+            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND VouType='BillPY' ");             // Filter Record for check? Already exist or not.
+            if(tb_Ledger.MyDataView.Count==0)
+            {
+                DataTableClass fun_BillPayable = new(UserName, Tables.fun_BillPayableEntry);                                    // Get SQLite View for Entry
+                fun_BillPayable.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
+                foreach(DataRow Row in fun_BillPayable.MyDataView.ToTable().Rows)
+                {
+                    DataRow LedgerRow = tb_Ledger.NewRecord();
+
+
+                    //VoucherRows.(LedgerRow);
+                }
+            }
+
+
         }
     }
 }

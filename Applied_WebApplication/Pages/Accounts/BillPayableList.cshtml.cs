@@ -12,6 +12,8 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             string UserName = User.Identity.Name;
             BillPayable = new(UserName, Tables.BillPayable);
+
+
         }
 
         public class MyParameters

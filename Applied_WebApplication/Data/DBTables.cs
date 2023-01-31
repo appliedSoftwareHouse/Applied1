@@ -43,8 +43,8 @@ public enum Tables
     PostPayments = 506,
     PostReceipts = 507,
 
-    fun_BillPayableAmounts = 601                    // Function of Bill Payable Amount and Tax Amount
-
+    fun_BillPayableAmounts = 601,                    // Function of Bill Payable Amount and Tax Amount
+    fun_BillPayableEntry = 602
 
 
 }
@@ -71,13 +71,13 @@ public enum KeyType
 
 public enum PostType
 {
-    CashBook,
-    Bankbook,
-    WriteCheque,
-    Receivable,
-    Payable,
-    Payment,
-    Receipt
+    CashBook = 1,
+    Bankbook = 2,
+    WriteCheque = 3,
+    BillPayable = 4,
+    BillReceivable = 5,
+    Payment = 6,
+    Receipt = 7
 }
 
 public enum VoucherStatus

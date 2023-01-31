@@ -28,8 +28,7 @@
                         <a class="dropdown-item"
                            asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="1"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="1">
                             @CurrencyAmount.ToString(Model.CurrencyFormat1)
                         </a>
                     </li>
@@ -37,8 +36,7 @@
                         <a class="dropdown-item"
                            asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="2"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="2">
                             @CurrencyAmount.ToString(Model.CurrencyFormat2)
                         </a>
                     </li>
@@ -46,32 +44,28 @@
                         <a class="dropdown-item"
                            asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="3"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="3">
                             @CurrencyAmount.ToString(Model.CurrencyFormat3)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="4"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="4">
                             @CurrencyAmount.ToString(Model.CurrencyFormat4)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="5"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="5">
                             @CurrencyAmount.ToString(Model.CurrencyFormat5)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateCurrencyFormat"
-                           asp-route-id="6"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="6">
                             @CurrencyAmount.ToString(Model.CurrencyFormat6)
                         </a>
                     </li>
@@ -89,56 +83,60 @@
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="1"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="1">
                             @DateTime.Now.ToString(@Model.DateFormat1)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="2"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="2">
                             @DateTime.Now.ToString(@Model.DateFormat2)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="3"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="3">
                             @DateTime.Now.ToString(@Model.DateFormat3)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="4"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="4">
                             @DateTime.Now.ToString(@Model.DateFormat4)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="5"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="5">
                             @DateTime.Now.ToString(@Model.DateFormat5)
                         </a>
                     </li>
                     <li>
                         <a class="dropdown-item" asp-page="Setting"
                            asp-page-handler="UpdateDateFormat"
-                           asp-route-id="6"
-                           asp-route-UserName=@User.Identity.Name>
+                           asp-route-id="6">
                             @DateTime.Now.ToString(@Model.DateFormat6)
                         </a>
                     </li>
                 </ul>
             </div>
         </div>
+
+        
+        <div class="col-6 d-flex align-items-baseline">
+            <label>Currency symble </label>
+            <input type="text" class="form-control" style=" margin-left: 10px; width:50px" />  
+            </div>
+
     </div>
 </div>
+
+
+
 
 <br />
 @DateFormat

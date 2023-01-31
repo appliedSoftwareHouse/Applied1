@@ -9,10 +9,11 @@ namespace Applied_WebApplication.Pages.Account
 {
     public class SettingModel : PageModel
     {
-        AppliedUsersClass MyUserClass = new();
+        readonly AppliedUsersClass MyUserClass = new();
+
         public string CurrencyFormat = string.Empty;
         public string CurrencyFormat1 = "#,0";
-        public string CurrencyFormat2 = "#,0.000";
+        public string CurrencyFormat2 = "#,0.00";
         public string CurrencyFormat3 = "#,0.00 Rs.";
         public string CurrencyFormat4 = "#,0 Rs.";
         public string CurrencyFormat5 = "Rs. #,0";
@@ -30,93 +31,50 @@ namespace Applied_WebApplication.Pages.Account
 
         public void OnGet()
         {
-            var V4 = AppRegistry.GetKey(User.Identity.Name, "CompanyName", KeyType.Text);
-
-
-
+            string UserName = User.Identity.Name;
+            DateFormat = AppRegistry.GetKey(UserName, "MFTDate", KeyType.Text).ToString();
+            CurrencyFormat = AppRegistry.GetKey(UserName, "MFTCurrency", KeyType.Text).ToString();
         }
-
-        public void OnPost()
+        
+        public IActionResult OnGetUpdateCurrencyFormat(int id)
         {
-            var v1 = Request.Form["Key"];
-            var v2 = Request.Form["Type"];
-            var v3 = Request.Form["Number"];
-            var v4 = Request.Form["Text"];
-            var v5 = Request.Form["Date"];
-            var v6 = Request.Form["Bool"];
-
-             AppRegistry.SetKey(User.Identity.Name, v1, v4, KeyType.Text);
-        }
-
-        public IActionResult OnGetUpdateCurrencyFormat(int id, string UserName)
-        {
-            switch (id)
+            string UserName = User.Identity.Name;
+            CurrencyFormat = id switch
             {
-                case 1:
-                    CurrencyFormat = CurrencyFormat1;
-                    break;
-                case 2:
-                    CurrencyFormat = CurrencyFormat2;
-                    break;
-                case 3:
-                    CurrencyFormat = CurrencyFormat3;
-                    break;
-                case 4:
-                    CurrencyFormat = CurrencyFormat4;
-                    break;
-                case 5:
-                    CurrencyFormat = CurrencyFormat5;
-                    break;
-                case 6:
-                    CurrencyFormat = CurrencyFormat6;
-                    break;
+                1 => CurrencyFormat1,
+                2 => CurrencyFormat2,
+                3 => CurrencyFormat3,
+                4 => CurrencyFormat4,
+                5 => CurrencyFormat5,
+                6 => CurrencyFormat6,
+                7 => CurrencyFormat7,
+                8 => CurrencyFormat8,
+                _ => CurrencyFormat1,
+            };
 
-                case 7:
-                    CurrencyFormat = CurrencyFormat7;
-                    break;
-
-                case 8:
-                    CurrencyFormat = CurrencyFormat8;
-                    break;
-
-                default:
-                    CurrencyFormat = CurrencyFormat1;
-                    break;
-            }
-
+            AppRegistry.SetKey(UserName, "FMTCurrency", CurrencyFormat, KeyType.Text);
+            // Delete this codes in future if registry peerfect works. //
             MyUserClass.AppliedUserCommand.CommandText = "Update [Users] SET [CurrencyFormat]='" + CurrencyFormat + "' WHERE [UserID] ='" + UserName + "'";
             MyUserClass.AppliedUserCommand.ExecuteNonQuery();
             return Page();
         }
 
-        public IActionResult OnGetUpdateDateFormat(int id, string UserName)
+        public IActionResult OnGetUpdateDateFormat(int id)
         {
-            switch (id)
+            string UserName = User.Identity.Name;
+            DateFormat = id switch
             {
-                case 1:
-                    DateFormat = DateFormat1;
-                    break;
-                case 2:
-                    DateFormat = DateFormat2;
-                    break;
-                case 3:
-                    DateFormat = DateFormat3;
-                    break;
-                case 4:
-                    DateFormat = DateFormat4;
-                    break;
-                case 5:
-                    DateFormat = DateFormat5;
-                    break;
-                case 6:
-                    DateFormat = DateFormat6;
-                    break;
+                1 => DateFormat1,
+                2 => DateFormat2,
+                3 => DateFormat3,
+                4 => DateFormat4,
+                5 => DateFormat5,
+                6 => DateFormat6,
+                _ => DateFormat1,
+            };
 
-                default:
-                    DateFormat = DateFormat1;
-                    break;
-            }
-
+            AppRegistry.SetKey(UserName, "FMTDate", DateFormat, KeyType.Text);
+            // Delete this codes in future if registry peerfect works. //
             MyUserClass.AppliedUserCommand.CommandText = "Update [Users] SET [DateFormat]='" + DateFormat + "' WHERE [UserID] ='" + UserName + "'";
             MyUserClass.AppliedUserCommand.ExecuteNonQuery();
             return Page();

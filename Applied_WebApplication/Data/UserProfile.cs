@@ -16,6 +16,7 @@ namespace Applied_WebApplication.Data
         public string Email { get; set; }
         public string Role { get; set; }
         public string DBFilePath { get; set; }
+        public string DBFileName { get; set; }
         public string Company { get; set; }
         public string Designation { get; set; }
         public string DateFormat { get; set; }
@@ -55,6 +56,8 @@ namespace Applied_WebApplication.Data
                 DBFilePath = _Row["DataFile"].ToString();
                 if (string.IsNullOrEmpty(_Row["DateFormat"].ToString())) { DateFormat = default_DateFormat; } else { DateFormat = _Row["DateFormat"].ToString(); }
                 if (string.IsNullOrEmpty(_Row["CurrencyFormat"].ToString())) { CurrencyFormat = default_CurrencyFormat; } else { CurrencyFormat = _Row["CurrencyFormat"].ToString(); }
+                DBFileName = DBFilePath.Replace(".\\wwwroot\\SQLiteDB\\", string.Empty);          // Replace Path with string.Empty
+
             }
         }
 
@@ -83,6 +86,21 @@ namespace Applied_WebApplication.Data
             foreach (Claim _Claim in _ClaimPrincipal.Claims)
             {
                 if (_Claim.Type == "Company")
+                {
+                    Result = _Claim.Value;
+                    break;
+                }
+            }
+            return Result;
+        }
+
+        public static string GetUserClaim(ClaimsPrincipal _ClaimPrincipal, string Key)
+        {
+            // Get user claim value.
+            string Result = string.Empty; 
+            foreach (Claim _Claim in _ClaimPrincipal.Claims)
+            {
+                if (_Claim.Type == Key)
                 {
                     Result = _Claim.Value;
                     break;

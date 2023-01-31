@@ -8,9 +8,7 @@
     var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Variables.Company);
     var TitleTax = GetTitle(UserName, Tables.Taxes, Model.Variables.Tax);
     var TitleInventory = GetTitle(UserName, Tables.Taxes, Model.Variables.Inventory);
-    var CurrencyFormat = AppRegistry.FormatCurrency1;
-
-    
+    var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
 
 }
 
@@ -19,43 +17,50 @@
     tr:hover {
         background-color: #D6EEEE;
     }
-    .td{
+
+    .td {
         height: 20px
     }
-    .input-group-text{
+
+    .input-group-text {
         width: 30%;
         height: 32px;
     }
-    .form-control{
+
+    .form-control {
         width: 70%;
         height: 32px;
     }
-    .form-select{
+
+    .form-select {
         width: 70%;
         height: 32px;
     }
-    .input-group{
-        margin-bottom:3px
-    }
-    #NetAmount{
-        background: lightblue
-    }
-    #Amount{
-        background: lightblue
-    }
-    #TaxAmount{
-        background: lightblue
-    }
-    .my-hr{
-        margin-top:2px;
-        margin-bottom:4px;
-        color:red
+
+    .input-group {
+        margin-bottom: 3px
     }
 
-    .td-Money{
+    #NetAmount {
+        background: lightblue
+    }
 
-        text-align:right;
+    #Amount {
+        background: lightblue
+    }
 
+    #TaxAmount {
+        background: lightblue
+    }
+
+    .my-hr {
+        margin-top: 2px;
+        margin-bottom: 4px;
+        color: red
+    }
+
+    .td-Money {
+        text-align: right;
     }
 
 </style>
@@ -211,7 +216,7 @@
                 <div class="col">
                     <div class="input-group">
                         <span class="input-group-text">Tax Rate %</span>
-                        <input type="text" class="form-control" name="Tax_Rate" asp-for="@Model.Variables.Tax_Rate"  id="TaxRate">
+                        <input type="text" class="form-control" name="Tax_Rate" asp-for="@Model.Variables.Tax_Rate" id="TaxRate">
                         <input type="text" class="form-control" id="TaxAmount" asp-for="@Model.Variables.TaxAmount" readonly />
                     </div>
                 </div>
@@ -230,9 +235,18 @@
             <div clsss=col>
                 <input type="text" asp-for="@Model.Variables.ID" hidden />
                 <input type="text" asp-for="@Model.Variables.ID2" hidden />
-                <input type="submit" class="btn btn-primary btn-sm" value="SAVE" asp-page-handler="Save" />
-                <input type="submit" class="btn btn-primary btn-sm" value="Back" asp-page-handler="Back" />
-                <input type="submit" class="btn btn-primary btn-sm" value="New" asp-page-handler="New" />
+                @if (Model.Variables.Status == VoucherStatus.Submitted.ToString())
+                {
+                    <input type="submit" class="btn btn-primary btn-sm" value="SAVE" asp-page-handler="Save" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="Back" asp-page-handler="Back" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="New" asp-page-handler="New" />
+                }
+                else
+                {
+                    <input type="button" class="btn btn-success btn-sm" value="POSTED" />
+                    <input type="submit" class="btn btn-primary btn-sm" value="Back" asp-page-handler="Back" />
+                }
+
             </div>
         </div>
 
@@ -270,78 +284,81 @@
 {
     @if (Model.BillRecords.Rows.Count > 0)
     {
-        <div class="container">
-            <table class="table mt-1" id="TableList">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="width:8%;">S-No</th>
-                        <th style="width:25%;">Inventory</th>
-                        <th style="width:10%;">Batch</th>
-                        <th style="width:5%; text-align: right">Qty</th>
-                        <th style="width:5%; text-align: right">Rate</th>
-                        <th style="width:12%; text-align: right">Amount</th>
-                        <th style="width:8%; text-align: right">Tax Rate.</th>
-                        <th style="width:8%; text-align: right">Tax Amt.</th>
-                        <th style="width:12%; text-align: right">Net Amt</th>
-                        <th style="width:7%;">..</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.BillRecords.Rows)
-                    {
-                        string _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
-                        string _TaxCode = AppFunctions.GetTaxCode(UserName, (int)Row["Tax"]);
-                        decimal _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
-                        decimal _Qty = (decimal)Row["Qty"];
-                        decimal _Rate = (decimal)Row["Rate"];
-                        decimal _Amount = _Qty * _Rate;
-                        decimal _TaxAmount = _Amount * (_TaxRate / 100);
-                        decimal _NetAmount = _Amount + _TaxAmount;
-
+        <form method="get">
+            <div class="container">
+                <table class="table mt-1" id="TableList">
+                    <thead class="bg-light">
                         <tr>
-                            <td>@Row["Sr_No"].ToString()</td>
-                            <td>@_TitleInventory</td>
-                            <td>@Row["Batch"].ToString()</td>
-                            <td class="td-Money">@_Qty.ToString(CurrencyFormat)</td>
-                            <td class="td-Money">@_Rate.ToString(CurrencyFormat)</td>
-                            <td class="td-Money">@_Amount.ToString(CurrencyFormat)</td>
-                            <td class="td-Money">@_TaxRate.ToString(CurrencyFormat)</td>
-                            <td class="td-Money">@_TaxAmount.ToString(CurrencyFormat)</td>
-                            <td class="td-Money">@_NetAmount.ToString(CurrencyFormat)</td>
-                            <td>
-                                <a asp-page="BillPayable"    asp-page-handler="Edit"   asp-route-id=@Row["TranID"]  asp-route-Srno=@Row["ID"]>
-                                    <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
-                                </a>
-                                <a asp-page="BillPayable" asp-page-handler="Delete" asp-route-id=@Row["TranID"] asp-route-Srno=@Row["ID"]>
-                                    <i class="bi bi-trash text-danger"></i>
-                                </a>
-                            </td>                            
+                            <th style="width:8%;">S-No</th>
+                            <th style="width:25%;">Inventory</th>
+                            <th style="width:10%;">Batch</th>
+                            <th style="width:5%; text-align: right">Qty</th>
+                            <th style="width:5%; text-align: right">Rate</th>
+                            <th style="width:12%; text-align: right">Amount</th>
+                            <th style="width:8%; text-align: right">Tax Rate.</th>
+                            <th style="width:8%; text-align: right">Tax Amt.</th>
+                            <th style="width:12%; text-align: right">Net Amt</th>
+                            <th style="width:7%;">..</th>
                         </tr>
-                    }
-                </tbody>
+                    </thead>
+                    <tbody>
 
-                <tfoot>
-                    <tr style="background:lightblue">
-                        <td></td>
-                        <td></td>
-                        <td><b>TOTAL</b></td>
-                        <td style="text-align: right"><b>@Model.Variables.TotQty.ToString(CurrencyFormat)</b></td>
-                        <td></td>
-                        <td style="text-align: right"><b>@Model.Variables.TotAmt.ToString(CurrencyFormat)</b></td>
-                        <td></td>
-                        <td style="text-align: right"><b>@Model.Variables.TotTax.ToString(CurrencyFormat)</b></td>
-                        <td style="text-align: right"><b>@Model.Variables.TotInv.ToString(CurrencyFormat)</b></td>
-                        <td></td>
-                    </tr>
+                        @foreach (DataRow Row in Model.BillRecords.Rows)
+                        {
+                            string _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                            string _TaxCode = AppFunctions.GetTaxCode(UserName, (int)Row["Tax"]);
+                            decimal _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
+                            decimal _Qty = (decimal)Row["Qty"];
+                            decimal _Rate = (decimal)Row["Rate"];
+                            decimal _Amount = _Qty * _Rate;
+                            decimal _TaxAmount = _Amount * (_TaxRate / 100);
+                            decimal _NetAmount = _Amount + _TaxAmount;
 
-                </tfoot>
+                            <tr>
+                                <td>@Row["Sr_No"].ToString()</td>
+                                <td>@_TitleInventory</td>
+                                <td>@Row["Batch"].ToString()</td>
+                                <td class="td-Money">@_Qty.ToString(CurrencyFormat)</td>
+                                <td class="td-Money">@_Rate.ToString(CurrencyFormat)</td>
+                                <td class="td-Money">@_Amount.ToString(CurrencyFormat)</td>
+                                <td class="td-Money">@_TaxRate.ToString(CurrencyFormat)</td>
+                                <td class="td-Money">@_TaxAmount.ToString(CurrencyFormat)</td>
+                                <td class="td-Money">@_NetAmount.ToString(CurrencyFormat)</td>
+                                <td>
+                                    @if (Model.Variables.Status == VoucherStatus.Submitted.ToString())
+                                    {
+                                        <a asp-page="BillPayable" asp-route-id=@Row["TranID"] asp-route-id2=@Row["ID"]><i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i></a>
+                                        <a asp-page="BillPayable" asp-page-handler="Delete" asp-route-id=@Row["TranID"] asp-route-id2=@Row["ID"]><i class="bi bi-trash text-danger"></i></a>
+                                    }
+                                    else
+                                    {
+                                        <a> <i class="bi bi-check2 text-sucess"></i> Posted</a>
+                                    }
 
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr style="background:lightblue">
+                            <td></td>
+                            <td></td>
+                            <td><b>TOTAL</b></td>
+                            <td style="text-align: right"><b>@Model.Variables.TotQty.ToString(CurrencyFormat)</b></td>
+                            <td></td>
+                            <td style="text-align: right"><b>@Model.Variables.TotAmt.ToString(CurrencyFormat)</b></td>
+                            <td></td>
+                            <td style="text-align: right"><b>@Model.Variables.TotTax.ToString(CurrencyFormat)</b></td>
+                            <td style="text-align: right"><b>@Model.Variables.TotInv.ToString(CurrencyFormat)</b></td>
+                            <td></td>
+                        </tr>
 
-            </table>
-        </div>
-        <hr />
+                    </tfoot>
+                </table>
+            </div>
+            <hr />
+        </form>
     }
 }
 
 
-                        

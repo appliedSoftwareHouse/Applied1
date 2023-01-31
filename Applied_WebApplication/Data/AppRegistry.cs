@@ -36,6 +36,11 @@ namespace Applied_WebApplication.Data
         public static DateTime GetFiscalFrom() { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
         public static DateTime GetFiscalTo() { return new DateTime(2023, 06, 30); }
 
+        public static string GetFormatCurrency(string UserName)
+        {
+            return GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+        }
+
         public static object GetKey(string UserName, string Key, KeyType keytype)
         {
             object ReturnValue;
@@ -83,7 +88,13 @@ namespace Applied_WebApplication.Data
             return Dates;
         }
 
-        public static bool SetKey(string UserName, string Key, object KeyValue, KeyType keytype)
+
+        public static bool SetKey(string UserName, string _Key, object KeyValue, KeyType _KeyType)
+        {
+            return SetKey(UserName, _Key, KeyValue, _KeyType, "");
+        }
+
+        public static bool SetKey(string UserName, string Key, object KeyValue, KeyType keytype, string _Title)
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
@@ -98,7 +109,7 @@ namespace Applied_WebApplication.Data
             }
 
             tb_Registry.CurrentRow["Code"] = Key;
-            tb_Registry.CurrentRow["Title"] = string.Empty;
+            tb_Registry.CurrentRow["Title"] = _Title;
             tb_Registry.CurrentRow["UserName"] = UserName;
             switch (keytype)
             {
