@@ -231,7 +231,7 @@ namespace Applied_WebApplication.Data
 
         public DataRow SeekRecord(int _ID)
         {
-            DataRow row = MyDataTable.NewRow();
+            DataRow row;    // = MyDataTable.NewRow();
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 

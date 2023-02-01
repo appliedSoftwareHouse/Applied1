@@ -44,8 +44,18 @@
                         <td>@_Pay_Date</td>
                         <td>@_Amount.ToString(FMTCurrency)</td>
                         <td>
-                            <a asp-page="BillPayable" asp-route-id=@Row["ID"] asp-route-id2="-1" formaction="get"><i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i></a>
-                            <a asp-page="BillPayableList" asp-page-handler="Delete" asp-route-id=@Row["ID"] asp-route-Srno="1"><i class="bi bi-trash text-danger"></i></a>
+                            <a formaction="get"
+                              asp-page="BillPayable"
+                              asp-route-id=@Row["ID"]
+                              asp-route-id2="-1">
+                                <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
+                            </a>
+                            <a asp-page="BillPayableList"
+                              asp-page-handler="Delete"
+                              asp-route-id=@Row["ID"]
+                              asp-route-Srno="1">
+                                <i class="bi bi-trash text-danger"></i>
+                            </a>
                         </td>
                     </tr>
                 }

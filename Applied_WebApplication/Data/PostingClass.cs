@@ -87,7 +87,7 @@ namespace Applied_WebApplication.Data
 
         internal static void PostBillPayable(string UserName, int id)
         {
-            bool Result;
+            
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();

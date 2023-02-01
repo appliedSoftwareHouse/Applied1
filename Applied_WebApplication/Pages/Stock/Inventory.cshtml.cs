@@ -7,63 +7,75 @@ namespace Applied_WebApplication.Pages.Stock
 {
     public class InventoryModel : PageModel
     {
-        public Inventory Record = new();
+        [BindProperty]
+        public Inventory Record { get; set; } 
         public bool IsError { get; set; }
-        public List<Message> ErrorMessages;
-        public string MyPageAction { get; set; } = "Add";
-        
+        public List<Message> ErrorMessages = new();
+        public int ErrorCount { get => ErrorMessages.Count; }
 
         public void OnGet()
         {
+            Record = new();
         }
 
-        public void OnGetEdit(string UserName, int id)
+        public void OnGetEdit(int id)
         {
-            MyPageAction = "Edit";
+            string UserName = User.Identity.Name;
+            ErrorMessages = new();
             DataTableClass Inventory = new DataTableClass(UserName, Tables.Inventory);
             Inventory.SeekRecord(id);
-
-            Record.ID = (int)Inventory.CurrentRow["ID"];
-            Record.Code = (string)Inventory.CurrentRow["Code"];
-            Record.Title = (string)Inventory.CurrentRow["Title"];
-            Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
-            Record.UOM = (int)Inventory.CurrentRow["UOM"];
-            Record.Notes = (string)Inventory.CurrentRow["Notes"];
+            Record = new()
+            {
+                ID = (int)Inventory.CurrentRow["ID"],
+                Code = (string)Inventory.CurrentRow["Code"],
+                Title = (string)Inventory.CurrentRow["Title"],
+                SubCategory = (int)Inventory.CurrentRow["SubCategory"],
+                UOM = (int)Inventory.CurrentRow["UOM"],
+                Notes = (string)Inventory.CurrentRow["Notes"]
+            };
 
         }
 
-        public void OnGetAdd(string UserName)
+        public IActionResult OnGetAdd(string UserName)
         {
-            MyPageAction = "Add";
             DataTableClass Inventory = new DataTableClass(UserName, Tables.Inventory);
             Inventory.NewRecord();
 
-            Record.ID = (int)Inventory.CurrentRow["ID"];
-            Record.Code = (string)Inventory.CurrentRow["Code"];
-            Record.Title = (string)Inventory.CurrentRow["Title"];
-            Record.SubCategory = (int)Inventory.CurrentRow["SubCategory"];
-            Record.UOM = (int)Inventory.CurrentRow["UOM"];
-            Record.Notes = (string)Inventory.CurrentRow["Notes"];
+            Record = new()
+            {
+                ID = 0,
+                Code = string.Empty,
+                Title = string.Empty,
+                SubCategory = 0,
+                UOM = 0,
+                Notes = string.Empty,
+            };
 
+            return Page();
         }
 
 
-        public void OnPostSave(Inventory _Record, string UserName)
+        public IActionResult OnPostSave(int id)
         {
+            string UserName = User.Identity.Name;
             DataTableClass Inventory = new(UserName, Tables.Inventory);
 
-            if (Inventory.Seek(_Record.ID))
-            {
-                Inventory.SeekRecord(_Record.ID);
-                Inventory.CurrentRow["ID"] = _Record.ID;
-            }
-            else
-            {
-                Inventory.NewRecord();
-                Inventory.CurrentRow["ID"] = 0;
-            }
-            Inventory.CurrentRow["Code"] = _Record.Code;
-            Inventory.CurrentRow["Title"] = _Record.Title;
+            if (Inventory.Seek(id)) {Inventory.SeekRecord(id);}
+            else {Inventory.NewRecord(); }
+
+            Inventory.CurrentRow["ID"] = Record.ID; ;
+            Inventory.CurrentRow["Code"] = Record.Code;
+            Inventory.CurrentRow["Title"] = Record.Title;
+            Inventory.CurrentRow["SubCategory"] = Record.SubCategory;
+            Inventory.CurrentRow["UOM"] = Record.UOM;
+            Inventory.CurrentRow["Notes"] = Record.Notes;
+            Inventory.Save();
+            ErrorMessages = Inventory.TableValidation.MyMessages;
+
+            if(ErrorCount>0) { return Page(); }
+            else { return RedirectToPage("./Inventories"); }
+
+
         }
 
 

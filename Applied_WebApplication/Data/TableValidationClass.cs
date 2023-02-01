@@ -61,6 +61,7 @@ namespace Applied_WebApplication.Data
             if (MyDataView == null) { if (MyDataTable != null) { MyDataView = MyDataTable.AsDataView(); } }
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
+            if (Row.Table.TableName == Tables.Inventory.ToString()) { ValidateTable_Inventory(Row); }
             if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
             if (Row.Table.TableName == Tables.WriteCheques.ToString()) { ValidateTable_WriteChq(Row); }
             if (Row.Table.TableName == Tables.Ledger.ToString()) { ValidateTable_Ledger(Row); }
@@ -68,6 +69,8 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BillPayable2.ToString()) { ValidateTable_BillPayable2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
+
+
 
         #region Methods => Seek / Sucess
         private bool Seek(string _Column, string _Value)
@@ -237,7 +240,6 @@ namespace Applied_WebApplication.Data
                 }
             }
         }
-
         private void ValidateTable_BillPayable(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -263,7 +265,6 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Comapny is not selected. select any one." }); }
 
         }
-
         private void ValidateTable_BillPayable2(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -285,8 +286,20 @@ namespace Applied_WebApplication.Data
             if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
             if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
         }
-
-
+        private void ValidateTable_Inventory(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("Code", Row["Code"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 104, Msg = "Code is already assigned. Duplicate value not allowed." }); }
+                if (Seek("Title", Row["Title"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 106, Msg = "Title is already assigned. duplicate value not allowed." }); }
+            }
+            if (Row["ID"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 104, Msg = "Record ID is null. Error in database record. contact to Administrator" }); }
+            if (Row["Code"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 103, Msg = "Null value of Code is not allowed." }); }
+            if (Row["Title"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Null value of Title is not allowed." }); }
+            if (Row["SubCategory"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Null value of Sub Category is not allowed." }); }
+            if ((int)Row["SubCategory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Zero value of Sub Category  is not allowed." }); }
+        }
         #endregion
 
     }
