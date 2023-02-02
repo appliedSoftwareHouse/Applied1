@@ -11,7 +11,7 @@ namespace Applied_WebApplication.Data
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
 
-            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND VouType='Cash' ");
+            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND Vou_Type='", VoucherType.Cash.ToString(),"'");
             if (tb_Ledger.MyDataView.Count == 0)
             {
                 DataRow Row = AppFunctions.GetDataRow(UserName, Tables.CashBook, id);
@@ -92,7 +92,7 @@ namespace Applied_WebApplication.Data
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
             
-            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND VouType='BillPY' ");             // Filter Record for check? Already exist or not.
+            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND VouType='", VoucherType.Payable.ToString(), "'");             // Filter Record for check? Already exist or not.
             if(tb_Ledger.MyDataView.Count==0)
             {
                 DataTableClass fun_BillPayable = new(UserName, Tables.fun_BillPayableEntry);                                    // Get SQLite View for Entry
@@ -100,8 +100,6 @@ namespace Applied_WebApplication.Data
                 foreach(DataRow Row in fun_BillPayable.MyDataView.ToTable().Rows)
                 {
                     DataRow LedgerRow = tb_Ledger.NewRecord();
-
-
                     //VoucherRows.(LedgerRow);
                 }
             }

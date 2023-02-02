@@ -34,6 +34,7 @@
     <Content Remove="wwwroot\SQLiteDB\Altamash.db" />
     <Content Remove="wwwroot\SQLiteDB\Amcorp.db" />
     <Content Remove="wwwroot\SQLiteDB\Guest.DB" />
+    <Content Remove="wwwroot\SQLiteDB\HFSSteel.db" />
     <Content Remove="wwwroot\SQLiteDB\Test.db" />
     <Content Remove="wwwroot\SQLiteDB\Winmark.db" />
   </ItemGroup>
@@ -43,12 +44,14 @@
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.12" />
+    <PackageReference Include="Microsoft.Win32.Primitives" Version="4.3.0" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
     <PackageReference Include="System.Security.Permissions" Version="7.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="DataSets\" />
+    <Folder Include="wwwroot\Backup\" />
     <Folder Include="wwwroot\PrintedReports\Users\" />
   </ItemGroup>
 

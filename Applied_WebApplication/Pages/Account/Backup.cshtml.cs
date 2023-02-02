@@ -1,13 +1,16 @@
+using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.IO;
-using System.Net;
+using Applied_WebApplication.Data;
+using System.IO.Compression;
 
 namespace Applied_WebApplication.Pages.Account
 {
     public class BackupModel : PageModel
     {
-        public string FileName;
+        [BindProperty]
+        public string FileName { get; set; }
+        public string BackFileName { get; set; }
         public string Message { set; get; }
         public void OnGet()
         {
@@ -18,24 +21,28 @@ namespace Applied_WebApplication.Pages.Account
         public void OnPost()
         {
             UserProfile uprofile = new(User.Identity.Name);
-            string BackupFileName = DateTime.Now.ToString("yyyyMMddhhmmss_") + uprofile.DBFileName;
+            string backupfilename = DateTime.Now.ToString("yyyymmddhhmmss_") + uprofile.DBFileName;
             if (System.IO.File.Exists(uprofile.DBFilePath))
             {
-                var BackupFilePath = Path.Combine(Path.GetTempPath(), BackupFileName);
+                Message = "Process is uder development.";
 
+
+                var BackupTargetPath = Path.Combine("./wwwroot/backup/", backupfilename);
                 try
                 {
-                    System.IO.File.Copy(uprofile.DBFilePath, BackupFilePath);
-                    AppRegistry.SetKey(User.Identity.Name, "Backup", BackupFileName, KeyType.Text, "Backup taken for save data");
-                    AppRegistry.SetKey(User.Identity.Name, "Backup", DateTime.Now, KeyType.Date, "Backup taken for save data");
-                    Message = "Backup has been successfully done at " + BackupFilePath;
+                    //System.IO.File.  Copy(uprofile.DBFilePath, BackupTargetPath);
+                    //AppRegistry.SetKey(User.Identity.Name, "backup", backupfilename, KeyType.Text, "backup taken for save data");
+                    //AppRegistry.SetKey(User.Identity.Name, "backup", DateTime.Now, KeyType.Date, "backup taken for save data");
+                    //Message = "backup has been successfully done at " + BackupTargetPath;
                 }
                 catch (Exception)
                 {
-                    Message = "Backup process is fail. Contact to Administrator"; 
-                    throw;
+                    Message = "Process is uder development.";
                 }
             }
         }
+
+
+
     }
 }

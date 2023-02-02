@@ -3,7 +3,6 @@
 @model Applied_WebApplication.Pages.Applied.PostingModel
 @{
     var UserName = User.Identity.Name;
-
     var NumFormat = GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
     var DateFormat = GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
 }
@@ -17,8 +16,8 @@
     <div class="container mb-2">
         <div class="row d-flex align-items-baseline">
             <div class="col-md-4">
-                <select class="form-select" aria-label="PostingTypeSelection" name="PostingType" asp-for="My.PostingType">
-                    <option selected>Select ...... Posting Type</option>
+                <select class="form-select" aria-label="PostingTypeSelection" asp-for="@Model.Variables.PostingType">
+                    <option selected>Select......</option>
                     <option value="1">Cash Book</option>
                     <option value="2">Bank book</option>
                     <option value="3">Write Cheque</option>
@@ -30,14 +29,14 @@
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
-                    <label class="input-group-text" asp-for="@Model.My.Dt_From" style="width: 30%">From </label>
-                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_From"  asp-for="@Model.My.Dt_From" />
+                    <label class="input-group-text" asp-for="@Model.Variables.Dt_From" style="width: 30%">From </label>
+                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_From" asp-for="@Model.Variables.Dt_From" />
                 </div>
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
-                    <label class="input-group-text" asp-for="@Model.My.Dt_To" style="width: 30%">To </label>
-                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_To" asp-for="@Model.My.Dt_To" />
+                    <label class="input-group-text" asp-for="@Model.Variables.Dt_To" style="width: 30%">To </label>
+                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_To" asp-for="@Model.Variables.Dt_To" />
                 </div>
             </div>
             <div class="col-md-2 d-grid">
@@ -52,7 +51,7 @@
 @if (Model.PostTable != null)
 {
 
-    <div class="container overflow-scroll" style="max-height: 100vh">
+    <div id="TableList" class="container overflow-scroll" style="min-height:400px  max-height: 100vh">
         <div class="row">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -84,8 +83,8 @@
                                    class="btn btn-link"
                                    value="Post"
                                    asp-page-handler="Posting"
-                                   asp-route-id=@Row["ID"] 
-                                    asp-route-PostingType=@Model.My.PostingType >
+                                   asp-route-id=@Row["ID"]
+                                   asp-route-PostingType=@Model.Variables.PostingType>
                                 </form>
                             </td>
                         </tr>

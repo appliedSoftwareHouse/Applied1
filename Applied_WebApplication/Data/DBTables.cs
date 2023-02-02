@@ -86,3 +86,13 @@ public enum VoucherStatus
     Posted = 2,
 }
 
+public enum VoucherType
+{
+    Cash = 1,
+    Bank = 2,
+    Cheque = 3,
+    Payable = 4,
+    Receivable = 5,
+    Payment = 6,
+    Receipt =7
+}
