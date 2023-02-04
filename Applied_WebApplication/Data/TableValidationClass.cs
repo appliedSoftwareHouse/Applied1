@@ -260,6 +260,7 @@ namespace Applied_WebApplication.Data
 
             if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom()) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is less than Fiscal Year Date." }); }
             if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
+            if ((string.IsNullOrEmpty(Row["Inv_No"].ToString()))) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Number value is null, not allowed." }); }
             if ((DateTime)Row["Inv_Date"] < AppRegistry.MinDate) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Voucher Date is higher than Fiscan year end date." }); }
             if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Payment Date is less than invoice date, Enter Valid Date." }); }
             if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11101, Msg = "Comapny is not selected. select any one." }); }
@@ -283,8 +284,8 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Inventory is not selected. Select any one." }); }
             if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Inventory Batch is not define. Nil value not allowed." }); }
             if ((int)Row["Tax"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Tax Category is not selected. Select any one." }); }
-            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
-            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value not allowed." }); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Quantity value is zero.  Zero value is not allowed." }); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 11201, Msg = "Rate is zero.  Zero value is not allowed." }); }
         }
         private void ValidateTable_Inventory(DataRow Row)
         {

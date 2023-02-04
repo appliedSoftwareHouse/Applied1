@@ -86,9 +86,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date)
+                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
 
+            var _FileType = (FileType)AppRegistry.GetKey(UserName, "ReportType", KeyType.Number);
 
             DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
 
@@ -101,7 +102,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 RDLCFileName = "Ledger.rdlc",
                 ReportData = tb_Ledger,
                 OutputFileName = "GeneralLedger",
-                OutputFileType = FileType.pdf,
+                OutputFileType = _FileType
             };
             MyReport.Parameters.Add("UserName", UserName);
             MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));

@@ -7,22 +7,22 @@
     var Titles_Employee = Titles(UserName, Tables.Employees);
     var Titles_Inventory = Titles(UserName, Tables.Inventory);
 
-    var TitleCOA = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_COA);
-    var TitleCustomer = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Customer);
-    var TitleProject = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Project);
-    var TitleEmployee = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Employee);
-    var TitleInventory = GetTitle(UserName, Tables.Customers, Model.Paramaters.N_Inventory);
+    var TitleCOA = GetTitle(UserName, Tables.Customers, Model.Parameters.N_COA);
+    var TitleCustomer = GetTitle(UserName, Tables.Customers, Model.Parameters.N_Customer);
+    var TitleProject = GetTitle(UserName, Tables.Customers, Model.Parameters.N_Project);
+    var TitleEmployee = GetTitle(UserName, Tables.Customers, Model.Parameters.N_Employee);
+    var TitleInventory = GetTitle(UserName, Tables.Customers, Model.Parameters.N_Inventory);
 
-    var Date1 = Model.Paramaters.Dt_From;
-    var Date2 = Model.Paramaters.Dt_To;
-    
+    var Date1 = Model.Parameters.Dt_From;
+    var Date2 = Model.Parameters.Dt_To;
+
 
 }
 
 <script>
-    $(function(){
-       $('.datepicker').datepicker({
-          format: 'dd-MM-yyyy'
+    $(function () {
+        $('.datepicker').datepicker({
+            format: 'dd-MM-yyyy'
         });
     });
 </script>
@@ -39,7 +39,7 @@
             <div class="col-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Customer">Account</span>
-                    <select class="form-select" name="N_COA" asp-for="@Model.Paramaters.N_COA">
+                    <select class="form-select" name="N_COA" asp-for="@Model.Parameters.N_COA">
                         <option selected>@TitleCOA</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA))
                         {
@@ -55,9 +55,9 @@
                     <input type="Date"
                            id="DateFrom"
                            name="Dt_From"
-                           value="@Model.Paramaters.Dt_From.ToString(AppRegistry.DateYMD)"
+                           value="@Model.Parameters.Dt_From.ToString(AppRegistry.DateYMD)"
                            format="dd-MM-yyyy"
-                           class="form-control" 
+                           class="form-control"
                            placeholder="dd-MM-yyyy">
                 </div>
             </div>
@@ -65,30 +65,42 @@
                 <div class="input-group">
                     <label class="input-group-text" for="DateTo">To</label>
                     <input type="Date"
-                        id="DateTo"
+                           id="DateTo"
                            name="Dt_To"
-                           value="@Model.Paramaters.Dt_To.ToString(AppRegistry.DateYMD)"
+                           value="@Model.Parameters.Dt_To.ToString(AppRegistry.DateYMD)"
                            format="dd-MM-yyyy"
                            class="form-control"
                            placeholder="Voucher Date">
                 </div>
             </div>
             <div class="col-2">
-                <input type="submit" class="btn btn-primary" value="PRINT" asp-page-handler="GL"/>
-            </div>
-        </div>
-        <div class="row mt-1">
-            <div class="col">
-                <input type="submit" class="btn btn-primary" value="PRINT" />
+                <button type="submit"
+                        class="btn btn-primary"
+                        asp-route-rprType="@ReportClass.FileType.pdf"
+                        asp-page-handler="GL">
+                    <i class="bi bi-printer"></i>
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        asp-route-rprType="@ReportClass.FileType.excel"
+                        asp-page-handler="GL">
+                    <i class="bi bi-filetype-xls"></i>
+                </button>
+
+                <button type="submit"
+                        class="btn btn-primary"
+                        asp-route-rprType="@ReportClass.FileType.word"
+                        asp-page-handler="GL">
+                    <i class="bi bi-filetype-doc"></i>
+                </button>
             </div>
         </div>
 
         <div class="row">
             <div class="col-4">
-
             </div>
             <div class="col-4">
-
             </div>
             <div class="col-4">
             </div>

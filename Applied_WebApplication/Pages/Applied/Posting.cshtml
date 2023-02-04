@@ -16,27 +16,27 @@
     <div class="container mb-2">
         <div class="row d-flex align-items-baseline">
             <div class="col-md-4">
-                <select class="form-select" aria-label="PostingTypeSelection" asp-for="@Model.Variables.PostingType">
+                <select class="form-select" asp-for="@Model.Variables.PostingType" name="PostingType">
                     <option selected>Select......</option>
                     <option value="1">Cash Book</option>
-                    <option value="2">Bank book</option>
+                    <option value="2">Bankbook</option>
                     <option value="3">Write Cheque</option>
-                    <option value="4">Bills Payable</option>
-                    <option value="5">Bills Receivable</option>
-                    <option value="6">Payments</option>
-                    <option value="7">Receipts</option>
+                    <option value="4">Bill Payable</option>
+                    <option value="5">Bill Receivable</option>
+                    <option value="6">Payment</option>
+                    <option value="7">Receipt</option>
                 </select>
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
-                    <label class="input-group-text" asp-for="@Model.Variables.Dt_From" style="width: 30%">From </label>
-                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_From" asp-for="@Model.Variables.Dt_From" />
+                    <label class="input-group-text" style="width: 30%">From </label>
+                    <input class="TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_From" />
                 </div>
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
-                    <label class="input-group-text" asp-for="@Model.Variables.Dt_To" style="width: 30%">To </label>
-                    <input class="TextCenter" style="width: 70%" type="date" name="Dt_To" asp-for="@Model.Variables.Dt_To" />
+                    <label class="input-group-text"  style="width: 30%">To </label>
+                    <input class="TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_To" />
                 </div>
             </div>
             <div class="col-md-2 d-grid">
@@ -51,7 +51,7 @@
 @if (Model.PostTable != null)
 {
 
-    <div id="TableList" class="container overflow-scroll" style="min-height:400px  max-height: 100vh">
+    <div id="TableList" class="container overflow-scroll" style="min-height:400px;  max-height: 100vh">
         <div class="row">
             <table class="table table-bordered table-hover">
                 <thead>
@@ -94,4 +94,14 @@
         </div>
     </div>
 
+}
+else
+{
+
+    @if (Model.IsError)
+    {
+        <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+    }
+
+    <h5>No Record Found</h5>
 }

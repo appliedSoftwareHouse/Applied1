@@ -9,12 +9,15 @@ namespace Applied_WebApplication.Pages.Applied
     public class PostingModel : PageModel
     {
         [BindProperty]
-        public PostingData Variables { get; set; } = new();
+        public MyParameters Variables { get; set; }
         public DataTable PostTable;
+        public bool IsError { get; set; }
+        public List<Message> ErrorMessages { get; set; }
 
         public void OnGet()
         {
             string UserName = User.Identity.Name;
+            Variables = new();
             Variables.PostingType = (int)AppRegistry.GetKey(UserName, "Posting_Type", KeyType.Number);
             Variables.Dt_From = (DateTime)AppRegistry.GetKey(UserName, "Post_dt_From", KeyType.Date);
             Variables.Dt_To = (DateTime)AppRegistry.GetKey(UserName, "Post_dt_To", KeyType.Date);
@@ -51,18 +54,12 @@ namespace Applied_WebApplication.Pages.Applied
             }
         }
 
-        public void OnGetRefresh()
+        public IActionResult OnPostRefresh()
         {
             string UserName = User.Identity.Name;
-            Variables.PostingType = (int)AppRegistry.GetKey(UserName, "Posting_Type", KeyType.Number);
-            Variables.Dt_From = (DateTime)AppRegistry.GetKey(UserName, "Post_dt_From", KeyType.Date);
-            Variables.Dt_To = (DateTime)AppRegistry.GetKey(UserName, "Post_dt_To", KeyType.Date);
 
-        }
+            if(Variables.PostingType==0) { Variables.PostingType = int.Parse(Request.Form["PostingType"]); }
 
-        public void OnPostRefresh()
-        {
-            string UserName = User.Identity.Name;
             AppRegistry.SetKey(UserName, "Post_Type", Variables.PostingType, KeyType.Number);
             AppRegistry.SetKey(UserName, "Post_dt_From", Variables.Dt_From, KeyType.Date);
             AppRegistry.SetKey(UserName, "Post_dt_To", Variables.Dt_To, KeyType.Date);
@@ -97,24 +94,23 @@ namespace Applied_WebApplication.Pages.Applied
                 default:
                     break;
             }
+            return Page();
         }
 
         public IActionResult OnPostPosting(int id, int PostingType)
         {
             var UserName = User.Identity.Name;
             if (PostingType == (int)PostType.CashBook) { PostingClass.PostCashBook(UserName, id);}
-            if (PostingType == (int)PostType.BillPayable) { PostingClass.PostBillPayable(UserName, id); }
-
+            if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
+            if(ErrorMessages.Count==0) { IsError=false; } else { IsError=true; return Page(); }
             return RedirectToPage("Posting", "Refresh");
-
-            //return Page();
         }
 
-        public class PostingData
+        public class MyParameters
         {
             public int PostingType { get; set; }
-            public DateTime Dt_From { get; set; }
-            public DateTime Dt_To { get; set; }
+            public DateTime Dt_From { get; set; } = DateTime.Now;
+            public DateTime Dt_To { get; set; } = DateTime.Now;
         }
 
     }

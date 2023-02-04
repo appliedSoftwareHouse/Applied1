@@ -82,6 +82,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Row["Comments"] = BookRecord.Comments;
             Row["Project"] = BookRecord.Project;
             Row["Employee"] = BookRecord.Employee;
+            Row["Status"] = VoucherStatus.Submitted;
             Table.Save();
 
             if (Table.IsError)

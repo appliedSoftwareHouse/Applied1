@@ -8,7 +8,7 @@ using System.Text;
 namespace Applied_WebApplication.Data
 {
 
-    public class DataTableClass
+    public class DataTableClass 
     {
         #region Initial
 
@@ -17,6 +17,7 @@ namespace Applied_WebApplication.Data
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
         public TableValidationClass TableValidation;
+        public int ErrorCount { get => TableValidation.MyMessages.Count; }
         public string MyTableName;
         public bool IsError = false;
         public string MyMessage;
@@ -215,7 +216,6 @@ namespace Applied_WebApplication.Data
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
-
         public bool Seek(string _Code)
         {
             string Filter = MyDataView.RowFilter;
@@ -228,7 +228,6 @@ namespace Applied_WebApplication.Data
             else
             { MyDataView.RowFilter = Filter; return false; }
         }
-
         public DataRow SeekRecord(int _ID)
         {
             DataRow row;    // = MyDataTable.NewRow();
@@ -254,7 +253,7 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = Filter;
             return row;
         }
-        internal bool Seek(string _Column, string _ColumnValue)
+        internal bool Seek(string _Column, string _ColumnValue)                     // Search a specific colum by specific valu.
         {
             bool _result = true;
             string _Filter = MyDataView.RowFilter;
@@ -287,7 +286,6 @@ namespace Applied_WebApplication.Data
             return Title;
         }
         public int ViewRecordCount() { return MyDataView.Count; }
-
         public bool Replace(int _ID, string _Column, object _Value)
         {
 
@@ -300,7 +298,6 @@ namespace Applied_WebApplication.Data
             }
             return true;
         }
-
         public bool IsRowValid(DataRow Row, CommandAction SQLAction, PostType postType)
         {
             TableValidation = new(MyDataTable);

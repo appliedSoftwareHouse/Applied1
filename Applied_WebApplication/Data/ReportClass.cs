@@ -19,7 +19,7 @@ namespace Applied_WebApplication.Data
         public string OutputFileName { get; set; }                                    // Output File .pdf, .doc or .xls
         public string OutputFile { get => GetOutputFile(); }                     // Path + file name of printed report PDF/Doc/xls.
         public string OutputPath { get => GetOutputPath(); }                  // Path where to printed report store.
-        public string OutputFileLink { get => GetOutputFileLink();}                                       // Location to printed report PDF.
+        public string OutputFileLink { get => GetOutputFileLink(); }                                       // Location to printed report PDF.
         public FileType OutputFileType { get; set; }                                  // Rendered file type pdf, word, excel
 
         public string RDLCFilePath { get => AppGlobals.ReportRoot; }    // RDLC report path
@@ -31,7 +31,7 @@ namespace Applied_WebApplication.Data
         public string CommandText { get; set; }                                        // commad for factch date from DB
         public string CommandFilter { get; set; }                                        // commad for factch date from DB
 
-      
+
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public Dictionary<string, string> ReportParameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public string MyMessage { get; set; }                                          // Store message of the class
@@ -61,24 +61,32 @@ namespace Applied_WebApplication.Data
 
         public void GetReport()
         {
-            if (!Directory.Exists(GetOutputPath())) { Directory.CreateDirectory(GetOutputPath()); }     // Create a Directory if not existed.
-            if (File.Exists(GetOutputFile())) { File.Delete(GetOutputFile()); }                                          // Delete output file if exist.
-
-            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-            Encoding.GetEncoding("windows-1252");
-            LocalReport _Report = new LocalReport(RDLCFile);                                                             // Create Report Object.
-            if(ReportData==null) { ReportData = GetReportDataTable(); }                                             // Get data from default source 
-            _Report.AddDataSource(RDLCDataSet, ReportData);                                                                   // Create DataTabel and inject in report.
-            var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
-            byte[] bytes = result.MainStream;
-            MyBytes = bytes;
-            using (FileStream fstream = new FileStream(OutputFile, FileMode.Create))
+            if (OutputFile.Length > 0)
             {
-                fstream.Write(bytes, 0, bytes.Length);
-                MyFileStream = fstream;
+
+                if (!Directory.Exists(GetOutputPath())) { Directory.CreateDirectory(GetOutputPath()); }     // Create a Directory if not existed.
+                if (File.Exists(GetOutputFile())) { File.Delete(GetOutputFile()); }                                          // Delete output file if exist.
+
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                Encoding.GetEncoding("windows-1252");
+                LocalReport _Report = new LocalReport(RDLCFile);                                                             // Create Report Object.
+                if (ReportData == null) { ReportData = GetReportDataTable(); }                                             // Get data from default source 
+                _Report.AddDataSource(RDLCDataSet, ReportData);                                                                   // Create DataTabel and inject in report.
+                var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
+                byte[] bytes = result.MainStream;
+                MyBytes = bytes;
+                using (FileStream fstream = new FileStream(OutputFile, FileMode.Create))
+                {
+                    fstream.Write(bytes, 0, bytes.Length);
+                    MyFileStream = fstream;
+                }
+                IsError = false;
+                MyMessage = "Report generated. " + OutputFile;
             }
-            IsError = false;
-            MyMessage = "Report generated. " + OutputFile;
+            else
+            {
+                MyMessage = "Output File name not define. " + OutputFile;
+            }
         }
 
         public DataTable GetReportDataTable()
@@ -128,11 +136,10 @@ namespace Applied_WebApplication.Data
 
         public enum FileType
         {
-            pdf,
-            word,
-            excel
+            pdf = 1,
+            excel = 2,
+            word = 3
         }
-
 
         public class ReportFilters
         {

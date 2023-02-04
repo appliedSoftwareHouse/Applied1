@@ -48,14 +48,12 @@ public enum Tables
 
 
 }
-
 public enum CommandAction
 {
     Insert,
     Update,
     Delete
 }
-
 public enum KeyType
 {
     Number,
@@ -68,7 +66,6 @@ public enum KeyType
     To,
     FromTo,
 }
-
 public enum PostType
 {
     CashBook = 1,
@@ -79,13 +76,13 @@ public enum PostType
     Payment = 6,
     Receipt = 7
 }
-
 public enum VoucherStatus
 {
     Submitted = 1,
-    Posted = 2,
+    Approving = 2,
+    Approved = 3,
+    Posted = 4,
 }
-
 public enum VoucherType
 {
     Cash = 1,

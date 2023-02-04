@@ -8,26 +8,26 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Pages\HR\**" />
     <Compile Remove="Reports\**" />
     <Compile Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <Compile Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <Compile Remove="wwwroot\Reports\PrintReports\**" />
-    <Content Remove="Pages\HR\**" />
+    <Compile Remove="wwwroot\SQLiteDB\Temp\**" />
     <Content Remove="Reports\**" />
     <Content Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <Content Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <Content Remove="wwwroot\Reports\PrintReports\**" />
-    <EmbeddedResource Remove="Pages\HR\**" />
+    <Content Remove="wwwroot\SQLiteDB\Temp\**" />
     <EmbeddedResource Remove="Reports\**" />
     <EmbeddedResource Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <EmbeddedResource Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <EmbeddedResource Remove="wwwroot\Reports\PrintReports\**" />
-    <None Remove="Pages\HR\**" />
+    <EmbeddedResource Remove="wwwroot\SQLiteDB\Temp\**" />
     <None Remove="Reports\**" />
     <None Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <None Remove="wwwroot\PrintedReports\Users\Admin\**" />
     <None Remove="wwwroot\Reports\PrintReports\**" />
+    <None Remove="wwwroot\SQLiteDB\Temp\**" />
   </ItemGroup>
 
   <ItemGroup>

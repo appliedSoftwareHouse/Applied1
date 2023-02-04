@@ -54,7 +54,17 @@ namespace Applied_WebApplication.Data
             return TaxRate;
         }
 
-
+        public static int GetTaxCOA(string UserName, int TaxID)
+        {
+            int TaxCOA = 0;
+            DataTableClass tb_Tax = new(UserName, Tables.Taxes);
+            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            if (tb_Tax.MyDataView.Count > 0)
+            {
+                TaxCOA = (int)tb_Tax.MyDataView[0]["COA"];
+            }
+            return TaxCOA;
+        }
 
         #endregion
 
@@ -177,6 +187,19 @@ namespace Applied_WebApplication.Data
             _Table.MyDataView.RowFilter = _Filter;
             return _Table.MyDataView.ToTable();
         }
+
+        public static DataRow GetRecord(string UserName, Tables _TableName, int id)
+        {
+            DataTableClass _Table = new(UserName, _TableName);
+            _Table.MyDataView.RowFilter = String.Concat("ID=", id.ToString());
+            if(_Table.MyDataView.Count==1)
+            {
+                return _Table.MyDataView[0].Row;
+            }
+            return _Table.NewRecord();
+        }
+
+
 
         public static DataRow NewRecord(string UserName, Tables _TableName)
         {

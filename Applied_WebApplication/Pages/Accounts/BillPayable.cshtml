@@ -8,6 +8,8 @@
     var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Variables.Company);
     var TitleTax = GetTitle(UserName, Tables.Taxes, Model.Variables.Tax);
     var TitleInventory = GetTitle(UserName, Tables.Taxes, Model.Variables.Inventory);
+    var TitleProject = GetTitle(UserName, Tables.Taxes, Model.Variables.Project);
+    var TitleEmployee = GetTitle(UserName, Tables.Taxes, Model.Variables.Employee);
     var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
 
 }
@@ -98,7 +100,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col">
                     <div class="input-group">
@@ -125,7 +126,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col">
                     <div class="input-group">
@@ -133,6 +133,26 @@
                         <input type="text" class="form-control" asp-for="@Model.Variables.Ref_No">
                     </div>
                 </div>
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Employee</span>
+                        <select class="form-select" asp-for="@Model.Variables.Employee">
+                            <option selected>@TitleEmployee</option>
+                            @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                            {
+                                <option value="@_Title.Key">@_Title.Value</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Net Amount</span>
+                        <input type="text" class="form-control" id="NetAmount" asp-for="@Model.Variables.TotInv" readonly>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div class="col">
                     <div class="input-group">
                         <span class="input-group-text">Description</span>
@@ -145,6 +165,14 @@
                         <input type="text" class="form-control" asp-for="@Model.Variables.Comments">
                     </div>
                 </div>
+                <div class="col">
+                    <div class="input-group">
+                        <span class="input-group-text">Comments</span>
+                        <input type="text" class="form-control" asp-for="@Model.Variables.Comments">
+                    </div>
+                </div>
+
+
             </div>
         </div>
         <hr class="my-hr" />
@@ -172,8 +200,14 @@
                 </div>
                 <div class="col">
                     <div class="input-group">
-                        <span class="input-group-text">Batch</span>
-                        <input type="text" class="form-control" asp-for="@Model.Variables.Batch">
+                        <span class="input-group-text">Project</span>
+                        <select class="form-select" asp-for="@Model.Variables.Project">
+                            <option selected>@TitleProject</option>
+                            @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                            {
+                                <option value="@_Title.Key">@_Title.Value</option>
+                            }
+                        </select>
                     </div>
                 </div>
             </div>
@@ -194,8 +228,8 @@
 
                 <div class="col">
                     <div class="input-group">
-                        <span class="input-group-text">Description</span>
-                        <input type="text" class="form-control" asp-for="@Model.Variables.Description2">
+                        <span class="input-group-text">Batch</span>
+                        <input type="text" class="form-control" asp-for="@Model.Variables.Batch">
                     </div>
                 </div>
             </div>
@@ -222,8 +256,8 @@
                 </div>
                 <div class="col">
                     <div class="input-group">
-                        <span class="input-group-text">Net Amount</span>
-                        <input type="text" class="form-control" id="NetAmount" asp-for="@Model.Variables.NetAmount" readonly>
+                        <span class="input-group-text">Description</span>
+                        <input type="text" class="form-control" asp-for="@Model.Variables.Description2">
                     </div>
                 </div>
             </div>
@@ -235,6 +269,7 @@
             <div clsss=col>
                 <input type="text" asp-for="@Model.Variables.ID" hidden />
                 <input type="text" asp-for="@Model.Variables.ID2" hidden />
+                <input type="text" asp-for="@Model.Variables.Status" hidden />
                 @if (Model.Variables.Status == VoucherStatus.Submitted.ToString())
                 {
                     <input type="submit" class="btn btn-primary btn-sm" value="SAVE" asp-page-handler="Save" />

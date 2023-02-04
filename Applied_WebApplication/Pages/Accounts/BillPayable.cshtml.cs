@@ -16,11 +16,9 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public MyParameters Variables { get; set; } = new();
         public DataTable BillRecords { get; set; }
-        public DataTable tb_BillPay1 { get; set; }
-        public DataTable tb_BillPay2 { get; set; }
-
-        public List<Message> ErrorMessages = new();
         public int ErrorCount { get => ErrorMessages.Count; }
+        public bool IsPosted = false;
+        public List<Message> ErrorMessages = new();
 
         #region Get / Post
 
@@ -95,22 +93,27 @@ namespace Applied_WebApplication.Pages.Accounts
             DataRow Row1 = BillPay1.NewRecord();
             DataRow Row2 = BillPay2.NewRecord();
 
+            Variables.Status = VoucherStatus.Submitted.ToString();
+
             Row1["ID"] = Variables.ID;
             Row1["Vou_No"] = Variables.Vou_No;
             Row1["Vou_Date"] = Variables.Vou_Date;
             Row1["Pay_Date"] = Variables.Pay_Date;
             Row1["Company"] = Variables.Company;
+            Row1["Employee"] = Variables.Employee;
             Row1["Inv_No"] = Variables.Inv_No;
             Row1["Inv_Date"] = Variables.Inv_Date;
             Row1["Ref_No"] = Variables.Ref_No;
             Row1["Amount"] = Variables.Amount;
             Row1["Description"] = Variables.Description;
             Row1["Comments"] = Variables.Comments;
+            Row1["Status"] = Variables.Status;
 
             Row2["ID"] = Variables.ID2;
             Row2["TranID"] = Variables.ID;
             Row2["Sr_No"] = Variables.SR_No;
             Row2["Inventory"] = Variables.Inventory;
+            Row2["Project"] = Variables.Project;
             Row2["Batch"] = Variables.Batch;
             Row2["Qty"] = Variables.Qty;
             Row2["Rate"] = Variables.Rate;
@@ -160,7 +163,6 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
         }
 
-
         #endregion
 
         #region Methods
@@ -180,7 +182,6 @@ namespace Applied_WebApplication.Pages.Accounts
 
             BillPay1.MyDataView.RowFilter = string.Concat("ID=", id.ToString());                        // Get Record of Bill Payable 1
             if (BillPay1.MyDataView.Count > 0) { Row1 = BillPay1.MyDataView[0].Row; }
-            
 
             if (id2 == -1)                                          // Get First record of Bill Payable 2 Table
             {
@@ -224,12 +225,14 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.Vou_Date = DateTime.Now;
                 Variables.Pay_Date = DateTime.Now;
                 Variables.Company = 0;
+                Variables.Employee = 0;
                 Variables.Ref_No = string.Empty;
                 Variables.Inv_No = string.Empty;
                 Variables.Inv_Date = DateTime.Now;
                 Variables.Amount = 0.00M;
                 Variables.Description = string.Empty;
                 Variables.Comments = string.Empty;
+                Variables.Status = VoucherStatus.Submitted.ToString(); ;
             }
             else
             {
@@ -239,6 +242,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 if (Row1["Vou_Date"] == DBNull.Value) { Row1["Vou_Date"] = DateTime.Now; }
                 if (Row1["Pay_Date"] == DBNull.Value) { Row1["Pay_Date"] = DateTime.Now; }
                 if (Row1["Company"] == DBNull.Value) { Row1["Company"] = 0; }
+                if (Row1["Employee"] == DBNull.Value) { Row1["Employee"] = 0; }
                 if (Row1["Ref_No"] == DBNull.Value) { Row1["Ref_No"] = string.Empty; }
                 if (Row1["Inv_No"] == DBNull.Value) { Row1["Inv_No"] = string.Empty; }
                 if (Row1["Inv_Date"] == DBNull.Value) { Row1["Inv_Date"] = DateTime.Now; }
@@ -252,6 +256,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.Vou_Date = (DateTime)Row1["Vou_Date"];
                 Variables.Pay_Date = (DateTime)Row1["Pay_Date"];
                 Variables.Company = (int)Row1["Company"];
+                Variables.Employee = (int)Row1["Employee"];
                 Variables.Ref_No = (string)Row1["Ref_No"];
                 Variables.Inv_No = (string)Row1["Inv_No"];
                 Variables.Inv_Date = (DateTime)Row1["Inv_Date"];
@@ -272,6 +277,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.TranID = Variables.ID;
                 Variables.SR_No = 0;
                 Variables.Inventory = 0;
+                Variables.Project = 0;
                 Variables.Batch = string.Empty;
                 Variables.Qty = 0.00M;
                 Variables.Rate = 0.00M;
@@ -288,6 +294,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 if (Row2["TranID"] == DBNull.Value) { Row2["TranID"] = 0; }
                 if (Row2["Sr_No"] == DBNull.Value) { Row2["Sr_No"] = 0; }
                 if (Row2["Inventory"] == DBNull.Value) { Row2["Inventory"] = 0; }
+                if (Row2["Project"] == DBNull.Value) { Row2["Project"] = 0; }
                 if (Row2["Batch"] == DBNull.Value) { Row2["Batch"] = string.Empty; }
                 if (Row2["Qty"] == DBNull.Value) { Row2["Qty"] = 0.00M; }
                 if (Row2["Rate"] == DBNull.Value) { Row2["Rate"] = 0.00M; }
@@ -299,6 +306,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.TranID = (int)Row2["TranID"];
                 Variables.SR_No = (int)Row2["Sr_No"];
                 Variables.Inventory = (int)Row2["Inventory"];
+                Variables.Project = (int)Row2["Project"];
                 Variables.Batch = (string)Row2["Batch"];
                 Variables.Qty = (decimal)Row2["Qty"];
                 Variables.Rate = (decimal)Row2["Rate"];
@@ -316,13 +324,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Variables.Tax_Rate = AppFunctions.GetTaxRate(UserName, Variables.Tax);
             // ------------------------------------------------------------------------------------------------------- Get Bill Records.
 
-            BillRecords =
-
             BillRecords = AppFunctions.GetRecords(UserName, Tables.BillPayable2, "TranID=" + Variables.ID);
-
-
-
-
         }
         private int MaxSrNo()
         {
@@ -374,6 +376,8 @@ namespace Applied_WebApplication.Pages.Accounts
         public DateTime Vou_Date { get; set; }
         public DateTime Pay_Date { get; set; }
         public int Company { get; set; }
+        
+        public int Employee { get; set; }
         public string Ref_No { get; set; }
         public string Inv_No { get; set; }
         public DateTime Inv_Date { get; set; }
@@ -386,6 +390,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public int TranID { get; set; }
         public int SR_No { get; set; }
         public int Inventory { get; set; }
+        public int Project { get; set; }
         public string Batch { get; set; }
         public decimal Qty { get; set; }
         public decimal Rate { get; set; }
