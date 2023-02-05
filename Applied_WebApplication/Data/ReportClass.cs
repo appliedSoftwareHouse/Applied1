@@ -31,7 +31,6 @@ namespace Applied_WebApplication.Data
         public string CommandText { get; set; }                                        // commad for factch date from DB
         public string CommandFilter { get; set; }                                        // commad for factch date from DB
 
-
         public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public Dictionary<string, string> ReportParameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public string MyMessage { get; set; }                                          // Store message of the class
@@ -39,23 +38,6 @@ namespace Applied_WebApplication.Data
         public byte[] MyBytes { get; set; }                                               // Rendered file bytes for view or print report
         public ReportFilters ReportFilter { get; set; }                               // SQL query Filters
         public bool IsError { get; set; }
-
-        public ReportClass()
-        {
-            ReportFilter = new ReportFilters
-            {
-                Dt_From = DateTime.Now,
-                Dt_To = DateTime.Now,
-                N_ID = 0,
-                N_COA = 0,
-                N_Customer = 0,
-                N_Project = 0,
-                N_Employee = 0,
-                N_Inventory = 0,
-                N_InvSubCategory = 0,
-                N_InvCategory = 0
-            };
-        }
 
         #endregion
 
@@ -70,8 +52,8 @@ namespace Applied_WebApplication.Data
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
                 LocalReport _Report = new LocalReport(RDLCFile);                                                             // Create Report Object.
-                if (ReportData == null) { ReportData = GetReportDataTable(); }                                             // Get data from default source 
-                _Report.AddDataSource(RDLCDataSet, ReportData);                                                                   // Create DataTabel and inject in report.
+                if (ReportData == null) { ReportData = GetReportDataTable(); }                                          // Get data from default source 
+                _Report.AddDataSource(RDLCDataSet, ReportData);                                                           // Create DataTabel and inject in report.
                 var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
                 byte[] bytes = result.MainStream;
                 MyBytes = bytes;
@@ -88,12 +70,10 @@ namespace Applied_WebApplication.Data
                 MyMessage = "Output File name not define. " + OutputFile;
             }
         }
-
         public DataTable GetReportDataTable()
         {
             return GetAppliedTable(UserName, ReportFilter);                      // Get a DataTable from AppFuction 
         }
-
         private string GetOutputFile()
         {
             string output = "";
@@ -102,26 +82,21 @@ namespace Applied_WebApplication.Data
             if (OutputFileType == FileType.excel) { output = string.Concat(GetOutputPath(), OutputFileName, ".xls"); }
             return output;
         }
-
         public string InputReportFile()
         {
             string inputfile = string.Concat(AppGlobals.PrintedReportPath, "\\", RDLCFileName);
             return inputfile;
         }
-
         public string GetOutputFileLink()
         {
             string FileName = string.Concat(OutputFileName, ".", OutputFileType.ToString());
             return string.Concat(AppGlobals.PrintedReportPathLink, UserName, "/", FileName);
         }
-
-
         public string GetOutputPath()
         {
             string outputpath = string.Concat(AppGlobals.PrintedReportPath, UserName, "\\");
             return outputpath;
         }
-
         private static RenderType GetRenderType(string reportType)
         {
             var renderType = reportType.ToLower() switch
@@ -133,14 +108,12 @@ namespace Applied_WebApplication.Data
             };
             return renderType;
         }
-
         public enum FileType
         {
             pdf = 1,
             excel = 2,
             word = 3
         }
-
         public class ReportFilters
         {
             public Tables TableName { get; set; }
@@ -155,8 +128,26 @@ namespace Applied_WebApplication.Data
             public int N_Inventory { get; set; }
             public int N_InvCategory { get; set; }
             public int N_InvSubCategory { get; set; }
+
+            public bool All_COA { get; set; }
+            public bool All_Customer { get; set; }
+
         }
-
-
+        public ReportClass()
+        {
+            ReportFilter = new ReportFilters
+            {
+                Dt_From = DateTime.Now,
+                Dt_To = DateTime.Now,
+                N_ID = 0,
+                N_COA = 0,
+                N_Customer = 0,
+                N_Project = 0,
+                N_Employee = 0,
+                N_Inventory = 0,
+                N_InvSubCategory = 0,
+                N_InvCategory = 0
+            };
+        }
     }
 }

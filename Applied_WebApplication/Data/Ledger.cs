@@ -193,19 +193,41 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_Ledger = new(userName, Tables.Ledger);
             DataTable Result = tb_Ledger.MyDataTable.Clone();
+
             tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
+
+            return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
+        }
+
+        internal static DataTable GetGLCompany(string userName, ReportClass.ReportFilters paramaters)
+        {
+            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
+            DataTable tb_Report = tb_Ledger.MyDataTable.Clone();
+            string _Filter = string.Concat("Customer=", paramaters.N_Customer.ToString()); 
+
+            if (!paramaters.All_COA) {
+                _Filter = string.Concat(_Filter, " AND COA=", paramaters.N_COA.ToString());
+            }
+
+            tb_Ledger.MyDataView.RowFilter = _Filter;
+
+            return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
+        }
+
+        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportClass.ReportFilters paramaters)
+        {
+            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
+            DataTable Result = tb_Ledger.MyDataTable.Clone();
             tb_Ledger.MyDataView.Sort = "Vou_Date";
             decimal Balance = 0.00M;
             bool IsOBalEntry = false;
             DataRow NewRow;
 
-            foreach (DataRow Row in tb_Ledger.MyDataView.ToTable().Rows)
+            foreach (DataRow Row in _Table.Rows)
             {
-
                 DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
                 decimal RowDR = decimal.Parse(Row["DR"].ToString());
                 decimal RowCR = decimal.Parse(Row["CR"].ToString());
-
 
                 if (RowDate < paramaters.Dt_From)
                 {
@@ -249,6 +271,8 @@ namespace Applied_WebApplication.Data
                 }
             }
             return Result;
+
+
         }
 
         public class LedgerParamaters

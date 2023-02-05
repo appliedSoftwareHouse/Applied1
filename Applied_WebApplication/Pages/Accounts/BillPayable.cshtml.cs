@@ -48,11 +48,13 @@ namespace Applied_WebApplication.Pages.Accounts
                     BillPay2.MyDataView.RowFilter = String.Concat("TranID=", id.ToString());
                     if(BillPay2.MyDataView.Count>0)
                     {
-                        int i = 1;
+                        int Sr_No = 1;
                         foreach(DataRow Row in BillPay2.MyDataView.ToTable().Rows)
                         {
+                            BillPay2.CurrentRow = Row;
+                            BillPay2.CurrentRow["Sr_No"] = Sr_No; Sr_No++;
+                            BillPay2.Save();
                         }
-
                     }
 
 
@@ -270,7 +272,6 @@ namespace Applied_WebApplication.Pages.Accounts
             bool IsNewRecord = false; if (Row2 == null || (int)Row2["ID"] == 0) { IsNewRecord = true; }
             Row2 ??= AppFunctions.GetNewRow(UserName, Tables.BillPayable2);
 
-
             if (IsNewRecord)
             {
                 Variables.ID2 = 0;
@@ -285,7 +286,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.Tax_Rate = 0.00M;
                 Variables.Description2 = string.Empty;
                 if (Variables.ID2 == 0) { Variables.SR_No = MaxSrNo(); }                    // Get A Max SR No.
-
             }
             else
             {

@@ -47,7 +47,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.GetReport();                                                                       // Report is ready to print.
             return Page();
 
-            //return new FileContentResult(MyReport.MyBytes, "application/pdf");
+            //return new FileContentResult(MyReport.MyBytes, "application/pdf");            Do not delete it.
 
         }
 
@@ -93,7 +93,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
 
-            string Heading = "General Ledger - " + GetTitle(UserName, Tables.COA, Filters.N_COA);
+            string Heading1 = "<< GENERAL LEDGER >>";
+            string Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
 
             MyReport = new()
             {
@@ -106,11 +107,50 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
             MyReport.Parameters.Add("UserName", UserName);
             MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-            MyReport.ReportParameters.Add("Heading", Heading);
+            MyReport.ReportParameters.Add("Heading1", Heading1);
+            MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
 
             return Page();
         }
+
+        public IActionResult OnGetGLCompany()
+        {
+            var UserName = User.Identity.Name;
+            ReportFilters Filters = new ReportFilters
+            {
+                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
+                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+            };
+
+            var _Date1 = Filters.Dt_From.ToString(AppRegistry.FormatDate);
+            var _Date2 = Filters.Dt_To.ToString(AppRegistry.FormatDate);
+
+            var _FileType = (FileType)AppRegistry.GetKey(UserName, "ReportType", KeyType.Number);               // Get File Type from AppRegistry.
+            var tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
+            var Heading1 = "General Ledger - " + GetTitle(UserName, Tables.Customers, Filters.N_Customer);
+            var Heading2 = string.Concat("From ", _Date1, " To ", _Date2);
+
+            MyReport = new()
+            {
+                UserName = User.Identity.Name,
+                RDLCDataSet = "dsname_CompanyGL",
+                RDLCFileName = "CompanyGL.rdlc",
+                ReportData = tb_Ledger,
+                OutputFileName = "CompanyGL",
+                OutputFileType = _FileType
+            };
+            MyReport.Parameters.Add("UserName", UserName);
+            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+            MyReport.ReportParameters.Add("Heading1", Heading1);
+            MyReport.ReportParameters.Add("Heading2", Heading2);
+            MyReport.GetReport();
+
+            return Page();
+        }
+
 
     }
 }
