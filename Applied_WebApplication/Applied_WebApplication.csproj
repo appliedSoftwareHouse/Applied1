@@ -37,6 +37,7 @@
     <Content Remove="wwwroot\SQLiteDB\HFSSteel.db" />
     <Content Remove="wwwroot\SQLiteDB\Test.db" />
     <Content Remove="wwwroot\SQLiteDB\Winmark.db" />
+    <Content Remove="wwwroot\SQLiteDB\_HFSSteel.db" />
   </ItemGroup>
 
   <ItemGroup>
