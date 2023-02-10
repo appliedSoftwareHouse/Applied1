@@ -30,14 +30,14 @@ namespace Applied_WebApplication.Pages.HR
         }
 
 
-        public IActionResult OnGetSave(int Id)
+        public IActionResult OnPostSave(int Id)
         {
             var UserName = User.Identity.Name;
             DataTableClass _Table = new(UserName, Tables.Employees);
             if(_Table.Seek(Id))
             {
                 _Table.CurrentRow = _Table.SeekRecord(Id);
-                _Table.CurrentRow["ID"] = (int)Variables.ID;
+                _Table.CurrentRow["ID"] = Variables.ID;
                 _Table.CurrentRow["Code"] = Variables.Code.ToString();
                 _Table.CurrentRow["Title"] = Variables.Title.ToString();
                 _Table.CurrentRow["Designation"] = Variables.Designation.ToString();
@@ -46,15 +46,15 @@ namespace Applied_WebApplication.Pages.HR
                 _Table.CurrentRow["Address"] = Variables.Address.ToString();
                 _Table.CurrentRow["City"] = Variables.City.ToString();
                 _Table.CurrentRow["CNIC"] = Variables.CNIC.ToString();
-                _Table.CurrentRow["DOB"] = (DateTime)Variables.DOB;
-                _Table.CurrentRow["Join"] = (DateTime)Variables.Join;
-                _Table.CurrentRow["Left"] = (DateTime)Variables.left;
+                _Table.CurrentRow["DOB"] = Variables.DOB;
+                _Table.CurrentRow["Join"] = Variables.Join;
+                _Table.CurrentRow["Left"] = Variables.left;
             }
             return Page();
         }
 
 
-        public IActionResult OnGetBack()
+        public IActionResult OnPostBack()
         {
             return RedirectToPage("./Employees");
         }

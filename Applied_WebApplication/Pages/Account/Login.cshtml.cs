@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
-namespace Applied_WebApplication.Pages
+namespace Applied_WebApplication.Pages.Account
 {
     public class LoginModel : PageModel
     {
@@ -16,14 +16,14 @@ namespace Applied_WebApplication.Pages
 
         public void OnGet()
         {
-            
+
         }
 
         public async Task<IActionResult> OnPostAsync()
         {
             if (!ModelState.IsValid) return Page();          // Return the login page if user login unsuccessful.
 
-            
+
 
             UserTableClass.UserView.RowFilter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
 
@@ -31,8 +31,8 @@ namespace Applied_WebApplication.Pages
             {
                 UserProfile uprofile = new(UserTableClass.UserView[0].Row);                                             // Get a User Profile from User Record in DataTable.
 
-                if(uprofile.Company == null) { uprofile.Company = "Applied Software House"; }
-                if(uprofile.Designation== null) { uprofile.Designation = "Guest"; }
+                if (uprofile.Company == null) { uprofile.Company = "Applied Software House"; }
+                if (uprofile.Designation == null) { uprofile.Designation = "Guest"; }
 
                 if (MyCredential.Username == uprofile.UserID && MyCredential.Password == uprofile.Password)
                 {
@@ -51,7 +51,7 @@ namespace Applied_WebApplication.Pages
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);
                     await HttpContext.SignInAsync("MyCookieAuth", MyClaimsPrincipal);
 
-                    return RedirectToPage("/Index",uprofile.UserName);
+                    return RedirectToPage("/Index", uprofile.UserName);
                 }
             }
             return Page();
@@ -59,7 +59,7 @@ namespace Applied_WebApplication.Pages
 
         public class Credential
         {
-            [Required (ErrorMessage ="User Name is required")]
+            [Required(ErrorMessage = "User Name is required")]
             public string Username { get; set; } = "User Name";
 
             [Required]

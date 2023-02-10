@@ -1,6 +1,6 @@
 ﻿using System.Data;
 
-namespace Applied_WebApplication;
+namespace Applied_WebApplication.Data;
 
 public enum Tables
 {
@@ -12,13 +12,13 @@ public enum Tables
     COA_Notes = 104,
     CashBook = 105,
     WriteCheques = 106,
-    Taxes =107,
+    Taxes = 107,
     ChequeTranType = 108,
     ChequeStatus = 109,
     TaxTypeTitle = 110,
     BillPayable = 111,
     BillPayable2 = 112,
-    
+
 
     Customers = 201,
     City = 202,
@@ -91,5 +91,6 @@ public enum VoucherType
     Payable = 4,
     Receivable = 5,
     Payment = 6,
-    Receipt =7
+    Receipt = 7,
+    OBalance = 8
 }

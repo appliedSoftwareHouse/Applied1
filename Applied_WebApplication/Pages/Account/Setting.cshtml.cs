@@ -1,9 +1,7 @@
-using Applied_WebApplication.Data;
-using Microsoft.AspNetCore.Components.Web;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Razor.Language.Intermediate;
-using System.Data.SQLite;
+
 
 namespace Applied_WebApplication.Pages.Account
 {

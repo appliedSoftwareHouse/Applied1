@@ -1,5 +1,4 @@
 ﻿using System.Data;
-using Applied_WebApplication.Data;
 using Applied_WebApplication.Pages;
 
 namespace Applied_WebApplication.Data

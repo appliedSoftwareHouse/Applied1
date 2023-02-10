@@ -20,88 +20,91 @@
     <h3 class="TextCenter"> EMPLOYEE'S RECORD'</h3>
 </div>
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Code</span>
-                <input type="text" asp-for="@Model.Variables.Code" class="form-control">
-            </div>
-        </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Name</span>
-                <input type="text" asp-for="@Model.Variables.Title" class="form-control">
+<form method="post">
+    <div class="container">
+        <div>
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Code</span>
+                        <input type="text" asp-for="@Model.Variables.Code" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Name</span>
+                        <input type="text" asp-for="@Model.Variables.Title" class="form-control">
+                    </div>
+
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Designation</span>
+                        <input type="text" asp-for="@Model.Variables.Designation" class="form-control">
+                    </div>
+                </div>
             </div>
 
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Full Name</span>
+                        <input type="text" asp-for="@Model.Variables.FullName" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Contact #</span>
+                        <input type="text" asp-for="@Model.Variables.Contact" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Identity Card</span>
+                        <input type="text" asp-for="@Model.Variables.CNIC" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Birth Date</span>
+                        <input type="date" asp-for="@Model.Variables.DOB" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Joing Date</span>
+                        <input type="date" asp-for="@Model.Variables.Join" class="form-control">
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Left Date</span>
+                        <input type="date" asp-for="@Model.Variables.left" class="form-control">
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Designation</span>
-                <input type="text" asp-for="@Model.Variables.Designation" class="form-control">
+        <div class="row">
+            <input type="text" asp-for="@Model.Variables.ID" hidden />
+
+
+            <div class="col">
+                <a class="btn btn-primary"
+                   asp-route-id=@Model.Variables.ID
+                   asp-page-handler="SAVE">
+                    SAVE
+                </a>
+                <a class="btn btn-primary"
+                   asp-page="./Employees"
+                   asp-page-handler="BACK">
+                    BACK
+                </a>
+
+
             </div>
         </div>
     </div>
-
-    <div class="row">
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Full Name</span>
-                <input type="text" asp-for="@Model.Variables.FullName" class="form-control">
-            </div>
-        </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Contact #</span>
-                <input type="text" asp-for="@Model.Variables.Contact" class="form-control">
-            </div>
-        </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Identity Card</span>
-                <input type="text" asp-for="@Model.Variables.CNIC" class="form-control">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Birth Date</span>
-                <input type="date" asp-for="@Model.Variables.DOB" class="form-control">
-            </div>
-        </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Joing Date</span>
-                <input type="date" asp-for="@Model.Variables.Join" class="form-control">
-            </div>
-        </div>
-        <div class="col">
-            <div class="input-group mb-3">
-                <span class="input-group-text">Left Date</span>
-                <input type="date" asp-for="@Model.Variables.left" class="form-control">
-            </div>
-        </div>
-    </div>
-
-    <div class="row">
-        <input type="text" asp-for="@Model.Variables.ID" hidden />
-
-
-        <div class="col">
-            <a class="btn btn-primary" 
-                asp-page="./Employee"
-               asp-route-id=@Model.Variables.ID
-               asp-page-handler="SAVE">
-                SAVE
-            </a>
-            <a class="btn btn-primary"
-               asp-page-handler="BACK">
-                BACK
-            </a>
-
-
-        </div>
-    </div>
-</div>
+</form>

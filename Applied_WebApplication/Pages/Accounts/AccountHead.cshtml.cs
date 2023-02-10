@@ -1,4 +1,3 @@
-using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
@@ -9,7 +8,8 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class AccountHeadModel : PageModel
     {
-        public AccounHead Record = new();
+        [BindProperty]
+        public AccounHead Record { get; set; } = new();
         public string MyPageAction { get; set; } = "Add";
         public int RecordID = 0;
         public bool IsError;
@@ -35,6 +35,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Record.Class = (int)COA.CurrentRow["Class"];
             Record.Nature = (int)COA.CurrentRow["Nature"];
             Record.Notes = (int)COA.CurrentRow["Notes"];
+            Record.OPENING_BALANCE = (decimal)COA.CurrentRow["OPENING_BALANCE"];
         }
 
         public void OnGetDelete(int id)
@@ -50,12 +51,12 @@ namespace Applied_WebApplication.Pages.Accounts
             Record.Class = (int)COA.CurrentRow["Class"];
             Record.Nature = (int)COA.CurrentRow["Nature"];
             Record.Notes = (int)COA.CurrentRow["Notes"];
-
+            Record.OPENING_BALANCE = (decimal)COA.CurrentRow["OPENING_BALANCE"];
         }
 
-        public IActionResult OnPostSave(AccounHead _Record)
+        public IActionResult OnPostSave(int id)
         {
-            RecordID = _Record.ID;
+            RecordID = id;
             UserName = User.Identity.Name;
             DataTableClass COA = new(UserName, Tables.COA);
             if (COA.Seek(RecordID))
@@ -68,12 +69,12 @@ namespace Applied_WebApplication.Pages.Accounts
                 COA.CurrentRow["ID"] = 0;
             }
 
-            COA.CurrentRow["Code"] = _Record.Code;
-            COA.CurrentRow["Title"] = _Record.Title;
-            COA.CurrentRow["Class"] = _Record.Class;
-            COA.CurrentRow["Nature"] = _Record.Nature;
-            COA.CurrentRow["Notes"] = _Record.Notes;
-            COA.CurrentRow["Opening_Balance"] = _Record.OBal;
+            COA.CurrentRow["Code"] = Record.Code;
+            COA.CurrentRow["Title"] = Record.Title;
+            COA.CurrentRow["Class"] = Record.Class;
+            COA.CurrentRow["Nature"] = Record.Nature;
+            COA.CurrentRow["Notes"] = Record.Notes;
+            COA.CurrentRow["Opening_Balance"] = Record.OPENING_BALANCE;
             COA.Save();
             ErrorMessages = COA.TableValidation.MyMessages;
             if (ErrorMessages.Count == 0) { return RedirectToPage("../Accounts/Directory/COA"); } else { IsError = true; }
@@ -105,7 +106,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int Nature { get; set; }
             public int Class { get; set; }
             public int Notes { get; set; }
-            public decimal OBal { get; set; }
+            public decimal OPENING_BALANCE { get; set; }
         }
     }
 }

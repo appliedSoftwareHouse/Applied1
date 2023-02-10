@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Pages.Applied
         public MyParameters Variables { get; set; }
         public DataTable PostTable;
         public bool IsError { get; set; }
-        public List<Message> ErrorMessages { get; set; }
+        public List<Message> ErrorMessages { get; set; } = new();
 
         public void OnGet()
         {

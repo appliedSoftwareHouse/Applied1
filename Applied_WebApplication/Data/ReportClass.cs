@@ -13,8 +13,9 @@ namespace Applied_WebApplication.Data
         #region Variables
 
         private readonly string mimtype = "";
-        private readonly int extension = 1;
+        private int extension = 1;
         public string UserName { get; set; }                                             // Current User Name
+        //private LocalReport? _Report { get; set; }
 
         public string OutputFileName { get; set; }                                    // Output File .pdf, .doc or .xls
         public string OutputFile { get => GetOutputFile(); }                     // Path + file name of printed report PDF/Doc/xls.
@@ -51,25 +52,40 @@ namespace Applied_WebApplication.Data
 
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                 Encoding.GetEncoding("windows-1252");
-                LocalReport _Report = new LocalReport(RDLCFile);                                                             // Create Report Object.
+
+                LocalReport _Report = new LocalReport(RDLCFile);                                                                                 // Create Report Object.
+
                 if (ReportData == null) { ReportData = GetReportDataTable(); }                                          // Get data from default source 
                 _Report.AddDataSource(RDLCDataSet, ReportData);                                                           // Create DataTabel and inject in report.
-                var result = _Report.Execute(GetRenderType(OutputFileType.ToString()), extension, ReportParameters, mimtype);
-                byte[] bytes = result.MainStream;
-                MyBytes = bytes;
-                using (FileStream fstream = new FileStream(OutputFile, FileMode.Create))
+                ReportResult reportResult;
+                try
                 {
-                    fstream.Write(bytes, 0, bytes.Length);
-                    MyFileStream = fstream;
+                    reportResult = _Report.Execute(GetRenderType(OutputFileType.ToString()), 1, ReportParameters, mimtype);
+                    byte[] bytes = reportResult.MainStream;
+                    MyBytes = bytes;
+                    using (FileStream fstream = new FileStream(OutputFile, FileMode.Create))
+                    {
+                        fstream.Write(bytes, 0, bytes.Length);
+                        MyFileStream = fstream;
+                    }
+                    IsError = false;
+                    MyMessage = "Report generated. " + OutputFile;
                 }
-                IsError = false;
-                MyMessage = "Report generated. " + OutputFile;
+                catch (Exception)
+                {
+                    reportResult = null;
+                    _Report = null;
+                }
             }
             else
             {
                 MyMessage = "Output File name not define. " + OutputFile;
-            }
+            };
+
+            
         }
+
+
         public DataTable GetReportDataTable()
         {
             return GetAppliedTable(UserName, ReportFilter);                      // Get a DataTable from AppFuction 

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc.Razor.Extensions;
+﻿
 using System.Data;
 using System.Security.Claims;
-using System.Security.Principal;
 
 
 namespace Applied_WebApplication.Data

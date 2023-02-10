@@ -1,0 +1,11 @@
+﻿@page
+@model Applied_WebApplication.Pages.Shared.AppMessagesModel
+@{
+    var UserNmae = User.Identity.Name;
+}
+
+@foreach (Message message in Model.ThisMessages)
+{
+    @message.Msg
+    <br />
+}

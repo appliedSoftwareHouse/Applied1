@@ -1,4 +1,3 @@
-using Applied_WebApplication.Data;
 using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,7 +14,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
     public class COAListModel : PageModel
     {
         [BindProperty]
-        public ReportClass MyReport { get; set; } = new ReportClass();
+        public string ReportLink { get; set; }
+        //public ReportClass MyReport { get; set; } = new ReportClass();
 
         public void OnGet()
         {
@@ -28,7 +28,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetCOAList()
         {
             string UserName = User.Identity.Name;
-            MyReport = new ReportClass
+            ReportClass MyReport = new ReportClass
             {
                 OutputFileName = "PDFFile",
                 RDLCFileName = "COAList.rdlc",
@@ -45,42 +45,17 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
             MyReport.ReportData = MyReport.GetReportDataTable();
             MyReport.GetReport();                                                                       // Report is ready to print.
+            ReportLink = MyReport.OutputFileLink;
             return Page();
 
             //return new FileContentResult(MyReport.MyBytes, "application/pdf");            Do not delete it.
 
         }
 
-        public IActionResult OnGetLedger(int COAID)
-        {
-            // it is only for testing  24-Jan-2023.
-
-            string UserName = User.Identity.Name;
-            Ledger.UpdateLedger(UserName, COAID);
-
-            MyReport = new ReportClass
-            {
-                UserName = User.Identity.Name,
-                OutputFileName = "CashBook_Ledger",
-                RDLCDataSet = "dsname_Ledger",
-                RDLCFileName = "Ledger.rdlc",
-                OutputFileType = FileType.pdf
-            };
-            MyReport.ReportFilter.TableName = Tables.Ledger;
-            MyReport.ReportFilter.Columns = "*";
-            MyReport.ReportFilter.N_COA = COAID;
-            MyReport.CommandText = GetQueryText(MyReport.ReportFilter);
-            MyReport.Parameters.Add("UserName", UserName);
-            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-            MyReport.ReportParameters.Add("Heading", "General Ledger - " + GetTitle(UserName, Tables.COA, COAID));
-            MyReport.GetReport();                                                                       // Report is ready to print.
-
-            return Page();
-        }
-
         public IActionResult OnGetGL()
         {
             var UserName = User.Identity.Name;
+            ReportClass MyReport = new();
 
             ReportFilters Filters = new ReportFilters
             {
@@ -93,7 +68,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
 
-            string Heading1 = "<< GENERAL LEDGER >>";
+            string Heading1 = "<<--     GENERAL LEDGER     -->>";
             string Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
 
             MyReport = new()
@@ -110,6 +85,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.ReportParameters.Add("Heading1", Heading1);
             MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
+            ReportLink = MyReport.OutputFileLink;
 
             return Page();
         }
@@ -117,6 +93,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetGLCompany()
         {
             var UserName = User.Identity.Name;
+            ReportClass MyReport = new();
             ReportFilters Filters = new ReportFilters
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
@@ -147,9 +124,39 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.ReportParameters.Add("Heading1", Heading1);
             MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
+            ReportLink = MyReport.OutputFileLink;
 
             return Page();
         }
+
+
+        //public IActionResult OnGetLedger(int COAID)
+        //{
+        //    // it is only for testing  24-Jan-2023.
+
+        //    string UserName = User.Identity.Name;
+        //    Ledger.UpdateLedger(UserName, COAID);
+
+        //    MyReport = new ReportClass
+        //    {
+        //        UserName = User.Identity.Name,
+        //        OutputFileName = "CashBook_Ledger",
+        //        RDLCDataSet = "dsname_Ledger",
+        //        RDLCFileName = "Ledger.rdlc",
+        //        OutputFileType = FileType.pdf
+        //    };
+        //    MyReport.ReportFilter.TableName = Tables.Ledger;
+        //    MyReport.ReportFilter.Columns = "*";
+        //    MyReport.ReportFilter.N_COA = COAID;
+        //    MyReport.CommandText = GetQueryText(MyReport.ReportFilter);
+        //    MyReport.Parameters.Add("UserName", UserName);
+        //    MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+        //    MyReport.ReportParameters.Add("Heading1", "General Ledger - " + GetTitle(UserName, Tables.COA, COAID));
+        //    MyReport.ReportParameters.Add("Heading2", "General Ledger - " + GetTitle(UserName, Tables.COA, COAID));
+        //    MyReport.GetReport();                                                                       // Report is ready to print.
+
+        //    return Page();
+        //}
 
 
     }

@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Data
             DefaultDB = string.Concat(AppRoot, "SQLiteDB\\");
             UserDBPath = string.Concat(DefaultDB, "AppliedUsers.db");
             GuestDBPath = string.Concat(DefaultDB, "Applied.db");
-            CultureString = "en-EN";
+            CultureString = "en-US";
             AppCurture = new CultureInfo(CultureString, false);
             InputDatesFormat = "yyyy-MM-dd";
             DateFormat = "dd-MM-yyyy";

@@ -80,7 +80,7 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_CashBook = new(UserName, Tables.CashBook);
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
-            //DataTable LedgerCashBook = ConvertLedger(UserName, tb_COA.MyDataTable);
+           
 
             foreach (DataRow Row in tb_CashBook.MyDataTable.Rows)
             {
@@ -195,6 +195,8 @@ namespace Applied_WebApplication.Data
             DataTable Result = tb_Ledger.MyDataTable.Clone();
 
             tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
+            tb_Ledger.MyDataView.Sort = "Vou_Date,Vou_No";
+            
 
             return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
         }

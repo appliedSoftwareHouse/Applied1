@@ -1,0 +1,42 @@
+﻿@page
+@model Applied_WebApplication.Pages.ReportPrint.CompanyGLModel
+@{
+    var UserName = User.Identity.Name;
+}
+
+<div class="container AppHeading">
+    <div class="TextCenter">CUSTOMER / VENDOR - GENERAL LEDGER</div>
+</div>
+
+<form method="post">
+    <div class="container">
+
+        <!--DATES -->
+        <div class="row mt-2">
+            <div class="col-3">
+                <div class="input-group">
+                    <label class="input-group-text" for="DateFrom">From</label>
+                    <input type="Date"
+                           id="DateFrom"
+                           name="Dt_From"
+                           value="@Model.Parameters.Dt_From.ToString(AppRegistry.DateYMD)"
+                           format="dd-MM-yyyy"
+                           class="form-control"
+                           placeholder="dd-MM-yyyy">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group">
+                    <label class="input-group-text" for="DateTo">To</label>
+                    <input type="Date"
+                           id="DateTo"
+                           name="Dt_To"
+                           value="@Model.Parameters.Dt_To.ToString(AppRegistry.DateYMD)"
+                           format="dd-MM-yyyy"
+                           class="form-control"
+                           placeholder="Voucher Date">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
