@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="ds_SQLiteODBC">
+  <ConnectionProperties>
+    <Extension>ODBC</Extension>
+    <ConnectString>Dsn=AppliedODBC</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>725dc0eb-0bc1-48d1-aadf-6f4cbc73aed1</DataSourceID>
+</RptDataSource>

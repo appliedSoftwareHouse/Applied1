@@ -211,7 +211,7 @@ namespace Applied_WebApplication.Data
 
             int SRNO = 0;
             tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='" + VoucherType.OBalance.ToString(), "'");
-            if(tb_Ledger.MyDataView.Count>0)
+            if (tb_Ledger.MyDataView.Count > 0)
             {
                 SRNO = (int)(tb_Ledger.MyDataView.ToTable()).Compute("MAX(SR_No)", "");
             }
@@ -219,12 +219,13 @@ namespace Applied_WebApplication.Data
             DateTime Vou_Date = (DateTime)AppRegistry.GetKey(UserName, "OBal_Date", KeyType.Date);
             decimal _DR = 0.00M, _CR = 0.00M;
 
-            tb_COA.MyDataView.RowFilter = "Opening_Balance > 0";
+            tb_COA.MyDataView.RowFilter = "Opening_Balance <> 0";
             DataTable _Table = tb_COA.MyDataView.ToTable();
             foreach (DataRow Row in _Table.Rows)
             {
-                if ((decimal)Row["Opening_Balance"] >= 0) { _DR = (decimal)Row["Opening_Balance"]; } 
-                else { _CR = ((decimal)Row["Opening_Balance"]) * -1; }
+                if ((decimal)Row["Opening_Balance"] >= 0) { _DR = (decimal)Row["Opening_Balance"]; _CR = 0.00M; }
+                else { _CR = ((decimal)Row["Opening_Balance"]) * -1; 
+                    _DR = 0.00M; }
                 tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='", VoucherType.OBalance.ToString(), "' AND COA=", Row["ID"].ToString());
                 if (tb_Ledger.MyDataView.Count == 1)
                 {
@@ -238,8 +239,9 @@ namespace Applied_WebApplication.Data
                     }
                     else
                     {
-                        string msg = string.Concat("Update Account ID ", Row["ID"].ToString(), ", Amount ", ((decimal)Row["Opening_Balance"]).ToString(AppRegistry.FormatCurrency1));
-                        MyMessages.Add(new Message { ErrorID = -1, Msg = msg, Success = true });
+                        string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["ID"]);
+                        string msg = string.Concat("Update Account ID ", Row["Code"].ToString(), " : ", _Title, ", Amount ", ((decimal)Row["Opening_Balance"]).ToString(AppRegistry.FormatCurrency1));
+                        MyMessages.Add(new Message { ErrorID = 2, Msg = msg, Success = true });
                         SrNo_Msg++;
                     }
                 }
@@ -269,11 +271,33 @@ namespace Applied_WebApplication.Data
                     }
                     else
                     {
-                        string msg = string.Concat("Insert Account ID ", Row["ID"].ToString(), ", Amount ", ((decimal)Row["Opening_Balance"]).ToString(AppRegistry.FormatCurrency1));
-                        MyMessages.Add(new Message { ErrorID = -1, Msg = msg, Success = true });
+                        string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["ID"]);
+                        string msg = string.Concat("Insert Account ID ", Row["Code"].ToString(), " : ", _Title, ", Amount ", ((decimal)Row["Opening_Balance"]).ToString(AppRegistry.FormatCurrency1));
+                        MyMessages.Add(new Message { ErrorID = 1, Msg = msg, Success = true });
                         SrNo_Msg++;
                     }
+                }
+            }
 
+            // Delete if Account has zero and entry exist in General Ledger
+
+            tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='" + VoucherType.OBalance.ToString(), "'");
+            foreach (DataRow Row in tb_Ledger.MyDataView.ToTable().Rows)
+            {
+                if (tb_COA.Seek((int)Row["COA"]))
+                {
+                    tb_COA.SeekRecord((int)Row["COA"]);
+                    if ((decimal)tb_COA.CurrentRow["Opening_Balance"] == 0)
+                    {
+                        tb_Ledger.SeekRecord((int)Row["ID"]);
+                        tb_Ledger.Delete();
+                        string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+                        string _Code = AppFunctions.GetColumnValue(UserName, Tables.COA,"Code", (int)Row["COA"]);
+                        decimal Amount = (decimal)Row["DR"] - (decimal)Row["CR"];
+
+                        string msg = string.Concat("Delete Account ID ", _Code, " : ", _Title, ", Amount ", (Amount).ToString(AppRegistry.FormatCurrency1));
+                        MyMessages.Add(new Message { ErrorID = 3, Msg = msg, Success = true });
+                    }
                 }
             }
             return MyMessages;

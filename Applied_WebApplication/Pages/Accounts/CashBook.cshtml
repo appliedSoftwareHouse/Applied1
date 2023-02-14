@@ -37,119 +37,132 @@
     overflow: auto;
     background-color: lightcyan
     }
-</style>
+    </style>
 *@
 <form method="post">
 
 
     <!--Cash Book Heading Blue Bar-->
     <div class="container p-1 mt-2 mb-2 bg-info text-white rounded">
+        <div class="row d-flex align-items-center text-black">
+            <div class="col-2  TextCenter">
+                <label>CASH BOOK</label>
+            </div>
+            <div class="col-3">
+                <label for="From">From</label>
+                <input type="date" name="MinDate" min="2020-01-01" value=@Date1 />
+            </div>
+            <div class="col-3">
+                <label for="To">To</label>
+                <input type="date" name="MaxDate" min="2020-01-01" value=@Date2 />
+            </div>
+            <div class="col-2">
 
-        <div class="p-2 d-inline-block w-25 text-primary">
-            <label>CASH BOOK</label>
-        </div>
-        <div class="p-2 d-inline-block">
-
-            <label for="From">From</label>
-            <input type="date" name="MinDate" min="2020-01-01" value=@Date1 />
-        </div>
-        <div class="p-2 d-inline-block">
-            <label for="To">To</label>
-            <input type="date" name="MaxDate" min="2020-01-01" value=@Date2 />
-        </div>
-        <div class="p-2 d-inline-block">
-            @if (Model.MyParameters.CashBookID > 0)
-            {
-                <button class=" btn btn-outline-primary" type="submit" name="Refresh"
-                    asp-page-handler="Refresh">
-                    REFRESH
-                </button>
-            }
-        </div>
-        <div class="p-2 d-inline-block float-end">
-            <div class="dropdown">
-                @{
-                    string BookTitle = "Select...";
+                @if (Model.MyParameters.CashBookID > 0)
+                {
+                    <button class=" btn btn-primary " type="submit" name="Refresh"
+                        asp-page-handler="Refresh">
+                        REFRESH
+                    </button>
+                    <button class="btn btn-primary float-end " type="Submit" id="btnAdd"
+                        asp-page-handler="Add">
+                        ADD
+                    </button>
                 }
 
-                <button class="dropdown-toggle btn btn-primary"
-                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    @if (@Model.MyParameters.BookTitle.Length > 0)
-                    {
-                        @Model.MyParameters.BookTitle
-                    }
-                    else
-                    {
-                        @BookTitle
-                    }
-
-                </button>
-
-                <ul class="dropdown-menu">
-                    @foreach (KeyValuePair<int, string> _Key in COATitles)
-                    {
-                        <li>
-                            <a class="dropdown-item" formmethod="get"
-                           asp-route-id=@_Key.Key
-                           asp-page-handler="Book">
-                                @_Key.Value
-                            </a>
-                        </li>
-                    }
-                </ul>
             </div>
-        </div>
-        <div class="p-2 d-inline-block">
-            <input hidden type="text" name="CashBookID" value="@Model.MyParameters.CashBookID" />                  <!--  Generate CashBookID i-->
-            <input hidden type="text" name="BookTitle" value="@Model.MyParameters.BookTitle" />
-        </div>
+            <div class="col-2">
+                <div class="p-2 d-inline-block float-end">
+                    <div class="dropdown">
+                        @{
+                            string BookTitle = "Select...";
+                        }
 
+                        <button class="dropdown-toggle btn btn-primary"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            @if (@Model.MyParameters.BookTitle.Length > 0)
+                            {
+                                @Model.MyParameters.BookTitle
+                            }
+                            else
+                            {
+                                @BookTitle
+                            }
+
+                        </button>
+
+                        <ul class="dropdown-menu">
+                            @foreach (KeyValuePair<int, string> _Key in COATitles)
+                            {
+                                <li>
+                                    <a class="dropdown-item" formmethod="get"
+                                   asp-route-id=@_Key.Key
+                                   asp-page-handler="Book">
+                                        @_Key.Value
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+        </div>
     </div>
 
     <!-- SHOW CASH BOOK RECORD -->
     <div class="container">
+        <!--DISBALE / HIDDEN VALUES-->
+        <input hidden type="text" name="CashBookID" value="@Model.MyParameters.CashBookID" />                  <!--  Generate CashBookID i-->
+        <input hidden type="text" name="BookTitle" value="@Model.MyParameters.BookTitle" />
+        <!---->
         <div class="row">
             <div class="overflow-auto" style="height:600px">
-            @if (Model.MyParameters.IsSelected)
-            {
-                <div>
-                    <table class="table" id="MyTable">
-                        <thead>
-                            <tr>
-                                <th style="width:10%">Date</th>
-                                <th style="width:10%">Vou No</th>
-                                <th style="width:40%">Description</th>
-                                <th style="width:10%; text-align: right">Debit</th>
-                                <th style="width:10%; text-align: right">Credit</th>
-                                <th style="width:10%; text-align: right">Balance</th>
-                                <!--CASH BOOK ADD BUTTON-->
-                                <th style="width:10%; text-align: right">
-                                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                                        asp-page-handler="Add">
-                                        ADD
-                                    </button>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-
-                            @foreach (DataRow _Row in Model.Cashbook.Rows)
-                            {
+                @if (Model.MyParameters.IsSelected)
+                {
+                    <div>
+                        <table class="table" id="MyTable">
+                            <thead>
                                 <tr>
-                                    <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
-                                    <td>@_Row["Vou_No"].ToString()</td>
-                                    <td>@_Row["Description"].ToString()</td>
-                                    <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
-                                    <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+                                    <th style="width:10%">Date</th>
+                                    <th style="width:10%">Vou No</th>
+                                    <th style="width:40%">Description</th>
+                                    <th style="width:10%; text-align: right">Debit</th>
+                                    <th style="width:10%; text-align: right">Credit</th>
+                                    <th style="width:10%; text-align: right">Balance</th>
+                                    <!--CASH BOOK ADD BUTTON-->
+                                <th style="width:10%; text-align: right">
+                                        <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+                                            asp-page-handler="Add">
+                                            ADD
+                                        </button>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
-                                    {
-                                        <td class="align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                                    }
-                                    else
-                                    {
-                                        <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
-                                    }
+                                @foreach (DataRow _Row in Model.Cashbook.Rows)
+                                {
+                                    <tr>
+                                        <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                                        <td>@_Row["Vou_No"].ToString()</td>
+                                        <td>@_Row["Description"].ToString()</td>
+                                        <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
+                                        <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+
+                                        @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
+                                        {
+                                            <td class="align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                        }
 
                                         @if (_Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
@@ -160,13 +173,13 @@
                                         }
                                         else
                                         {
-                                            <td >
+                                            <td>
                                                 <button type="button" class="btn btn-link text-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                                     Posted
                                                 </button>
 
                                                 <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -185,12 +198,12 @@
                                             </td>
                                         }
                                     </tr>
-                            }
+                                }
 
-                        </tbody>
-                    </table>
-                </div>
-            }
+                            </tbody>
+                        </table>
+                    </div>
+                }
             </div>
         </div>
     </div>

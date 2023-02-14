@@ -14,20 +14,35 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedReporting", "Applied
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataSets", "DataSets", "{624CA8AA-C232-43B0-8DA3-50E4573D4D8B}"
 EndProject
+Project("{F14B399A-7131-4C87-9E4B-1186C45EF12D}") = "AppliedReports", "AppliedReports\AppliedReports.rptproj", "{B2049D81-0EAE-4310-A8EF-6833296C7E62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		DebugLocal|Any CPU = DebugLocal|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EBD0880E-0CCC-444E-BE2C-2C10ECCD1C06}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B303685-0E82-4088-A4F3-ECDB50ACF205}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Debug|Any CPU.ActiveCfg = Debug
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Debug|Any CPU.Build.0 = Debug
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Debug|Any CPU.Deploy.0 = Debug
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.DebugLocal|Any CPU.ActiveCfg = DebugLocal
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.DebugLocal|Any CPU.Build.0 = DebugLocal
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Release|Any CPU.ActiveCfg = Release
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Release|Any CPU.Build.0 = Release
+		{B2049D81-0EAE-4310-A8EF-6833296C7E62}.Release|Any CPU.Deploy.0 = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

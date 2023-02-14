@@ -76,12 +76,15 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             return RedirectToPage("CashBookRecord", new { id = MyParameters.CashBookID });
         }
-        public IActionResult OnPostSave(BookRecord MyRecord)
+        public IActionResult OnPostSave(int ID)
         {
             UserName = User.Identity.Name;
 
             DataTableClass CashBook = new(UserName, Tables.CashBook);
-            CashBook.NewRecord();
+            CashBook.MyDataView.RowFilter = String.Concat("ID=", ID.ToString());
+            if (CashBook.MyDataView.Count == 0) { CashBook.NewRecord(); }                  // Create a new record.
+            else { CashBook.SeekRecord(ID); }                                                                   // Select a existing record.
+
             CashBook.CurrentRow["ID"] = MyRecord.ID;
             CashBook.CurrentRow["Vou_No"] = MyRecord.Vou_No;
             CashBook.CurrentRow["Vou_Date"] = MyRecord.Vou_Date;

@@ -21,8 +21,11 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
 
+
+            //Create Default Application Registry Keys.
             if (!tb_Registry.Seek("FiscalFrom")) { SetKey(UserName, "FiscalFrom", new DateTime(2022, 1, 1), KeyType.Date); }
             if (!tb_Registry.Seek("FiscalTo")) { SetKey(UserName, "FiscalTo", new DateTime(2025, 12, 31), KeyType.Date); }
+            if (!tb_Registry.Seek("TBSort")) { SetKey(UserName, "TBSort", "Code", KeyType.Text); }
         }
 
         public static readonly string DateYMD = "yyyy-MM-dd";

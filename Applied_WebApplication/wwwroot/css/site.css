@@ -29,6 +29,17 @@ body {
     padding-left: 10px;
 }
 
+.app-msg {
+    margin-left: auto;
+    background-color: lightblue;
+    padding: 0px;
+    color: white;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-left: 10px;
+}
 .AppHeading {
     margin-top: 1px;
     margin-bottom: 10px;
@@ -92,11 +103,15 @@ body {
     overflow: scroll
 }
 
+.TableFooter {
+    background: #F9DBDB
+}
+
 tr:hover {
     background-color: #D6EEEE;
 
 }
 
 
-box-sizing: border-box;
+
 

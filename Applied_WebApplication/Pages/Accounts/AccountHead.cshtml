@@ -82,8 +82,8 @@
     <div class="container p-3">
         <div class="row g-3 ">
             <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Class of Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Class" asp-for=@Model.Record.Class>
+                <label class="input-group-text g-2">Class of Account</label>
+                <select class="form-select"  asp-for=@Model.Record.Class>
                     <option selected>@Model.Record.Class</option>
                     @foreach (DataRow _Record in COA_Class.MyDataTable.Rows)
                     {
@@ -94,8 +94,8 @@
         </div>
         <div class="row g-3 ">
             <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Nature of Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Nature" asp-for=@Model.Record.Nature>
+                <label class="input-group-text g-2">Nature of Account</label>
+                <select class="form-select"  asp-for=@Model.Record.Nature>
                     <option selected>@Model.Record.Nature</option>
                     @foreach (DataRow _Record in COA_Nature.MyDataTable.Rows)
                     {
@@ -106,8 +106,8 @@
         </div>
         <div class="row g-3 ">
             <div class="input-group mb-3">
-                <label class="input-group-text g-2" for="hd_Class" disabled style="width:250px;">Notes of Financial Account</label>
-                <select class="form-select" id="inputCOA_Class" name="Notes" asp-for=@Model.Record.Notes>
+                <label class="input-group-text g-2">Notes of Financial Account</label>
+                <select class="form-select" asp-for=@Model.Record.Notes>
                     <option selected>@Model.Record.Notes</option>
                     @foreach (DataRow _Record in COA_Notes.MyDataTable.Rows)
                     {
@@ -124,13 +124,13 @@
         <div class="row">
             @if (Model.MyPageAction == "Delete")
             {
-                <div class="col-1"> <input class="btn btn-danger" type="submit" asp-page-handler="Delete" value="Delete">DELETE  </div>
+                <div class="col-1"> <input class="btn btn-danger" type="submit" asp-page-handler="Delete" value="Delete"></div>
             }
             else
             {
-                <div class="col-1"> <input class="btn btn-success" type="submit" asp-page-handler="Save" value="Save">  </div>
+                <div class="col-1"> <input class="btn btn-success" type="submit" asp-page-handler="Save" value="Save"></div>
             }
-            <div class="col-1"> <input class="btn btn-primary" type="submit" asp-page="../Accounts/Directory/COA" value="Back">  </div>
+            <div class="col-1"> <input class="btn btn-primary" type="submit" asp-page="../Accounts/Directory/COA" value="Back"></div>
         </div>
 
     </div>

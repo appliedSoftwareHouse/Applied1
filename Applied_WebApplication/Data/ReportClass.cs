@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Data
         #region Variables
 
         private readonly string mimtype = "";
-        private int extension = 1;
+        //private int extension = 1;
         public string UserName { get; set; }                                             // Current User Name
         //private LocalReport? _Report { get; set; }
 
