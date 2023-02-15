@@ -9,14 +9,20 @@
     <h3 class="TextCenter">TRIAL BALANCE</h3>
 </div>
 
+<form method="post">
 <div class="conatianer">
     <div class="row">
-        <div class="col">
-            <h5>TRIAL BALANCE FILTER AREA</h5>
+        <div class="col-10">
+            <h5 class="TextCenter">TRIAL BALANCE FILTER AREA</h5>
+        </div>
+        <div class="col-2 align-items-end">
+           
+                <button type="submit" class="btn btn-primary"  asp-page-handler="TB">PRINT</button>
+          
         </div>
     </div>
 </div>
-
+</form>
 <div class="container">
     <table class="table table-hover" name="TableList">
         <thead>
@@ -33,9 +39,9 @@
             {
                 decimal _Amount = 0.00M, _Debit = 0.00M, _Credit = 0.00M;
                 _Amount = decimal.Parse(Row["DR"].ToString()) - decimal.Parse(Row["CR"].ToString());
-                if(_Amount>=0) { _Debit = _Amount; } 
-                if(_Amount<0) { _Credit = Math.Abs(_Amount); } 
-                    <tr>
+                if (_Amount >= 0) { _Debit = _Amount; }
+                if (_Amount < 0) { _Credit = Math.Abs(_Amount); }
+                <tr>
                     <td>@Row["Code"]</td>
                     <td>@Row["Title"]</td>
                     <td class="align-right">@_Debit.ToString(AppRegistry.FormatCurrency2)</td>
@@ -52,5 +58,5 @@
             </tr>
         </tfoot>
 
-        </table>
+    </table>
 </div>

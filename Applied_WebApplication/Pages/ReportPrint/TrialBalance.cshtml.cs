@@ -28,5 +28,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
 
         }
+
+        //public void OnPost() 
+        //{
+        //}
+
+        public IActionResult OnPostTB()
+        {
+            return RedirectToPage("./PrintReport", pageHandler: "TB");
+
+        }
+
     }
 }

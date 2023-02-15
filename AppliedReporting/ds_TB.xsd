@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="ds_TB" targetNamespace="http://tempuri.org/ds_TB.xsd" xmlns:mstns="http://tempuri.org/ds_TB.xsd" xmlns="http://tempuri.org/ds_TB.xsd" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" xmlns:msprop="urn:schemas-microsoft-com:xml-msprop" attributeFormDefault="qualified" elementFormDefault="qualified">
+  <xs:annotation>
+    <xs:appinfo source="urn:schemas-microsoft-com:xml-msdatasource">
+      <DataSource DefaultConnectionIndex="0" FunctionsComponentName="QueriesTableAdapter" Modifier="AutoLayout, AnsiClass, Class, Public" SchemaSerializationMode="IncludeSchema" xmlns="urn:schemas-microsoft-com:xml-msdatasource">
+        <Connections>
+          <Connection ConnectionStringObject="Dsn=ODBC_Applied" IsAppSettingsProperty="false" Modifier="Assembly" Name="ConnectionString" Provider="System.Data.Odbc" />
+        </Connections>
+        <Tables>
+          <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="TBTableAdapter" GeneratorDataComponentClassName="TBTableAdapter" Name="TB" UserDataComponentName="TBTableAdapter">
+            <MainSource>
+              <DbSource ConnectionRef="ConnectionString" DbObjectName="TB" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+                <SelectCommand>
+                  <DbCommand CommandType="Text" ModifiedByUser="false">
+                    <CommandText>SELECT "COA", "CODE", "TITLE", "DR", "CR", "BAL" FROM "TB"</CommandText>
+                    <Parameters />
+                  </DbCommand>
+                </SelectCommand>
+              </DbSource>
+            </MainSource>
+            <Mappings>
+              <Mapping SourceColumn="COA" DataSetColumn="COA" />
+              <Mapping SourceColumn="CODE" DataSetColumn="CODE" />
+              <Mapping SourceColumn="TITLE" DataSetColumn="TITLE" />
+              <Mapping SourceColumn="DR" DataSetColumn="DR" />
+              <Mapping SourceColumn="CR" DataSetColumn="CR" />
+              <Mapping SourceColumn="BAL" DataSetColumn="BAL" />
+            </Mappings>
+            <Sources />
+          </TableAdapter>
+        </Tables>
+        <Sources />
+      </DataSource>
+    </xs:appinfo>
+  </xs:annotation>
+  <xs:element name="ds_TB" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:Generator_UserDSName="ds_TB" msprop:EnableTableAdapterManager="true" msprop:Generator_DataSetName="ds_TB">
+    <xs:complexType>
+      <xs:choice minOccurs="0" maxOccurs="unbounded">
+        <xs:element name="TB" msprop:Generator_RowClassName="TBRow" msprop:Generator_RowEvHandlerName="TBRowChangeEventHandler" msprop:Generator_RowDeletedName="TBRowDeleted" msprop:Generator_RowDeletingName="TBRowDeleting" msprop:Generator_RowEvArgName="TBRowChangeEvent" msprop:Generator_TablePropName="TB" msprop:Generator_RowChangedName="TBRowChanged" msprop:Generator_UserTableName="TB" msprop:Generator_RowChangingName="TBRowChanging" msprop:Generator_TableClassName="TBDataTable" msprop:Generator_TableVarName="tableTB">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="COA" msprop:Generator_UserColumnName="COA" msprop:Generator_ColumnPropNameInTable="COAColumn" msprop:Generator_ColumnPropNameInRow="COA" msprop:Generator_ColumnVarNameInTable="columnCOA" type="xs:int" />
+              <xs:element name="CODE" msprop:Generator_UserColumnName="CODE" msprop:Generator_ColumnPropNameInTable="CODEColumn" msprop:Generator_ColumnPropNameInRow="CODE" msprop:Generator_ColumnVarNameInTable="columnCODE" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="6" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="TITLE" msprop:Generator_UserColumnName="TITLE" msprop:Generator_ColumnPropNameInTable="TITLEColumn" msprop:Generator_ColumnPropNameInRow="TITLE" msprop:Generator_ColumnVarNameInTable="columnTITLE">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="100" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="DR" msprop:Generator_UserColumnName="DR" msprop:Generator_ColumnPropNameInTable="DRColumn" msprop:Generator_ColumnPropNameInRow="DR" msprop:Generator_ColumnVarNameInTable="columnDR" type="xs:decimal" default="0" minOccurs="0" />
+              <xs:element name="CR" msprop:Generator_UserColumnName="CR" msprop:Generator_ColumnPropNameInTable="CRColumn" msprop:Generator_ColumnPropNameInRow="CR" msprop:Generator_ColumnVarNameInTable="columnCR" type="xs:decimal" default="0" minOccurs="0" />
+              <xs:element name="BAL" msprop:Generator_UserColumnName="BAL" msprop:Generator_ColumnPropNameInTable="BALColumn" msprop:Generator_ColumnPropNameInRow="BAL" msprop:Generator_ColumnVarNameInTable="columnBAL" type="xs:decimal" default="0" minOccurs="0" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+      </xs:choice>
+    </xs:complexType>
+    <xs:unique name="Constraint1" msdata:PrimaryKey="true">
+      <xs:selector xpath=".//mstns:TB" />
+      <xs:field xpath="mstns:TITLE" />
+    </xs:unique>
+  </xs:element>
+</xs:schema>

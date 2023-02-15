@@ -6,6 +6,7 @@ using Microsoft.Net.Http.Headers;
 using System.Collections;
 using System.Data;
 using System.Reflection.PortableExecutable;
+using System.ServiceModel.Security;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.ReportClass;
 
@@ -15,15 +16,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public string ReportLink { get; set; }
-        //public ReportClass MyReport { get; set; } = new ReportClass();
+    
 
         public void OnGet()
         {
         }
 
-        public void OnGetPrint()
-        {
-        }
+       
 
         public IActionResult OnGetCOAList()
         {
@@ -129,34 +128,44 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
         }
 
+        public IActionResult OnGetTB()
+        {
+            var UserName = User.Identity.Name;
+            ReportClass MyReport = new();
+            ReportFilters Filters = new ReportFilters
+            {
+                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
+                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+            };
 
-        //public IActionResult OnGetLedger(int COAID)
-        //{
-        //    // it is only for testing  24-Jan-2023.
+            var _Date1 = Filters.Dt_From.ToString(AppRegistry.FormatDate);
+            var _Date2 = Filters.Dt_To.ToString(AppRegistry.FormatDate);
 
-        //    string UserName = User.Identity.Name;
-        //    Ledger.UpdateLedger(UserName, COAID);
+            var _FileType = (FileType)AppRegistry.GetKey(UserName, "ReportType", KeyType.Number);               // Get File Type from AppRegistry.
+            var tb_TB = Ledger.GetTB(UserName, Filters);
+            var Heading1 = "TRIAL BALANCE";
+            var Heading2 = string.Concat("Position as on", _Date2);
 
-        //    MyReport = new ReportClass
-        //    {
-        //        UserName = User.Identity.Name,
-        //        OutputFileName = "CashBook_Ledger",
-        //        RDLCDataSet = "dsname_Ledger",
-        //        RDLCFileName = "Ledger.rdlc",
-        //        OutputFileType = FileType.pdf
-        //    };
-        //    MyReport.ReportFilter.TableName = Tables.Ledger;
-        //    MyReport.ReportFilter.Columns = "*";
-        //    MyReport.ReportFilter.N_COA = COAID;
-        //    MyReport.CommandText = GetQueryText(MyReport.ReportFilter);
-        //    MyReport.Parameters.Add("UserName", UserName);
-        //    MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-        //    MyReport.ReportParameters.Add("Heading1", "General Ledger - " + GetTitle(UserName, Tables.COA, COAID));
-        //    MyReport.ReportParameters.Add("Heading2", "General Ledger - " + GetTitle(UserName, Tables.COA, COAID));
-        //    MyReport.GetReport();                                                                       // Report is ready to print.
+            MyReport = new()
+            {
+                UserName = User.Identity.Name,
+                RDLCDataSet = "dset_TB",
+                RDLCFileName = "TB.rdlc",
+                ReportData = tb_TB,
+                OutputFileName = "TB",
+                OutputFileType = _FileType
+            };
+            MyReport.Parameters.Add("UserName", UserName);
+            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+            MyReport.ReportParameters.Add("Heading1", Heading1);
+            MyReport.ReportParameters.Add("Heading2", Heading2);
+            MyReport.GetReport();
+            ReportLink = MyReport.OutputFileLink;
 
-        //    return Page();
-        //}
+            return Page();
+        }
 
 
     }

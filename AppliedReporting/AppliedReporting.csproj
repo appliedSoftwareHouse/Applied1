@@ -42,6 +42,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ds_COA.xsd</DependentUpon>
     </Compile>
+    <Compile Update="ds_TB.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>ds_TB.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -52,6 +57,10 @@
     <None Update="ds_COA.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>ds_COA.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="ds_TB.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>ds_TB.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

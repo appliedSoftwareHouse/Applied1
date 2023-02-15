@@ -277,6 +277,13 @@ namespace Applied_WebApplication.Data
 
         }
 
+        internal static DataTable GetTB(string UserName, ReportClass.ReportFilters filters)
+        {
+            DataTableClass tc_TB = new(UserName, Tables.TB);
+            tc_TB.MyDataView.Sort = "Code";
+            return tc_TB.MyDataView.ToTable();
+        }
+
         public class LedgerParamaters
         {
             public string UserName { get; set; }
