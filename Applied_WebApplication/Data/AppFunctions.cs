@@ -21,7 +21,7 @@ namespace Applied_WebApplication.Data
         public static string GetNewBillPayableVoucher(string UserName)
         {
             DataTableClass Table = new(UserName, Tables.BillPayable);
-            if(Table.MyDataTable.Rows.Count==0) { return "BP-000001"; }
+            if (Table.MyDataTable.Rows.Count == 0) { return "BP-000001"; }
             int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
             string NewCode = string.Concat("BP-", MaxNum.ToString("000000"));
             return NewCode;
@@ -35,7 +35,7 @@ namespace Applied_WebApplication.Data
             string TaxCode = string.Empty;
             DataTableClass tb_Tax = new(UserName, Tables.Taxes);
             tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
-            if(tb_Tax.MyDataView.Count>0) 
+            if (tb_Tax.MyDataView.Count > 0)
             {
                 TaxCode = tb_Tax.MyDataView[0]["Code"].ToString();
             }
@@ -192,13 +192,17 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = String.Concat("ID=", id.ToString());
-            if(_Table.MyDataView.Count==1)
+            if (_Table.MyDataView.Count == 1)
             {
                 return _Table.MyDataView[0].Row;
             }
             return _Table.NewRecord();
         }
 
+        public static string GetDate(object _Date)
+        {
+            return DateTime.Parse(_Date.ToString()).ToString(AppRegistry.FormatDate);
+        }
 
 
         public static DataRow NewRecord(string UserName, Tables _TableName)
@@ -297,7 +301,7 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass Table = new(UserName, _Table);
             Table.MyDataView.RowFilter = _Filter;
-            if(Table.MyDataView.Count==0) { return 1; }
+            if (Table.MyDataView.Count == 0) { return 1; }
             else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
         }
 
@@ -306,7 +310,7 @@ namespace Applied_WebApplication.Data
             DataTableClass Table = new(UserName, _Table);
             Table.MyDataView.RowFilter = _Filter;
             if (Table.MyDataView.Count == 0) { return 0; }
-            else 
+            else
             {
                 var _sum = Table.MyDataTable.Compute("Sum(" + _Column + ")", _Filter);
                 return decimal.Parse(_sum.ToString());

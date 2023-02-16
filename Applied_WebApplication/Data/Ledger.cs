@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Diagnostics;
@@ -80,7 +81,7 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_CashBook = new(UserName, Tables.CashBook);
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
-           
+
 
             foreach (DataRow Row in tb_CashBook.MyDataTable.Rows)
             {
@@ -196,7 +197,7 @@ namespace Applied_WebApplication.Data
 
             tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
             tb_Ledger.MyDataView.Sort = "Vou_Date,Vou_No";
-            
+
 
             return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
         }
@@ -205,9 +206,10 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_Ledger = new(userName, Tables.Ledger);
             DataTable tb_Report = tb_Ledger.MyDataTable.Clone();
-            string _Filter = string.Concat("Customer=", paramaters.N_Customer.ToString()); 
+            string _Filter = string.Concat("Customer=", paramaters.N_Customer.ToString());
 
-            if (!paramaters.All_COA) {
+            if (!paramaters.All_COA)
+            {
                 _Filter = string.Concat(_Filter, " AND COA=", paramaters.N_COA.ToString());
             }
 
@@ -280,8 +282,27 @@ namespace Applied_WebApplication.Data
         internal static DataTable GetTB(string UserName, ReportClass.ReportFilters filters)
         {
             DataTableClass tc_TB = new(UserName, Tables.TB);
-            tc_TB.MyDataView.Sort = "Code";
-            return tc_TB.MyDataView.ToTable();
+            DataTable tb_TrialBal = tc_TB.MyDataTable.Clone();
+
+            foreach (DataRow Row in tc_TB.MyDataTable.Rows)
+            {
+                decimal _Amount = decimal.Parse(Row["BAL"].ToString());
+                decimal _Debit = 0.00M;
+                decimal _Credit = 0.00M;
+                if (_Amount >= 0) { _Debit = _Amount; _Credit = 0; }
+                if (_Amount < 0) { _Debit = 0; _Credit = Math.Abs(_Amount); }
+
+                DataRow RowTB = tb_TrialBal.NewRow();
+                RowTB["COA"] = Row["COA"];
+                RowTB["Code"] = Row["Code"];
+                RowTB["Title"] = Row["Title"];
+                RowTB["DR"] = _Debit;
+                RowTB["CR"] = _Credit;
+                RowTB["Bal"] = _Amount;
+                tb_TrialBal.Rows.Add(RowTB);
+            }
+
+            return tb_TrialBal;
         }
 
         public class LedgerParamaters

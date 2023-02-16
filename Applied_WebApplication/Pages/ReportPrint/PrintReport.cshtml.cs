@@ -146,7 +146,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _FileType = (FileType)AppRegistry.GetKey(UserName, "ReportType", KeyType.Number);               // Get File Type from AppRegistry.
             var tb_TB = Ledger.GetTB(UserName, Filters);
             var Heading1 = "TRIAL BALANCE";
-            var Heading2 = string.Concat("Position as on", _Date2);
+            var Heading2 = string.Concat("Position as on ", _Date2);
 
             MyReport = new()
             {

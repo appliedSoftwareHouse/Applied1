@@ -5,6 +5,16 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c098c383-c4f2-4e50-addd-a23b156da24c</UserSecretsId>
+    <Title>Applied Account - Online</Title>
+    <Company>Applied Software House</Company>
+    <Product>Applied Accounts</Product>
+    <Authors>Muhammad Aamir Jahangir</Authors>
+    <Description>A complete accounting software with Stock and Payroll Modules.</Description>
+    <Copyright>Applied Software House</Copyright>
+    <PackageProjectUrl>www.jahangir.com</PackageProjectUrl>
+    <PackageTags>Accounts; Accounting, Accounting Software, Stock, Inventory, Payroll</PackageTags>
+    <PackageReleaseNotes>Beta Version (Under Development)</PackageReleaseNotes>
+    <NeutralLanguage>en-US</NeutralLanguage>
   </PropertyGroup>
 
   <ItemGroup>

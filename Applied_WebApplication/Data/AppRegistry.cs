@@ -78,15 +78,15 @@ namespace Applied_WebApplication.Data
             return ReturnValue;
         }
 
-        public static object[] GetDates(string UserName, string Key)
+        public static DateTime[] GetDates(string UserName, string Key)
         {
-            object[] Dates = new object[2];
+            DateTime[] Dates = new DateTime[2];
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
             {
-                Dates[0] = tb_Registry.MyDataView[0]["From"];
-                Dates[1] = tb_Registry.MyDataView[0]["To"];
+                Dates[0] = (DateTime)tb_Registry.MyDataView[0]["From"];
+                Dates[1] = (DateTime)tb_Registry.MyDataView[0]["To"];
             }
             return Dates;
         }
@@ -145,9 +145,6 @@ namespace Applied_WebApplication.Data
             return false;
         }
 
-        #region Interface events
-
-
-        #endregion
+        
     }
 }

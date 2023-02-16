@@ -50,6 +50,11 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage("/Applied/Posting");
         }
 
+        public IActionResult OnPostVouchers()
+        {
+            return RedirectToPage("/Accounts/Vouchers");
+        }
+
 
     }
 }

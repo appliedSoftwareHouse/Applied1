@@ -1,0 +1,46 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.VoucherModel
+@{
+    var UserName = User.Identity.Name;
+
+}
+
+
+<div class="container">
+    <table class="table" id="MyTableList">
+        <thead>
+            <tr>
+                <th>Sr No.</th>
+                <th>Chart of Account</th>
+                <th>Customer / Vendor Name</th>
+                <th>Debit</th>
+                <th>Credit</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (DataRow Row in Model.Tb_Voucher.Rows)
+            {
+                string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+                string _Company;
+                if (Row["Customer"] == DBNull.Value || (int)Row["Customer"] == 0)
+                { _Company = "-"; }
+                else { _Company = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Customer"]); }
+                <tr>
+                    <td>@Row["Sr_No"]</td>
+                    <td>@_Title</td>
+                    <td>@_Company</td>
+                    <td>@Row["DR"]</td>
+                    <td>@Row["CR"]</td>
+                </tr>
+                <tr>
+                    Edit | Delete
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+</div>
