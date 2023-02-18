@@ -1,0 +1,201 @@
+﻿@page
+@using System.Data;
+@using static Applied_WebApplication.Data.AppFunctions;
+@model Applied_WebApplication.Pages.Voucher1Model
+@{
+    var UserName = User.Identity.Name;
+    var Title_COA = GetTitle(UserName, Tables.COA, Model.Variables.COA);
+    var Title_Employee = GetTitle(UserName, Tables.Employees, Model.Variables.Employee);
+    var Title_Company = GetTitle(UserName, Tables.Customers, Model.Variables.Customer);
+    var Title_Project = GetTitle(UserName, Tables.Project, Model.Variables.Project);
+}
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+
+<form method="post">
+    <div class="container">
+        <input type="text" id="ID" asp-for="@Model.Variables.ID" hidden />
+        <input type="text" id="ID2" asp-for="@Model.Variables.ID2" hidden />
+        <input type="text" id="Created" asp-for="@Model.Variables.Created" hidden />
+        <input type="text" id="SR_No" asp-for="@Model.Variables.SR_NO" hidden />
+        <input type="text" id="BookID=" asp-for="@Model.Variables.BookID" hidden />
+
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  asp-for="@Model.Variables.Vou_Type" id="Vou_Type">
+                    <label for="Vou_Type">Voucher Type</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  asp-for="@Model.Variables.Vou_No" id="Vou_No">
+                    <label for="Vou_No">Voucher No</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control"  asp-for="@Model.Variables.Vou_Date" id="Vou_Date">
+                    <label for="Vou_Date">Voucher Date</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  asp-for="@Model.Variables.Ref_No" id="Ref_No">
+                    <label for="Ref_No">Reference No</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="COA" aria-label="Floating label Account"  asp-for="@Model.Variables.COA">
+                        <option selected>@Title_COA</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="COA">Account Title</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Customer" aria-label="Floating label Company" asp-for="@Model.Variables.Customer">
+                        <option selected>@Title_Company</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Customer">Customer / Vendor / Supplier</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Project" aria-label="Floating label Project"  asp-for="@Model.Variables.Project">
+                        <option selected>@Title_Project</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Project">Project</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Employee" aria-label="Floating label Employee"  asp-for="@Model.Variables.Employee">
+                        <option selected>@Title_Employee</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                    <label for="Employee">Employee</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="Description">
+                    <label for="Description">Description (Remarks)</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  asp-for="@Model.Variables.DR" id="DR">
+                    <label for="DR">Debit [DR]</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.CR" id="CR">
+                    <label for="CR">Credit [CR]</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control"  asp-for="@Model.Variables.Comments" id="Comments">
+                    <label for="Comments">Comments (optional)</label>
+                </div>
+            </div>
+            <div class="col-3 d-grid">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save" asp-route-id="@Model.Variables.ID">
+                    Save Transaction
+                </button>
+            </div>
+            <div class="col-3 d-grid">
+                <button type="submit" class="btn btn-success" asp-page-handler="SaveVoucher">
+                    Save Voucher
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+<hr />
+<!-------- VAOUCHER TABLE ------------------------------------------->
+
+<div class="container">
+    <table class="table" id="MyTableList">
+        <thead class="bg-secondary  text-white">
+            <tr>
+                <th style="width: 10%">Sr No.</th>
+                <th style="width: 20%">Chart of Account</th>
+                <th style="width: 30%">Description</th>
+                <th style="width: 10%">Debit</th>
+                <th style="width: 10%">Credit</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+
+            @foreach (DataRow Row in Model.tb_Voucher.Rows)
+            {
+                string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+                string _Company;
+                if (Row["Customer"] == DBNull.Value || (int)Row["Customer"] == 0)
+                { _Company = "-"; }
+                else { _Company = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Customer"]); }
+                <tr>
+                    <td>@Row["Sr_No"]</td>
+                    <td>@_Title</td>
+                    <td>@Row["Description"]</td>
+                    <td>@Row["DR"]</td>
+                    <td>@Row["CR"]</td>
+                    <td>
+                        <button class="btn btn-link"
+                            type="submit"
+                            asp-page-handler="Edit"
+                            asp-route-id="@Row["ID"]">
+                            <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
+                        </button>
+                        <button class="btn btn-link"
+                            type="submit"
+                            asp-page-handler="Delete"
+                            asp-route-id="@Row["ID"]">
+                            <i class="bi bi-trash text-danger"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+
+        </tbody>
+    </table>
+</div>
+</form>

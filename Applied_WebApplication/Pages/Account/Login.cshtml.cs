@@ -45,7 +45,8 @@ namespace Applied_WebApplication.Pages.Account
                     new Claim(ClaimTypes.Role,uprofile.Role),
                     new Claim("Company", uprofile.Company),
                     new Claim("Designation", uprofile.Designation),
-                    new Claim("DBFilePath", uprofile.DBFilePath)
+                    new Claim("DBFilePath", uprofile.DBFilePath),
+                    new Claim("AppSession", Guid.NewGuid().ToString())
                     };
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");
                     ClaimsPrincipal MyClaimsPrincipal = new ClaimsPrincipal(Identity);

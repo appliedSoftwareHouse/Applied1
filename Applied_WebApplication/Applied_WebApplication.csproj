@@ -56,6 +56,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="Pages\Accounts\2nisb1sl.stp~" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
     <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.0-preview.1.22109.13" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.115.5" />

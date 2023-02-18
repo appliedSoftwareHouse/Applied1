@@ -8,7 +8,7 @@ using System.Text;
 namespace Applied_WebApplication.Data
 {
 
-    public class DataTableClass 
+    public class DataTableClass
     {
         #region Initial
 
@@ -135,7 +135,7 @@ namespace Applied_WebApplication.Data
                 else
                 { _CommandString.Append(") "); }
             }
-            
+
             _Command.CommandText = _CommandString.ToString();
 
             foreach (DataColumn _Column in _Columns)
@@ -219,7 +219,7 @@ namespace Applied_WebApplication.Data
         public bool Seek(string _Code)
         {
             string Filter = MyDataView.RowFilter;
-            MyDataView.RowFilter = String.Concat("Code='",_Code,"'");
+            MyDataView.RowFilter = String.Concat("Code='", _Code, "'");
 
             if (MyDataView.Count > 0)
             {
@@ -388,6 +388,12 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass tb_table = new(UserName, table);
             return tb_table.Replace(_ID, _Column, _Value);
+        }
+
+        internal DataTable GetTable(string filter)
+        {
+            MyDataView.RowFilter = filter;
+            return MyDataView.ToTable();
         }
 
         #endregion

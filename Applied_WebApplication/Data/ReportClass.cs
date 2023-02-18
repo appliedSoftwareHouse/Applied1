@@ -44,6 +44,8 @@ namespace Applied_WebApplication.Data
 
         public void GetReport()
         {
+           
+
             if (OutputFile.Length > 0)
             {
 
@@ -71,8 +73,9 @@ namespace Applied_WebApplication.Data
                     IsError = false;
                     MyMessage = "Report generated. " + OutputFile;
                 }
-                catch (Exception)
+                catch (Exception e)
                 {
+                    MyMessage = e.Message;
                     reportResult = null;
                     _Report = null;
                 }

@@ -18,6 +18,7 @@ namespace Applied_WebApplication.Data
         string InputDatesFormat { get; }
         string DateFormat { get; set; }
         string CurrencyFormat { get; set; }
+        string AppTempPath { get; set; }
 }
 
     public class AppliedDependency : IAppliedDependency
@@ -35,6 +36,7 @@ namespace Applied_WebApplication.Data
         public string InputDatesFormat { get; }
         public string DateFormat { get; set; }
         public string CurrencyFormat { get; set; }
+        public string AppTempPath { get; set; }
 
         public AppliedDependency()
         {
@@ -51,6 +53,19 @@ namespace Applied_WebApplication.Data
             DateFormat = "dd-MM-yyyy";
             CurrencyFormat = "#0.00";
 
+            AppTempPath = GetTempPath();
+
         }
+
+        private string GetTempPath()
+        {
+            string _Path = string.Concat(DefaultDB, "Temp\\");
+            if(!Directory.Exists(_Path))
+            {
+                Directory.CreateDirectory(_Path);
+            }
+            return _Path;
+        }
+
     }
 }

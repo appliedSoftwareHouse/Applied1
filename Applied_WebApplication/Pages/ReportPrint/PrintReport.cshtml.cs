@@ -16,7 +16,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public string ReportLink { get; set; }
-    
+        public bool IsError { get; set; }
+        public string MyMessage { get; set; }
 
         public void OnGet()
         {
@@ -74,16 +75,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 UserName = User.Identity.Name,
                 RDLCDataSet = "dsname_Ledger",
-                RDLCFileName = "Ledger.rdlc",
+                RDLCFileName = "Ledger2.rdlc",
                 ReportData = tb_Ledger,
-                OutputFileName = "GeneralLedger",
+                OutputFileName = "GeneralLedger2",
                 OutputFileType = _FileType
             };
-            MyReport.Parameters.Add("UserName", UserName);
-            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-            MyReport.ReportParameters.Add("Heading1", Heading1);
-            MyReport.ReportParameters.Add("Heading2", Heading2);
+            //MyReport.Parameters.Add("UserName", UserName);
+            //MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+            //MyReport.ReportParameters.Add("Heading1", Heading1);
+            //MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
+            IsError = MyReport.IsError;
+            MyMessage = MyReport.MyMessage;
             ReportLink = MyReport.OutputFileLink;
 
             return Page();
@@ -113,16 +116,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 UserName = User.Identity.Name,
                 RDLCDataSet = "dsname_CompanyGL",
-                RDLCFileName = "CompanyGL.rdlc",
+                RDLCFileName = "CompanyGL2.rdlc",
                 ReportData = tb_Ledger,
-                OutputFileName = "CompanyGL",
+                OutputFileName = "CompanyGL2",
                 OutputFileType = _FileType
             };
-            MyReport.Parameters.Add("UserName", UserName);
-            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-            MyReport.ReportParameters.Add("Heading1", Heading1);
-            MyReport.ReportParameters.Add("Heading2", Heading2);
+            //MyReport.Parameters.Add("UserName", UserName);
+            //MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+            //MyReport.ReportParameters.Add("Heading1", Heading1);
+            //MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
+            IsError = MyReport.IsError;
+            MyMessage = MyReport.MyMessage;
             ReportLink = MyReport.OutputFileLink;
 
             return Page();
@@ -162,6 +167,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyReport.ReportParameters.Add("Heading1", Heading1);
             MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
+            IsError = MyReport.IsError;
+            MyMessage = MyReport.MyMessage;
+
             ReportLink = MyReport.OutputFileLink;
 
             return Page();

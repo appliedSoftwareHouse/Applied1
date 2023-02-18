@@ -66,8 +66,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.Ledger.ToString()) { ValidateTable_Ledger(Row); }
             if (Row.Table.TableName == Tables.BillPayable.ToString()) { ValidateTable_BillPayable(Row); }
             if (Row.Table.TableName == Tables.BillPayable2.ToString()) { ValidateTable_BillPayable2(Row); }
+            if (Row.Table.TableName == Tables.TempLedger.ToString()) { ValidateTable_TempLedger(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
+
+
 
 
 
@@ -300,6 +303,20 @@ namespace Applied_WebApplication.Data
             if (Row["SubCategory"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Null value of Sub Category is not allowed." }); }
             if ((int)Row["SubCategory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Zero value of Sub Category  is not allowed." }); }
         }
+
+        private void ValidateTable_TempLedger(DataRow Row)
+        {
+            //MyMessages = new List<Message>();
+            //if (SQLAction == CommandAction.Insert.ToString())
+            //{
+            //    if (Seek("TranID", Row["TranID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 99901, Msg = "Transaction ID is already assigned. Duplicate value not allowed." }); }
+            //}
+            //if (Row["ID"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99902, Msg = "Record ID is null. Error in database record. contact to Administrator" }); }
+            //if (Row["ID2"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99903, Msg = "Record ID-2 is null. Error in database record. contact to Administrator" }); }
+            //if (Row["TranID"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99904, Msg = "Transaction ID is null. Error in database record. contact to Administrator" }); }
+            //if (Row["Vou_No"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99905, Msg = "Voucher No is null. Error in database record. contact to Administrator" }); }
+        }
+
         #endregion
 
     }

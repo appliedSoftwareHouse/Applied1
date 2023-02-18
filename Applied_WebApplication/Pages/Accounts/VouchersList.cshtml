@@ -6,6 +6,10 @@
 
 }
 
+
+
+
+<!-------------------------------------------------------------------------------- VOUCHER DETAILS (RECORDS)---->
 <form method="post">
     <div class="container bg-info align-baseline">
         <div class="row p-1 align-content-center">
@@ -34,48 +38,47 @@
     {
         @if (Model.Vouchers.Rows.Count > 0)
         {
-            <div class="container">
-                <table class="table" name="MyTable">
-                    <thead>
-                        <tr>
-                            <th>Vou Date</th>
-                            <th>Vou No</th>
-                            <th>Vou Type</th>
-                            <th>Debit</th>
-                            <th>Credit</th>
-                            <th>Add | Edit</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+        <div class="container">
+            <table class="table" name="MyTable">
+                <thead>
+                    <tr>
+                        <th>Vou Date</th>
+                        <th>Vou No</th>
+                        <th>Vou Type</th>
+                        <th>Debit</th>
+                        <th>Credit</th>
+                        <th>Add | Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
                         @foreach (DataRow Row in Model.Vouchers.Rows)
                         {
                             string _Date = AppFunctions.GetDate(Row["Vou_Date"]);
-                            <tr>
-                                <td>@_Date</td>
-                                <td>@Row["Vou_No"]</td>
-                                <td>@Row["Vou_Type"]</td>
-                                <td>@Row["DR"]</td>
-                                <td>@Row["CR"]</td>
-                                <td>
-                                    <button class="btn btn-link"
-                                type="submit"
-                                asp-page-handler="Edit"
-                                asp-route-id="@Row["ID"]">
-                                        <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
-                                    </button>
-                                    @*<a asp-page-handler="Edit" ><i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i></a>*@
-                                    <a asp-page-handler="Delete" asp-route-id=@Row["TranID"]><i class="bi bi-trash text-danger"></i></a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>@_Date</td>
+                            <td>@Row["Vou_No"]</td>
+                            <td>@Row["Vou_Type"]</td>
+                            <td>@Row["DR"]</td>
+                            <td>@Row["CR"]</td>
+                            <td>
+                                <button class="btn btn-link"
+                            type="submit"
+                            asp-page-handler="Edit"
+                            asp-route-id="@Row["ID"]">
+                                    <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
+                                </button>
+                                <a asp-page-handler="Delete" asp-route-id=@Row["TranID"]><i class="bi bi-trash text-danger"></i></a>
+                            </td>
+                        </tr>
                         }
 
-                    </tbody>
-                </table>
-            </div>
+                </tbody>
+            </table>
+        </div>
         }
         else
         {
-            <div class="container justify-content-center">><h4>No Record Found</h4></div>
+        <div class="container justify-content-center">><h4>No Record Found</h4></div>
         }
     }
 </form>

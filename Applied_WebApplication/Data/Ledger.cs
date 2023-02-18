@@ -19,8 +19,14 @@ namespace Applied_WebApplication.Data
         public DataTable Records { get => GetRecords(); }
 
 
+        public DataTable TempLedger()
+        {
+            string TempPath = AppFunctions.AppGlobals.AppTempPath;
 
 
+
+            return new DataTable();
+        }
         public Ledger(string _UserName)
         {
             UserName = _UserName;

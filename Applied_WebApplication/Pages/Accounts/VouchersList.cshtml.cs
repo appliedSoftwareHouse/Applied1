@@ -68,11 +68,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
             if(Row!=null)
             {
+                int RecNo = (int)Row["ID"];
                 int TranID = (int)Row["TranID"];
                 string VouType = (string)Row["Vou_Type"];
 
-                return RedirectToPage("./Voucher", pageHandler: "Edit" ,   routeValues: new { TranID, VouType });
-
+                return RedirectToPage("./Voucher1", routeValues: new { TranID, VouType, RecNo });
+                //return RedirectToPage("./Voucher1", pageHandler: "Edit", routeValues: new { TranID, VouType });
             }
 
             return Page();

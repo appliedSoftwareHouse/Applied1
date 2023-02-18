@@ -45,7 +45,9 @@ public enum Tables
     PostReceipts = 507,
 
     fun_BillPayableAmounts = 601,                    // Function of Bill Payable Amount and Tax Amount
-    fun_BillPayableEntry = 602
+    fun_BillPayableEntry = 602,
+
+    TempLedger = 9999
 
 
 }
