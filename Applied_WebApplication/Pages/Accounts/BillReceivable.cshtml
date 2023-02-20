@@ -1,0 +1,261 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.BillReceivableModel
+@{
+    var UserName = User.Identity.Name;
+
+    var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Variables.Company);
+    var TitleTax = GetTitle(UserName, Tables.Taxes, Model.Variables.Tax);
+    var TitleInventory = GetTitle(UserName, Tables.Taxes, Model.Variables.Inventory);
+    var TitleProject = GetTitle(UserName, Tables.Taxes, Model.Variables.Project);
+    var TitleEmployee = GetTitle(UserName, Tables.Taxes, Model.Variables.Employee);
+    var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
+
+}
+
+<style>
+    tr:hover {
+        background-color: #D6EEEE;
+    }
+
+    .td {
+        height: 20px
+    }
+
+    .input-group-text {
+        width: 40%;
+        height: 32px;
+    }
+
+    .form-control {
+        width: 60%;
+        height: 32px;
+    }
+
+    .form-select {
+        width: 60%;
+        height: 32px;
+    }
+
+    .input-group {
+        margin-bottom: 3px
+    }
+
+    #NetAmount {
+        background: lightblue
+    }
+
+    #Amount {
+        background: lightblue
+    }
+
+    #TaxAmount {
+        background: lightblue
+    }
+
+    #lblComments {
+        width: 20%;
+    }
+
+    .my-hr {
+        margin-top: 2px;
+        margin-bottom: 4px;
+        color: red
+    }
+
+    .td-Money {
+        text-align: right;
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Vou. Code</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Vou_No">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Vou. Date</span>
+                <input type="date" class="form-control" asp-for="@Model.Variables.Vou_Date">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Pay Date</span>
+                <input type="date" class="form-control" asp-for="@Model.Variables.Pay_Date">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Ref No</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Ref_No">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Company</span>
+                <select class="form-select" asp-for="@Model.Variables.Company">
+                    <option selected>@TitleCompany</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Inv. No.</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Inv_No">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="col">
+                <div class="input-group">
+                    <span class="input-group-text">Inv. Date</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Inv_Date">
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Employee</span>
+                <select class="form-select" asp-for="@Model.Variables.Employee">
+                    <option selected>@TitleEmployee</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Description</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Description">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text" id="lblComments">Comments</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Comments">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Net Amount</span>
+                <input type="text" class="form-control" id="NetAmount" asp-for="@Model.Variables.TotInv" readonly>
+            </div>
+        </div>
+
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Sr. No.</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.SR_No" readonly>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Inventory</span>
+                <select class="form-select" asp-for="@Model.Variables.Inventory">
+                    <option selected>@TitleInventory</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Inventory))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Project</span>
+                <select class="form-select" asp-for="@Model.Variables.Project">
+                    <option selected>@TitleProject</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Batch</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Batch">
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">Qty</span>
+                    <input type="text" id="Qty" class="form-control" asp-for="@Model.Variables.Qty">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">Rate</span>
+                    <input type="text" id="Rate" class="form-control" asp-for="@Model.Variables.Rate">
+                    
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text">Amount</span>
+                    <input type="text" id="Amount" class="form-control" asp-for="@Model.Variables.Amount" readonly>
+                </div>
+            </div>
+            <div class="col-md-3">
+
+            </div>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Tax</span>
+                <select id="Tax" onchange="myFunction2()" class="form-select" asp-for="@Model.Variables.Tax">
+                    <option selected>@TitleTax</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Taxes))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Tax Rate %</span>
+                <input type="text" class="form-control" name="Tax_Rate" asp-for="@Model.Variables.Tax_Rate" id="TaxRate">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Tax Amount</span>
+                <input type="text" class="form-control" id="TaxAmount" asp-for="@Model.Variables.TaxAmount" readonly />
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <span class="input-group-text">Description</span>
+                <input type="text" class="form-control" asp-for="@Model.Variables.Description2">
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,133 @@
+﻿@page
+@using static Applied_WebApplication.Data.AppFunctions;
+@model Applied_WebApplication.Pages.Stock.FinishedGoodsModel
+@{
+    var UserName = User.Identity.Name;
+
+    var Title_Inventory = GetTitle(UserName, Tables.Inventory, Model.Variables.Product);
+    var Title_Employee = GetTitle(UserName, Tables.Employees, Model.Variables.Employee);
+    var Title_Project = GetTitle(UserName, Tables.Project, Model.Variables.Project);
+}
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+
+<div class="container AppHeading">
+    <h4 class="TextCenter">PRODUCTION OF GOODS</h4>
+</div>
+
+<form method="post">
+    <div clsss="container">
+        <input type="text" id="ID" asp-for="@Model.Variables.ID" hidden />
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Batch" id="Batch">
+                    <label for="Batch">Batch</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" asp-for="@Model.Variables.MFDate" id="MFDate">
+                    <label for="MFDate">Manufacturing Date</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" asp-for="@Model.Variables.EXPDate" id="ExpDate">
+                    <label for="ExpDate">Manufacturing Date</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating">
+                    <select class="form-select" id="Process" asp-for="@Model.Variables.Process">
+                        <option selected>Select....</option>
+                        <option value="1">Process A</option>
+                        <option value="2">Process B</option>
+                        <option value="3">Process C</option>
+                    </select>
+                    <label for="Process">Production Type</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Products" aria-label="Floating label Company" asp-for="@Model.Variables.Product">
+                        <option selected>@Title_Inventory</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Customer">Finished Goods (Products)</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" asp-for="@Model.Variables.Qty" id="Qty">
+                    <label for="Qty">Quantity</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" asp-for="@Model.Variables.Rate" id="Rate">
+                    <label for="Rate">Avg Rate of Product</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Amount" id="Amount">
+                    <label for="number">Amount</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Project" aria-label="Floating label Project" asp-for="@Model.Variables.Project">
+                        <option selected>@Title_Project</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Project">Project</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Employee" aria-label="Floating label Employee" asp-for="@Model.Variables.Employee">
+                        <option selected>@Title_Employee</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                    <label for="Employee">Employee</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Remarks" id="Remarks">
+                    <label for="Remarks">Remarks</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-1 d-grid">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save">SAVE</button>
+            </div>
+            <div class="col-1 d-grid">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Back">BACK</button>
+            </div>
+
+        </div>
+
+
+    </div>
+</form>

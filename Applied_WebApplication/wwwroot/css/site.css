@@ -96,11 +96,13 @@ body {
 }
 
 #TableList {
+    table-layout:auto;
     width: 100%;
     border: 5px solid #E0E0F8;
     padding: 5px;
     background: #EFFBFB;
     overflow: scroll
+
 }
 
 .TableFooter {

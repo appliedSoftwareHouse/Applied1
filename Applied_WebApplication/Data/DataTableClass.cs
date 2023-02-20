@@ -81,7 +81,7 @@ namespace Applied_WebApplication.Data
                 MyDataTable = _DataSet.Tables[0];
                 MyDataView = MyDataTable.AsDataView();
             }
-            else { MyDataTable = new DataTable(); }
+            else { MyDataTable = new DataTable(); MyConnection.Close(); }
             return;
         }
         public DataRow NewRecord()
@@ -392,6 +392,13 @@ namespace Applied_WebApplication.Data
 
         internal DataTable GetTable(string filter)
         {
+            MyDataView.RowFilter = filter;
+            return MyDataView.ToTable();
+        }
+
+        internal DataTable GetTable(string filter, string Sort)
+        {
+            MyDataView.Sort = Sort;
             MyDataView.RowFilter = filter;
             return MyDataView.ToTable();
         }

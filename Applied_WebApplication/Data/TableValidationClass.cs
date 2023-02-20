@@ -67,9 +67,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BillPayable.ToString()) { ValidateTable_BillPayable(Row); }
             if (Row.Table.TableName == Tables.BillPayable2.ToString()) { ValidateTable_BillPayable2(Row); }
             if (Row.Table.TableName == Tables.TempLedger.ToString()) { ValidateTable_TempLedger(Row); }
+            if (Row.Table.TableName == Tables.FinishedGoods.ToString()) { ValidateTable_FinishedGoods(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
+        
 
 
 
@@ -316,6 +318,23 @@ namespace Applied_WebApplication.Data
             //if (Row["TranID"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99904, Msg = "Transaction ID is null. Error in database record. contact to Administrator" }); }
             //if (Row["Vou_No"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99905, Msg = "Voucher No is null. Error in database record. contact to Administrator" }); }
         }
+
+        private void ValidateTable_FinishedGoods(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
+            }
+            if (Row["Batch"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch value is null." }); }
+            if (Row["Process"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Process value is null." }); }
+
+            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch value is null." }); }
+            if ((int)Row["Product"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Finished Goods is not selected." }); }
+            if ((int)Row["Process"]==0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Process is not selected." }); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is zero, not allowed." }); }
+        }
+
 
         #endregion
 

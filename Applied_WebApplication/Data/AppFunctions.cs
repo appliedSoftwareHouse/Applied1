@@ -26,6 +26,16 @@ namespace Applied_WebApplication.Data
             string NewCode = string.Concat("BP-", MaxNum.ToString("000000"));
             return NewCode;
         }
+
+        internal static string GetBillReceivableVoucher(string UserName)
+        {
+            DataTableClass Table = new(UserName, Tables.BillReceivable);
+            if (Table.MyDataTable.Rows.Count == 0) { return "BR-000001"; }
+            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+            string NewCode = string.Concat("BR-", MaxNum.ToString("000000"));
+            return NewCode;
+        }
+
         #endregion
 
         #region Tax Function
@@ -204,6 +214,11 @@ namespace Applied_WebApplication.Data
             return DateTime.Parse(_Date.ToString()).ToString(AppRegistry.FormatDate);
         }
 
+        public static string GetDate(object _Date, string Format)
+        {
+            return DateTime.Parse(_Date.ToString()).ToString(Format);
+        }
+
 
         public static DataRow NewRecord(string UserName, Tables _TableName)
         {
@@ -323,6 +338,7 @@ namespace Applied_WebApplication.Data
             return Table.NewRecord();
         }
 
+       
 
         #endregion
 

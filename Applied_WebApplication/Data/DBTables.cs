@@ -19,6 +19,8 @@ public enum Tables
     BillPayable = 111,
     BillPayable2 = 112,
     TB = 113,
+    BillReceivable = 114, 
+    BillReceivable2 =115,
 
 
     Customers = 201,
@@ -32,6 +34,8 @@ public enum Tables
     Inv_SubCategory = 303,
     Inv_Packing = 304,
     Inv_UOM = 305,
+    FinishedGoods =306,
+    SamiFinished = 307,
 
     Ledger = 401,
     view_Ledger = 402,
@@ -47,9 +51,8 @@ public enum Tables
     fun_BillPayableAmounts = 601,                    // Function of Bill Payable Amount and Tax Amount
     fun_BillPayableEntry = 602,
 
-    TempLedger = 9999
-
-
+    TempLedger = 9999,
+    
 }
 public enum CommandAction
 {

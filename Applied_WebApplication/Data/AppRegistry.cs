@@ -145,6 +145,9 @@ namespace Applied_WebApplication.Data
             return false;
         }
 
-        
+        public static int ExpDays()
+        {
+            return 365;   // One Year of Expiry Date
+        }
     }
 }
