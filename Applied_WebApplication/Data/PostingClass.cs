@@ -32,7 +32,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
                 tb_Ledger.CurrentRow["Description"] = Row["Description"];
                 tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
-                if (tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.Bankbook))
+                if (tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.CashBook))
                 {
                     VoucherRows.Add(tb_Ledger.CurrentRow);
                 }

@@ -20,6 +20,7 @@ namespace Applied_WebApplication.Pages
         public IndexModel(ILogger<IndexModel> logger)
         {
             _logger = logger;
+            
         }
 
         public IActionResult OnPostTest()

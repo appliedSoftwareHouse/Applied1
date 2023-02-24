@@ -77,13 +77,14 @@
         </main>
     </div>
 
-    <footer class="border-top footer " style="position:fixed; bottom:5px">
+    <footer class="border-top footer " style="bottom:0px">
         <a class="text-muted">  &copy; 2022 - Applied Software House </a> <a asp-page="/WE">Privacy </a> | <a class="float-end" style="color:blue">@DateTime.Now.ToLongDateString()</a>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+
 @await RenderSectionAsync("Scripts", required: false)
 
 </body>

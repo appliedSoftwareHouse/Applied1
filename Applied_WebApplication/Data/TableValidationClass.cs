@@ -5,17 +5,23 @@ namespace Applied_WebApplication.Data
 {
     public class TableValidationClass
     {
+
         public string SQLAction { get; set; }
         public DataTable MyDataTable { get; set; }
 
         public List<Message> MyMessages = new List<Message>();
         public PostType MyVoucherType { get; set; }
-        private DataView MyDataView { get; set; }
+        private DataView MyDataView; 
+
+        private static DateTime FiscalFrom => AppRegistry.GetFiscalFrom();
+        private static DateTime FiscalTo => AppRegistry.GetFiscalTo();
+
 
         public TableValidationClass()
         {
             MyDataTable = new DataTable();
             MyMessages = new List<Message>();
+            MyDataView = MyDataTable.AsDataView();
         }
 
         public TableValidationClass(DataTable table)
@@ -57,7 +63,7 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "DataTable is null. define Datatable to validate the record." });
                 return false;
             }
-            if (MyDataView == null) { if (MyDataTable != null) { MyDataView = MyDataTable.AsDataView(); } }
+            //if (MyDataView == null) { if (MyDataTable != null) { MyDataView = MyDataTable.AsDataView(); } }
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
             if (Row.Table.TableName == Tables.Inventory.ToString()) { ValidateTable_Inventory(Row); }
@@ -68,12 +74,10 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BillPayable2.ToString()) { ValidateTable_BillPayable2(Row); }
             if (Row.Table.TableName == Tables.TempLedger.ToString()) { ValidateTable_TempLedger(Row); }
             if (Row.Table.TableName == Tables.FinishedGoods.ToString()) { ValidateTable_FinishedGoods(Row); }
+            if (Row.Table.TableName == Tables.BillReceivable.ToString()) { ValidateTable_BillReceivable(Row); }
+            if (Row.Table.TableName == Tables.BillReceivable2.ToString()) { ValidateTable_BillReceivable2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
-
-        
-
-
 
 
         #region Methods => Seek / Sucess
@@ -305,7 +309,6 @@ namespace Applied_WebApplication.Data
             if (Row["SubCategory"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Null value of Sub Category is not allowed." }); }
             if ((int)Row["SubCategory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = "Zero value of Sub Category  is not allowed." }); }
         }
-
         private void ValidateTable_TempLedger(DataRow Row)
         {
             //MyMessages = new List<Message>();
@@ -318,7 +321,6 @@ namespace Applied_WebApplication.Data
             //if (Row["TranID"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99904, Msg = "Transaction ID is null. Error in database record. contact to Administrator" }); }
             //if (Row["Vou_No"] == null) { MyMessages.Add(new Message() { Success = false, ErrorID = 99905, Msg = "Voucher No is null. Error in database record. contact to Administrator" }); }
         }
-
         private void ValidateTable_FinishedGoods(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -331,9 +333,46 @@ namespace Applied_WebApplication.Data
 
             if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch value is null." }); }
             if ((int)Row["Product"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Finished Goods is not selected." }); }
-            if ((int)Row["Process"]==0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Process is not selected." }); }
+            if ((int)Row["Process"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Process is not selected." }); }
             if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is zero, not allowed." }); }
         }
+
+        private void ValidateTable_BillReceivable(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
+
+            }
+            if (string.IsNullOrEmpty(Row["Inv_No"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Invoice Number value is null, contact to Administrator." }); }
+            if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Company ID is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Description is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Status"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Status is not defined, must be a valid value." }); }
+            if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the fiscal year date" }); }
+            if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is above the fiscal year date" }); }
+            if ((DateTime)Row["Vou_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the invoice Date, not allowed" }); }
+            if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Payment Date is below the invoice Date, not allowed" }); }
+        }
+
+        private void ValidateTable_BillReceivable2(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
+
+            }
+            if ((int)Row["Sr_No"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Serial Number is Zero, not allowed." }); }
+            //if ((int)Row["TranID"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Transaction ID is Zero, not allowed." }); }
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Product ID is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch Number is zero, not allowed." }); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is Zero, not allowed." }); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
+
+
+        }
+
 
 
         #endregion

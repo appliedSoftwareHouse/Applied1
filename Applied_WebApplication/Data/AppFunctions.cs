@@ -1,5 +1,6 @@
-﻿using System.Data.SQLite;
-using System.Data;
+﻿using System.Data;
+using System.Data.SQLite;
+using System.Drawing;
 using System.Text;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
@@ -129,6 +130,7 @@ namespace Applied_WebApplication.Data
             return Cheque;
         }
         public readonly static AppliedDependency AppGlobals = new();
+
         public static DataTable GetAppliedTable(string UserName, ReportClass.ReportFilters ReportFilter)
         {
             string CommandText = GetQueryText(ReportFilter);
@@ -338,9 +340,38 @@ namespace Applied_WebApplication.Data
             return Table.NewRecord();
         }
 
-       
 
         #endregion
+
+
+        #region Temporary Local Database
+        internal static SQLiteConnection GetTempConnection(string UserName)
+        {
+            StringBuilder TempConnectionString = new();
+            
+
+            //TempConnectionString.Append("Data Source=");
+            TempConnectionString.Append(AppGlobals.LocalDB);
+            TempConnectionString.Append(UserName);
+            string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
+            TempConnectionString.Append("\\" + UserName +  "DB.temp");                     // Get Full Path and File Name;
+            string _FileName = TempConnectionString.ToString();
+            
+            if(!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
+            if(!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
+
+            SQLiteConnection _TempConnection = new("Data Source=" + _FileName);
+            _TempConnection.Open();
+            
+            return _TempConnection;
+        }
+
+        
+
+        #endregion
+
+
+
 
     }
 }

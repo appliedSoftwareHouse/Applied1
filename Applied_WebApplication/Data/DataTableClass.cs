@@ -1,6 +1,4 @@
-﻿using Applied_WebApplication.Pages;
-using Microsoft.AspNetCore.Identity;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
@@ -16,13 +14,16 @@ namespace Applied_WebApplication.Data
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
+        public string ConnectionString;
         public TableValidationClass TableValidation;
         public int ErrorCount { get => TableValidation.MyMessages.Count; }
-        public string MyTableName;
+        public int Count => MyDataView.Count;
+        public string MyTableName { get; set; }
         public bool IsError = false;
-        public string MyMessage;
+        public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
+        public DataRowCollection Rows => MyDataTable.Rows;
 
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
@@ -34,18 +35,48 @@ namespace Applied_WebApplication.Data
         public DataTableClass(string _UserName, Tables _Tables)
         {
             UserProfile UProfile = new(_UserName);
-            string ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
+            ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
             MyConnection = new SQLiteConnection(ConnectionString);
             MyUserName = _UserName;
             MyTableName = _Tables.ToString();
-            TableValidation = new();
             GetDataTable();                                                                                   // Load DataTable and View
+            TableValidation = new(MyDataTable);
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
 
             Command_Update = new SQLiteCommand(MyConnection);
             Command_Delete = new SQLiteCommand(MyConnection);
             Command_Insert = new SQLiteCommand(MyConnection);
+        }
+
+        public DataTableClass(string UserName, Tables _Table, bool IsFiltered, int? ID, int? TranID)
+        {
+            ID ??= 0; TranID ??= 0;
+
+            //--------------------------------------------------- Initialize
+            UserProfile UProfile = new(UserName);
+            MyConnection = AppFunctions.GetTempConnection(UserName);        // Get Temporary Database Connection.
+            MyTableName = _Table.ToString();
+            CreateTempTable(UserName, _Table);                                                  // Load DataTable and View
+            TableValidation = new(MyDataTable);
+            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
+
+            //=========================== Filter Rows
+            if (IsFiltered)
+            {
+                StringBuilder _Filter = new();
+                if (ID > 0) { _Filter.Append("ID=" + ID.ToString()); }
+                if (TranID > 0 ) {_Filter.Append(" AND TranID=" + TranID.ToString());}
+
+                MyDataView.RowFilter = _Filter.ToString();                  // filter record for specific ID.
+                MyDataTable = MyDataView.ToTable();                         // Filter MyTable as per filtered records.
+            }
+
+            //=========================== SQLite Commands
+            Command_Update = new SQLiteCommand(MyConnection);
+            Command_Delete = new SQLiteCommand(MyConnection);
+            Command_Insert = new SQLiteCommand(MyConnection);
+
         }
 
         public static DataTable GetDataView(string UserName, Tables TableView)                      // Load Database 
@@ -65,6 +96,7 @@ namespace Applied_WebApplication.Data
             else { datatable = new DataTable(); }
             return datatable;
         }
+
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
@@ -84,6 +116,52 @@ namespace Applied_WebApplication.Data
             else { MyDataTable = new DataTable(); MyConnection.Close(); }
             return;
         }
+
+        public void CreateTempTable(string UserName, Tables Table)
+        {
+            MyTableName = Table.ToString();
+
+            DataTable result = new();
+            DataTableClass _SourceTable = new(UserName, Table);
+            SQLiteCommand _Command = new SQLiteCommand(AppFunctions.GetTempConnection(UserName))
+            {
+                CommandText = "SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='" + Table.ToString() + "'"
+            };
+
+            long TableExist = (long)_Command.ExecuteScalar();
+            if (TableExist == 0)
+            {
+                //================================================== Create Table if not exist.
+                StringBuilder _Text = new();
+
+                _Text.Append(string.Concat("CREATE TABLE [", Table.ToString(), "] ("));
+                string _LastColumn = _SourceTable.MyDataTable.Columns[_SourceTable.MyDataTable.Columns.Count - 1].ToString();
+                foreach (DataColumn Column in _SourceTable.MyDataTable.Columns)
+                {
+                    _Text.Append("["); _Text.Append(Column.ColumnName); _Text.Append("]");
+                    if (Column.ColumnName != _LastColumn) { _Text.Append(", "); } else { _Text.Append(")"); }
+                }
+
+                _Command.CommandText = _Text.ToString();
+                _Command.ExecuteNonQuery();
+            }
+
+            _Command.CommandText = new("SELECT * FROM [" + Table.ToString() + "]");
+            SQLiteDataAdapter _Adapter = new(_Command);
+            DataSet _DataSet = new();
+            _Adapter.Fill(_DataSet, Table.ToString());
+
+            if (_DataSet.Tables.Count == 1)
+            {
+                MyDataTable = _DataSet.Tables[0];
+                MyDataView = MyDataTable.AsDataView();
+            }
+            
+            _Command.Connection.Close();                    // Close Database Connection.
+           
+        }
+
+
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -375,7 +453,7 @@ namespace Applied_WebApplication.Data
         {
             if (MyDataTable.Rows.Count > 0)
             {
-                int _result = (int)MyDataTable.Compute("MAX(ID)", "") + 1;
+                int _result = int.Parse(MyDataTable.Compute("MAX(ID)", "").ToString()) + 1;
                 return _result;
             }
             else

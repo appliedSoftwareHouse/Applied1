@@ -89,6 +89,9 @@ namespace Applied_WebApplication.Data
         }
 
 
+
+
+
         public DataTable GetReportDataTable()
         {
             return GetAppliedTable(UserName, ReportFilter);                      // Get a DataTable from AppFuction 

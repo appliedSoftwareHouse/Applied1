@@ -32,9 +32,7 @@ builder.Services.AddAuthorization(options =>
 });
 builder.Services.AddHttpContextAccessor();
 
-
 var app = builder.Build();
-var Rootpath = app.Environment.ContentRootPath;
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

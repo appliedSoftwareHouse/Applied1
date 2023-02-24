@@ -51,9 +51,28 @@ body {
     border-block: double;
 }
 
+
     .AppHeading:hover {
         background-color: slateblue;
     }
+
+.AppHeading-2 {
+    margin-top: 1px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-bottom: 2px;
+    padding-top: 5px;
+    background-color: darkorchid;
+    color: whitesmoke;
+    border-block: double;
+    height: 40px;
+    font-size:8px;
+}
+
+AppHeading-2:hover {
+    background-color: slateblue;
+}
+
 
 .TextCenter {
     text-align: center;

@@ -11,15 +11,19 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet()
         {
+            DataTableClass _Table = new(UserName, Tables.view_BillReceivable);
+            _Table.MyDataView.RowFilter = "";
+            BillReceivable = _Table.MyDataView.ToTable();
         }
 
         public void OnGetEdit()
         {
         }
 
-        public IActionResult OnPost()
+        public IActionResult OnPost(int? id)
         {
-            return RedirectToPage("./BillReceivable");
+            id ??= 0;
+            return RedirectToPage("./BillReceivable", routeValues: new {id});
 
         }
     }

@@ -6,8 +6,8 @@
     var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
 }
 
-<div class="container AppHeading">
-    <h3>BILL RECEIVABLE (LIST)</h3>
+<div class="container AppHeading-2">
+    <h5 class="TextCenter">BILL RECEIVABLE (LIST)</h5>
 </div>
 
 <form method="post">
@@ -50,13 +50,13 @@
                         <td>@_Amount.ToString(FMTCurrency)</td>
                         <td>
                             <a formaction="get"
-                           asp-page="BillPayable"
+                           asp-page="BillReceivable"
                            asp-route-id=@Row["ID"]
                            asp-route-id2="-1">
 
                                 <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
                             </a>
-                            <a asp-page="BillPayableList"
+                            <a asp-page="BillReceivableList"
                            asp-page-handler="Delete"
                            asp-route-id=@Row["ID"]
                            asp-route-Srno="1">
@@ -65,9 +65,13 @@
                         </td>
                     </tr>
                 }
-              
+
             </tbody>
         </table>
     </div>
-   
+
+    
+
+
+
 </form>

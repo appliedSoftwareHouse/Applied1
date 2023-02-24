@@ -75,15 +75,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 UserName = User.Identity.Name,
                 RDLCDataSet = "dsname_Ledger",
-                RDLCFileName = "Ledger2.rdlc",
+                RDLCFileName = "Ledger.rdlc",
                 ReportData = tb_Ledger,
-                OutputFileName = "GeneralLedger2",
+                OutputFileName = "GeneralLedger",
                 OutputFileType = _FileType
             };
-            //MyReport.Parameters.Add("UserName", UserName);
-            //MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
-            //MyReport.ReportParameters.Add("Heading1", Heading1);
-            //MyReport.ReportParameters.Add("Heading2", Heading2);
+            MyReport.Parameters.Add("UserName", UserName);
+            MyReport.ReportParameters.Add("CompanyName", UserProfile.GetCompanyName(User));
+            MyReport.ReportParameters.Add("Heading1", Heading1);
+            MyReport.ReportParameters.Add("Heading2", Heading2);
             MyReport.GetReport();
             IsError = MyReport.IsError;
             MyMessage = MyReport.MyMessage;
@@ -116,9 +116,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 UserName = User.Identity.Name,
                 RDLCDataSet = "dsname_CompanyGL",
-                RDLCFileName = "CompanyGL2.rdlc",
+                RDLCFileName = "CompanyGL.rdlc",
                 ReportData = tb_Ledger,
-                OutputFileName = "CompanyGL2",
+                OutputFileName = "CompanyGL",
                 OutputFileType = _FileType
             };
             //MyReport.Parameters.Add("UserName", UserName);

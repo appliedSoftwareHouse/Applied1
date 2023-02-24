@@ -21,7 +21,7 @@ public enum Tables
     TB = 113,
     BillReceivable = 114, 
     BillReceivable2 =115,
-
+    view_BillReceivable = 116,
 
     Customers = 201,
     City = 202,
