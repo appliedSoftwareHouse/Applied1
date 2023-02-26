@@ -95,7 +95,7 @@ namespace Applied_WebApplication.Data
         public static string GetUserClaim(ClaimsPrincipal _ClaimPrincipal, string Key)
         {
             // Get user claim value.
-            string Result = string.Empty; 
+            string Result = string.Empty;
             foreach (Claim _Claim in _ClaimPrincipal.Claims)
             {
                 if (_Claim.Type == Key)

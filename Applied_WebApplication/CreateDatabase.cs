@@ -1,9 +1,4 @@
-﻿using Applied_WebApplication.Data;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
-
-namespace Applied_WebApplication
+﻿namespace Applied_WebApplication
 {
     // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
     public class CreateDatabase
@@ -13,7 +8,7 @@ namespace Applied_WebApplication
 
         public CreateDatabase(RequestDelegate next)
         {
-            if(_Class.DBFile_Exist)
+            if (_Class.DBFile_Exist)
             {
                 _next = next;
             }

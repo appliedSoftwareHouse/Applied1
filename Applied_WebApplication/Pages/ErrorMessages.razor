@@ -3,9 +3,31 @@
 }
 
 <div class="container">
-    @foreach (TableValidationClass.Message _Error in Errors)
+    @foreach (Message _Error in Errors)
     {
-        <div class="error-msg"> @_Error.Msg; </div>
+        if (_Error.Colour == System.Drawing.Color.Orange)
+        {
+            <div class="error-msg"> @_Error.Msg; </div>
+        }
+        if (_Error.Colour == System.Drawing.Color.Green)
+        {
+            <div class="error-msg" style="background: greenyellow; color:black"> @_Error.Msg; </div>
+        }
+
+        if (_Error.Colour == System.Drawing.Color.Blue)
+        {
+            <div class="error-msg" style="background: lightblue; color:black"> @_Error.Msg; </div>
+        }
+
+        if (_Error.Colour == System.Drawing.Color.Yellow)
+        {
+            <div class="error-msg" style="background: yellow; color:black"> @_Error.Msg; </div>
+        }
+
+        if (_Error.Colour == System.Drawing.Color.Red)
+        {
+            <div class="error-msg" style="background: Red; color:yellow"> @_Error.Msg; </div>
+        }
     }
 </div>
 <hr />

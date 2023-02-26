@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
-using System.Security.Principal;
 using static Applied_WebApplication.Data.AppFunctions;
 using DataSet = System.Data.DataSet;
 
@@ -18,7 +17,7 @@ namespace Applied_WebApplication.Data
 
         public bool DBFile_Exist { get => File.Exists(DBFile_Path); }
 
-        
+
 
 
         public ConnectionClass()
@@ -58,7 +57,7 @@ namespace Applied_WebApplication.Data
     }           // END()
 
 
-    
+
 
     public class AppliedUsersClass
     {
@@ -112,8 +111,8 @@ namespace Applied_WebApplication.Data
             }
             return userProfile.DBFilePath;
         }
-        
-        
+
+
     }
 }
 

@@ -11,8 +11,8 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet()
         {
-            DataTableClass _Table = new(UserName, Tables.view_BillReceivable);
-            _Table.MyDataView.RowFilter = "";
+            DataTableClass _Table = new(UserName, Tables.BillReceivable);
+            //_Table.MyDataView.RowFilter = "";
             BillReceivable = _Table.MyDataView.ToTable();
         }
 
@@ -23,7 +23,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPost(int? id)
         {
             id ??= 0;
-            return RedirectToPage("./BillReceivable", routeValues: new {id});
+            return RedirectToPage("./BillReceivable", routeValues: new { id });
 
         }
     }

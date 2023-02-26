@@ -1,12 +1,14 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.ReportPrint.COAListModel
 @{
     var UserName = User.Identity.Name;
     var PDFFile = Model.ReportLink;
+
 }
 
 <style>
-    .iframe{
+    .iframe {
         overflow: hidden;
         height: 100%;
         width: 100%
@@ -14,15 +16,57 @@
 
 </style>
 
-
-@if(!Model.IsError)
+@*
+@if (!Model.IsError)
 {
-<div class="container bg-info" style="height: 100vh">
-    <iframe src=@Url.Content(PDFFile) frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
+    <div class="container bg-info" style="height: 100vh">
+        <iframe src=@Url.Content(PDFFile) frameborder="0" style="overflow:hidden;height:100%;width:100%" height="100%" width="100%"></iframe>
     </div>
 }
+else
+{*@
+<div class="container">
+    <table name="TableList" class="table table-hover">
+        <thead class="bg-light">
+            <tr>
+                <th style="width:10%">Date</th>
+                <th style="width:10%">Vou No.</th>
+                <th style="width:50%">Description</th>
+                <th style="width:10%">Debit</th>
+                <th style="width:10%">Credit</th>
+                <th style="width:10%">Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow Row in Model.Preview.Rows)
+            {
+                string _Date = (DateTime.Parse(Row["Vou_Date"].ToString())).ToString(AppRegistry.FormatDate);
+                string _VouNo = Row["Vou_No"].ToString();
+                string _DR = decimal.Parse(Row["DR"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                string _CR = decimal.Parse(Row["CR"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                string _Bal = decimal.Parse(Row["Balance"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                string _Description = Row["Description"].ToString();
 
-    <div class="alert alert-danger" role="alert">
-        @Model.MyMessage
-    </div>
+                <tr>
+                    <td>@_Date</td>
+                    <td>@_VouNo</td>
+                    <td>@_Description</td>
+                    <td style="text-align: right">@_DR</td>
+                    <td style="text-align: right">@_CR</td>
+                    <td style="text-align: right">@_Bal</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 
+
+@*}
+
+
+<hr />
+<div class="alert alert-danger" role="alert">
+    @Model.MyMessage
+</div>
+
+*@

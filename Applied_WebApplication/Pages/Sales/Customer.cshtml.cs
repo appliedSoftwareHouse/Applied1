@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Sales
 {
@@ -12,7 +11,7 @@ namespace Applied_WebApplication.Pages.Sales
         public bool IsError = false;
         public List<Message> ErrorMessages;
         public string MyPageAction { get; set; } = "Add";
-        
+
         public void OnGetEdit(string UserName, int id)
         {
             MyPageAction = "Edit";
@@ -62,11 +61,11 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostSave(Customer _Record, string UserName)
         {
-            
+
             DataTableClass Customers = new(UserName, Tables.Customers);
 
-            
-            if(Customers.Seek(_Record.ID))
+
+            if (Customers.Seek(_Record.ID))
             {
                 Customers.SeekRecord(_Record.ID);
                 Customers.CurrentRow["ID"] = _Record.ID;
@@ -102,7 +101,7 @@ namespace Applied_WebApplication.Pages.Sales
             {
                 return RedirectToPage("Customers");
             }
-            
+
         }
 
         public IActionResult OnPostDelete(Customer _Record, string UserName)
@@ -135,7 +134,7 @@ namespace Applied_WebApplication.Pages.Sales
         public string Country { get; set; }
         public string Phone { get; set; }
         public string Mobile { get; set; }
-        
+
         [DataType(DataType.EmailAddress)]
         public string Email { get; set; }
         public string NTN { get; set; }

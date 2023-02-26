@@ -1,8 +1,5 @@
-using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Data;
-using System.Security.Claims;
 using static Applied_WebApplication.Data.ReportClass;
 
 
@@ -43,8 +40,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
             AppRegistry.SetKey(UserName, "ReportType", (int)rprType, KeyType.Number);
             Parameters.TableName = Tables.Ledger;
-            
-            return RedirectToPage("PrintReport", "GL", new {Parameters});
+
+            return RedirectToPage("PrintReport", "GL", new { Parameters });
         }
 
         public IActionResult OnPostCompany(FileType rprType)

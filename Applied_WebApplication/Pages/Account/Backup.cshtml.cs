@@ -1,8 +1,5 @@
-using System.IO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Applied_WebApplication.Data;
-using System.IO.Compression;
 
 namespace Applied_WebApplication.Pages.Account
 {

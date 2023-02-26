@@ -1,5 +1,6 @@
 ﻿using System.Data;
-using Applied_WebApplication.Pages;
+using System.Drawing;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
 {
@@ -11,7 +12,10 @@ namespace Applied_WebApplication.Data
 
         public List<Message> MyMessages = new List<Message>();
         public PostType MyVoucherType { get; set; }
-        private DataView MyDataView; 
+        private DataView MyDataView { get; set; }
+        public int Count => MyMessages.Count;
+
+
 
         private static DateTime FiscalFrom => AppRegistry.GetFiscalFrom();
         private static DateTime FiscalTo => AppRegistry.GetFiscalTo();
@@ -32,12 +36,7 @@ namespace Applied_WebApplication.Data
             SQLAction = string.Empty;
         }
 
-        public class Message
-        {
-            public bool Success { get; set; } = false;
-            public string Msg { get; set; } = string.Empty;
-            public int ErrorID { get; set; } = 0;
-        }
+
 
         public bool Validation(DataRow Row, CommandAction _SQLAction)
         {
@@ -47,6 +46,7 @@ namespace Applied_WebApplication.Data
 
         public bool Validation(DataRow Row)
         {
+
             MyMessages = new List<Message>();
             if (Row == null)
             {
@@ -76,8 +76,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.FinishedGoods.ToString()) { ValidateTable_FinishedGoods(Row); }
             if (Row.Table.TableName == Tables.BillReceivable.ToString()) { ValidateTable_BillReceivable(Row); }
             if (Row.Table.TableName == Tables.BillReceivable2.ToString()) { ValidateTable_BillReceivable2(Row); }
+            if (Row.Table.TableName == Tables.view_BillReceivable.ToString()) { ValidateTable_view_BillReceivable(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
+
+
 
 
         #region Methods => Seek / Sucess
@@ -336,7 +339,6 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Process"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Process is not selected." }); }
             if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is zero, not allowed." }); }
         }
-
         private void ValidateTable_BillReceivable(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -354,7 +356,6 @@ namespace Applied_WebApplication.Data
             if ((DateTime)Row["Vou_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the invoice Date, not allowed" }); }
             if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Payment Date is below the invoice Date, not allowed" }); }
         }
-
         private void ValidateTable_BillReceivable2(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -372,7 +373,30 @@ namespace Applied_WebApplication.Data
 
 
         }
+        private void ValidateTable_view_BillReceivable(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+                if (Seek("Vou_No", Row["Vou_No"].ToString())) { MyMessages.Add(SetMessage("Voucher No is already exist in Data Base. Contact to Administrator.")); }
+                if (Seek("TranID", Row["TranID"].ToString())) { MyMessages.Add(SetMessage("Bill Receivable No is already exist in Data Base. Contact to Administrator.")); }
+            }
 
+            if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(SetMessage("Description is null, must be some value.")); }
+            if (string.IsNullOrEmpty(Row["Ref_No"].ToString())) { MyMessages.Add(SetMessage("Reference No. is null, must be some value.")); }
+            if (string.IsNullOrEmpty(Row["Inv_No"].ToString())) { MyMessages.Add(SetMessage("Bill No is null, must be some value.")); }
+            if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(SetMessage("Batch No is null, must be some value.")); }
+
+            if ((int)Row["Company"] == 0) { MyMessages.Add(SetMessage("Company is not selected. select one.")); }
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(SetMessage("Product is not selected. select one.")); }
+            if ((int)Row["Sr_No"] == 0) { MyMessages.Add(SetMessage("Serial No. of bill is zero. must be more than zero.")); }
+
+            if ((decimal)Row["Qty"]==0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
+            if ((decimal)Row["Tax"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
+
+        }
 
 
         #endregion

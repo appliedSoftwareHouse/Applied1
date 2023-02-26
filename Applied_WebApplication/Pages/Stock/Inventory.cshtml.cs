@@ -1,13 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static Applied_WebApplication.Data.TableValidationClass;
 
 namespace Applied_WebApplication.Pages.Stock
 {
     public class InventoryModel : PageModel
     {
         [BindProperty]
-        public Inventory Record { get; set; } 
+        public Inventory Record { get; set; }
         public bool IsError { get; set; }
         public List<Message> ErrorMessages = new();
         public int ErrorCount { get => ErrorMessages.Count; }
@@ -59,8 +58,8 @@ namespace Applied_WebApplication.Pages.Stock
             string UserName = User.Identity.Name;
             DataTableClass Inventory = new(UserName, Tables.Inventory);
 
-            if (Inventory.Seek(id)) {Inventory.SeekRecord(id);}
-            else {Inventory.NewRecord(); }
+            if (Inventory.Seek(id)) { Inventory.SeekRecord(id); }
+            else { Inventory.NewRecord(); }
 
             Inventory.CurrentRow["ID"] = Record.ID; ;
             Inventory.CurrentRow["Code"] = Record.Code;
@@ -71,7 +70,7 @@ namespace Applied_WebApplication.Pages.Stock
             Inventory.Save();
             ErrorMessages = Inventory.TableValidation.MyMessages;
 
-            if(ErrorCount>0) { return Page(); }
+            if (ErrorCount > 0) { return Page(); }
             else { return RedirectToPage("./Inventories"); }
 
 

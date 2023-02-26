@@ -1,9 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Data;
-using System.Data.SqlClient;
-using System.Data.SQLite;
-using System.Diagnostics;
-using System.ServiceModel.Security;
+﻿using System.Data;
 
 namespace Applied_WebApplication.Data
 {
@@ -19,7 +14,7 @@ namespace Applied_WebApplication.Data
         public DataTable Records { get => GetRecords(); }
 
 
-        
+
         public Ledger(string _UserName)
         {
             UserName = _UserName;

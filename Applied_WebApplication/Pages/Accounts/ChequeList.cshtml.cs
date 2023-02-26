@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.ServiceModel.Security;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -10,7 +9,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public string ChqCode { get; set; }
         public DataTableClass Table;
         public string UserName;
-        
+
 
         public void OnGet()
         {
@@ -23,12 +22,12 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnGetAdd()
         {
             return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = "" });
-            
+
         }
 
         public IActionResult OnGetEdit(string ChqCode)
         {
-            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode});
+            return RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode });
 
         }
 

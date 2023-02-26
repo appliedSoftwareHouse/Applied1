@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>c098c383-c4f2-4e50-addd-a23b156da24c</UserSecretsId>
@@ -24,28 +24,28 @@
     <Compile Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <Compile Remove="wwwroot\PrintedReports\Users\**" />
     <Compile Remove="wwwroot\Reports\PrintReports\**" />
-    <Compile Remove="wwwroot\SQLiteDB\Temp\**" />
+    <Compile Remove="wwwroot\SQLiteDB\**" />
     <Content Remove="Reports\**" />
     <Content Remove="wwwroot\LocalDB\HFSSteel\**" />
     <Content Remove="wwwroot\PrintedReports\Guest\**" />
     <Content Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <Content Remove="wwwroot\PrintedReports\Users\**" />
     <Content Remove="wwwroot\Reports\PrintReports\**" />
-    <Content Remove="wwwroot\SQLiteDB\Temp\**" />
+    <Content Remove="wwwroot\SQLiteDB\**" />
     <EmbeddedResource Remove="Reports\**" />
     <EmbeddedResource Remove="wwwroot\LocalDB\HFSSteel\**" />
     <EmbeddedResource Remove="wwwroot\PrintedReports\Guest\**" />
     <EmbeddedResource Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <EmbeddedResource Remove="wwwroot\PrintedReports\Users\**" />
     <EmbeddedResource Remove="wwwroot\Reports\PrintReports\**" />
-    <EmbeddedResource Remove="wwwroot\SQLiteDB\Temp\**" />
+    <EmbeddedResource Remove="wwwroot\SQLiteDB\**" />
     <None Remove="Reports\**" />
     <None Remove="wwwroot\LocalDB\HFSSteel\**" />
     <None Remove="wwwroot\PrintedReports\Guest\**" />
     <None Remove="wwwroot\PrintedReports\HFSSteel\**" />
     <None Remove="wwwroot\PrintedReports\Users\**" />
     <None Remove="wwwroot\Reports\PrintReports\**" />
-    <None Remove="wwwroot\SQLiteDB\Temp\**" />
+    <None Remove="wwwroot\SQLiteDB\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -54,13 +54,6 @@
 
   <ItemGroup>
     <Content Remove="Pages\ReportPrint\CompanyGL.cshtml" />
-    <Content Remove="wwwroot\SQLiteDB\Altamash.db" />
-    <Content Remove="wwwroot\SQLiteDB\Amcorp.db" />
-    <Content Remove="wwwroot\SQLiteDB\Guest.DB" />
-    <Content Remove="wwwroot\SQLiteDB\HFSSteel.db" />
-    <Content Remove="wwwroot\SQLiteDB\Test.db" />
-    <Content Remove="wwwroot\SQLiteDB\Winmark.db" />
-    <Content Remove="wwwroot\SQLiteDB\_HFSSteel.db" />
   </ItemGroup>
 
   <ItemGroup>
@@ -69,10 +62,10 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="7.0.3" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="6.0.14" />
     <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
     <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>

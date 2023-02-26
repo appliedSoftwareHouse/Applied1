@@ -1,9 +1,7 @@
-using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Text;
-using System.Transactions;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -16,15 +14,15 @@ namespace Applied_WebApplication.Pages.Accounts
         public void OnGet()
         {
             string UserName = User.Identity.Name;
-            
+
             Variables.VouType = (string)AppRegistry.GetKey(UserName, "Vou_VouType", KeyType.Text);
             Variables.DateFrom = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtFrom", KeyType.Date);
             Variables.DateTo = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtTo", KeyType.Date);
 
             if (string.IsNullOrEmpty(Variables.VouType)) { Variables.VouType = VoucherType.Cash.ToString(); }
-           
+
             Vouchers = GetData();
-            
+
         }
 
         public DataTable GetData()
@@ -37,7 +35,7 @@ namespace Applied_WebApplication.Pages.Accounts
             string _Date2 = Variables.DateTo.ToString(AppRegistry.DateYMD);
 
             _Filter.Append("SR_No=1");
-            _Filter.Append(" AND Vou_Type = '"+ Variables.VouType.ToString() + "'");
+            _Filter.Append(" AND Vou_Type = '" + Variables.VouType.ToString() + "'");
             _Filter.Append(" AND Vou_Date >= '" + _Date1 + "' ");
             _Filter.Append(" AND Vou_Date <= '" + _Date2 + "' ");
 
@@ -48,7 +46,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnPost() { }
 
-        public void OnPostRefresh() 
+        public void OnPostRefresh()
         {
             string UserName = User.Identity.Name;
             Vouchers = GetData();
@@ -66,7 +64,7 @@ namespace Applied_WebApplication.Pages.Accounts
             DataTableClass _Table = new DataTableClass(UserName, Tables.Ledger);
             DataRow Row = _Table.SeekRecord(id);
 
-            if(Row!=null)
+            if (Row != null)
             {
                 int RecNo = (int)Row["ID"];
                 int TranID = (int)Row["TranID"];
@@ -79,7 +77,7 @@ namespace Applied_WebApplication.Pages.Accounts
             return Page();
 
         }
-       
+
 
 
         public void OnGetDelete()

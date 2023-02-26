@@ -1,15 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using static Applied_WebApplication.Data.AppFunctions;
 using System.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Authentication;
-using System.Security.Claims;
-using Newtonsoft.Json.Linq;
-using Microsoft.AspNetCore.Identity;
-using System.Net;
-using AspNetCore.ReportingServices.ReportProcessing.ReportObjectModel;
+using static Applied_WebApplication.Data.AppFunctions;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -84,7 +77,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
                     Row = Table.MyDataView[0].Row;
                     if (Row != null) { Row1 = Row; } else { Row1 = Table.NewRecord(); }
-                    
+
                     Row = Table.MyDataView[1].Row;
                     if (Row != null) { Row2 = Row; } else { Row2 = Table.NewRecord(); }
 
@@ -123,7 +116,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
                 if (Cheque.TaxID1 != 0)
                 {
-                    
+
                     Row2["Code"] = Cheque.Code;
                     Row2["TranType"] = int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxID1));
                     Row2["TranDate"] = Cheque.TranDate;
@@ -144,7 +137,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
                 if (Cheque.TaxID2 != 0)
                 {
-                    
+
                     Row3["Code"] = Cheque.Code;
                     Row3["TranType"] = (int.Parse(GetColumnValue(UserName, Tables.Taxes, "TaxType", Cheque.TaxID2)));
                     Row3["TranDate"] = Cheque.TranDate;

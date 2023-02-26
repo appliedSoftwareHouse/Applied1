@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
-using System.ServiceModel.Security;
-using static Applied_WebApplication.Data.TableValidationClass;
+using System.Drawing;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -13,8 +12,8 @@ namespace Applied_WebApplication.Pages.Accounts
         public string MyPageAction { get; set; } = "Add";
         public int RecordID = 0;
         public bool IsError;
-        public string UserName;
-        public List<Message> ErrorMessages;
+        public string UserName => User.Identity.Name;
+        public List<Message> ErrorMessages = new();
 
         public void OnPostAdd()
         {
@@ -24,7 +23,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGetEdit(int id)
         {
-            UserName = User.Identity.Name;
+
             MyPageAction = "Edit";
             RecordID = id;
             DataTableClass COA = new(UserName, Tables.COA);
@@ -40,7 +39,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGetDelete(int id)
         {
-            UserName = User.Identity.Name;
+
             MyPageAction = "Delete";
             RecordID = id;
             DataTableClass COA = new(UserName, Tables.COA);
@@ -56,29 +55,45 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSave(int id)
         {
-            RecordID = id;
-            UserName = User.Identity.Name;
-            DataTableClass COA = new(UserName, Tables.COA);
-            if (COA.Seek(RecordID))
+            try
             {
-                COA.SeekRecord(RecordID);
-            }
-            else
-            {
-                COA.NewRecord();
-                COA.CurrentRow["ID"] = 0;
-            }
+                RecordID = id;
 
-            COA.CurrentRow["Code"] = Record.Code;
-            COA.CurrentRow["Title"] = Record.Title;
-            COA.CurrentRow["Class"] = Record.Class;
-            COA.CurrentRow["Nature"] = Record.Nature;
-            COA.CurrentRow["Notes"] = Record.Notes;
-            COA.CurrentRow["Opening_Balance"] = Record.OPENING_BALANCE;
-            COA.Save();
-            ErrorMessages = COA.TableValidation.MyMessages;
-            if (ErrorMessages.Count == 0) { return RedirectToPage("../Accounts/Directory/COA"); } else { IsError = true; }
+                DataTableClass COA = new(UserName, Tables.COA);
+                if (COA.Seek(RecordID))
+                {
+                    COA.SeekRecord(RecordID);
+                }
+                else
+                {
+                    COA.NewRecord();
+                    COA.CurrentRow["ID"] = 0;
+                }
+
+                COA.CurrentRow["Code"] = Record.Code;
+                COA.CurrentRow["Title"] = Record.Title;
+                COA.CurrentRow["Class"] = Record.Class;
+                COA.CurrentRow["Nature"] = Record.Nature;
+                COA.CurrentRow["Notes"] = Record.Notes;
+                COA.CurrentRow["Opening_Balance"] = Record.OPENING_BALANCE;
+
+                COA.Save();
+                ErrorMessages = COA.TableValidation.MyMessages;
+                if (ErrorMessages.Count == 0) 
+                {
+                    ErrorMessages.Add(MessageClass.SetMessage("Record has been saved", Color.Green));
+                    //return RedirectToPage("../Accounts/Directory/COA"); 
+
+                } 
+                else { IsError = true; }
+
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
+            }
             return Page();
+
         }
 
         public IActionResult OnPostDelete(AccounHead _Record)
@@ -89,7 +104,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 COA.SeekRecord(RecordID);                   // Assign a record for delete
                 COA.Delete();                                           // Delete a record.
-                return RedirectToPage("COA");
+                return RedirectToPage("./Directory/COA");
             }
 
             return Page();

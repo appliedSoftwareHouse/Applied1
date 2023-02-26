@@ -11,46 +11,13 @@
     var COA_Class = new DataTableClass(UserName, Tables.COA_Class);
     var COA_Notes = new DataTableClass(UserName, Tables.COA_Notes);
 
-    //if (Model.IsError)
-    //{
-    //    List<KeyValuePair<string, StringValues>> _Values = Request.Form.ToList();
-    //    foreach (KeyValuePair<string, StringValues> _KeyValue in _Values)
-    //    {
-    //        if (_KeyValue.Key == "Code") { Model.Record.Code = _KeyValue.Value; }
-    //        if (_KeyValue.Key == "Title") { Model.Record.Title = _KeyValue.Value; }
-    //        if (_KeyValue.Key == "Class") { Model.Record.Class = int.Parse(_KeyValue.Value); }
-    //        if (_KeyValue.Key == "Nature") { Model.Record.Nature = int.Parse(_KeyValue.Value); }
-    //        if (_KeyValue.Key == "Notes") { Model.Record.Notes = int.Parse(_KeyValue.Value); }
-    //    }
-    //}
-    //else
-    //{
-    //    if (Model.MyPageAction == "Edit")
-    //    {
-    //        COA.SeekRecord(Model.RecordID);
-    //    }
-    //    if (Model.MyPageAction == "Add")
-    //    {
-    //        COA.NewRecord();
-    //    }
-    //    if (COA.CurrentRow == null)
-    //    {
-    //        COA.NewRecord();
-    //    }
-    //    Model.Record.ID = (int)COA.CurrentRow["ID"];
-    //    Model.Record.Code = (string)COA.CurrentRow["Code"];
-    //    Model.Record.Title = (string)COA.CurrentRow["Title"];
-    //    Model.Record.Class = (int)COA.CurrentRow["Class"];
-    //    Model.Record.Nature = (int)COA.CurrentRow["Nature"];
-    //    Model.Record.Notes = (int)COA.CurrentRow["Notes"];
-    //}
 }
 
 <div class="container AppHeading">
     <h4>Chart of Account - Head</h4>
 </div>
 
-@if (Model.IsError)
+@if (Model.ErrorMessages.Count>0)
 {
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
 }

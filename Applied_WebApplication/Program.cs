@@ -1,6 +1,5 @@
 global using Applied_WebApplication.Data;
 global using static Applied_WebApplication.Data.TableValidationClass;
-using Applied_WebApplication;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +16,7 @@ builder.Services.AddAuthentication("MyCookieAuth").AddCookie("MyCookieAuth", opt
     options.LoginPath = "/Account/Login";
     options.AccessDeniedPath = "/Account/AccessDenied";
     options.LogoutPath = "/Account/Logout";
-    
+
 
 });
 builder.Services.AddAuthorization(options =>
@@ -40,7 +39,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-    
+
 }
 
 app.UseHttpsRedirection();

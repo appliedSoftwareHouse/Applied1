@@ -49,12 +49,12 @@ namespace Applied_WebApplication.Data
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
-        public DataTableClass(string UserName, Tables _Table, bool IsFiltered, int? ID, int? TranID)
+        public DataTableClass(string UserName, Tables _Table, bool IsFiltered, int? TranID)
         {
-            ID ??= 0; TranID ??= 0;
+            TranID ??= 0;
 
             //--------------------------------------------------- Initialize
-            UserProfile UProfile = new(UserName);
+            //UserProfile UProfile = new(UserName);
             MyConnection = AppFunctions.GetTempConnection(UserName);        // Get Temporary Database Connection.
             MyTableName = _Table.ToString();
             CreateTempTable(UserName, _Table);                                                  // Load DataTable and View
@@ -64,13 +64,20 @@ namespace Applied_WebApplication.Data
             //=========================== Filter Rows
             if (IsFiltered)
             {
-                StringBuilder _Filter = new();
-                if (ID > 0) { _Filter.Append("ID=" + ID.ToString()); }
-                if (TranID > 0 ) {_Filter.Append(" AND TranID=" + TranID.ToString());}
-
-                MyDataView.RowFilter = _Filter.ToString();                  // filter record for specific ID.
-                MyDataTable = MyDataView.ToTable();                         // Filter MyTable as per filtered records.
+                MyDataView.RowFilter = string.Concat("TranID=", TranID.ToString());                    // filter record for specific ID.
+                MyDataTable = MyDataView.ToTable();                                                                     // Filter MyTable as per filtered records.
             }
+
+            if (MyDataTable.Rows.Count > 0)
+                {
+                    CurrentRow = MyDataView[0].Row;
+                }
+                else
+                {
+                    CurrentRow = NewRecord();
+                }
+
+           
 
             //=========================== SQLite Commands
             Command_Update = new SQLiteCommand(MyConnection);
@@ -121,7 +128,7 @@ namespace Applied_WebApplication.Data
         {
             MyTableName = Table.ToString();
 
-            DataTable result = new();
+            //DataTable result = new();
             DataTableClass _SourceTable = new(UserName, Table);
             SQLiteCommand _Command = new SQLiteCommand(AppFunctions.GetTempConnection(UserName))
             {
@@ -138,8 +145,9 @@ namespace Applied_WebApplication.Data
                 string _LastColumn = _SourceTable.MyDataTable.Columns[_SourceTable.MyDataTable.Columns.Count - 1].ToString();
                 foreach (DataColumn Column in _SourceTable.MyDataTable.Columns)
                 {
-                    _Text.Append("["); _Text.Append(Column.ColumnName); _Text.Append("]");
-                    if (Column.ColumnName != _LastColumn) { _Text.Append(", "); } else { _Text.Append(")"); }
+                    _Text.Append(" ["); _Text.Append(Column.ColumnName); _Text.Append("] ");
+                    _Text.Append(Column.DataType.Name);
+                    if (Column.ColumnName != _LastColumn) { _Text.Append(", "); } else { _Text.Append(") "); }
                 }
 
                 _Command.CommandText = _Text.ToString();
@@ -156,9 +164,9 @@ namespace Applied_WebApplication.Data
                 MyDataTable = _DataSet.Tables[0];
                 MyDataView = MyDataTable.AsDataView();
             }
-            
+
             _Command.Connection.Close();                    // Close Database Connection.
-           
+
         }
 
 
@@ -378,9 +386,11 @@ namespace Applied_WebApplication.Data
         }
         public bool IsRowValid(DataRow Row, CommandAction SQLAction, PostType postType)
         {
-            TableValidation = new(MyDataTable);
-            TableValidation.SQLAction = SQLAction.ToString();
-            TableValidation.MyVoucherType = postType;
+            TableValidation = new(MyDataTable)
+            {
+                SQLAction = SQLAction.ToString(),
+                MyVoucherType = postType
+            };
             bool Result = TableValidation.Validation(Row);
             return Result;
         }
@@ -397,28 +407,37 @@ namespace Applied_WebApplication.Data
                 TableValidation.MyDataTable = CurrentRow.Table;
                 MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
-                if (MyDataView.Count > 0)
+                try
                 {
-                    TableValidation.SQLAction = CommandAction.Update.ToString();
-                    if (TableValidation.Validation(CurrentRow))
+                    if (MyDataView.Count > 0)
                     {
-                        CommandUpdate();
-                        Command_Update.ExecuteNonQuery();
-                        GetDataTable();
+                        TableValidation.SQLAction = CommandAction.Update.ToString();
+                        if (TableValidation.Validation(CurrentRow))
+                        {
+                            CommandUpdate();
+                            Command_Update.ExecuteNonQuery();
+                            GetDataTable();
+                            MyMessage = "Update record in " + MyTableName;
+                        }
+                    }
+
+                    if (MyDataView.Count == 0)
+                    {
+                        TableValidation.SQLAction = CommandAction.Insert.ToString();
+                        if (TableValidation.Validation(CurrentRow))
+                        {
+                            CommandInsert();
+                            Command_Insert.ExecuteNonQuery();
+                            GetDataTable();
+                            MyMessage = "Insert record in " + MyTableName;
+                        }
                     }
                 }
-
-                if (MyDataView.Count == 0)
+                catch (Exception e)
                 {
-                    TableValidation.SQLAction = CommandAction.Insert.ToString();
-                    if (TableValidation.Validation(CurrentRow))
-                    {
-                        CommandInsert();
-                        Command_Insert.ExecuteNonQuery();
-                        GetDataTable();
-                    }
-                }
 
+                    MyMessage = e.Message;
+                }
                 if (TableValidation.MyMessages.Count > 0) { IsError = true; }
 
             }

@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 
 namespace Applied_WebApplication.Pages.HR
 {
@@ -24,7 +23,7 @@ namespace Applied_WebApplication.Pages.HR
             Variables.Address = _Table.CurrentRow["Address"].ToString(); ;
             Variables.City = _Table.CurrentRow["City"].ToString(); ;
             Variables.CNIC = _Table.CurrentRow["CNIC"].ToString(); ;
-            Variables.DOB = (DateTime)_Table.CurrentRow["DOB"] ;
+            Variables.DOB = (DateTime)_Table.CurrentRow["DOB"];
             Variables.Join = (DateTime)_Table.CurrentRow["join"];
             Variables.left = (DateTime)_Table.CurrentRow["left"];
         }
@@ -34,7 +33,7 @@ namespace Applied_WebApplication.Pages.HR
         {
             var UserName = User.Identity.Name;
             DataTableClass _Table = new(UserName, Tables.Employees);
-            if(_Table.Seek(Id))
+            if (_Table.Seek(Id))
             {
                 _Table.CurrentRow = _Table.SeekRecord(Id);
                 _Table.CurrentRow["ID"] = Variables.ID;

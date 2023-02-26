@@ -1,6 +1,4 @@
-﻿using System.Data;
-
-namespace Applied_WebApplication.Data;
+﻿namespace Applied_WebApplication.Data;
 
 public enum Tables
 {
@@ -19,8 +17,8 @@ public enum Tables
     BillPayable = 111,
     BillPayable2 = 112,
     TB = 113,
-    BillReceivable = 114, 
-    BillReceivable2 =115,
+    BillReceivable = 114,
+    BillReceivable2 = 115,
     view_BillReceivable = 116,
 
     Customers = 201,
@@ -34,7 +32,7 @@ public enum Tables
     Inv_SubCategory = 303,
     Inv_Packing = 304,
     Inv_UOM = 305,
-    FinishedGoods =306,
+    FinishedGoods = 306,
     SamiFinished = 307,
 
     Ledger = 401,
@@ -52,7 +50,7 @@ public enum Tables
     fun_BillPayableEntry = 602,
 
     TempLedger = 9999,
-    
+
 }
 public enum CommandAction
 {

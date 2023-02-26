@@ -224,8 +224,11 @@ namespace Applied_WebApplication.Data
             foreach (DataRow Row in _Table.Rows)
             {
                 if ((decimal)Row["Opening_Balance"] >= 0) { _DR = (decimal)Row["Opening_Balance"]; _CR = 0.00M; }
-                else { _CR = ((decimal)Row["Opening_Balance"]) * -1; 
-                    _DR = 0.00M; }
+                else
+                {
+                    _CR = ((decimal)Row["Opening_Balance"]) * -1;
+                    _DR = 0.00M;
+                }
                 tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='", VoucherType.OBalance.ToString(), "' AND COA=", Row["ID"].ToString());
                 if (tb_Ledger.MyDataView.Count == 1)
                 {
@@ -292,7 +295,7 @@ namespace Applied_WebApplication.Data
                         tb_Ledger.SeekRecord((int)Row["ID"]);
                         tb_Ledger.Delete();
                         string _Title = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
-                        string _Code = AppFunctions.GetColumnValue(UserName, Tables.COA,"Code", (int)Row["COA"]);
+                        string _Code = AppFunctions.GetColumnValue(UserName, Tables.COA, "Code", (int)Row["COA"]);
                         decimal Amount = (decimal)Row["DR"] - (decimal)Row["CR"];
 
                         string msg = string.Concat("Delete Account ID ", _Code, " : ", _Title, ", Amount ", (Amount).ToString(AppRegistry.FormatCurrency1));

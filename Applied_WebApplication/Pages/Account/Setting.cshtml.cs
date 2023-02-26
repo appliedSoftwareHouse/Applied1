@@ -33,7 +33,7 @@ namespace Applied_WebApplication.Pages.Account
             DateFormat = AppRegistry.GetKey(UserName, "MFTDate", KeyType.Text).ToString();
             CurrencyFormat = AppRegistry.GetKey(UserName, "MFTCurrency", KeyType.Text).ToString();
         }
-        
+
         public IActionResult OnGetUpdateCurrencyFormat(int id)
         {
             string UserName = User.Identity.Name;

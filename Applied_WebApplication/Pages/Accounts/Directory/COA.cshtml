@@ -3,7 +3,10 @@
 @using Applied_WebApplication.Data
 @model Applied_WebApplication.Pages.Accounts.Directory.COAModel
 @{
-    DataTableClass COA = new DataTableClass(User.Identity.Name, Tables.COA);
+    var COA = new DataTableClass(User.Identity.Name, Tables.COA);
+    COA.MyDataView.Sort = "Code, Title";
+    var COA1 = COA.MyDataView.ToTable();
+
     var UserName = User.Identity.Name;
 }
 
@@ -31,7 +34,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (DataRow _Record in @COA.MyDataTable.Rows)
+                    @foreach (DataRow _Record in @COA1.Rows)
                     {
                         <tr>
                             <td>  @_Record["Code"] </td>

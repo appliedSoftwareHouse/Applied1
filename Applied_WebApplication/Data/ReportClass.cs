@@ -1,7 +1,4 @@
 ﻿using AspNetCore.Reporting;
-using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Components.Forms;
-using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Text;
 using static Applied_WebApplication.Data.AppFunctions;
@@ -20,7 +17,7 @@ namespace Applied_WebApplication.Data
         public string OutputFileName { get; set; }                                    // Output File .pdf, .doc or .xls
         public string OutputFile { get => GetOutputFile(); }                     // Path + file name of printed report PDF/Doc/xls.
         public string OutputPath { get => GetOutputPath(); }                  // Path where to printed report store.
-        public string OutputFileLink { get => GetOutputFileLink(); }                                       // Location to printed report PDF.
+        public string OutputFileLink { get => GetOutputFileLink(); }        // Location to printed report PDF.
         public FileType OutputFileType { get; set; }                                  // Rendered file type pdf, word, excel
 
         public string RDLCFilePath { get => AppGlobals.ReportRoot; }    // RDLC report path
@@ -31,8 +28,6 @@ namespace Applied_WebApplication.Data
         public string RDLCDataSet { get; set; }                                         // Datasource DataSet name exact in RDLC
         public string CommandText { get; set; }                                        // commad for factch date from DB
         public string CommandFilter { get; set; }                                        // commad for factch date from DB
-
-        public Dictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public Dictionary<string, string> ReportParameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
         public string MyMessage { get; set; }                                          // Store message of the class
         public FileStream MyFileStream { get; set; }                                // File Stream Object
@@ -42,9 +37,9 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        public void GetReport()
+        public bool GetReport()
         {
-           
+            // Error Found = true, otherwise false;
 
             if (OutputFile.Length > 0)
             {
@@ -76,8 +71,8 @@ namespace Applied_WebApplication.Data
                 catch (Exception e)
                 {
                     MyMessage = e.Message;
-                    reportResult = null;
-                    _Report = null;
+                    IsError = true;
+
                 }
             }
             else
@@ -85,13 +80,9 @@ namespace Applied_WebApplication.Data
                 MyMessage = "Output File name not define. " + OutputFile;
             };
 
-            
+            return IsError;
+
         }
-
-
-
-
-
         public DataTable GetReportDataTable()
         {
             return GetAppliedTable(UserName, ReportFilter);                      // Get a DataTable from AppFuction 

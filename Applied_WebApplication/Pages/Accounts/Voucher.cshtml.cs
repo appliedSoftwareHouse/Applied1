@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Text;
-using Microsoft.Extensions.Primitives;
 
 namespace Applied_WebApplication.Pages.Accounts
 {

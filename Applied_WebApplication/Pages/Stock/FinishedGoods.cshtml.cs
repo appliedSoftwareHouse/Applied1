@@ -15,7 +15,7 @@ namespace Applied_WebApplication.Pages.Stock
 
         public void OnGet(int? id)
         {
-            
+
             if (id == null)
             {
                 Variables = new()
@@ -43,7 +43,7 @@ namespace Applied_WebApplication.Pages.Stock
                     Project = (int)Row["Project"],
                     Employee = (int)Row["Employee"]
                 };
-        }
+            }
 
 
         }

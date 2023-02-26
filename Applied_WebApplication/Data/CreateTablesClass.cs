@@ -1,12 +1,8 @@
-﻿using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using static Applied_WebApplication.Data.AppFunctions;
-using System;
-
-namespace Applied_WebApplication.Data
+﻿namespace Applied_WebApplication.Data
 {
     public class CreateTablesClass
     {
-        public string tb_Users = 
+        public string tb_Users =
             "CREATE TABLE [Users](" +
             "[ID] INTEGER PRIMARY KEY NOT NULL UNIQUE," +
             "[UserID] NVARCHAR(100) NOT NULL UNIQUE," +
@@ -32,15 +28,15 @@ namespace Applied_WebApplication.Data
                                                 "[Title] NVARCHAR NOT NULL UNIQUE," +
                                                 "[Description] NVARCHAR NOT NULL)";
 
-//CREATE TABLE[COA_NATURE](
-//  [ID] INT PRIMARY KEY NOT NULL UNIQUE,
-//  [CODE] TEXT(3), 
-//  [TITLE] VARCHAR(100));
+        //CREATE TABLE[COA_NATURE](
+        //  [ID] INT PRIMARY KEY NOT NULL UNIQUE,
+        //  [CODE] TEXT(3), 
+        //  [TITLE] VARCHAR(100));
 
-//CREATE TABLE[COA_NOTES](
-//  [ID] INT PRIMARY KEY NOT NULL UNIQUE,
-//  [CODE] TEXT(3), 
-//  [TITLE] VARCHAR(100) NOT NULL UNIQUE);
+        //CREATE TABLE[COA_NOTES](
+        //  [ID] INT PRIMARY KEY NOT NULL UNIQUE,
+        //  [CODE] TEXT(3), 
+        //  [TITLE] VARCHAR(100) NOT NULL UNIQUE);
 
         public string up_Applied = "CREATE TABLE[Applied] (" +
                                                 "[ID] integer NOT NULL PRIMARY KEY, " +
@@ -163,7 +159,7 @@ namespace Applied_WebApplication.Data
         "[Batch] INT64 REFERENCES[Batches]([ID]), " +
         "[Status] TEXT(10));";
 
-//CREATE UNIQUE INDEX[INDEX_ID] ON[COA]([ID]);
+        //CREATE UNIQUE INDEX[INDEX_ID] ON[COA]([ID]);
 
 
     }

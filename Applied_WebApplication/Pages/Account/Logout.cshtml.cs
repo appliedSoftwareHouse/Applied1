@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
-using System.Dynamic;
 
 namespace Applied_WebApplication.Pages.Account
 {
@@ -14,7 +12,7 @@ namespace Applied_WebApplication.Pages.Account
             await HttpContext.SignOutAsync();
             return RedirectToPage("Login");
         }
-        
+
 
     }
 }

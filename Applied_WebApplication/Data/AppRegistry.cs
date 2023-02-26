@@ -1,16 +1,12 @@
-﻿using AspNetCore.Reporting;
-using System.Diagnostics;
-using System.Security.Permissions;
-
-namespace Applied_WebApplication.Data
+﻿namespace Applied_WebApplication.Data
 {
     public interface IAppRegistry
     {
-        public static readonly string DateYMD; 
-        public static readonly string FormatCurrency1; 
-        public static readonly string FormatCurrency2; 
-        public static readonly string FormatDate; 
-        public static readonly string FormatDateY2; 
+        public static readonly string DateYMD;
+        public static readonly string FormatCurrency1;
+        public static readonly string FormatCurrency2;
+        public static readonly string FormatDate;
+        public static readonly string FormatDateY2;
         public static readonly string FormatDateM2;
     }
 

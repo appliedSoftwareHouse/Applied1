@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.Extensions.Primitives;
 using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 
@@ -35,7 +34,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
                 MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
             }
-            
+
             if (id > 0) { MyParameters.IsSelected = true; }
         }
         public void OnPost()
@@ -149,7 +148,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int Employee { get; set; }
             public string Description { get; set; }
             public string Comments { get; set; }
-            
+
         }
     }
 }

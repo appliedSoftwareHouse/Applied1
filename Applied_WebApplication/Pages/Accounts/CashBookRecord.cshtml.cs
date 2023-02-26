@@ -20,7 +20,7 @@ namespace Applied_WebApplication.Pages.Accounts
             DataTableClass Table = new(UserName, Tables.CashBook);
             DataRow Row = Table.NewRecord();
             if (BookRecord == null) { BookRecord = new(); }
-            if (Row["Vou_Date"]==DBNull.Value) { Row["Vou_Date"] = DateTime.Now; }
+            if (Row["Vou_Date"] == DBNull.Value) { Row["Vou_Date"] = DateTime.Now; }
 
             IsAdd = false;
             BookRecord.BookID = id;
@@ -93,13 +93,13 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             else
             {
-                return RedirectToPage("CashBook", "Refresh", new {id=BookRecord.BookID});
+                return RedirectToPage("CashBook", "Refresh", new { id = BookRecord.BookID });
             }
         }
 
         public IActionResult OnPostBack()
         {
-            return RedirectToPage("CashBook", "Refresh", new { BookRecord.BookID});
+            return RedirectToPage("CashBook", "Refresh", new { BookRecord.BookID });
         }
 
         public IActionResult OnPostAutoVoucher()

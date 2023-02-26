@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.ServiceModel.Security;
 
 namespace Applied_WebApplication.Pages.Stock
 {
@@ -18,7 +17,7 @@ namespace Applied_WebApplication.Pages.Stock
 
         public IActionResult OnPostEdit(int id)
         {
-            return RedirectToPage("./FinishedGoods", routeValues: new {id});
+            return RedirectToPage("./FinishedGoods", routeValues: new { id });
         }
 
     }

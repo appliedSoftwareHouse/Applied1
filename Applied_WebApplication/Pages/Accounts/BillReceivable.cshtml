@@ -85,9 +85,9 @@
 
 <form method="post">
     <div class="container">
-        <input type="text" asp-for="@Model.Variables.ID" hidden/>
-        <input type="text" asp-for="@Model.Variables.ID2" hidden/>
-        <input type="text" asp-for="@Model.Variables.TranID" hidden/>
+        <input type="text" asp-for="@Model.Variables.ID" hidden />
+        <input type="text" asp-for="@Model.Variables.ID2" hidden />
+        <input type="text" asp-for="@Model.Variables.TranID" hidden />
 
         <div class="row">
             <div class="col-md-3">
@@ -283,60 +283,79 @@
         <hr class="my-hr" />
         <div class="row">
             <div class="col-1 d-grid"><button class="btn btn-primary btn-sm" type="submit" asp-page-handler="Save">SAVE</button></div>
-            <div class="col-1 d-grid"><button class="btn btn-primary btn-sm" type="submit" asp-page-handler="Add">ADD</button></div>
-            <div class="col-1 d-grid"></div>
             <div class="col-1 d-grid"><button class="btn btn-info btn-sm" type="submit" asp-page-handler="Back">BACK</button></div>
+            
+
+
+            @if (Model.TempBillReceivable.Count > 0)
+            {
+                <div class="col-1 d-grid"><button class="btn btn-primary btn-sm" type="submit" asp-page-handler="Add">ADD</button></div>
+                <div class="col-1 d-grid"></div>
+                <div class="col-2 d-grid"><button class="btn btn-success btn-sm" type="submit" asp-page-handler="SaveFinal">SAVE BILL</button></div>
+            }
+
+
         </div>
     </div>
     <hr class="my-hr" />
 
     <!----------------------------Table Area-->
-    @if (Model.BillReceivable2 != null)
+    @if (Model.TempBillReceivable != null)
     {
-
-
-        <div class="container">
-            <table id="TableList" class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Sr. No.</th>
-                        <th>Product</th>
-                        <th>Batch</th>
-                        <th>Qty</th>
-                        <th>Rate</th>
-                        <th>Amount</th>
-                        <th>Tax Rate</th>
-                        <th>Tax Amount</th>
-                        <th>Net Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.BillReceivable2.Rows)
-                    {
-                        string _Product = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
-                        decimal _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
-                        decimal _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
-                        decimal _TaxAmount = _Amount * _TaxRate;
-                        decimal _NetAmount = _Amount + _TaxAmount;
-
+        @if (Model.TempBillReceivable.Rows.Count > 0)
+        {
+            <div class="container">
+                <table id="TableList" class="table table-hover">
+                    <thead>
                         <tr>
-                            <td>@Row["Sr_No"]</td>
-                            <td>@_Product</td>
-                            <td>@Row["Batch"]</td>
-                            <td>@Row["Qty"]</td>
-                            <td>@Row["Rate"]</td>
-                            <td>@_Amount</td>
-                            <td>@_TaxRate </td>
-                            <td>@_TaxAmount</td>
-                            <td>@_NetAmount</td>
+                            <th>Sr. No.</th>
+                            <th>Product</th>
+                            <th>Batch</th>
+                            <th>Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Tax Rate</th>
+                            <th>Tax Amount</th>
+                            <th>Net Amount</th>
+                            <th><button class="btn btn-link"><i class="bi bi-file-plus-fill text-primary"></i></button></th>
                         </tr>
-                    }
-                </tbody>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow Row in Model.TempBillReceivable.Rows)
+                        {
+                            string _Product = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                            decimal _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+                            decimal _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
+                            decimal _TaxAmount = _Amount * (_TaxRate / 100);
+                            decimal _NetAmount = _Amount + _TaxAmount;
 
-            </table>
-        </div>
+                            <tr>
+                                <td>@Row["Sr_No"]</td>
+                                <td>@_Product</td>
+                                <td>@Row["Batch"]</td>
+                                <td>@Row["Qty"]</td>
+                                <td>@Row["Rate"]</td>
+                                <td>@_Amount</td>
+                                <td>@_TaxRate </td>
+                                <td>@_TaxAmount</td>
+                                <td>@_NetAmount</td>
+                                <td>
+                                    <button class="btn btn-link" type="submit"
+                                asp-page-handler="Edit"
+                                asp-route-ID="@Row["ID"]">
+                                        <i class="bi bi-pencil-fill text-primary "></i>
+                                    </button>
+                                    <button class="btn btn-link">
+                                        <i class="bi bi-trash-fill text-danger"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+        }
     }
-
 </form>
 
-@Model.Variables.SR_No;

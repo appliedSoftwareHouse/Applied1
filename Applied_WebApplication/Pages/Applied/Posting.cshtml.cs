@@ -58,7 +58,7 @@ namespace Applied_WebApplication.Pages.Applied
         {
             string UserName = User.Identity.Name;
 
-            if(Variables.PostingType==0) { Variables.PostingType = int.Parse(Request.Form["PostingType"]); }
+            if (Variables.PostingType == 0) { Variables.PostingType = int.Parse(Request.Form["PostingType"]); }
 
             AppRegistry.SetKey(UserName, "Post_Type", Variables.PostingType, KeyType.Number);
             AppRegistry.SetKey(UserName, "Post_dt_From", Variables.Dt_From, KeyType.Date);
@@ -87,7 +87,7 @@ namespace Applied_WebApplication.Pages.Applied
                 case 4:                                                                                                                                 // 
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='",VoucherStatus.Submitted.ToString() ,"' ");
+                    Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Submitted.ToString(), "' ");
                     PostTable = AppFunctions.GetRecords(UserName, Tables.PostBillPayable, Filter);
                     break;
 
@@ -100,9 +100,9 @@ namespace Applied_WebApplication.Pages.Applied
         public IActionResult OnPostPosting(int id, int PostingType)
         {
             var UserName = User.Identity.Name;
-            if (PostingType == (int)PostType.CashBook) { PostingClass.PostCashBook(UserName, id);}
+            if (PostingType == (int)PostType.CashBook) { PostingClass.PostCashBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
-            if(ErrorMessages.Count==0) { IsError=false; } else { IsError=true; return Page(); }
+            if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("Posting", "Refresh");
         }
 

@@ -1,7 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.Data.Entity.Core.Metadata.Edm;
 
 namespace Applied_WebApplication.Pages
 {
@@ -40,7 +39,7 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage(routeValues: new { TranID, VouType, RecNo });
         }
 
-        public IActionResult OnPostSave(int id) 
+        public IActionResult OnPostSave(int id)
         {
 
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);

@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using System.Drawing;
 using System.Text;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
@@ -318,7 +317,7 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass Table = new(UserName, _Table);
             Table.MyDataView.RowFilter = _Filter;
-            if (Table.MyDataView.Count == 0) { return 1; }
+            if (Table.MyDataView.Count == 0) { return 0; }
             else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
         }
 
@@ -348,25 +347,25 @@ namespace Applied_WebApplication.Data
         internal static SQLiteConnection GetTempConnection(string UserName)
         {
             StringBuilder TempConnectionString = new();
-            
+
 
             //TempConnectionString.Append("Data Source=");
             TempConnectionString.Append(AppGlobals.LocalDB);
             TempConnectionString.Append(UserName);
             string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
-            TempConnectionString.Append("\\" + UserName +  "DB.temp");                     // Get Full Path and File Name;
+            TempConnectionString.Append("\\" + UserName + "DB.temp");                     // Get Full Path and File Name;
             string _FileName = TempConnectionString.ToString();
-            
-            if(!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
-            if(!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
+
+            if (!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
+            if (!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
 
             SQLiteConnection _TempConnection = new("Data Source=" + _FileName);
             _TempConnection.Open();
-            
+
             return _TempConnection;
         }
 
-        
+
 
         #endregion
 
