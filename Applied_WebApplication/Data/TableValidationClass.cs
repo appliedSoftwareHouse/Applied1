@@ -392,7 +392,7 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Inventory"] == 0) { MyMessages.Add(SetMessage("Product is not selected. select one.")); }
             if ((int)Row["Sr_No"] == 0) { MyMessages.Add(SetMessage("Serial No. of bill is zero. must be more than zero.")); }
 
-            if ((decimal)Row["Qty"]==0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
             if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
             if ((decimal)Row["Tax"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
 

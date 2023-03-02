@@ -22,10 +22,12 @@ Install-Package System.Data.SQLite -Version 1.0.115.5
 
 Reporting Support Tools
 ========================================================================
-NuGet\Install-Package AspNetCore.Reporting -Version 2.1.0
+NuGet\Install-Package AspNetCore.Reporting -Version 2.1.0				NOT GOOD, ERROR 
 NuGet\Install-Package System.Drawing.Common -Version 7.0.0
 NuGet\Install-Package System.Text.Encoding.CodePages -Version 7.0.0
 NuGet\Install-Package System.Security.Permissions -Version 7.0.0
+
+https://github.com/lkosson/reportviewercore/						THIS IS GOOD 
 ========================================================================
 
 Swagger
@@ -43,8 +45,15 @@ http://www.ch-werner.de/sqliteodbc/
 PDF Converter
 =====================================================
 NuGet\Install-Package FreeSpire.PDF -Version 8.6.0
+
+NuGet\Install-Package Select.HtmlToPdf -Version 22.2.0
 =====================================================
 
+
+EXCEL SHEET CLASS  GEM BOX FREE VERSION.
+======================================================
+NuGet\Install-Package GemBox.Spreadsheet -Version 49.0.1244			not a useful api
+======================================================
 
 Useful Links
 ===============================================================
@@ -89,3 +98,9 @@ https://codepen.io/mukeshm280/pen/GRKyZVq						Number Formatted.
 https://www.e-iceblue.com/Introduce/free-pdf-component.html				PDF API Free
 
 https://stackoverflow.com/questions/6041332/best-way-to-get-application-folder-path  Application path
+
+https://selectpdf.com/html-to-pdf/demo/convert-html-code-to-pdf.aspx						HTML to PDF
+
+https://github.com/ClosedXML					Reporting tool data to xls file
+
+https://www.gemboxsoftware.com/spreadsheet/free-version					GemBox Excel Sheet

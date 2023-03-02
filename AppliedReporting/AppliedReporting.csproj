@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SupportedOSPlatformVersion>10.0.18362.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -21,7 +22,6 @@
 
   <ItemGroup>
     <PackageReference Include="AspNetCore.Reporting" Version="2.1.0" />
-    <PackageReference Include="Microsoft.Reporting.WinForms.v11" Version="1.0.0" />
     <PackageReference Include="System.Data.SQLite.Core" Version="1.0.117" />
     <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="7.0.0" />

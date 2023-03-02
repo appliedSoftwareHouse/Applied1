@@ -89,26 +89,11 @@
             <div class="col-3">
                 <button type="submit" id="GLPdf"
                         class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.pdf"
                         asp-page-handler="GL">
                     Print
                     <i class="bi bi-printer"></i>
                 </button>
-                <button type="submit"
-                        class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.excel"
-                        asp-page-handler="GL">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-                <button type="submit"
-                        class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.word"
-                        asp-page-handler="GL">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
-            </div>
+                </div>
         </div>
 
         <!-- COMPANY-->
@@ -134,25 +119,11 @@
             <div class="col-3">
                 <button type="submit" id="ComPdf"
                         class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.pdf"
                         asp-page-handler="Company">
                     Print
                     <i class="bi bi-printer"></i>
                 </button>
-                <button type="submit"
-                        class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.excel"
-                        asp-page-handler="Company">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-                <button type="submit"
-                        class="btn btn-primary"
-                        asp-route-rprType="@ReportClass.FileType.word"
-                        asp-page-handler="Company">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
+                
             </div>
         </div>
     </div>

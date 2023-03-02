@@ -79,12 +79,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
                 COA.Save();
                 ErrorMessages = COA.TableValidation.MyMessages;
-                if (ErrorMessages.Count == 0) 
+                if (ErrorMessages.Count == 0)
                 {
                     ErrorMessages.Add(MessageClass.SetMessage("Record has been saved", Color.Green));
                     //return RedirectToPage("../Accounts/Directory/COA"); 
 
-                } 
+                }
                 else { IsError = true; }
 
             }

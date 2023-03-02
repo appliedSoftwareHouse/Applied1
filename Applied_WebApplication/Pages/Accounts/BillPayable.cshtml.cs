@@ -1,13 +1,7 @@
-using AspNetCore.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
-using System.Data.SQLite;
-using System.Drawing;
-using System.ServiceModel.Security;
-using System.Xml.Linq;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -46,10 +40,10 @@ namespace Applied_WebApplication.Pages.Accounts
 
                     // Adjust Serial Number of Bill Payable Table 2
                     BillPay2.MyDataView.RowFilter = String.Concat("TranID=", id.ToString());
-                    if(BillPay2.MyDataView.Count>0)
+                    if (BillPay2.MyDataView.Count > 0)
                     {
                         int Sr_No = 1;
-                        foreach(DataRow Row in BillPay2.MyDataView.ToTable().Rows)
+                        foreach (DataRow Row in BillPay2.MyDataView.ToTable().Rows)
                         {
                             BillPay2.CurrentRow = Row;
                             BillPay2.CurrentRow["Sr_No"] = Sr_No; Sr_No++;
@@ -60,10 +54,10 @@ namespace Applied_WebApplication.Pages.Accounts
 
                     // Check all the records of the Bill Payable has been deleted, if yes then delete the record of Bill Payable Master Record.
                     BillPay2.MyDataView.RowFilter = string.Concat("TranID=", id.ToString());
-                    if(BillPay2.MyDataView.Count==0)
+                    if (BillPay2.MyDataView.Count == 0)
                     {
                         DataTableClass BillPay1 = new(UserName, Tables.BillPayable);
-                        if(BillPay1.Seek((int)id))
+                        if (BillPay1.Seek((int)id))
                         {
                             BillPay1.SeekRecord((int)id);
                             BillPay1.Delete();                                              // Delete the record from Mater Bill Payable Table.
@@ -71,7 +65,7 @@ namespace Applied_WebApplication.Pages.Accounts
                         }
                         else
                         {
-                           
+
                         }
                     }
                     return RedirectToPage("BillPayable", routeValues: new { id, id2 = -1 });
@@ -361,7 +355,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 Variables.TotTax = -1;
                 Variables.TotInv = -1;
             }
-            
+
 
         }
     }
@@ -376,7 +370,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public DateTime Vou_Date { get; set; }
         public DateTime Pay_Date { get; set; }
         public int Company { get; set; }
-        
+
         public int Employee { get; set; }
         public string Ref_No { get; set; }
         public string Inv_No { get; set; }

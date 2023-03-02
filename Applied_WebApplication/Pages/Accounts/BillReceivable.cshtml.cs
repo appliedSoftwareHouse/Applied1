@@ -68,7 +68,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     TempBillReceivable.CurrentRow = TempBillReceivable.Rows.Add(Row.ItemArray);
                     TempBillReceivable.TableValidation.SQLAction = CommandAction.Update.ToString(); ;
                     TempBillReceivable.Save();
-                    if(TempBillReceivable.TableValidation.Count>0) { ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages); }
+                    if (TempBillReceivable.TableValidation.Count > 0) { ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages); }
                 }
 
                 //-----------------------------------------------------
@@ -219,12 +219,12 @@ namespace Applied_WebApplication.Pages.Accounts
                     ErrorMessages.AddRange(_Table2.TableValidation.MyMessages);
                     return Page();
                 }
-                
+
             }
 
-            foreach(DataRow Row in TempBillReceivable.Rows)
+            foreach (DataRow Row in TempBillReceivable.Rows)
             {
-                if ((int)Row["TranID"]==Variables.TranID)
+                if ((int)Row["TranID"] == Variables.TranID)
                 {
                     TempBillReceivable.Delete();
                 }

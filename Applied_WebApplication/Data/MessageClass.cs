@@ -53,10 +53,10 @@ namespace Applied_WebApplication.Data
         {
             Message message = new Message
             {
-               
+
                 Msg = _Message,
                 Colour = _Colour,
-                
+
             };
             return message;
         }
@@ -66,15 +66,15 @@ namespace Applied_WebApplication.Data
 
     public class Message
     {
-        
+
         public bool Success { get; set; } = false;
         public string Msg { get; set; } = string.Empty;
         public int ErrorID { get; set; } = 0;
         public Color Colour { get; set; } = Color.Orange;
     }
 
-   
 
-    
+
+
 
 }

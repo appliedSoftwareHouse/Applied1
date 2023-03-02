@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using AppReporting;
+using System.Data;
 
 namespace Applied_WebApplication.Data
 {

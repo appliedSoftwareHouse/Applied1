@@ -69,15 +69,15 @@ namespace Applied_WebApplication.Data
             }
 
             if (MyDataTable.Rows.Count > 0)
-                {
-                    CurrentRow = MyDataView[0].Row;
-                }
-                else
-                {
-                    CurrentRow = NewRecord();
-                }
+            {
+                CurrentRow = MyDataView[0].Row;
+            }
+            else
+            {
+                CurrentRow = NewRecord();
+            }
 
-           
+
 
             //=========================== SQLite Commands
             Command_Update = new SQLiteCommand(MyConnection);
@@ -108,19 +108,26 @@ namespace Applied_WebApplication.Data
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
 
-            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-
-            SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
-            SQLiteDataAdapter _Adapter = new(_Command);
-            DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, MyTableName);
-
-            if (_DataSet.Tables.Count == 1)
+            try
             {
-                MyDataTable = _DataSet.Tables[0];
-                MyDataView = MyDataTable.AsDataView();
+                if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
+                SQLiteDataAdapter _Adapter = new(_Command);
+                DataSet _DataSet = new();
+                _Adapter.Fill(_DataSet, MyTableName);
+
+                if (_DataSet.Tables.Count == 1)
+                {
+                    MyDataTable = _DataSet.Tables[0];
+                    MyDataView = MyDataTable.AsDataView();
+                }
+                else { MyDataTable = new DataTable(); MyConnection.Close(); }
+
             }
-            else { MyDataTable = new DataTable(); MyConnection.Close(); }
+            catch (Exception e)
+            {
+                MyMessage = e.Message;
+            }
             return;
         }
 

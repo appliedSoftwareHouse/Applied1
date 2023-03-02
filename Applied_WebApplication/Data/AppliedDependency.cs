@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Security.Claims;
 
 namespace Applied_WebApplication.Data
 {
@@ -6,7 +7,7 @@ namespace Applied_WebApplication.Data
     {
         string AppPath { get; set; }
         string AppRoot { get; }
-        string ReportRoot { get; }
+        string ReportPath { get; }
         string PrintedReportPath { get; }
         string PrintedReportPathLink { get; }
         string DefaultDB { get; }
@@ -24,9 +25,10 @@ namespace Applied_WebApplication.Data
 
     public class AppliedDependency : IAppliedDependency
     {
+        public ClaimsPrincipal AppUser { get; set; }
         public string AppPath { get; set; }
         public string AppRoot { get; }
-        public string ReportRoot { get; }
+        public string ReportPath { get; }
         public string PrintedReportPath { get; }
         public string PrintedReportPathLink { get; }
         public string UserDBPath { get; }
@@ -41,11 +43,14 @@ namespace Applied_WebApplication.Data
         public string CurrencyFormat { get; set; }
 
 
+
+
         public AppliedDependency()
         {
+
             AppPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             AppRoot = ".\\wwwroot\\";
-            ReportRoot = string.Concat(AppRoot, "Reports\\");
+            ReportPath = string.Concat(AppRoot, "Reports\\");
             PrintedReportPath = string.Concat(AppRoot, "PrintedReports\\");
             PrintedReportPathLink = "~/PrintedReports/";
             DefaultDB = string.Concat(AppRoot, "SQLiteDB\\");
@@ -57,6 +62,20 @@ namespace Applied_WebApplication.Data
             InputDatesFormat = "yyyy-MM-dd";
             DateFormat = "dd-MM-yyyy";
             CurrencyFormat = "#0.00";
+
+
+            // If User is existing in class.
+            if (AppUser != null)
+            {
+                string UserName = AppUser.Identity.Name;
+                if (AppUser.Identity.Name.Length > 0)
+                {
+                    PrintedReportPath = string.Concat(PrintedReportPath, UserName, "\\");
+                    PrintedReportPathLink = string.Concat(PrintedReportPath, UserName, "/");
+                }
+            }
+
+
 
         }
     }

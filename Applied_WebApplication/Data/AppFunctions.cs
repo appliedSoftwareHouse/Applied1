@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 using System.Text;
+using AppReporting;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
