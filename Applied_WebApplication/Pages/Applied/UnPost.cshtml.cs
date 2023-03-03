@@ -12,12 +12,13 @@ namespace Applied_WebApplication.Pages.Applied
         [BindProperty]
         public MyParameters Variables { get; set; }
         public DataTable UnpostTable;
+        public string UserName => User.Identity.Name;
         public bool IsError { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
 
         public void OnGet()
         {
-            string UserName = User.Identity.Name;
+            
             Variables = new()
             {
                 PostingType = (int)AppRegistry.GetKey(UserName, "Unpost_Type", KeyType.Number),
@@ -30,10 +31,10 @@ namespace Applied_WebApplication.Pages.Applied
             switch (Variables.PostingType)
             {
                 case 1:                                                                                                                                 // Cash Book
-                    DataTableClass CashBook = new(UserName, Tables.PostCashBook);
+                    DataTableClass CashBook = new(UserName, Tables.UnpostCashBook);
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = string.Concat("Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "' ");
+                    Filter = string.Format("Vou_Date>='{0}' AND Vou_Date<='{1}' ", Date1, Date2);
                     CashBook.MyDataView.RowFilter = Filter;
                     UnpostTable = CashBook.MyDataView.ToTable();
 
@@ -48,8 +49,9 @@ namespace Applied_WebApplication.Pages.Applied
                 case 4:                                                                                                                                 // 
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Submitted.ToString(), "' ");
-                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.PostBillPayable, Filter);
+                    Filter = string.Format("Vou_Date>='{0}' AND Vou_Date <='{1}' AND Status='{2}'", Date1, Date2, VoucherStatus.Posted.ToString());
+                    //Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Submitted.ToString(), "' ");
+                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.UnpostBillPayable, Filter);
                     break;
 
                 default:
@@ -59,19 +61,14 @@ namespace Applied_WebApplication.Pages.Applied
 
         public IActionResult OnPostUnPost(int id, int PostingType)
         {
-            var UserName = User.Identity.Name;
-            if (PostingType == (int)PostType.CashBook) { UnpostClass.Unpost_CashBook(UserName, id); }
-            if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
+           
+            if (PostingType == (int)PostType.CashBook) { IsError = UnpostClass.Unpost_CashBook(UserName, id); }
+            if (PostingType == (int)PostType.BillPayable) {  IsError = UnpostClass.UnpostBillPayable(UserName, id); }
             if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("UnPost", "Refresh");
         }
 
-        public class MyParameters
-        {
-            public int PostingType { get; set; }
-            public DateTime Dt_From { get; set; } = DateTime.Now;
-            public DateTime Dt_To { get; set; } = DateTime.Now;
-        }
+
 
 
         public IActionResult OnPostRefresh()
@@ -80,16 +77,16 @@ namespace Applied_WebApplication.Pages.Applied
 
             if (Variables.PostingType == 0) { Variables.PostingType = int.Parse(Request.Form["PostingType"]); }
 
-            AppRegistry.SetKey(UserName, "Post_Type", Variables.PostingType, KeyType.Number);
-            AppRegistry.SetKey(UserName, "Post_dt_From", Variables.Dt_From, KeyType.Date);
-            AppRegistry.SetKey(UserName, "Post_dt_To", Variables.Dt_To, KeyType.Date);
+            AppRegistry.SetKey(UserName, "Unpost_Type", Variables.PostingType, KeyType.Number);
+            AppRegistry.SetKey(UserName, "Unpost_dt_From", Variables.Dt_From, KeyType.Date);
+            AppRegistry.SetKey(UserName, "Unpost_dt_To", Variables.Dt_To, KeyType.Date);
 
             string Date1, Date2, Filter;
 
             switch (Variables.PostingType)
             {
                 case 1:                                                                                                                                 // Cash Book
-                    DataTableClass CashBook = new(UserName, Tables.PostCashBook);
+                    DataTableClass CashBook = new(UserName, Tables.UnpostCashBook);
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
                     Filter = string.Concat("Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "' ");
@@ -108,7 +105,7 @@ namespace Applied_WebApplication.Pages.Applied
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
                     Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Posted.ToString(), "' ");
-                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.PostBillPayable, Filter);
+                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.UnpostBillPayable, Filter);
                     break;
 
                 default:
@@ -116,5 +113,14 @@ namespace Applied_WebApplication.Pages.Applied
             }
             return Page();
         }
+
+        #region Variables
+        public class MyParameters
+        {
+            public int PostingType { get; set; }
+            public DateTime Dt_From { get; set; } = DateTime.Now;
+            public DateTime Dt_To { get; set; } = DateTime.Now;
+        }
+        #endregion
     }
 }

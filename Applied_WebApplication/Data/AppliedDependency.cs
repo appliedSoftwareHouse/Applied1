@@ -20,6 +20,7 @@ namespace Applied_WebApplication.Data
         string InputDatesFormat { get; }
         string DateFormat { get; set; }
         string CurrencyFormat { get; set; }
+        string ReportFooter { get; set; }
 
     }
 
@@ -41,6 +42,7 @@ namespace Applied_WebApplication.Data
         public string InputDatesFormat { get; }
         public string DateFormat { get; set; }
         public string CurrencyFormat { get; set; }
+        public string ReportFooter { get; set; }
 
 
 
@@ -62,6 +64,7 @@ namespace Applied_WebApplication.Data
             InputDatesFormat = "yyyy-MM-dd";
             DateFormat = "dd-MM-yyyy";
             CurrencyFormat = "#0.00";
+            ReportFooter = "Powered by Applied Software House, +92 336 2454 230";
 
 
             // If User is existing in class.

@@ -9,6 +9,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DataTable TB = new();
         public decimal Tot_DR { get; set; } = 0.00M;
         public decimal Tot_CR { get; set; } = 0.00M;
+      
 
         public void OnGet()
         {
@@ -29,9 +30,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
 
-        //public void OnPost() 
-        //{
-        //}
 
         public IActionResult OnPostTB()
         {

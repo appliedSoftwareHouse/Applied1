@@ -133,7 +133,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox10</rd:DefaultName>
@@ -175,7 +177,9 @@
                                   </Style>
                                 </TextRun>
                               </TextRuns>
-                              <Style />
+                              <Style>
+                                <TextAlign>Center</TextAlign>
+                              </Style>
                             </Paragraph>
                           </Paragraphs>
                           <rd:DefaultName>Textbox12</rd:DefaultName>
@@ -787,7 +791,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>="Developed by Applied Software House"</Value>
+                      <Value>=Parameters!Footer.Value</Value>
                       <Style>
                         <FontStyle>Italic</FontStyle>
                         <FontSize>8pt</FontSize>
@@ -802,7 +806,7 @@
               <rd:DefaultName>Textbox4</rd:DefaultName>
               <Top>0.29167in</Top>
               <Height>0.25in</Height>
-              <Width>2.42708in</Width>
+              <Width>3.58333in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -817,7 +821,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=Now</Value>
+                      <Value>=Globals!ExecutionTime</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <Format>f</Format>
@@ -831,9 +835,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox5</rd:DefaultName>
               <Top>0.29167in</Top>
-              <Left>4.51958in</Left>
+              <Left>3.82166in</Left>
               <Height>0.25in</Height>
-              <Width>2.86583in</Width>
+              <Width>3.56375in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -876,6 +880,12 @@
       <DataType>String</DataType>
       <Prompt>ReportParameter1</Prompt>
     </ReportParameter>
+    <ReportParameter Name="Footer">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -896,6 +906,11 @@
           <ColumnIndex>2</ColumnIndex>
           <RowIndex>0</RowIndex>
           <ParameterName>Heading2</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Footer</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

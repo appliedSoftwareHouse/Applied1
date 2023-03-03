@@ -50,13 +50,14 @@ namespace AppReporting
 
                     if (File.Exists(FileName)) { IsError = false; } else { IsError = true; }
                     OutputFileLink = OutPutFile;                                                                                // Supply File link if file save sucessfully.
-
+                    MyMessage = "File has been created sucessfully.";
+                    //IsError = false;
                 }
-                catch (Exception e) { MyMessage = e.Message; }
+                catch (Exception e) { MyMessage = e.Message; IsError = true; }
 
             }
 
-            if (IsError) { MyMessage = "File has been created sucessfully."; OutputFileLink = ""; }
+            if (IsError) { OutputFileLink = ""; }
             return OutputFileLink;
         }
 
@@ -76,8 +77,10 @@ namespace AppReporting
                 MyBytes = RDLCreport.Render("PDF");
             }
             
-            catch (Exception)
+            catch (Exception e)
             {
+                MyMessage = e.Message;
+                IsError = true;
                 MyBytes = new byte[] { 0 };
             }
 

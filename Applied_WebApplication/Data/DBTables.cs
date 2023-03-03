@@ -26,6 +26,7 @@ public enum Tables
     Country = 203,
     Project = 204,
     Employees = 205,
+    Directories = 206,
 
     Inventory = 301,
     Inv_Category = 302,
@@ -45,6 +46,8 @@ public enum Tables
     PostBillPayable = 505,
     PostPayments = 506,
     PostReceipts = 507,
+    UnpostCashBook = 508,
+    UnpostBillPayable = 509,
 
     fun_BillPayableAmounts = 601,                    // Function of Bill Payable Amount and Tax Amount
     fun_BillPayableEntry = 602,

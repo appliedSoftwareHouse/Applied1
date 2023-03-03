@@ -92,7 +92,7 @@
     <ReportSection>
       <Body>
         <ReportItems>
-          <Tablix Name="Tablix1">
+          <Tablix Name="ReportData">
             <TablixBody>
               <TablixColumns>
                 <TablixColumn>
@@ -102,16 +102,16 @@
                   <Width>0.69595in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>3.19595in</Width>
+                  <Width>3.20643in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.86262in</Width>
+                  <Width>0.87in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.82095in</Width>
+                  <Width>0.87in</Width>
                 </TablixColumn>
                 <TablixColumn>
-                  <Width>0.80845in</Width>
+                  <Width>0.87in</Width>
                 </TablixColumn>
               </TablixColumns>
               <TablixRows>
@@ -898,10 +898,11 @@
                 </TablixMember>
               </TablixMembers>
             </TablixRowHierarchy>
+            <RepeatRowHeaders>true</RepeatRowHeaders>
             <DataSetName>dsname_Ledger</DataSetName>
             <Top>0.05556in</Top>
             <Height>0.75in</Height>
-            <Width>7.09029in</Width>
+            <Width>7.21875in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -912,7 +913,7 @@
         <Height>0.80556in</Height>
         <Style />
       </Body>
-      <Width>7.09029in</Width>
+      <Width>7.21875in</Width>
       <Page>
         <PageHeader>
           <Height>0.88764in</Height>
@@ -926,10 +927,10 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Constant" />
+                      <Value>=Parameters!CompanyName.Value</Value>
                       <Style>
-                        <FontFamily>Copperplate Gothic Bold</FontFamily>
                         <FontSize>12pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
                       </Style>
                     </TextRun>
                   </TextRuns>
@@ -938,14 +939,14 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox14</rd:DefaultName>
+              <rd:DefaultName>Textbox1</rd:DefaultName>
+              <Top>0.00841in</Top>
               <Height>0.25in</Height>
-              <Width>7.09028in</Width>
+              <Width>7.21875in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
-                <VerticalAlign>Middle</VerticalAlign>
                 <PaddingLeft>2pt</PaddingLeft>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
@@ -959,7 +960,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Constant" />
+                      <Value>=Parameters!Heading1.Value</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -968,16 +969,15 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox15</rd:DefaultName>
-              <Top>0.26389in</Top>
+              <rd:DefaultName>Textbox2</rd:DefaultName>
+              <Top>0.31397in</Top>
               <Height>0.25in</Height>
-              <Width>7.09028in</Width>
+              <Width>7.21875in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
-                <VerticalAlign>Middle</VerticalAlign>
                 <PaddingLeft>2pt</PaddingLeft>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
@@ -991,7 +991,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Constant" />
+                      <Value>=Parameters!Heading2.Value</Value>
                       <Style />
                     </TextRun>
                   </TextRuns>
@@ -1000,16 +1000,19 @@
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox18</rd:DefaultName>
-              <Top>0.54167in</Top>
+              <rd:DefaultName>Textbox3</rd:DefaultName>
+              <Top>0.62924in</Top>
               <Height>0.25in</Height>
-              <Width>7.09028in</Width>
+              <Width>7.21875in</Width>
               <ZIndex>2</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
-                <VerticalAlign>Middle</VerticalAlign>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
           </ReportItems>
@@ -1031,7 +1034,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=now</Value>
+                      <Value>=Globals!ExecutionTime</Value>
                       <Style>
                         <FontSize>8pt</FontSize>
                         <Color>Gray</Color>
@@ -1045,9 +1048,9 @@
               </Paragraphs>
               <rd:DefaultName>Textbox13</rd:DefaultName>
               <Top>0.08333in</Top>
-              <Left>3.09029in</Left>
+              <Left>3.23785in</Left>
               <Height>0.25in</Height>
-              <Width>4in</Width>
+              <Width>3.9809in</Width>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -1062,7 +1065,7 @@
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value EvaluationMode="Constant">Powered by Applied Software House, +92 336 2454 230</Value>
+                      <Value>=Parameters!Footer.Value</Value>
                       <Style>
                         <FontStyle>Italic</FontStyle>
                         <FontSize>8pt</FontSize>
@@ -1078,7 +1081,7 @@
               <rd:DefaultName>Textbox17</rd:DefaultName>
               <Top>0.08333in</Top>
               <Height>0.25in</Height>
-              <Width>3.02084in</Width>
+              <Width>3.1684in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
@@ -1108,10 +1111,54 @@
       </Page>
     </ReportSection>
   </ReportSections>
+  <ReportParameters>
+    <ReportParameter Name="CompanyName">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Heading1">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Heading2">
+      <DataType>String</DataType>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Footer">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>ReportParameter1</Prompt>
+    </ReportParameter>
+  </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
       <NumberOfColumns>4</NumberOfColumns>
       <NumberOfRows>2</NumberOfRows>
+      <CellDefinitions>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>CompanyName</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Heading1</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Heading2</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>Footer</ParameterName>
+        </CellDefinition>
+      </CellDefinitions>
     </GridLayoutDefinition>
   </ReportParametersLayout>
   <rd:ReportUnitType>Inch</rd:ReportUnitType>

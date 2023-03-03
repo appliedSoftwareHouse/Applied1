@@ -41,6 +41,8 @@ namespace Applied_WebApplication.Data
             MyTableName = _Tables.ToString();
             GetDataTable();                                                                                   // Load DataTable and View
             TableValidation = new(MyDataTable);
+            View_Filter ??= string.Empty;                                                               // assign empty value if null
+            MyDataView ??= new DataView();                                                      // assign empty view if found null;
             MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
             CheckError();
 

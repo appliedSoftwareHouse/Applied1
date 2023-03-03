@@ -1,7 +1,6 @@
 using AppReporting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 
 using DataTable = System.Data.DataTable;
@@ -21,13 +20,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public List<Message> ErrorMessages { get; set; } = new();
         public bool IsShowPdf { get; set; } = false;
         public string UserName => User.Identity.Name;
+        public string CompanyName => UserProfile.GetUserClaim(User, "Company");
 
         #region Get Reports.
 
         public void OnGet()
         {
         }
+        #endregion
 
+        #region Chart of Accpounts
         public IActionResult OnGetCOAList()
         {
             //OnPostCOAExcel();
@@ -48,16 +50,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
             reports.OutputFilePath = AppGlobals.PrintedReportPath;
             reports.OutputFile = "COAList";
             reports.OutputFileLinkPath = AppGlobals.PrintedReportPathLink;
-            
-            //reports.ReportParameters.Add("CompanyName", UserProfile.GetUserClaim(User, "Company"));
-            //reports.ReportParameters.Add("SortOrder", reports.RecordSort);
+
+            reports.ReportParameters.Add("CompanyName", CompanyName);
+            reports.ReportParameters.Add("Heading1", "Chart of Accounts");
+            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();
+            IsShowPdf = !reports.IsError;
             return Page();
         }
+        #endregion
 
-        
-
+        #region General Ledger
         public IActionResult OnGetGL()
         {
 
@@ -68,8 +72,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
-            //string _Heading1 = "GENERAL LEDGER";
-            //string _Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
 
             ReportClass reports = new ReportClass
             {
@@ -86,12 +88,22 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             };
 
+            string _Heading1 = "GENERAL LEDGER";
+            string _Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
+
+            reports.ReportParameters.Add("CompanyName", CompanyName);
+            reports.ReportParameters.Add("Heading1", _Heading1);
+            reports.ReportParameters.Add("Heading2", _Heading2);
+            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+
             ReportLink = reports.GetReportLink();
             IsShowPdf = !reports.IsError;
 
             return Page();
         }
+        #endregion
 
+        #region Supplier / Vendore Ledger
         public IActionResult OnGetGLCompany()
         {
 
@@ -123,19 +135,28 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             };
 
-            var _Heading1 = "";
-            var _Heading2 = string.Concat("From ",Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
+            var _Title = GetTitle(UserName, Tables.Customers, Filters.N_Customer);
+            var _Status = GetColumnValue(UserName, Tables.Customers, "Status", Filters.N_Customer);
+            var _StatusTitle = "";
+            if (_Status.Length > 0)
+            {
+                _StatusTitle = DirectoryClass.GetDirectoryValue(UserName, "CompanyStatus", Convert.ToInt32(_Status));
+            }
+            var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
+            var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
 
-            reports.ReportParameters.Add("CompanyName", UserProfile.GetUserClaim(User, "Company"));
+            reports.ReportParameters.Add("CompanyName", CompanyName);
             reports.ReportParameters.Add("Heading1", _Heading1);
             reports.ReportParameters.Add("Heading2", _Heading2);
-
+            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();
             IsShowPdf = !reports.IsError;
             return Page();
         }
+        #endregion
 
+        #region Trial Balance
         public IActionResult OnGetTB()
         {
 
@@ -148,11 +169,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
 
-            //var _Date1 = Filters.Dt_From.ToString(AppRegistry.FormatDate);
-            //var _Date2 = Filters.Dt_To.ToString(AppRegistry.FormatDate);
-
             DataTableClass TB = new(UserName, Tables.TB);
-            
+            //           For the specific date, type code here for datatable. 
+
+
             ReportClass reports = new ReportClass
             {
                 AppUser = User,
@@ -168,8 +188,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             };
 
+            reports.ReportParameters.Add("CompanyName", CompanyName);
+            reports.ReportParameters.Add("Heading1", CompanyName);
+            reports.ReportParameters.Add("Heading2", "As on " + DateTime.Now.ToString(AppRegistry.FormatDate));
+            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+
             ReportLink = reports.GetReportLink();
+
             IsShowPdf = !reports.IsError;
+
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(reports.MyMessage)); }
+
+
             return Page();
         }
 

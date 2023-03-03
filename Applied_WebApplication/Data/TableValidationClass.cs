@@ -30,10 +30,13 @@ namespace Applied_WebApplication.Data
 
         public TableValidationClass(DataTable table)
         {
+            if(table!=null)
+            { 
             MyDataTable = table;
             MyDataView = MyDataTable.AsDataView();
             MyMessages = new List<Message>();
             SQLAction = string.Empty;
+            }
         }
 
 
