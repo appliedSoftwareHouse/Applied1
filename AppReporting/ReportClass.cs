@@ -13,8 +13,7 @@ namespace AppReporting
         public string OutputFilePath { get; set; }                                    // Path where to printed report store.
         public string OutputFileLinkPath { get; set; }                             // Location to printed report PDF.
         public string OutputFileLink { get; set; }                                    // Location to printed report PDF.
-        //public FileType OutputFileType { get; set; }                            // Rendered file type pdf, word, excel
-
+       
         public string ReportFilePath { get; set; }   // RDLC report path
         public string ReportFile { get; set; }   // RDLC report path + FileName
         public string ReportFileName { get; set; }                                       // Output File .pdf, .doc or .xls

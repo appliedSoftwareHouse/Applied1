@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
+using System.Configuration;
 using System.Data;
 //using System.Data.Entity.Core.Common.CommandTrees.ExpressionBuilder;
 using System.Drawing;
@@ -53,7 +55,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 TempBillReceivable = new(UserName, Tables.view_BillReceivable, true, TranID);
                 foreach (DataRow Row in TempBillReceivable.Rows)
                 {
-                    if ((int)Row["TranID"] == TranID) { }
+                    if ((int)Row["TranID"] == TranID)
                     {
                         TempBillReceivable.CurrentRow = Row;
                         TempBillReceivable.Delete();
@@ -65,10 +67,10 @@ namespace Applied_WebApplication.Pages.Accounts
                 BillReceivable.MyDataView.RowFilter = string.Concat("TranID=", TranID);
                 foreach (DataRow Row in BillReceivable.MyDataView.ToTable().Rows)
                 {
-                    TempBillReceivable.CurrentRow = TempBillReceivable.Rows.Add(Row.ItemArray);
-                    TempBillReceivable.TableValidation.SQLAction = CommandAction.Update.ToString(); ;
-                    TempBillReceivable.Save();
-                    if (TempBillReceivable.TableValidation.Count > 0) { ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages); }
+                    Variables = GetVariables(Row);                  // Save Row Values into Variables
+                    GetRow(Variables);                                     // Transfer Variables into Current Row.
+                    TempBillReceivable.Add();                         // Save (Add) row into Temp Table.
+                   if (TempBillReceivable.TableValidation.Count > 0) { ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages); }
                 }
 
                 //-----------------------------------------------------
@@ -87,18 +89,30 @@ namespace Applied_WebApplication.Pages.Accounts
                 RowList = TempBillReceivable.Rows;
             }
         }
-        public void OnPost()
-        {
-
-        }
         public IActionResult OnPostAdd()
         {
-            //Variables = new();
-            TempBillReceivable = new(UserName, Tables.view_BillReceivable, true, Variables.TranID);
-            Variables = GetVariablesAdd(Variables.ID);
-            TempBillReceivable.CurrentRow = GetRow(Variables);
-            TempBillReceivable.CurrentRow["ID"] = 0;
-            TempBillReceivable.Save();
+            // Generate a record from any saved record.
+            TempBillReceivable = new(UserName, Tables.view_BillReceivable, false, 0);
+
+            TempBillReceivable.MyDataView.RowFilter = string.Concat("Vou_No='", Variables.Vou_No, "'");
+            if (TempBillReceivable.Count > 0)
+            {
+                TempBillReceivable.SeekRecord((int)TempBillReceivable.MyDataView[0]["ID"]);
+                Variables = GetVariablesAdd(Variables.ID);
+                TempBillReceivable.Add();                                           // Add a new record in temp Table.
+                //TempBillReceivable = new(UserName, Tables.view_BillReceivable, false, 0);
+                TempBillReceivable.SeekRecord((int)TempBillReceivable.CurrentRow["ID"]);
+                Variables = GetVariables(TempBillReceivable.CurrentRow);
+                RowList = TempBillReceivable.MyDataTable.Rows;
+
+            }
+            else
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Table has some error. Contact to Administrator."));
+                return Page();
+
+            }
+
             if (TempBillReceivable.TableValidation.Count > 0)
             {
                 ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages);
@@ -108,9 +122,21 @@ namespace Applied_WebApplication.Pages.Accounts
                 ErrorMessages.Add(MessageClass.SetMessage(TempBillReceivable.MyMessage, Color.Green));
             }
 
-            RowList = TempBillReceivable.MyDataTable.Rows;
-            return Page();
+
+
+            return RedirectToPage(pageName: "BillReceivable", pageHandler: "Edit", routeValues: new { ID = TempBillReceivable.CurrentRow["ID"] });
+
+            //return Page();
         }
+        public IActionResult OnPostBack()
+        {
+            return RedirectToPage("./BillReceivableList");
+        }
+
+        #endregion
+
+        #region SAVE Entry and Voucher
+
         public IActionResult OnPostSave()
         {
             int TranID = 0;
@@ -127,8 +153,6 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
             //TempBillReceivable
-
-
             TempBillReceivable.Save();                                                                                                      // Insert Record in Table
             if (TempBillReceivable.TableValidation.Count > 0)
             { ErrorMessages.AddRange(TempBillReceivable.TableValidation.MyMessages); }
@@ -203,6 +227,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
                 _Table2.SeekRecord((int)Row["ID2"]);
                 _Table2.CurrentRow["ID"] = Row["ID2"];
+                _Table2.CurrentRow["TranID"] = Row["TranID"];
                 _Table2.CurrentRow["Sr_No"] = _SRNo; _SRNo++;
                 _Table2.CurrentRow["Inventory"] = Row["Inventory"];
                 _Table2.CurrentRow["Batch"] = Row["Batch"];
@@ -230,19 +255,17 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
             }
 
-            ErrorMessages.Add(MessageClass.SetMessage("Bill Receivable is saved sucessfully.....!!!!"));
-            return Page();
+            ErrorMessages.Add(MessageClass.SetMessage("Bill Receivable is saved sucessfully.....!!!!",Color.Green));
+            return RedirectToPage("BillReceivable");
         }
 
+        #endregion
 
-        public IActionResult OnPostBack()
-        {
-            return RedirectToPage("./BillReceivableList");
-        }
+        #region EDIT GET & POST
+
 
         public IActionResult OnPostEdit(int ID)
         {
-            //int TranID = Variables.TranID;
 
             return RedirectToPage("BillReceivable", pageHandler: "Edit", routeValues: new { ID });
         }
@@ -257,15 +280,14 @@ namespace Applied_WebApplication.Pages.Accounts
 
         #endregion
 
-        #region Methods
-
-
+        #region SET & GET Variables and DataRow Get
         private MyParameters GetVariablesAdd(int id)
         {
             MyParameters _Variables;
             if (TempBillReceivable.Count > 0)
             {
-                TempBillReceivable.CurrentRow["Sr_No"] = (int)TempBillReceivable.MyDataTable.Compute("MAX(Sr_No)", "") + 1;
+
+                TempBillReceivable.CurrentRow["SR_No"] = MaxSrNo(TempBillReceivable.MyDataTable);
                 TempBillReceivable.CurrentRow["Qty"] = 0.00M;
                 TempBillReceivable.CurrentRow["Rate"] = 0.00M;
                 TempBillReceivable.CurrentRow["Inventory"] = 0;
@@ -274,6 +296,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 TempBillReceivable.CurrentRow["Tax_Rate"] = 0.00M;
                 TempBillReceivable.CurrentRow["Description2"] = "";
                 TempBillReceivable.CurrentRow["Project"] = 0;
+                TempBillReceivable.CurrentRow["Status"] = VoucherStatus.Add.ToString();
+
+
                 _Variables = GetVariables(TempBillReceivable.CurrentRow);
             }
             else
@@ -283,20 +308,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
             return _Variables;
         }
-
-
-        private int MaxSrNo(int id)
+        private int MaxSrNo(DataTable _Table)
         {
-            DataTable _Table = AppFunctions.GetRecords(UserName, Tables.BillPayable2, "TranID=" + id.ToString());
             if (_Table.Rows.Count == 0) { return 1; }                                                  // Table is empty, return 1
-            if (_Table.Rows.Count > 0) { return (int)_Table.Compute("MAX(Sr_No)", ""); }               // Table is not empty and id =0 return max value
-            return id;                                                                                               // Id is already assign, return same value.
+            if (_Table.Rows.Count > 0) { return (int)_Table.Compute("MAX(Sr_No)", "") + 1; }               // Table is not empty and id =0 return max value
+            return 0;                                                                                               // Id is already assign, return same value.
         }
-
-        #endregion
-
-        #region SET & GET Variables and DataRow Get
-
         private DataRow GetRow(MyParameters _Variables)
         {
             DataRow Row = TempBillReceivable.NewRecord();
@@ -369,6 +386,30 @@ namespace Applied_WebApplication.Pages.Accounts
         }
 
         #endregion
+
+        #region Delete
+
+        public IActionResult OnPostDelete(int ID)
+        {
+            TempBillReceivable = new(UserName, Tables.view_BillReceivable, false, 0);
+            if (TempBillReceivable.Seek(ID))
+            {
+                TempBillReceivable.SeekRecord(ID);
+                TempBillReceivable.Delete();
+                ErrorMessages.Add(MessageClass.SetMessage(TempBillReceivable.MyMessage));
+                TempBillReceivable = new(UserName, Tables.view_BillReceivable, false, 0);  // Refresh Data Table after delete record
+                Variables = GetVariables(TempBillReceivable.CurrentRow);                // Refresh variables for page.
+                return RedirectToPage();
+            }
+
+            return Page();
+
+
+        }
+
+
+        #endregion
+
 
         #region Paramters
 

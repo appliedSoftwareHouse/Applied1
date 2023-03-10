@@ -1,0 +1,17 @@
+﻿@page
+@model Applied_WebApplication.Pages.Sales.OBAL_CompanyModel
+@{
+    var UserName = User.Identity.Name;
+}
+
+
+
+<div class="container AppHeading">
+    <h3>CUSTOMER - ADD</h3>
+</div>
+<br />
+
+@if (Model.IsError)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}

@@ -20,6 +20,8 @@ public enum Tables
     BillReceivable = 114,
     BillReceivable2 = 115,
     view_BillReceivable = 116,
+    OBALCompany = 117,
+    
 
     Customers = 201,
     City = 202,
@@ -35,6 +37,7 @@ public enum Tables
     Inv_UOM = 305,
     FinishedGoods = 306,
     SamiFinished = 307,
+    OBALStock = 308,
 
     Ledger = 401,
     view_Ledger = 402,
@@ -89,6 +92,7 @@ public enum VoucherStatus
     Approving = 2,
     Approved = 3,
     Posted = 4,
+    Add = 5,
 }
 public enum VoucherType
 {

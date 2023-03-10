@@ -14,7 +14,8 @@ namespace Applied_WebApplication.Data
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
-        public string ConnectionString;
+        public string MyConnectionString => MyConnection.ConnectionString;            //10-Mar-23
+        public string ConnectionString; 
         public TableValidationClass TableValidation;
         public int ErrorCount { get => TableValidation.MyMessages.Count; }
         public int Count => MyDataView.Count;
@@ -444,7 +445,7 @@ namespace Applied_WebApplication.Data
                 }
                 catch (Exception e)
                 {
-
+                    TableValidation.MyMessages.Add(MessageClass.SetMessage(e.Message));
                     MyMessage = e.Message;
                 }
                 if (TableValidation.MyMessages.Count > 0) { IsError = true; }
@@ -490,11 +491,49 @@ namespace Applied_WebApplication.Data
             }
         }
 
+        public void Add()
+        {
+            IsError = false;
+            TableValidation = new TableValidationClass(MyDataTable);
+            
+
+            if (CurrentRow != null)
+            {
+                try
+                {
+                        TableValidation.SQLAction = CommandAction.Insert.ToString();
+                        if (TableValidation.Validation(CurrentRow))
+                        {
+                            CommandInsert();                                            // Create a command and assign new ID value.
+                            Command_Insert.ExecuteNonQuery();
+                            GetDataTable();
+                            MyMessage = "Insert (Add) record in " + MyTableName;
+                        }
+                    
+                }
+                catch (Exception e)
+                {
+                    TableValidation.MyMessages.Add(MessageClass.SetMessage(e.Message));
+                    MyMessage = e.Message;
+                }
+                if (TableValidation.MyMessages.Count > 0) { IsError = true; }
+
+            }
+        }
+
+        
+
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
             DataTableClass tb_table = new(UserName, table);
             return tb_table.Replace(_ID, _Column, _Value);
         }
+
+        #endregion
+
+
+        #region Get Table
+
 
         internal DataTable GetTable(string filter)
         {
@@ -510,7 +549,6 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
-
         //======================================================== eof
     }
 }

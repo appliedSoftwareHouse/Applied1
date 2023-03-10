@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DataSets", "DataSets", "{62
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelClass", "ExcelClass\ExcelClass.csproj", "{02196C12-6283-478F-9B1C-8C63B539FCC7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppReporting", "AppReporting\AppReporting.csproj", "{E48D7C73-9ABC-487B-AE1E-402F7EE00F6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppReporting", "AppReporting\AppReporting.csproj", "{E48D7C73-9ABC-487B-AE1E-402F7EE00F6E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

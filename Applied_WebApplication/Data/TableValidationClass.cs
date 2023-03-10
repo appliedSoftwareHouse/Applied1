@@ -30,12 +30,12 @@ namespace Applied_WebApplication.Data
 
         public TableValidationClass(DataTable table)
         {
-            if(table!=null)
-            { 
-            MyDataTable = table;
-            MyDataView = MyDataTable.AsDataView();
-            MyMessages = new List<Message>();
-            SQLAction = string.Empty;
+            if (table != null)
+            {
+                MyDataTable = table;
+                MyDataView = MyDataTable.AsDataView();
+                MyMessages = new List<Message>();
+                SQLAction = string.Empty;
             }
         }
 
@@ -103,6 +103,13 @@ namespace Applied_WebApplication.Data
             { return true; }
             else
             { return false; }
+        }
+
+        private bool IsColStatusExist(DataRow Row)
+        {
+
+            return Row.Table.Columns.Contains("Status");
+
         }
 
         #endregion
@@ -378,12 +385,21 @@ namespace Applied_WebApplication.Data
         }
         private void ValidateTable_view_BillReceivable(DataRow Row)
         {
+            if(IsColStatusExist(Row))
+            {
+                if (Row["Status"].ToString() == VoucherStatus.Add.ToString())
+                {
+                    return;
+                }
+            }
+
+
             MyMessages = new List<Message>();
             if (SQLAction == CommandAction.Insert.ToString())
             {
                 if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
-                if (Seek("Vou_No", Row["Vou_No"].ToString())) { MyMessages.Add(SetMessage("Voucher No is already exist in Data Base. Contact to Administrator.")); }
-                if (Seek("TranID", Row["TranID"].ToString())) { MyMessages.Add(SetMessage("Bill Receivable No is already exist in Data Base. Contact to Administrator.")); }
+                //if (Seek("Vou_No", Row["Vou_No"].ToString())) { MyMessages.Add(SetMessage("Voucher No is already exist in Data Base. Contact to Administrator.")); }
+                //if (Seek("TranID", Row["TranID"].ToString())) { MyMessages.Add(SetMessage("Bill Receivable No is already exist in Data Base. Contact to Administrator.")); }
             }
 
             if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(SetMessage("Description is null, must be some value.")); }
@@ -396,8 +412,8 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Sr_No"] == 0) { MyMessages.Add(SetMessage("Serial No. of bill is zero. must be more than zero.")); }
 
             if ((decimal)Row["Qty"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
-            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
-            if ((decimal)Row["Tax"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.", Color.Red)); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Rate is zero, not allowed.", Color.Red)); }
+            if ((int)Row["Tax"] == 0) { MyMessages.Add(SetMessage("Tax is zero, not allowed.", Color.Red)); }
 
         }
 

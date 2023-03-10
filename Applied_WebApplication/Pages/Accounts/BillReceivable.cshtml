@@ -284,7 +284,7 @@
         <div class="row">
             <div class="col-1 d-grid"><button class="btn btn-primary btn-sm" type="submit" asp-page-handler="Save">SAVE</button></div>
             <div class="col-1 d-grid"><button class="btn btn-info btn-sm" type="submit" asp-page-handler="Back">BACK</button></div>
-            
+
 
 
             @if (Model.TempBillReceivable.Count > 0)
@@ -345,7 +345,9 @@
                                 asp-route-ID="@Row["ID"]">
                                         <i class="bi bi-pencil-fill text-primary "></i>
                                     </button>
-                                    <button class="btn btn-link">
+                                    <button class="btn btn-link" type="submit"
+                                asp-page-handler="Delete"
+                                asp-route-ID="@Row["ID"]">
                                         <i class="bi bi-trash-fill text-danger"></i>
                                     </button>
                                 </td>
@@ -356,6 +358,20 @@
                 </table>
             </div>
         }
+        else
+        {
+            <div class="container">
+                <h4>NO RECORD FOUND......</h4>
+            </div>
+
+        }
+    }
+    else
+    {
+        <div class="container">
+            <h4>NO DATA TABLE FOUND......</h4>
+        </div>
+
     }
 </form>
 

@@ -116,10 +116,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
 
-            DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
-            //string _Heading1 = "GENERAL LEDGER : " + GetTitle(UserName, Tables.COA, Filters.N_COA);
-            //string _Heading2 = GetTitle(UserName, Tables.Customers, Filters.N_Customer);
-
+            DataTable tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
+           
             ReportClass reports = new ReportClass
             {
                 AppUser = User,
@@ -150,8 +148,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             reports.ReportParameters.Add("Heading2", _Heading2);
             reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
 
-            ReportLink = reports.GetReportLink();
-            IsShowPdf = !reports.IsError;
+            ReportLink = reports.GetReportLink();                     // Create a report and provide link of pdf file location.
+            IsShowPdf = !reports.IsError;                                   // Show PDF id no error found.
             return Page();
         }
         #endregion
