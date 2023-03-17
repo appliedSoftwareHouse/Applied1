@@ -1,17 +1,101 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.Sales.OBAL_CompanyModel
 @{
     var UserName = User.Identity.Name;
+    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.Company);
+    var TitleCOA = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA);
 }
 
 
 
-<div class="container AppHeading">
-    <h3>CUSTOMER - ADD</h3>
+<div class="container AppHeading-2">
+    <h5 class="TextCenter">Company Opening Balances</h5>
 </div>
 <br />
 
-@if (Model.IsError)
+@if (Model.ErrorMessages.Count > 0)
 {
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
 }
+
+
+<form method="post">
+    <div class=container>
+        <input hidden type="text" asp-for="@Model.Variables.ID" />
+        <div class=row>
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="SelectCompany" aria-label="Selection of Company" asp-for="@Model.Variables.Company">
+                        <option selected>@TitleCompany</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                    <label for="SelectCompany">Supplier / Vendor</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="SelectCOA" aria-label="Selection of Account" asp-for="@Model.Variables.COA">
+                        <option selected>@TitleCOA</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="SelectCOA">Account Title</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.Amount">
+                    <label for="OBalance">Opening Balance</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Save">Save</button>
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Back">Back</button>
+            </div>
+        </div>
+    </div>
+    <hr />
+
+    <!------------------------------------------------TABLE--->
+    <table name="TableList" class="table table-hover">
+        <thead>
+            <tr>
+                <th style="width:40%">Company</th>
+                <th style="width:40%">Account Title</th>
+                <th style="width:10%; text-align:right">Amount</th>
+                <th style="width:10%"><a type="submit" href="./OBAL_Company"><i class="bi bi-database-add text-success"></i></a></th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow Row in Model.OBalance.Rows)
+            {
+                var _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
+                var _TitleCOA = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+                var _Amount = Conversion.Row2Money(Row["Amount"]);
+                <tr>
+                    <td>@_TitleCompany</td>
+                    <td>@_TitleCOA</td>
+                    <td style="text-align:right">@_Amount</td>
+                    <td>
+                        <button type="submit" class="btn-link btn-outline-light" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill text-primary"></i></button> |
+
+                        <button type="submit" class="btn-link btn-outline-light" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill text-danger"></i></button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+
+</form>

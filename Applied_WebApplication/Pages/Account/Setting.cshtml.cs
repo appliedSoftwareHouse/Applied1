@@ -7,7 +7,13 @@ namespace Applied_WebApplication.Pages.Account
 {
     public class SettingModel : PageModel
     {
+        [BindProperty]
+        public MyParameters Variables { get; set; }
+        public string UserName => User.Identity.Name;
+
         readonly AppliedUsersClass MyUserClass = new();
+
+        #region Currency and Date Format Variables
 
         public string CurrencyFormat = string.Empty;
         public string CurrencyFormat1 = "#,0";
@@ -27,13 +33,39 @@ namespace Applied_WebApplication.Pages.Account
         public string DateFormat5 = "dd-MMM-yy";
         public string DateFormat6 = "dd-MMM-yyyy";
 
+        #endregion
+
+
+
+
         public void OnGet()
         {
             string UserName = User.Identity.Name;
             DateFormat = AppRegistry.GetKey(UserName, "MFTDate", KeyType.Text).ToString();
             CurrencyFormat = AppRegistry.GetKey(UserName, "MFTCurrency", KeyType.Text).ToString();
+
+            Variables = new()
+            {
+                OBCompany = (int)AppRegistry.GetKey(UserName, "OBCompany", KeyType.Number),
+                FiscalStart = (DateTime)AppRegistry.GetKey(UserName, "FiscalStart", KeyType.Date),
+                FiscalEnd = (DateTime)AppRegistry.GetKey(UserName, "FiscalEnd", KeyType.Date),
+                StockExpiry = (int)AppRegistry.GetKey(UserName, "StockExpiry", KeyType.Number),
+
+            };
         }
 
+        public void OnPostSave()
+        {
+            AppRegistry.SetKey(UserName, "OBCompany", Variables.OBCompany, KeyType.Number);
+            AppRegistry.SetKey(UserName, "FiscalStart", Variables.FiscalStart, KeyType.Date);
+            AppRegistry.SetKey(UserName, "FiscalEnd", Variables.FiscalEnd, KeyType.Date);
+            AppRegistry.SetKey(UserName, "StockExpiry", Variables.StockExpiry, KeyType.Number);
+        }
+
+
+
+
+        #region Date and Currency Format
         public IActionResult OnGetUpdateCurrencyFormat(int id)
         {
             string UserName = User.Identity.Name;
@@ -56,7 +88,6 @@ namespace Applied_WebApplication.Pages.Account
             MyUserClass.AppliedUserCommand.ExecuteNonQuery();
             return Page();
         }
-
         public IActionResult OnGetUpdateDateFormat(int id)
         {
             string UserName = User.Identity.Name;
@@ -77,5 +108,19 @@ namespace Applied_WebApplication.Pages.Account
             MyUserClass.AppliedUserCommand.ExecuteNonQuery();
             return Page();
         }
+        #endregion
+
+        public class MyParameters
+        {
+            public int OBCompany { get; set; }
+            public DateTime FiscalStart { get; set; }
+            public DateTime FiscalEnd { get; set; }
+            public int StockExpiry { set; get; }
+
+        }
+
     }
+
 }
+
+

@@ -10,9 +10,8 @@ namespace Applied_WebApplication.Pages.Stock
         public MyParameters Variables { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
 
-        private int ExpDays = AppRegistry.ExpDays();
         private string UserName => User.Identity.Name;
-
+        private int ExpDays => AppRegistry.ExpDays(User.Identity.Name);
         public void OnGet(int? id)
         {
 

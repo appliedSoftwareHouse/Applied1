@@ -1,0 +1,91 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Stock.BOMProfileListModel
+@{
+}
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Bill of Manufacutring (BOM) Profiles</h5>
+</div>
+
+
+<form method="post">
+    <div class="container">
+        <input hidden asp-for="@Model.Variables.ID" />
+        <div class="row mb-2">
+            <div class="col">
+                <div class="form-floating">
+                    <input class="form-control" asp-for="@Model.Variables.Code" id="txtCode" />
+                    <label for="txtCode">BOM Code</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input class="form-control" asp-for="@Model.Variables.Title" id="txtTitle" />
+                    <label for="txtTitle">Title of BOM Profile</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="txtStatus" asp-for="@Model.Variables.Status">
+                        <option selected>@Model.Variables.Status</option>
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                    <label for="txtStatus">Status</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col">
+                <button type="submit" class="btn btn-primary"
+                        asp-page-handler="Save"
+                        asp-route-ID="@Model.Variables.ID">
+                    <i class="bi bi-save"></i> Save
+                </button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-box-arrow-in-left"></i> Back</button>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <table class="table table-hover" id="TableList">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Title of BOM Profile</th>
+                    <th>Status</th>
+                    <th>
+                        <button class="btn btn-link text-success" asp-page-handler="New">
+                            <i class="bi bi-database-add"> </i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.BOMProfileList != null)
+                {
+                    @foreach (DataRow Row in Model.BOMProfileList.Rows)
+                    {
+                        <tr>
+                            <td>@Row["Code"]</td>
+                            <td>@Row["Title"]</td>
+                            <td>@Row["Status"]</td>
+                            <td>
+                                <button type="submit" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
+                                <button type="submit" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
+                                <button type="submit" asp-page-handler="BOM" asp-route-ID="@Row["ID"]"><i class="bi bi-box-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</form>

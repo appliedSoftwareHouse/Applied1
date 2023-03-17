@@ -31,6 +31,7 @@
         public static readonly string FormatDateY2 = "dd-MMM-yy";
         public static readonly string FormatDateM2 = "dd-MM-yy";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
+        
 
         public static DateTime GetFiscalFrom() { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
         public static DateTime GetFiscalTo() { return new DateTime(2023, 06, 30); }
@@ -141,9 +142,10 @@
             return false;
         }
 
-        public static int ExpDays()
+        public static int ExpDays(string UserName)
         {
-            return 365;   // One Year of Expiry Date
+            int Days = (int)GetKey(UserName, "StockExpiry", KeyType.Number);
+            return Days;   // One Year of Expiry Date
         }
     }
 }

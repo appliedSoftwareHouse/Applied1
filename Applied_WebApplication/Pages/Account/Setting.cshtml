@@ -8,6 +8,9 @@
     var DateFormat = MyUserProfile.DateFormat;
     var CurrencyFormat = MyUserProfile.CurrencyFormat;
     var CurrencyAmount = 123456789.99;
+
+    var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);
+
 }
 
 <div class="mt-3 p-2 bg-success text-white rounded">
@@ -72,7 +75,6 @@
                 </ul>
             </div>
         </div>
-
         <div class="col-2">
             <div class="dropdown">
                 <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
@@ -125,20 +127,63 @@
                 </ul>
             </div>
         </div>
-
-        
         <div class="col-6 d-flex align-items-baseline">
             <label>Currency symble </label>
-            <input type="text" class="form-control" style=" margin-left: 10px; width:50px" />  
+            <input type="text" class="form-control" style=" margin-left: 10px; width:50px" />
+        </div>
+    </div>
+
+</div>
+<br />
+
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <select class="form-select" id="SelectCOA" aria-label="Selection of Account" asp-for="@Model.Variables.OBCompany">
+                        <option selected>@TitleOBCompany</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="SelectCOA">Account Title</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
+                    <label for="OBalance">Fiscal Year Start</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
+                    <label for="OBalance">Fiscal Year End</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-3">
+                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.StockExpiry">
+                    <label for="OBalance">Stock Expire after xx days</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col">
+
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save">
+                    <i class="bi bi-database-add"></i>
+                </button>
             </div>
 
+        </div>
+
     </div>
-</div>
+</form>
 
 
 
-
-<br />
-@DateFormat
-<br />
-@CurrencyFormat

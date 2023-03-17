@@ -133,6 +133,21 @@ tr:hover {
 
 }
 
+#Listbutton {
+    background-color: transparent;
+    color: blue;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
 
-
+#ListbuttonRed {
+    background-color: transparent;
+    color: red;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
 

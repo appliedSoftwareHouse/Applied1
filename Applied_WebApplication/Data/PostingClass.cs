@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using Microsoft.Extensions.Primitives;
+using System.Data;
+using System.Text;
 
 namespace Applied_WebApplication.Data
 {
@@ -303,6 +305,45 @@ namespace Applied_WebApplication.Data
                     }
                 }
             }
+            return MyMessages;
+        }
+
+        public static List<Message> PostOpeningBalanceCompany(string UserName)
+        {
+            List<Message> MyMessages = new List<Message>();
+
+            DataTableClass OBALCompany = new(UserName, Tables.OBALCompany);
+            DataTableClass Ledger = new(UserName, Tables.Ledger);
+
+            int COACompany = (int)AppRegistry.GetKey(UserName, "COACompany", KeyType.Number);
+
+
+            if (OBALCompany.Count == 0)
+            {
+                MyMessages.Add(MessageClass.SetMessage("No Record Found."));
+                return MyMessages;
+
+            }
+
+            int _Customer = 0;
+            int _COA = 0;
+
+
+
+            StringBuilder Filter = new();
+            Filter.Append("Vou_type='");
+            Filter.Append(VoucherType.OBalCom.ToString()+"'");
+            Filter.Append(" AND Customer=");
+            Filter.Append(_Customer);
+            Filter.Append(" AND COA=");
+            Filter.Append(_COA);
+
+            Ledger.MyDataView.RowFilter = Filter.ToString();
+
+
+
+
+
             return MyMessages;
         }
     }

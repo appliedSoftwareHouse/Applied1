@@ -1,0 +1,89 @@
+﻿@page
+@model Applied_WebApplication.Pages.Stock.BOMProfileModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleInventory = AppFunctions.GetTitle(UserName,Tables.Inventory, Model.Variables.Inventory);
+    var TitleUOM = AppFunctions.GetTitle(UserName, Tables.Inv_UOM, Model.Variables.UOM);
+
+}
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Bill of Manufacutring (BOM)</h5>
+</div>
+
+<form method="post">
+    <div class="container">
+        <input hidden asp-for="@Model.Variables.ID" />
+        <input hidden asp-for="@Model.Variables.TranID" />
+        <div class="row mb-2 d-flex">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="txtINOUT" asp-for="@Model.Variables.IN_OUT">
+                        <option selected>@Model.Variables.IN_OUT</option>
+                        <option value="IN">IN</option>
+                        <option value="OUT">OUT</option>
+                    </select>
+                    <label for="txtINOUT">Status</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="txtInventory" asp-for="@Model.Variables.Inventory">
+                        <option selected>@TitleInventory</option>
+                        @foreach(KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                       </select>
+                    <label for="txtInventory">Inventory</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <select class="form-select" id="txtUOM" asp-for="@Model.Variables.UOM">
+                        <option selected>@TitleInventory</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inv_UOM))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtUOM">Unit of Measurement (UOM)</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2 d-flex">
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input class="form-control" asp-for="@Model.Variables.Qty" id="txtQty" />
+                    <label for="txtQty">Quantity</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input class="form-control" asp-for="@Model.Variables.Rate" id="txtRate" />
+                    <label for="txtRate">Rate</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                        <input class="form-control" asp-for="@Model.Variables.Westage" id="txtWestage" />
+                        <label for="txtRate">Westage %</label>
+                    </div>
+                </div>
+            </div>
+        <div class="col">
+            <button type="submit" class="btn btn-primary"
+                    asp-page-handler="Save"
+                    asp-route-ID="@Model.Variables.ID">
+                <i class="bi bi-save"></i> Save
+            </button>
+            <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-box-arrow-in-left"></i> Back</button>
+            <button type="reset" class="btn btn-primary" asp-page-handler="Reset"><i class="bi bi-house-up-fill"></i> Reset</button>
+        </div>
+
+    </div>
+</form>

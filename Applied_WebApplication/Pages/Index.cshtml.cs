@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using ExcelClass;
 
 namespace Applied_WebApplication.Pages
 {
@@ -8,6 +9,7 @@ namespace Applied_WebApplication.Pages
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        public string MyMessage = string.Empty; 
 
         public IndexModel(ILogger<IndexModel> logger)
         {
@@ -48,6 +50,11 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage("/Accounts/Vouchers");
         }
 
+        public void OnPostExcel()
+        {
+            ExcelClass.AppExcel excel = new();
 
+            MyMessage = excel.CreateExcel();
+        }
     }
 }

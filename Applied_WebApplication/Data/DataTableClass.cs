@@ -452,7 +452,7 @@ namespace Applied_WebApplication.Data
 
             }
         }
-        public void Delete()
+        public bool Delete()
         {
             IsError = true;
             TableValidation.MyMessages = new List<Message>();
@@ -477,6 +477,8 @@ namespace Applied_WebApplication.Data
                 IsError = false;
                 MyMessage = string.Concat(records.ToString(), " have been deleted.");
             }
+
+            return IsError;
         }
         public int NewID()
         {

@@ -80,8 +80,13 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BillReceivable.ToString()) { ValidateTable_BillReceivable(Row); }
             if (Row.Table.TableName == Tables.BillReceivable2.ToString()) { ValidateTable_BillReceivable2(Row); }
             if (Row.Table.TableName == Tables.view_BillReceivable.ToString()) { ValidateTable_view_BillReceivable(Row); }
+            if (Row.Table.TableName == Tables.OBALCompany.ToString()) { ValidateTable_OBALCompany(Row); }
+            if (Row.Table.TableName == Tables.OBALStock.ToString()) { ValidateTable_OBALStock(Row); }
+            if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
+
+
 
 
 
@@ -97,6 +102,25 @@ namespace Applied_WebApplication.Data
             }
             return false;               // Default value    
         }
+        private bool Seek(string _Column, object _Value, object ID)                    // Seek Other than ID Code. 
+        {
+            if (MyDataTable != null)
+            {
+                DataView _DataView = MyDataTable.AsDataView();
+                _DataView.RowFilter = _Column + "='" + _Value.ToString() + "'";
+                if (_DataView.Count == 1)
+                {
+                    if (ID.Equals(_DataView[0]["ID"])) { return false; } else { return true; }
+                }
+
+                if (_DataView.Count == 0)
+                {
+                    return false;
+                }
+            }
+            return true;               // Default value    
+        }
+
         public bool Success()
         {
             if (MyMessages.Count > 0)
@@ -385,9 +409,9 @@ namespace Applied_WebApplication.Data
         }
         private void ValidateTable_view_BillReceivable(DataRow Row)
         {
-            if(IsColStatusExist(Row))
+            if (IsColStatusExist(Row))
             {
-                if (Row["Status"].ToString() == VoucherStatus.Add.ToString())
+                if (Row["Status"].ToString() == VoucherStatus.Add.ToString())           // if row status row is "ADD" ignore this validation
                 {
                     return;
                 }
@@ -415,6 +439,47 @@ namespace Applied_WebApplication.Data
             if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Rate is zero, not allowed.", Color.Red)); }
             if ((int)Row["Tax"] == 0) { MyMessages.Add(SetMessage("Tax is zero, not allowed.", Color.Red)); }
 
+        }
+        private void ValidateTable_OBALStock(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(SetMessage("Stock is not selected. select one.")); }
+            if ((int)Row["Project"] == 0) { MyMessages.Add(SetMessage("Project is not selected. select one.")); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(SetMessage("Quantity is Zero. select a value.")); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Rate is Zero. select a value.")); }
+        }
+        private void ValidateTable_OBALCompany(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+            if ((int)Row["Company"] == 0) { MyMessages.Add(SetMessage("Company is not selected. select one.")); }
+            if ((int)Row["COA"] == 0) { MyMessages.Add(SetMessage("Account is not selected. select one.")); }
+            if ((decimal)Row["Amount"] == 0) { MyMessages.Add(SetMessage("Amont is Zero. select a value.")); }
+        }
+        private void ValidateTable_BOMProfile(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+                if (Seek("Code", Row["Code"].ToString())) { MyMessages.Add(SetMessage("BOM Code is already exist in Data Base. Rename the Title.")); }
+                if (Seek("Title", Row["Title"].ToString())) { MyMessages.Add(SetMessage("BOM Title is already exist in Data Base. Rename the Title.")); }
+            }
+
+
+            if (SQLAction == CommandAction.Update.ToString())
+            {
+                if (Seek("Code", Row["Code"], Row["ID"])) { MyMessages.Add(SetMessage("BOM Code is already exist in Data Base. Rename the BOM Code.")); }
+                if (Seek("Title", Row["Title"], Row["ID"])) { MyMessages.Add(SetMessage("BOM Title is already exist in Data Base. Rename the BOM Title.")); }
+            }
         }
 
 

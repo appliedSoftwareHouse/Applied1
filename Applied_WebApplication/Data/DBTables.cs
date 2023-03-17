@@ -22,7 +22,6 @@ public enum Tables
     view_BillReceivable = 116,
     OBALCompany = 117,
     
-
     Customers = 201,
     City = 202,
     Country = 203,
@@ -38,6 +37,8 @@ public enum Tables
     FinishedGoods = 306,
     SamiFinished = 307,
     OBALStock = 308,
+    BOMProfile = 309,
+    BOMProfile2 = 310,
 
     Ledger = 401,
     view_Ledger = 402,
@@ -103,5 +104,7 @@ public enum VoucherType
     Receivable = 5,
     Payment = 6,
     Receipt = 7,
-    OBalance = 8
+    OBalance = 8,
+    OBalCom = 9
+
 }

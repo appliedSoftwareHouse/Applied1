@@ -1,0 +1,130 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Stock.OBStockModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
+    var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, Model.Variables.Project);
+}
+
+<style>
+  
+</style>
+
+<div class="container AppHeading-2 mb-0">
+    <h5 class="TextCenter">Stock Opening Balances</h5>
+</div>
+<br />
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}
+
+<form method="post">
+    <div class="container">
+        <input hidden type="text" asp-for="@Model.Variables.ID" />
+        <div class="row">
+            <div class="col">
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="txtInventory" asp-for="@Model.Variables.Inventory">
+                        <option selected>@TitleInventory</option>
+                        @foreach (KeyValuePair<int, string> item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                    <label for="txtInventory">Stock Title</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-2">
+                    <select class="form-select" id="txtProject" asp-for="@Model.Variables.Project">
+                        <option selected>@TitleProject</option>
+                        @foreach (KeyValuePair<int, string> item in AppFunctions.Titles(UserName, Tables.Project))
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+
+                    </select>
+                    <label for="txtProject">Project</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating mb-2">
+                    <input type="text" class="form-control" id="txtBatch" asp-for="@Model.Variables.Batch" />
+                    <label for="txtBatch">Batch</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtQty" asp-for="@Model.Variables.Qty" />
+                    <label for="txtQty">Quantity</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtBatch" asp-for="@Model.Variables.Rate" />
+                    <label for="txtRate">Rate</label>
+                </div>
+            </div>
+            <div class="col">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtBatch" asp-for="@Model.Variables.Amount" readonly />
+                    <label for="txtAmount">Amount</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-2">
+            <div class="col">
+                <button type="submit" class="btn btn-success" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-arrow-left-short"></i> Back</button>
+            </div>
+        </div>
+    </div>
+
+    <!---------------------------- TABLE---->
+    @if (Model.OBStock != null)
+    {
+
+        <div class="container">
+            <table name="TableList" class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="width:20%">Stock Title</th>
+                        <th style="width:20%">Project</th>
+                        <th style="width:20%">Batch</th>
+                        <th style="width:10%">Qty</th>
+                        <th style="width:10%">Rate</th>
+                        <th style="width:10%">Amount</th>
+                        <th style="width:10%"><a asp-page="OBStock"><i class="bi bi-database-add"></i></a></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow Row in Model.OBStock.Rows)
+                    {
+                        var _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                        var _TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, (int)Row["Project"]);
+                        var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+
+                        <tr>
+                            <td>@_TitleInventory</td>
+                            <td>@_TitleProject</td>
+                            <td>@Row["Batch"]</td>
+                            <td style="text-align:right">@Row["Qty"]</td>
+                            <td style="text-align:right">@Row["Rate"]</td>
+                            <td style="text-align:right">@_Amount</td>
+                            <td>
+                                <a asp-page="OBStock" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill text-primary"></i></a>
+                                <button type="submit" id="ListbuttonRed" asp-route-ID="@Row["ID"]" asp-page-handler="Delete"><i class="bi bi-trash-fill text-danger"></i></button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</form>
