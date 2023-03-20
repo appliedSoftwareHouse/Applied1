@@ -1,6 +1,7 @@
 using Applied_WebApplication.Pages.Accounts;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NPOI.OpenXmlFormats;
 using System.Data;
 using System.Drawing;
 
@@ -45,36 +46,14 @@ namespace Applied_WebApplication.Pages.Stock
 
         }
 
-        public IActionResult OnPostSave(int ID)
+        public async Task<IActionResult> OnPostSaveAsync(int ID)
         {
+            //ErrorMessages = Save(int ID);
+            await Task.Run(() => Save(ID));
 
-            DataTableClass _Table = new(UserName, Tables.BOMProfile);
-            _Table.MyDataView.RowFilter = "ID=" + ID.ToString();
-            if (_Table.Count == 1) { _Table.SeekRecord(ID); } else { _Table.NewRecord(); }
+            if(ErrorMessages.Count> 0) { return Page(); }
+            return RedirectToPage("BOMProfileList", routeValues: new { ID });
 
-            try
-            {
-                _Table.CurrentRow["ID"] = Variables.ID;
-                _Table.CurrentRow["Code"] = Variables.Code;
-                _Table.CurrentRow["Title"] = Variables.Title;
-                _Table.CurrentRow["Status"] = Variables.Status;
-                _Table.Save();
-                ErrorMessages = _Table.TableValidation.MyMessages;
-               
-                if (ErrorMessages.Count > 0)
-                {
-                    return Page();
-                }
-               
-            }
-            catch (Exception e)
-            {
-                ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
-            }
-          
-
-
-            return RedirectToPage("BOMProfileList", new { ID = (int)_Table.CurrentRow["ID"] });
         }
 
         public IActionResult OnPostEdit(int ID)
@@ -85,6 +64,7 @@ namespace Applied_WebApplication.Pages.Stock
 
         public IActionResult OnPostDelete(int ID)
         {
+            ErrorMessages = new();
             DataTableClass _Table = new(UserName, Tables.BOMProfile);
             _Table.MyDataView.RowFilter = "ID=" + ID.ToString();
             if (_Table.Count == 1)
@@ -101,7 +81,7 @@ namespace Applied_WebApplication.Pages.Stock
                 }
             }
             ErrorMessages = _Table.TableValidation.MyMessages;
-            if(ErrorMessages.Count>0) { return Page(); }
+            if (ErrorMessages.Count > 0) { return Page(); }
 
             return RedirectToPage("BOMProfileList");
         }
@@ -109,8 +89,37 @@ namespace Applied_WebApplication.Pages.Stock
 
         public IActionResult OnPostBOM(int ID)
         {
-            return RedirectToPage("BOMProfile", new { ID=0, TranID=ID });
+            return RedirectToPage("BOMProfile", new { ID = 0, TranID = ID });
         }
+
+
+        #region Save Method
+
+        private void Save(int ID)
+        {
+            ErrorMessages = new();
+            DataTableClass _Table = new(UserName, Tables.BOMProfile);
+            _Table.MyDataView.RowFilter = "ID=" + ID.ToString();
+            if (_Table.Count == 1) { _Table.SeekRecord(ID); } else { _Table.NewRecord(); }
+
+            try
+            {
+                _Table.CurrentRow["ID"] = Variables.ID;
+                _Table.CurrentRow["Code"] = Variables.Code;
+                _Table.CurrentRow["Title"] = Variables.Title;
+                _Table.CurrentRow["Status"] = Variables.Status;
+                _Table.Save();
+                ErrorMessages = _Table.TableValidation.MyMessages;
+
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
+            }
+
+        }
+
+        #endregion
 
 
         public class MyParameters

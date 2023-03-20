@@ -1,4 +1,5 @@
 ﻿using AppReporting;
+using NPOI.OpenXmlFormats;
 using System.Data;
 
 namespace Applied_WebApplication.Data
@@ -12,6 +13,7 @@ namespace Applied_WebApplication.Data
         public DateTime Date_To { get; set; }
         public string Sort { get; set; }
         public string Filter { get; set; }
+        public bool IsPosted { get; set; }
         public DataTable Records { get => GetRecords(); }
 
 
@@ -26,16 +28,18 @@ namespace Applied_WebApplication.Data
 
             if (UserName == null || string.IsNullOrEmpty(UserName)) { return new DataTable(); }
 
-            LedgerParamaters _Paramaters = new();
+            LedgerParamaters _Parameters = new()
+            {
+                UserName = UserName,
+                Filter = Filter,
+                Sort = Sort,
+                Date_From = Date_From,
+                Date_To = Date_To,
+                IsPosted = IsPosted
+            };
 
-            _Paramaters.UserName = UserName;
-            _Paramaters.Filter = Filter;
-            _Paramaters.Sort = Sort;
-            _Paramaters.Date_From = Date_From;
-            _Paramaters.Date_To = Date_To;
 
-
-            if (TableName.ToString() == "CashBook") { return LedgerCashBook(_Paramaters); }                                // Get Ledger Record from CashBook
+            if (TableName.ToString() == "CashBook") { return LedgerCashBook(_Parameters); }                                // Get Ledger Record from CashBook
             return GetEmptyLedger();
         }
         public static DataTable ConvertLedger(string UserName, DataTable _Table)
@@ -309,6 +313,7 @@ namespace Applied_WebApplication.Data
             public DateTime Date_From { get; set; }
             public DateTime Date_To { get; set; }
             public string Status { get; set; }
+            public bool IsPosted { get; set; }
         }
 
     }

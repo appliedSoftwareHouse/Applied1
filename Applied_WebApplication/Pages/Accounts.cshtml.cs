@@ -19,6 +19,14 @@ namespace Applied_WebApplication.Pages
             ThisMessages = PostingClass.PostOpeningBalance(UserName);
             return Page();
         }
+
+        public IActionResult OnPostOBalPostCompany()
+        {
+            var UserName = User.Identity.Name;
+            ThisMessages = PostingClass.PostOpeningBalanceCompany(UserName);
+
+            return Page();
+        }
     }
 }
 

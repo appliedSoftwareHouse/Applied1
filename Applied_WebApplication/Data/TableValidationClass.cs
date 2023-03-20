@@ -83,9 +83,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.OBALCompany.ToString()) { ValidateTable_OBALCompany(Row); }
             if (Row.Table.TableName == Tables.OBALStock.ToString()) { ValidateTable_OBALStock(Row); }
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
+            if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
+       
 
 
 
@@ -480,6 +482,19 @@ namespace Applied_WebApplication.Data
                 if (Seek("Code", Row["Code"], Row["ID"])) { MyMessages.Add(SetMessage("BOM Code is already exist in Data Base. Rename the BOM Code.")); }
                 if (Seek("Title", Row["Title"], Row["ID"])) { MyMessages.Add(SetMessage("BOM Title is already exist in Data Base. Rename the BOM Title.")); }
             }
+        }
+        private void ValidateTable_BOMProfile2(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(SetMessage("Inventory is not selected.")); }
+            if ((int)Row["UOM"] == 0) { MyMessages.Add(SetMessage("Unit of Measurement (UOM) is zero, not allowed.")); }
+            if ((decimal)Row["Qty"]==0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.")); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Rate is zero, not allowed.")); }
         }
 
 

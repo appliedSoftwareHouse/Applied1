@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Primitives;
+﻿using Applied_WebApplication.Pages;
+using Microsoft.Extensions.Primitives;
 using System.Data;
 using System.Text;
 
@@ -313,37 +314,86 @@ namespace Applied_WebApplication.Data
             List<Message> MyMessages = new List<Message>();
 
             DataTableClass OBALCompany = new(UserName, Tables.OBALCompany);
-            DataTableClass Ledger = new(UserName, Tables.Ledger);
-
-            int COACompany = (int)AppRegistry.GetKey(UserName, "COACompany", KeyType.Number);
-
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
 
             if (OBALCompany.Count == 0)
             {
                 MyMessages.Add(MessageClass.SetMessage("No Record Found."));
                 return MyMessages;
-
             }
 
-            int _Customer = 0;
-            int _COA = 0;
+            DateTime Vou_Date = (DateTime)AppRegistry.GetKey(UserName, "OBal_Date", KeyType.Date);
+            int OBCom = (int)AppRegistry.GetKey(UserName, "OBCompany", KeyType.Number);
+            decimal _DR, _CR; List<DataRow> Voucher;
 
+            foreach (DataRow Row in OBALCompany.Rows)
+            {
+                Voucher = new();
+                if ((decimal)Row["Amount"] >= 0) { _DR = (decimal)Row["Amount"]; _CR = 0.00M; }
+                else
+                {
+                    _CR = ((decimal)Row["Amount"]) * -1;
+                    _DR = 0.00M;
+                }
 
+                string _Filter = string.Format("Vou_Type='{0}' AND TranID={1}", VoucherType.OBalCom.ToString(), Row["ID"].ToString());
+                tb_Ledger.MyDataView.RowFilter = _Filter;
+                if (tb_Ledger.Count == 2)
+                {
+                    Voucher.Add(tb_Ledger.MyDataView[0].Row);
+                    Voucher.Add(tb_Ledger.MyDataView[1].Row);
+                }
+                else
+                {
+                    tb_Ledger.NewRecord();
+                    tb_Ledger.CurrentRow["ID"] = 0;
+                    tb_Ledger.CurrentRow["TranID"] = Row["ID"];
+                    tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.OBalCom.ToString();
+                    tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
+                    tb_Ledger.CurrentRow["Vou_No"] = VoucherType.OBalCom.ToString();
+                    tb_Ledger.CurrentRow["SR_No"] = 1;
+                    tb_Ledger.CurrentRow["Ref_No"] = "OBalance";
+                    tb_Ledger.CurrentRow["BookID"] = 0;
+                    tb_Ledger.CurrentRow["COA"] = (int)Row["COA"];
+                    tb_Ledger.CurrentRow["DR"] = _DR;
+                    tb_Ledger.CurrentRow["CR"] = _CR;
+                    tb_Ledger.CurrentRow["Customer"] = Row["Company"];
+                    tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                    tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                    tb_Ledger.CurrentRow["Description"] = string.Concat("Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                    tb_Ledger.CurrentRow["Comments"] = DBNull.Value;
+                    Voucher.Add(tb_Ledger.CurrentRow);
 
-            StringBuilder Filter = new();
-            Filter.Append("Vou_type='");
-            Filter.Append(VoucherType.OBalCom.ToString()+"'");
-            Filter.Append(" AND Customer=");
-            Filter.Append(_Customer);
-            Filter.Append(" AND COA=");
-            Filter.Append(_COA);
+                    tb_Ledger.NewRecord();
+                    tb_Ledger.CurrentRow["ID"] = 0;
+                    tb_Ledger.CurrentRow["TranID"] = Row["ID"];
+                    tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.OBalCom.ToString();
+                    tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
+                    tb_Ledger.CurrentRow["Vou_No"] = VoucherType.OBalCom.ToString();
+                    tb_Ledger.CurrentRow["SR_No"] = 2;
+                    tb_Ledger.CurrentRow["Ref_No"] = "OBalance";
+                    tb_Ledger.CurrentRow["BookID"] = 0;
+                    tb_Ledger.CurrentRow["COA"] = OBCom;
+                    tb_Ledger.CurrentRow["DR"] = _CR;                                           // DR equal of CR of first entry
+                    tb_Ledger.CurrentRow["CR"] = _DR;                                           // CR equal of DR of first entry
+                    tb_Ledger.CurrentRow["Customer"] = Row["Company"];
+                    tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                    tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                    tb_Ledger.CurrentRow["Description"] = string.Concat("Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                    tb_Ledger.CurrentRow["Comments"] = DBNull.Value;
+                    Voucher.Add(tb_Ledger.CurrentRow);
+                }
 
-            Ledger.MyDataView.RowFilter = Filter.ToString();
+                // Validation of Voucher;
+                bool IsValidated1 = tb_Ledger.TableValidation.Validation(Voucher[0]);
+                bool IsValidated2 = tb_Ledger.TableValidation.Validation(Voucher[0]);
 
-
-
-
-
+                if (IsValidated1 && IsValidated2)
+                {
+                    tb_Ledger.CurrentRow = Voucher[0]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
+                    tb_Ledger.CurrentRow = Voucher[1]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
+                }
+            }
             return MyMessages;
         }
     }

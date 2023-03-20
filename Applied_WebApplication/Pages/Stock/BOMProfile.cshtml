@@ -1,8 +1,9 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.Stock.BOMProfileModel
 @{
     var UserName = User.Identity.Name;
-    var TitleInventory = AppFunctions.GetTitle(UserName,Tables.Inventory, Model.Variables.Inventory);
+    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
     var TitleUOM = AppFunctions.GetTitle(UserName, Tables.Inv_UOM, Model.Variables.UOM);
 
 }
@@ -34,18 +35,18 @@
                 <div class="form-floating">
                     <select class="form-select" id="txtInventory" asp-for="@Model.Variables.Inventory">
                         <option selected>@TitleInventory</option>
-                        @foreach(KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
                         {
                             <option value="@Item.Key">@Item.Value</option>
                         }
-                       </select>
+                    </select>
                     <label for="txtInventory">Inventory</label>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-floating">
                     <select class="form-select" id="txtUOM" asp-for="@Model.Variables.UOM">
-                        <option selected>@TitleInventory</option>
+                        <option selected>@TitleUOM</option>
                         @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inv_UOM))
                         {
                             <option value="@Item.Key">@Item.Value</option>
@@ -70,11 +71,11 @@
             </div>
             <div class="col-md-4">
                 <div class="form-floating">
-                        <input class="form-control" asp-for="@Model.Variables.Westage" id="txtWestage" />
-                        <label for="txtRate">Westage %</label>
-                    </div>
+                    <input class="form-control" asp-for="@Model.Variables.Westage" id="txtWestage" />
+                    <label for="txtRate">Westage %</label>
                 </div>
             </div>
+        </div>
         <div class="col">
             <button type="submit" class="btn btn-primary"
                     asp-page-handler="Save"
@@ -84,6 +85,56 @@
             <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-box-arrow-in-left"></i> Back</button>
             <button type="reset" class="btn btn-primary" asp-page-handler="Reset"><i class="bi bi-house-up-fill"></i> Reset</button>
         </div>
-
     </div>
+
+
+
+    <!----------------------------TABLE-->
+    <div class="container mt-2">
+        <table class="table table-hover" id="TableList">
+            <thead>
+                <tr>
+                    <th>Status</th>
+                    <th>Inventory</th>
+                    <th>UOM</th>
+                    <th>Rate</th>
+                    <th>Qty</th>
+                    <th>Amount</th>
+                    <th>Westage %</th>
+                    <th>
+                        <button class="btn btn-link text-success" asp-page-handler="New">
+                            <i class="bi bi-database-add"> </i>
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.BOMProfile != null)
+                {
+                    foreach (DataRow Row in Model.BOMProfile.Rows)
+                    {
+                        var _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                        var _TitleUOM = AppFunctions.GetTitle(UserName, Tables.Inv_UOM, (int)Row["UOM"]);
+                        var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+
+                        <tr>
+                            <td>@Row["IN_OUT"].ToString()</td>
+                            <td>@_TitleInventory</td>
+                            <td>@_TitleUOM</td>
+                            <td>@Row["Qty"].ToString()</td>
+                            <td>@Row["Rate"].ToString()</td>
+                            <td>@_Amount</td>
+                            <td>@Row["Westage"].ToString()</td>
+                            <td>
+                                <button type="submit" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
+                                <button type="submit" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+
 </form>

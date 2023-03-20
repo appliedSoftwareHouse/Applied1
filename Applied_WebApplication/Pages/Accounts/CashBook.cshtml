@@ -12,118 +12,91 @@
     var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
     var NumFormat = GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
     var DateFormat = GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
-    var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
-    var Date1 = Model.MyParameters.MinDate.ToString("yyyy-MM-dd");
-    var Date2 = Model.MyParameters.MaxDate.ToString("yyyy-MM-dd");
-    Model.Cashbook = LedgerClass.Records;    // Get record from cashbook to ledger class [here return nill records]
-    var AddRecord = Model.MyRecord;
+    var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
+    var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
+    var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
 
-
-    if (Model.MyParameters.IsSelected || Model.MyParameters.IsAdd)
-    {
-        LedgerClass.TableName = Tables.CashBook;
-        LedgerClass.Date_From = DateTime.Parse(Date1);
-        LedgerClass.Date_To = DateTime.Parse(Date2);
-        LedgerClass.Sort = "Vou_Date";
-        LedgerClass.Filter = string.Concat("BookID=", Model.MyParameters.CashBookID.ToString());
-        Model.Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
-        Model.MyParameters.RecordID = 0;
-        AddRecord = new CashBookModel.BookRecord();
-    }
 }
 
-@*<style>
-    #MyTable {
-    overflow: auto;
-    background-color: lightcyan
-    }
-    </style>
-*@
 <form method="post">
 
 
     <!--Cash Book Heading Blue Bar-->
-    <div class="container p-1 mt-2 mb-2 bg-info text-white rounded">
+    <div class="container p-1 mt-1 mb-1 bg-info text-white rounded">
         <div class="row d-flex align-items-center text-black">
-            <div class="col-2  TextCenter">
+            <div class="col-md-1 mb-1  TextCenter">
                 <label>CASH BOOK</label>
             </div>
-            <div class="col-3">
-                <label for="From">From</label>
-                <input type="date" name="MinDate" min="2020-01-01" value=@Date1 />
+            <div class="col-md-2 mb-1">
+                <label for="From">=></label>
+                <input type="date" id="MinDate" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
             </div>
-            <div class="col-3">
-                <label for="To">To</label>
-                <input type="date" name="MaxDate" min="2020-01-01" value=@Date2 />
+            <div class="col-md-2 mb-1">
+                <label for="To"><=</label>
+                <input type="date" id="MaxDate" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
             </div>
-            <div class="col-2">
-
-                @if (Model.MyParameters.CashBookID > 0)
+            <div class="col-md-1 mb-1">
+                @if (Model.Variables.CashBookID > 0)
                 {
-                    <button class=" btn btn-primary " type="submit" name="Refresh"
-                        asp-page-handler="Refresh">
-                        REFRESH
-                    </button>
                     <button class="btn btn-primary float-end " type="Submit" id="btnAdd"
                         asp-page-handler="Add">
                         ADD
                     </button>
                 }
-
             </div>
-            <div class="col-2">
-                <div class="p-2 d-inline-block float-end">
-                    <div class="dropdown">
-                        @{
-                            string BookTitle = "Select...";
+            <div class="col-md-2 mb-1">
+                @if (Model.Variables.CashBookID > 0)
+                {
+                    <select class="form-select" aria-label="Filter Records" asp-for="@Model.Variables.IsPosted">
+                        <option selected>Open this select menu</option>
+                        <option value="0">All</option>
+                        <option value="1">Posted</option>
+                        <option value="2">Submitted</option>
+                    </select>
+
+
+
+                    @*<div class="form-check">
+                        @if (Model.Variables.IsPosted)
+                        {
+                            <input class="form-check-input" type="checkbox" value="" name="rbPosted" checked asp-for="@Model.Variables.IsPosted">
                         }
-
-                        <button class="dropdown-toggle btn btn-primary"
-                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            @if (@Model.MyParameters.BookTitle.Length > 0)
-                            {
-                                @Model.MyParameters.BookTitle
-                            }
-                            else
-                            {
-                                @BookTitle
-                            }
-
-                        </button>
-
-                        <ul class="dropdown-menu">
-                            @foreach (KeyValuePair<int, string> _Key in COATitles)
-                            {
-                                <li>
-                                    <a class="dropdown-item" formmethod="get"
-                                   asp-route-id=@_Key.Key
-                                   asp-page-handler="Book">
-                                        @_Key.Value
-                                    </a>
-                                </li>
-                            }
-                        </ul>
-                    </div>
-                </div>
+                        else
+                        {
+                        <input class="form-check-input" type="checkbox" value="" name="rbPosted" asp-for="@Model.Variables.IsPosted">
+                       }
+                       <label class="form-check-label" for="rbPosted">Posted</label>
+                    </div>*@
+                }
             </div>
+            <div class="col-md-2 mb-1">
 
+                <select class="form-select" aria-label="Select a Cash Book" asp-for="@Model.Variables.CashBookID">
+                    <option selected>@TitleBook</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.CashBookTitles))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
 
-
-
-
-
+                    }
+                </select>
+            </div>
+            <div class="col-md-2 mb-1">
+                <button class=" btn btn-primary " type="submit" name="Refresh"
+                        asp-page-handler="Refresh">
+                    REFRESH
+                </button>
+            </div>
         </div>
     </div>
 
     <!-- SHOW CASH BOOK RECORD -->
     <div class="container">
         <!--DISBALE / HIDDEN VALUES-->
-        <input hidden type="text" name="CashBookID" value="@Model.MyParameters.CashBookID" />                  <!--  Generate CashBookID i-->
-        <input hidden type="text" name="BookTitle" value="@Model.MyParameters.BookTitle" />
+        <input hidden type="text" name="CashBookID" value="@Model.Variables.CashBookID" />                  <!--  Generate CashBookID i-->
         <!---->
         <div class="row">
             <div class="overflow-auto" style="height:600px">
-                @if (Model.MyParameters.IsSelected)
+                @if (Model.Cashbook.Rows.Count > 0)
                 {
                     <div>
                         <table class="table" id="MyTable">
@@ -136,39 +109,49 @@
                                     <th style="width:10%; text-align: right">Credit</th>
                                     <th style="width:10%; text-align: right">Balance</th>
                                     <!--CASH BOOK ADD BUTTON-->
-                                <th style="width:10%; text-align: right">
+                                    <th style="width:10%; text-align: right">
                                         <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
                                             asp-page-handler="Add">
-                                            ADD
+                                            <i class="bi bi-database-add"></i>
+                                            
                                         </button>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
 
-                                @foreach (DataRow _Row in Model.Cashbook.Rows)
+                                @foreach (DataRow Row in Model.Cashbook.Rows)
                                 {
                                     <tr>
-                                        <td>@DateTime.Parse(_Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
-                                        <td>@_Row["Vou_No"].ToString()</td>
-                                        <td>@_Row["Description"].ToString()</td>
-                                        <td style="text-align: right">@decimal.Parse(_Row["DR"].ToString()).ToString(NumFormat)</td>
-                                        <td style="text-align: right">@decimal.Parse(_Row["CR"].ToString()).ToString(NumFormat)</td>
+                                        <td>@DateTime.Parse(Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                                        <td>@Row["Vou_No"].ToString()</td>
+                                        <td>@Row["Description"].ToString()</td>
+                                        <td style="text-align: right">@decimal.Parse(Row["DR"].ToString()).ToString(NumFormat)</td>
+                                        <td style="text-align: right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
 
-                                        @if (decimal.Parse(_Row["BAL"].ToString()) > 0)
+                                        @if (decimal.Parse(Row["BAL"].ToString()) > 0)
                                         {
-                                            <td class="align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                            <td class="align-right">@decimal.Parse(Row["BAL"].ToString()).ToString(NumFormat)</td>
                                         }
                                         else
                                         {
-                                            <td class="text-danger align-right">@decimal.Parse(_Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                            <td class="text-danger align-right">@decimal.Parse(Row["BAL"].ToString()).ToString(NumFormat)</td>
                                         }
 
-                                        @if (_Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
+                                        @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
                                             <td>
-                                                <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
-                                                <a asp-page="CashBookRecord" asp-route-id=@_Row["ID"] asp-page-handler="Delete"> Delete</a>
+                                                <a asp-page="CashBookRecord" 
+                                                asp-route-id="@Row["ID"]" 
+                                                asp-page-handler="Edit">
+                                                <i class="bi bi-pencil-fill text-primary"></i></a>
+                                                <button class="btn btn-link" 
+                                                asp-page-handler="Delete"
+                                                asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-trash-fill text-danger"></i>
+                                                </button>
+                                                
+                                              
                                             </td>
                                         }
                                         else
@@ -179,7 +162,7 @@
                                                 </button>
 
                                                 <!-- Modal -->
-                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -203,6 +186,10 @@
                             </tbody>
                         </table>
                     </div>
+                }
+                else
+                {
+                    <h4>No Record Found</h4>
                 }
             </div>
         </div>

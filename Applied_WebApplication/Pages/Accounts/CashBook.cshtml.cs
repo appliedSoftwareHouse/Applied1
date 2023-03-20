@@ -1,83 +1,106 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Drawing;
 using static Applied_WebApplication.Data.AppFunctions;
+using static Applied_WebApplication.Data.AppRegistry;
+
+
 
 namespace Applied_WebApplication.Pages.Accounts
 {
     public class CashBookModel : PageModel
     {
         [BindProperty]
-        public ReportParameters MyParameters { get; set; }
-        public string UserName;
+        public MyParameters Variables { get; set; }
         public BookRecord MyRecord { get; set; }
         public DataTable Cashbook = new DataTable();
-        public List<Message> ErrorMessages;
+        public List<Message> ErrorMessages = new();
+        public string UserName => User.Identity.Name;
 
         #region Get / POST
 
-        public void OnGet(int id)
+        public void OnGet(int? id)
         {
-            UserName = User.Identity.Name;
-            MyParameters = new ReportParameters
-            {
-                IsSelected = false,
-                CashBookID = id,
-                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
-                MinDate = (DateTime.Now),
-                MaxDate = (DateTime.Now)
-            };
 
-            DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
-            if (_Table.MyDataTable.Rows.Count > 0)
+            if (id == null)
             {
-                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
-                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
+                Variables = new() 
+                {
+                    IsSelected = false,
+                    CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
+                    MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
+                    MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
+                    IsPosted = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
+                };
+            }
+            else
+            {
+                Variables = new()
+                {
+                    IsSelected = false,
+                    CashBookID = (int)id,
+                    MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
+                    MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
+                    IsPosted = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
+                };
             }
 
-            if (id > 0) { MyParameters.IsSelected = true; }
-        }
-        public void OnPost()
-        {
+            id ??= Variables.CashBookID;
+            var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
+            var Date1 = Variables.MinDate.ToString("yyyy-MM-dd");
+            var Date2 = Variables.MaxDate.ToString("yyyy-MM-dd");
+            LedgerClass.TableName = Tables.CashBook;
+            LedgerClass.Date_From = DateTime.Parse(Date1);
+            LedgerClass.Date_To = DateTime.Parse(Date2);
+            LedgerClass.Sort = "Vou_Date";
+            LedgerClass.Filter = string.Concat("BookID=", (int)id);
+            Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
+            if (Variables.IsPosted==1)                        // Not posted.
+            {
+                DataView BookView = Cashbook.AsDataView();
+                BookView.RowFilter = "Status='Posted'";
+                Cashbook = BookView.ToTable();
+            }
 
-        }
+            if (Variables.IsPosted == 2)                        // Not posted.
+            {
+                DataView BookView = Cashbook.AsDataView();
+                BookView.RowFilter = "Status<>'Posted'";
+                Cashbook = BookView.ToTable();
+            }
 
+            if (Cashbook.Rows.Count==0)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("No record Found.....!"));
+            }
+
+
+            //Variables.BookTitle = GetTitle(UserName, Tables.COA, Variables.CashBookID);
+            
+        }
+       
         #endregion
 
-        public void OnGetRefresh(int id)
+        
+        public IActionResult OnPostRefresh(int id)
         {
-            UserName = User.Identity.Name;
-            MyParameters = new ReportParameters
-            {
-                IsSelected = true,
-                CashBookID = id,
-                BookTitle = GetColumnValue(UserName, Tables.COA, "Title", id),
-                MinDate = (DateTime.Now),
-                MaxDate = (DateTime.Now)
-            };
+           
+           SetKey(UserName, "CashBookFrom", Variables.MinDate, KeyType.Date);
+           SetKey(UserName, "CashBookTo", Variables.MaxDate, KeyType.Date);
+           SetKey(UserName, "CashBookPost", Variables.IsPosted, KeyType.Number);
+           SetKey(UserName, "CashBookID", Variables.CashBookID, KeyType.Number);
 
-            DataTableClass _Table = new(UserName, Tables.CashBook);                                                                     // Create Temporary for Min and Max Date.
-            if (_Table.MyDataTable.Rows.Count > 0)
-            {
-                MyParameters.MinDate = (DateTime)_Table.MyDataTable.Compute("Min(Vou_Date)", "");
-                MyParameters.MaxDate = (DateTime)_Table.MyDataTable.Compute("Max(Vou_Date)", "");
-            }
-        }
-        public IActionResult OnPostRefresh()
-        {
-            UserName = User.Identity.Name;
-            MyParameters.IsSelected = true;
-            MyParameters.Reload = true;
-            MyParameters.BookTitle = GetColumnValue(UserName, Tables.COA, "Title", MyParameters.CashBookID);
-            return Page();
+
+            return RedirectToPage("CashBook", routeValues: new { id = Variables.CashBookID });
         }
         public IActionResult OnPostAdd()
         {
-            return RedirectToPage("CashBookRecord", new { id = MyParameters.CashBookID });
+            return RedirectToPage("CashBookRecord", new { id = Variables.CashBookID });
         }
         public IActionResult OnPostSave(int ID)
         {
-            UserName = User.Identity.Name;
+
 
             DataTableClass CashBook = new(UserName, Tables.CashBook);
             CashBook.MyDataView.RowFilter = String.Concat("ID=", ID.ToString());
@@ -102,32 +125,52 @@ namespace Applied_WebApplication.Pages.Accounts
             ErrorMessages = CashBook.TableValidation.MyMessages;
             if (ErrorMessages.Count == 0)
             {
-                MyParameters.IsSelected = true;
+                Variables.IsSelected = true;
                 return Page();
             }
             else
             {
-                MyParameters.IsSelected = false;
-                MyParameters.IsAdd = true;
-                MyParameters.IsError = true;
-                MyParameters.Reload = true;
+                Variables.IsSelected = false;
+                Variables.IsAdd = true;
+                Variables.IsError = true;
+                Variables.Reload = true;
                 return Page();
             }
         }
 
+        public IActionResult OnPostDelete(int ID)
+        {
+            ErrorMessages = new();
+            DataTableClass _Table = new(UserName, Tables.CashBook);
+            _Table.MyDataView.RowFilter = string.Format("ID={0}", ID);
+            if(_Table.Count==1)
+            {
+                try
+                {
+                    _Table.SeekRecord(ID);
+                    _Table.Delete();
+                    ErrorMessages.Add(MessageClass.SetMessage("Record has been deleted.", Color.Red));
+                }
+                catch (Exception e)
+                {
+                    ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
+                }
+            }
+            return RedirectToPage("CashBook");
+        }
 
         [BindProperties]
-        public class ReportParameters
+        public class MyParameters
         {
             public int RecordID { get; set; }
             public bool IsSelected { get; set; }
             public bool IsAdd { get; set; }
             public bool IsError { get; set; }
             public bool Reload { get; set; }
-            public string BookTitle { get; set; }
             public int CashBookID { get; set; }
             public DateTime MinDate { get; set; }
             public DateTime MaxDate { get; set; }
+            public int IsPosted { get; set; }
 
         }
         [BindProperties]

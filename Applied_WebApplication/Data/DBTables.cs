@@ -42,6 +42,8 @@ public enum Tables
 
     Ledger = 401,
     view_Ledger = 402,
+    CashBookTitles = 403,
+
 
     PostCashBook = 501,
     PostBankBook = 502,
