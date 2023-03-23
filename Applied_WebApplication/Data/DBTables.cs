@@ -21,7 +21,7 @@ public enum Tables
     BillReceivable2 = 115,
     view_BillReceivable = 116,
     OBALCompany = 117,
-    
+
     Customers = 201,
     City = 202,
     Country = 203,
@@ -107,6 +107,7 @@ public enum VoucherType
     Payment = 6,
     Receipt = 7,
     OBalance = 8,
-    OBalCom = 9
+    OBalCom = 9,
+    OBalStock = 10
 
 }

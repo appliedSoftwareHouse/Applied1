@@ -47,9 +47,12 @@ namespace Applied_WebApplication.Pages.Account
             Variables = new()
             {
                 OBCompany = (int)AppRegistry.GetKey(UserName, "OBCompany", KeyType.Number),
+                OBStock = (int)AppRegistry.GetKey(UserName, "OBStock", KeyType.Number),
                 FiscalStart = (DateTime)AppRegistry.GetKey(UserName, "FiscalStart", KeyType.Date),
                 FiscalEnd = (DateTime)AppRegistry.GetKey(UserName, "FiscalEnd", KeyType.Date),
                 StockExpiry = (int)AppRegistry.GetKey(UserName, "StockExpiry", KeyType.Number),
+                CurrencySign = (string)AppRegistry.GetKey(UserName, "CurrencySign", KeyType.Text),
+                OBDate = (DateTime)AppRegistry.GetKey(UserName, "OBDate", KeyType.Date)
 
             };
         }
@@ -57,9 +60,12 @@ namespace Applied_WebApplication.Pages.Account
         public void OnPostSave()
         {
             AppRegistry.SetKey(UserName, "OBCompany", Variables.OBCompany, KeyType.Number);
+            AppRegistry.SetKey(UserName, "OBStock", Variables.OBStock, KeyType.Number);
             AppRegistry.SetKey(UserName, "FiscalStart", Variables.FiscalStart, KeyType.Date);
             AppRegistry.SetKey(UserName, "FiscalEnd", Variables.FiscalEnd, KeyType.Date);
             AppRegistry.SetKey(UserName, "StockExpiry", Variables.StockExpiry, KeyType.Number);
+            AppRegistry.SetKey(UserName, "CurrencySign", Variables.CurrencySign, KeyType.Text);
+            AppRegistry.SetKey(UserName, "OBDate", Variables.OBDate, KeyType.Date);
         }
 
 
@@ -112,11 +118,13 @@ namespace Applied_WebApplication.Pages.Account
 
         public class MyParameters
         {
-            public int OBCompany { get; set; }
+            public int OBCompany { get; set; }              // COA for opening balance for Company.
+            public int OBStock { get; set; }                    // COA for opening balance for Stock.
             public DateTime FiscalStart { get; set; }
             public DateTime FiscalEnd { get; set; }
             public int StockExpiry { set; get; }
-
+            public string CurrencySign { get; set; }
+            public DateTime OBDate { get; set; }
         }
 
     }
