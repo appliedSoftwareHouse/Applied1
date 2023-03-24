@@ -1,0 +1,190 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.JVModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleCOA = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA);
+    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Customer);
+    var TitleProject = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Project);
+    var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Employee);
+    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Inventory);
+}
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Journal Voucher (JV)</h5>
+</div>
+
+<form method="post">
+    <div class="container">
+        <input hidden asp-for="@Model.Variables.ID" />
+        <input hidden asp-for="@Model.Variables.TranID" />
+        <div class="row mb-1 ">
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Vou_No">
+                    <label for="txt1">Voucher No</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="date" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Vou_Date">
+                    <label for="txt1">Voucher Date</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Sr_No">
+                    <label for="txt1">Sr No</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Ref_No">
+                    <label for="txt1">Ref. No</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <select select type="text" class="form-control" id="txtCOA"
+                            placeholder="Type here any text"
+                            asp-for="@Model.Variables.COA">
+                        <option selected>@TitleCOA</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtCOA">COA</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.DR">
+                    <label for="txt1">Debit</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.CR">
+                    <label for="txt1">Credit</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Description">
+                    <label for="txt1">Remarks</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <select select type="text" class="form-control" id="txtCustomer"
+                            placeholder="Type here any text"
+                            asp-for="@Model.Variables.Customer">
+                        <option selected>@TitleCompany</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtCustomer">Company</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <select select type="text" class="form-control" id="txtProject"
+                            placeholder="Type here any text"
+                            asp-for="@Model.Variables.Project">
+                        <option selected>@TitleProject</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Project))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtProject">Project</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <select select type="text" class="form-control" id="txtEmployee"
+                            placeholder="Type here any text"
+                            asp-for="@Model.Variables.Employee">
+                        <option selected>@TitleEmployee</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtEmployee">Employee</label>
+                </div>
+            </div>
+            <div class=col-md-3>
+                <div class="form-floating mb-1">
+                    <select select type="text" class="form-control" id="txtInventory"
+                            placeholder="Type here any text"
+                            asp-for="@Model.Variables.Inventory">
+                        <option selected>@TitleInventory</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="txtInventory">Inventory</label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row mb-1">
+            <div class="col">
+                <button type="submit"
+                        class="btn btn-primary"
+                        asp-page-handler="Save">
+                    <i class="bi bi-save text-white"></i>
+                    SAVE
+                </button>
+                <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-left-square text-white"></i> BACK</button>
+            </div>
+        </div>
+    </div>
+    <div class=container>
+        <Table class="table table-hover" id="TableList">
+            <thead>
+                <tr>
+                    <th style="width:10%">SR. No</th>
+                    <th style="width:10%">Ref No.</th>
+                    <th style="width:30%">Account Title</th>
+                    <th style="width:10%">Debit</th>
+                    <th style="width:10%">Credit</th>
+                    <th style="width:20%">Description</th>
+                    <th style="width:10%"><i class="bi bi-database-add"></i></th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Voucher != null)
+                {
+                    @foreach (DataRow Row in Model.Voucher.Rows)
+                    {
+                        string _TitleCOA = (string)AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+
+                        <tr>
+                            <td>@Row["Sr_No"]</td>
+                            <td>@Row["Ref_No"]</td>
+                            <td>@_TitleCOA</td>
+                            <td>@Row["DR"]</td>
+                            <td>@Row["CR"]</td>
+                            <td>@Row["Description"]</td>
+                            <td>
+                                <button class="btn-link border-0 bg-transparent"><i class="bi bi-pencil-fill"></i></button>
+                                <button class="btn-link border-0 bg-transparent"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+
+            </tbody>
+        </Table>
+    </div>
+</form>

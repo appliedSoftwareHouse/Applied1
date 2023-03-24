@@ -286,6 +286,9 @@ namespace Applied_WebApplication.Data
                     MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher and post again." });
                 }
             }
+
+            if(MyVoucherType == PostType.)
+
         }
         private void ValidateTable_BillPayable(DataRow Row)
         {

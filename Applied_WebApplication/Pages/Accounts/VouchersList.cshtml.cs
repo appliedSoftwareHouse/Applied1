@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 
 namespace Applied_WebApplication.Pages.Accounts
@@ -10,14 +11,18 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public MyParameters Variables { get; set; } = new();
         public DataTable Vouchers { get; set; } = new();
+        public string UserName => User.Identity.Name;
 
         public void OnGet()
         {
-            string UserName = User.Identity.Name;
+            
 
-            Variables.VouType = (string)AppRegistry.GetKey(UserName, "Vou_VouType", KeyType.Text);
-            Variables.DateFrom = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtFrom", KeyType.Date);
-            Variables.DateTo = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtTo", KeyType.Date);
+            Variables = new()
+            {
+                VouType = (string)AppRegistry.GetKey(UserName, "Vou_VouType", KeyType.Text),
+                DateFrom = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtFrom", KeyType.Date),
+                DateTo = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtTo", KeyType.Date)
+            };
 
             if (string.IsNullOrEmpty(Variables.VouType)) { Variables.VouType = VoucherType.Cash.ToString(); }
 
@@ -27,7 +32,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public DataTable GetData()
         {
-            string UserName = User.Identity.Name;
+            
             DataTableClass _Table = new(UserName, Tables.Ledger);
             StringBuilder _Filter = new StringBuilder();
 
@@ -46,21 +51,18 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnPost() { }
 
-        public void OnPostRefresh()
+        public IActionResult OnPostRefresh()
         {
-            string UserName = User.Identity.Name;
-            Vouchers = GetData();
-
-
+         
             AppRegistry.SetKey(UserName, "Vou_VouType", Variables.VouType, KeyType.Text);
             AppRegistry.SetKey(UserName, "Vou_DtFrom", Variables.DateFrom, KeyType.Date);
             AppRegistry.SetKey(UserName, "Vou_DtTo", Variables.DateTo, KeyType.Date);
 
+            return RedirectToPage("VoucherList");
         }
 
         public IActionResult OnPostEdit(int id)
         {
-            string UserName = User.Identity.Name;
             DataTableClass _Table = new DataTableClass(UserName, Tables.Ledger);
             DataRow Row = _Table.SeekRecord(id);
 
@@ -71,7 +73,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 string VouType = (string)Row["Vou_Type"];
 
                 return RedirectToPage("./Voucher1", routeValues: new { TranID, VouType, RecNo });
-                //return RedirectToPage("./Voucher1", pageHandler: "Edit", routeValues: new { TranID, VouType });
             }
 
             return Page();
@@ -82,7 +83,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGetDelete()
         {
-            string UserName = User.Identity.Name;
+           
         }
         public class MyParameters
         {

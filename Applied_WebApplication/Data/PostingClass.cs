@@ -10,7 +10,7 @@ namespace Applied_WebApplication.Data
         public static bool PostCashBook(string UserName, int id)
         {
             bool Result;
-            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
 

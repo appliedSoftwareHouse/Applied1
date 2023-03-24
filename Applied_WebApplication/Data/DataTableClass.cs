@@ -15,7 +15,7 @@ namespace Applied_WebApplication.Data
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
         public string MyConnectionString => MyConnection.ConnectionString;            //10-Mar-23
-        public string ConnectionString; 
+        public string ConnectionString;
         public TableValidationClass TableValidation;
         public int ErrorCount { get => TableValidation.MyMessages.Count; }
         public int Count => MyDataView.Count;
@@ -35,16 +35,26 @@ namespace Applied_WebApplication.Data
         #region DataTable
         public DataTableClass(string _UserName, Tables _Tables)
         {
+            SetTableClass(_UserName, _Tables, "");
+        }
+
+        public DataTableClass(string _UserName, Tables _Tables, string _Filter)
+        {
+            SetTableClass(_UserName, _Tables, _Filter);
+        }
+
+        public void SetTableClass(string _UserName, Tables _Tables, string? Filter)
+        {
             UserProfile UProfile = new(_UserName);
             ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
             MyConnection = new SQLiteConnection(ConnectionString);
             MyUserName = _UserName;
             MyTableName = _Tables.ToString();
-            GetDataTable();                                                                                   // Load DataTable and View
+            View_Filter ??= string.Empty;
+            GetDataTable();
+            MyDataView ??= new DataView();
             TableValidation = new(MyDataTable);
-            View_Filter ??= string.Empty;                                                               // assign empty value if null
-            MyDataView ??= new DataView();                                                      // assign empty view if found null;
-            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
+            if (Filter != null) { View_Filter = Filter; }
             CheckError();
 
             Command_Update = new SQLiteCommand(MyConnection);
@@ -52,44 +62,8 @@ namespace Applied_WebApplication.Data
             Command_Insert = new SQLiteCommand(MyConnection);
         }
 
-        public DataTableClass(string UserName, Tables _Table, bool IsFiltered, int? TranID)
-        {
-            TranID ??= 0;
 
-            //--------------------------------------------------- Initialize
-            //UserProfile UProfile = new(UserName);
-            MyConnection = AppFunctions.GetTempConnection(UserName);        // Get Temporary Database Connection.
-            MyTableName = _Table.ToString();
-            CreateTempTable(UserName, _Table);                                                  // Load DataTable and View
-            TableValidation = new(MyDataTable);
-            MyDataView.RowFilter = View_Filter;                                                  // Set a view filter for table view.
-
-            //=========================== Filter Rows
-            if (IsFiltered)
-            {
-                MyDataView.RowFilter = string.Concat("TranID=", TranID.ToString());                    // filter record for specific ID.
-                MyDataTable = MyDataView.ToTable();                                                                     // Filter MyTable as per filtered records.
-            }
-
-            if (MyDataTable.Rows.Count > 0)
-            {
-                CurrentRow = MyDataView[0].Row;
-            }
-            else
-            {
-                CurrentRow = NewRecord();
-            }
-
-
-
-            //=========================== SQLite Commands
-            Command_Update = new SQLiteCommand(MyConnection);
-            Command_Delete = new SQLiteCommand(MyConnection);
-            Command_Insert = new SQLiteCommand(MyConnection);
-
-        }
-
-        public static DataTable GetDataView(string UserName, Tables TableView)                      // Load Database 
+        public static DataTable GetTable(string UserName, Tables TableView)                      // Load Database 
         {
             SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
             if (TableView.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
@@ -114,7 +88,9 @@ namespace Applied_WebApplication.Data
             try
             {
                 if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-                SQLiteCommand _Command = new("SELECT * FROM [" + MyTableName + "]", MyConnection);
+                var _CommandText = string.Format("SELECT * FROM [{0}]", MyTableName);
+                if (View_Filter.Length > 0) { _CommandText += "WHERE " + View_Filter; }
+                SQLiteCommand _Command = new(_CommandText, MyConnection);
                 SQLiteDataAdapter _Adapter = new(_Command);
                 DataSet _DataSet = new();
                 _Adapter.Fill(_DataSet, MyTableName);
@@ -133,52 +109,6 @@ namespace Applied_WebApplication.Data
             }
             return;
         }
-
-        public void CreateTempTable(string UserName, Tables Table)
-        {
-            MyTableName = Table.ToString();
-
-            //DataTable result = new();
-            DataTableClass _SourceTable = new(UserName, Table);
-            SQLiteCommand _Command = new SQLiteCommand(AppFunctions.GetTempConnection(UserName))
-            {
-                CommandText = "SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='" + Table.ToString() + "'"
-            };
-
-            long TableExist = (long)_Command.ExecuteScalar();
-            if (TableExist == 0)
-            {
-                //================================================== Create Table if not exist.
-                StringBuilder _Text = new();
-
-                _Text.Append(string.Concat("CREATE TABLE [", Table.ToString(), "] ("));
-                string _LastColumn = _SourceTable.MyDataTable.Columns[_SourceTable.MyDataTable.Columns.Count - 1].ToString();
-                foreach (DataColumn Column in _SourceTable.MyDataTable.Columns)
-                {
-                    _Text.Append(" ["); _Text.Append(Column.ColumnName); _Text.Append("] ");
-                    _Text.Append(Column.DataType.Name);
-                    if (Column.ColumnName != _LastColumn) { _Text.Append(", "); } else { _Text.Append(") "); }
-                }
-
-                _Command.CommandText = _Text.ToString();
-                _Command.ExecuteNonQuery();
-            }
-
-            _Command.CommandText = new("SELECT * FROM [" + Table.ToString() + "]");
-            SQLiteDataAdapter _Adapter = new(_Command);
-            DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, Table.ToString());
-
-            if (_DataSet.Tables.Count == 1)
-            {
-                MyDataTable = _DataSet.Tables[0];
-                MyDataView = MyDataTable.AsDataView();
-            }
-
-            _Command.Connection.Close();                    // Close Database Connection.
-
-        }
-
 
         public DataRow NewRecord()
         {
@@ -225,9 +155,9 @@ namespace Applied_WebApplication.Data
             foreach (DataColumn _Column in _Columns)
             {
                 string _ColumnName = _Column.ColumnName.ToString();
-                _CommandString.Append(string.Concat("@", _Column.ColumnName));
+                _CommandString.Append(string.Concat('@', _Column.ColumnName));
                 if (_ColumnName != _LastColumn)
-                { _CommandString.Append(","); }
+                { _CommandString.Append(','); }
                 else
                 { _CommandString.Append(") "); }
             }
@@ -237,7 +167,7 @@ namespace Applied_WebApplication.Data
             foreach (DataColumn _Column in _Columns)
             {
                 if (_Column == null) { continue; }
-                _ParameterName = string.Concat("@", _Column.ColumnName.Replace(" ", ""));
+                _ParameterName = string.Concat('@', _Column.ColumnName.Replace(" ", ""));
                 _Command.Parameters.AddWithValue(_ParameterName, CurrentRow[_Column.ColumnName]);
             }
 
@@ -247,30 +177,28 @@ namespace Applied_WebApplication.Data
         }
         private void CommandUpdate()
         {
-            DataColumnCollection _Columns = CurrentRow.Table.Columns;
-            SQLiteCommand _Command = new SQLiteCommand(MyConnection);
-
-            StringBuilder _CommandString = new StringBuilder();
-            string _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
-            string _TableName = MyTableName;
-            string _ParameterName;
+            var _Columns = CurrentRow.Table.Columns;
+            var _Command = new SQLiteCommand(MyConnection);
+            var _CommandString = new StringBuilder();
+            var _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
+            var _TableName = MyTableName;
 
             _CommandString.Append(string.Concat("UPDATE [", _TableName, "] SET "));
 
             foreach (DataColumn _Column in _Columns)
             {
                 if (_Column.ColumnName == "ID") { continue; }
-                _CommandString.Append(String.Concat("[", _Column.ColumnName, "]"));
-                _CommandString.Append("=");
-                _CommandString.Append(String.Concat("@", _Column.ColumnName.Replace(" ", "")));
+                _CommandString.Append(string.Concat("[", _Column.ColumnName, "]"));
+                _CommandString.Append('=');
+                _CommandString.Append(string.Concat('@', _Column.ColumnName.Replace(" ", "")));
 
                 if (_Column.ColumnName == _LastColumn)
                 {
-                    _CommandString.Append(String.Concat(" WHERE ID = @ID"));
+                    _CommandString.Append(string.Concat(" WHERE ID = @ID"));
                 }
                 else
                 {
-                    _CommandString.Append(",");
+                    _CommandString.Append(',');
                 }
             }
 
@@ -280,7 +208,7 @@ namespace Applied_WebApplication.Data
             foreach (DataColumn _Column in _Columns)
             {
                 if (_Column == null) { continue; }
-                _ParameterName = string.Concat("@", _Column.ColumnName.Replace(" ", ""));
+                var _ParameterName = string.Concat('@', _Column.ColumnName.Replace(" ", ""));
                 _Command.Parameters.AddWithValue(_ParameterName, CurrentRow[_Column.ColumnName]);
             }
 
@@ -457,7 +385,7 @@ namespace Applied_WebApplication.Data
             IsError = true;
             TableValidation.MyMessages = new List<Message>();
             CommandDelete();
-            int records = 0;
+            int records;
             try
             {
                 records = Command_Delete.ExecuteNonQuery();
@@ -497,21 +425,21 @@ namespace Applied_WebApplication.Data
         {
             IsError = false;
             TableValidation = new TableValidationClass(MyDataTable);
-            
+
 
             if (CurrentRow != null)
             {
                 try
                 {
-                        TableValidation.SQLAction = CommandAction.Insert.ToString();
-                        if (TableValidation.Validation(CurrentRow))
-                        {
-                            CommandInsert();                                            // Create a command and assign new ID value.
-                            Command_Insert.ExecuteNonQuery();
-                            GetDataTable();
-                            MyMessage = "Insert (Add) record in " + MyTableName;
-                        }
-                    
+                    TableValidation.SQLAction = CommandAction.Insert.ToString();
+                    if (TableValidation.Validation(CurrentRow))
+                    {
+                        CommandInsert();                                            // Create a command and assign new ID value.
+                        Command_Insert.ExecuteNonQuery();
+                        GetDataTable();
+                        MyMessage = "Insert (Add) record in " + MyTableName;
+                    }
+
                 }
                 catch (Exception e)
                 {
@@ -523,11 +451,11 @@ namespace Applied_WebApplication.Data
             }
         }
 
-        
+
 
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
-            DataTableClass tb_table = new(UserName, table);
+            DataTableClass tb_table = new(UserName, table, "");
             return tb_table.Replace(_ID, _Column, _Value);
         }
 

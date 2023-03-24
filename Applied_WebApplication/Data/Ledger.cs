@@ -44,7 +44,7 @@ namespace Applied_WebApplication.Data
         }
         public static DataTable ConvertLedger(string UserName, DataTable _Table)
         {
-            DataTable _Ledger = DataTableClass.GetDataView(UserName, Tables.view_Ledger).Clone();
+            DataTable _Ledger = DataTableClass.GetTable(UserName, Tables.view_Ledger).Clone();
             decimal Balance = 0M;
 
             #region CashBook

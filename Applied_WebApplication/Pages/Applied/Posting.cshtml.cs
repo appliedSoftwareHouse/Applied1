@@ -39,7 +39,7 @@ namespace Applied_WebApplication.Pages.Applied
 
                     break;
                 case 3:                                                                                                                                 // Write Cheques
-                    PostTable = GetDataView(UserName, Tables.PostWriteCheque);
+                    PostTable = GetTable(UserName, Tables.PostWriteCheque);
                     break;
 
                 case 4:                                                                                                                                 // 
@@ -81,7 +81,7 @@ namespace Applied_WebApplication.Pages.Applied
 
                     break;
                 case 3:                                                                                                                                 // Write Cheques
-                    PostTable = GetDataView(UserName, Tables.PostWriteCheque);
+                    PostTable = GetTable(UserName, Tables.PostWriteCheque);
                     break;
 
                 case 4:                                                                                                                                 // 
