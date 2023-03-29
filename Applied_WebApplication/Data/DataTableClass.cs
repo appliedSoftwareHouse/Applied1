@@ -63,15 +63,15 @@ namespace Applied_WebApplication.Data
         }
 
 
-        public static DataTable GetTable(string UserName, Tables TableView)                      // Load Database 
+        public static DataTable GetTable(string UserName, Tables _Table)                      // Load Database 
         {
             SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
-            if (TableView.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
+            if (_Table.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
             if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-            SQLiteCommand _Command = new("SELECT * FROM [" + TableView + "]", MyConnection);
+            SQLiteCommand _Command = new("SELECT * FROM [" + _Table + "]", MyConnection);
             SQLiteDataAdapter _Adapter = new(_Command);
             DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, TableView.ToString());
+            _Adapter.Fill(_DataSet, _Table.ToString());
             DataTable datatable;
             if (_DataSet.Tables.Count == 1)
             {
@@ -339,10 +339,10 @@ namespace Applied_WebApplication.Data
         public void Save()
         {
             IsError = false;
-            TableValidation = new TableValidationClass();
+            TableValidation = new TableValidationClass(CurrentRow.Table);
             if (CurrentRow != null)
             {
-                TableValidation.MyDataTable = CurrentRow.Table;
+                //TableValidation.MyDataTable = CurrentRow.Table;
                 MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
                 try

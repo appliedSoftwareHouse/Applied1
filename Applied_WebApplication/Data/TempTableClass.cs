@@ -13,16 +13,17 @@ namespace Applied_WebApplication.Data
         #region Setup
 
         public string UserName { get; set; }
-        public DataTable MyDataTable { get; set; }
+        public DataTable SourceData { get; set; }
         public DataTable TempVoucher { get; set; }
-        public DataView MyDataView { get; set; }
-        public string MyTableName { get; set; }
+        public DataView MyDataView => TempVoucher.AsDataView();
+       public string MyTableName { get; set; }
         public Tables TableID { get; set; }
         public UserProfile UProfile { get; set; }
         public string DBPath => UProfile.DBFilePath;
         public string ConnectionString { get; set; }
         public SQLiteConnection MyConnection { get; set; }
-        public int Count => MyDataTable.Rows.Count;
+        public SQLiteConnection TempConnection { get; set; }
+        public int Count => SourceData.Rows.Count;
         public DataRow CurrentRow;
         public List<Message> ErrorMessages { get; set; }
 
@@ -41,10 +42,11 @@ namespace Applied_WebApplication.Data
             MyConnection = new SQLiteConnection(ConnectionString);
             CommandText = string.Format("SELECT * FROM [{0}] WHERE Vou_No='{1}'", TableID.ToString(), _VoucherNo);
             Command = new SQLiteCommand(CommandText, MyConnection);
-            MyDataTable = GetDataTable();
-            MyDataView = MyDataTable.AsDataView();
-            TempVoucher = CreateTempTable(UserName, MyDataTable);
-            if (Count > 0) { CurrentRow = MyDataTable.Rows[0]; }
+            SourceData = GetDataTable();
+           TempVoucher = CreateTempTable(UserName, SourceData);
+            if (Count > 0) { CurrentRow = TempVoucher.Rows[0]; }
+
+
         }
         private DataTable GetDataTable()
         {
@@ -58,17 +60,16 @@ namespace Applied_WebApplication.Data
             return new DataTable();
         }
 
-        public static DataTable CreateTempTable(string UserName, DataTable _Table)
+        public DataTable CreateTempTable(string UserName, DataTable _Table)
         {
-            if (_Table.Rows.Count == 0) { return new DataTable(); }                    // return  null if voucher not found.
-
+            TempConnection = AppFunctions.GetTempConnection(UserName);
             var MyTableName = _Table.TableName;
-            var VoucherNo = _Table.Rows[0]["Vou_No"];
             var ReturnTable = new DataTable();
-            var _Connection = AppFunctions.GetTempConnection(UserName);
             var _CommandText = "SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='" + MyTableName + "'";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _Command = new SQLiteCommand(_CommandText, TempConnection);
 
+            string VoucherNo;
+            if (_Table.Rows.Count == 0) { VoucherNo = "NEW"; } else { VoucherNo = _Table.Rows[0]["Vou_No"].ToString(); }
 
             long TableExist = (long)_Command.ExecuteScalar();
             if (TableExist == 0)
@@ -101,12 +102,15 @@ namespace Applied_WebApplication.Data
                 ReturnTable = _DataSet.Tables[0];
                 if (ReturnTable.Rows.Count > 0)
                 {
-                    _Command.CommandText = string.Format("DELETE FROM [{0}] WHERE Vou_No='{1}'", ReturnTable.TableName, VoucherNo);
-                    _Command.ExecuteNonQuery();
+                    if (VoucherNo.ToUpper() != "NEW")               // DELETE target voucher if existed.
+                    {
+                        _Command.CommandText = string.Format("DELETE FROM [{0}] WHERE Vou_No='{1}'", ReturnTable.TableName, VoucherNo);
+                        _Command.ExecuteNonQuery();
+                    }
                 }
                 foreach (DataRow Row in _Table.Rows)
                 {
-                    var ThisCommand = CommandInsert(_Connection, _Table, Row);
+                    var ThisCommand = CommandInsert(TempConnection, _Table, Row);
                     ThisCommand.ExecuteNonQuery();
                 }
             }
@@ -127,42 +131,51 @@ namespace Applied_WebApplication.Data
 
         internal void Save()
         {
-            TableValidate = new(MyDataTable);
+            TableValidate = new(TempVoucher);
             TableValidate.Validation(CurrentRow);
             ErrorMessages = TableValidate.MyMessages;
             if (ErrorMessages.Count == 0)
             {
-                SQLiteCommand _Command; 
-                MyDataView.RowFilter = string.Format("ID={0}", CurrentRow["ID"]);
-                if (MyDataView.Count == 1)
+                SQLiteCommand _Command;
+                var _View = MyDataView;
+                _View.RowFilter = string.Format("ID={0}", CurrentRow["ID"]);
+                if (_View.Count == 1)
                 {
-                    _Command = CommandUpdate(MyConnection, MyDataTable, CurrentRow);
+                    _Command = CommandUpdate(TempConnection, TempVoucher, CurrentRow);
                 }
                 else
                 {
-                    _Command = CommandInsert(MyConnection, MyDataTable, CurrentRow);
+                    CurrentRow["ID"] = MaxID();
+                    _Command = CommandInsert(TempConnection, TempVoucher, CurrentRow);
                 }
                 try
                 {
-                   if(_Command.Connection.State!=ConnectionState.Open) { _Command.Connection.Open(); }
+                    if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                     var _Record = _Command.ExecuteNonQuery(); _Command.Connection.Close();
-                    if (_Record==0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Saved", Color.Red)); }
+                    if (_Record == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Saved", Color.Red)); }
                 }
                 catch (Exception e)
                 {
                     ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
-                    
+
                 }
 
             }
         }
 
+        private int MaxID()
+        {
+            var MaxID = (int)TempVoucher.Compute("MAX(ID)", "");
+            return MaxID + 1;
+        }
+
         internal void Delete()
         {
+            ErrorMessages = new();
             try
             {
-                
-                var _Command = CommandDelete(MyConnection, MyDataTable, CurrentRow);
+
+                var _Command = CommandDelete(TempConnection, TempVoucher, CurrentRow);
                 if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                 var _Records = _Command.ExecuteNonQuery(); _Command.Connection.Close();
                 if (_Records == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Delete...", Color.Red)); }
@@ -173,6 +186,23 @@ namespace Applied_WebApplication.Data
                 ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
             }
 
+        }
+
+        public DataRow NewRecord()
+        {
+            CurrentRow = TempVoucher.NewRow();
+
+            foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
+            {
+                if (CurrentRow[_Column.ColumnName] == DBNull.Value)
+                {
+                    if (_Column.DataType.Name == "String") { CurrentRow[_Column.ColumnName] = ""; }
+                    if (_Column.DataType.Name == "Int32") { CurrentRow[_Column.ColumnName] = 0; }
+                    if (_Column.DataType.Name == "Decimal") { CurrentRow[_Column.ColumnName] = 0.00; }
+                    if (_Column.DataType.Name == "DateTime") { CurrentRow[_Column.ColumnName] = DateTime.Now; }
+                }
+            }
+            return CurrentRow;
         }
 
         #region Insert / Update / Delete

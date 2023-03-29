@@ -25,7 +25,7 @@ namespace Applied_WebApplication.Data
         {
             MyDataTable = new DataTable();
             MyMessages = new List<Message>();
-            MyDataView = MyDataTable.AsDataView();
+            MyDataView = new DataView();
         }
 
         public TableValidationClass(DataTable table)
@@ -44,29 +44,29 @@ namespace Applied_WebApplication.Data
         public bool Validation(DataRow Row, CommandAction _SQLAction)
         {
             SQLAction = _SQLAction.ToString();
+            if(MyDataView==null) { MyDataView = Row.Table.AsDataView(); }
             return Validation(Row);
         }
 
         public bool Validation(DataRow Row)
         {
-
             MyMessages = new List<Message>();
             if (Row == null)
             {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Current row is null" });
+                MyMessages.Add(SetMessage("Current row is null"));
                 return false;
             }   // Return false if row is null
             if (SQLAction == null)
             {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "Database query action is not defined." });
+                MyMessages.Add(SetMessage("Database query action is not defined."));
                 return false;
             }
             if (MyDataTable == null)
             {
-                MyMessages.Add(new Message() { Success = false, ErrorID = 10, Msg = "DataTable is null. define Datatable to validate the record." });
+                MyMessages.Add(SetMessage("DataTable is null. define Datatable to validate the record."));
                 return false;
             }
-            //if (MyDataView == null) { if (MyDataTable != null) { MyDataView = MyDataTable.AsDataView(); } }
+           
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
             if (Row.Table.TableName == Tables.Inventory.ToString()) { ValidateTable_Inventory(Row); }
@@ -87,7 +87,7 @@ namespace Applied_WebApplication.Data
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
-       
+
 
 
 
@@ -131,7 +131,7 @@ namespace Applied_WebApplication.Data
             { return false; }
         }
 
-        private bool IsColStatusExist(DataRow Row)
+        private static bool IsColStatusExist(DataRow Row)
         {
 
             return Row.Table.Columns.Contains("Status");
@@ -278,7 +278,7 @@ namespace Applied_WebApplication.Data
             MyMessages = new List<Message>();
             int VoucherID = (int)Row["TranID"];
 
-            if (MyVoucherType == PostType.CashBook)
+            if ((string)Row["Vou_Type"] == PostType.CashBook.ToString())
             {
                 MyDataView.RowFilter = string.Concat("[Vou_Type]='Cash' AND [TranID]=", VoucherID.ToString());
                 if (MyDataView.Count > 0)
@@ -287,7 +287,21 @@ namespace Applied_WebApplication.Data
                 }
             }
 
-            if(MyVoucherType == PostType.)
+            if ((string)Row["Vou_Type"] == PostType.JV.ToString())
+            {
+                
+                MyDataView.RowFilter = string.Concat("[Vou_Type]='JV' AND [TranID]=", Row["TranID"].ToString());
+                if (MyDataView.Count > 0 )
+                    {
+                    if ((string)MyDataView[0]["Status"] == VoucherStatus.Posted.ToString())
+                        MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher for editing." });
+                    return;
+                }
+                else
+                {
+                    ValidateTable_LedgerVoucher(Row);
+                }
+            }
 
         }
         private void ValidateTable_BillPayable(DataRow Row)
@@ -496,10 +510,26 @@ namespace Applied_WebApplication.Data
 
             if ((int)Row["Inventory"] == 0) { MyMessages.Add(SetMessage("Inventory is not selected.")); }
             if ((int)Row["UOM"] == 0) { MyMessages.Add(SetMessage("Unit of Measurement (UOM) is zero, not allowed.")); }
-            if ((decimal)Row["Qty"]==0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.")); }
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(SetMessage("Quantity is zero, not allowed.")); }
             if ((decimal)Row["Rate"] == 0) { MyMessages.Add(SetMessage("Rate is zero, not allowed.")); }
         }
+        private void ValidateTable_LedgerVoucher(DataRow Row)
+        {
+            MyDataView.RowFilter = string.Concat("[Vou_Type]='JV' AND [ID]=", Row["ID"].ToString());
+            if (MyDataView.Count == 1) { SQLAction = CommandAction.Update.ToString(); } else { SQLAction = CommandAction.Insert.ToString(); }
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("Record is already exist. can not insert as new record.")); }
+            }
 
+            if ((int)Row["COA"] == 0) { MyMessages.Add(SetMessage("Account is not selected. Select any one.")); }
+            if ((int)Row["Sr_No"] == 0) { MyMessages.Add(SetMessage("Serial No. is not assign. Select a valid value")); }
+            if ((decimal)Row["DR"] + (decimal)Row["CR"] == 0) { MyMessages.Add(SetMessage("Voucher Amount is zero. select some amount.")); }
+            if ((decimal)Row["DR"] != 0 && (decimal)Row["CR"] != 0) { MyMessages.Add(SetMessage("Voucher Amount Debit or Credit must be one zero. select one with ZERO value.")); }
+            if (((string)Row["Description"]).Length == 0) { MyMessages.Add(SetMessage("Description of the transaction must be some value.")); }
+            if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
+            if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
+        }
 
         #endregion
 

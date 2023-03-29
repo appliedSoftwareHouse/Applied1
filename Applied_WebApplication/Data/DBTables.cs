@@ -43,7 +43,8 @@ public enum Tables
     Ledger = 401,
     view_Ledger = 402,
     CashBookTitles = 403,
-
+    VouMax_JV = 404,
+    VouMax = 405,
 
     PostCashBook = 501,
     PostBankBook = 502,
@@ -87,7 +88,8 @@ public enum PostType
     BillPayable = 4,
     BillReceivable = 5,
     Payment = 6,
-    Receipt = 7
+    Receipt = 7,
+    JV = 8
 }
 public enum VoucherStatus
 {
@@ -108,6 +110,7 @@ public enum VoucherType
     Receipt = 7,
     OBalance = 8,
     OBalCom = 9,
-    OBalStock = 10
+    OBalStock = 10,
+    JV = 11
 
 }

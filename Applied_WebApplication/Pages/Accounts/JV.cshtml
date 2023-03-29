@@ -10,6 +10,12 @@
     var TitleInventory = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Inventory);
 }
 
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+
+
 <div class="AppHeading-2">
     <h5 class="TextCenter">Journal Voucher (JV)</h5>
 </div>
@@ -18,29 +24,32 @@
     <div class="container">
         <input hidden asp-for="@Model.Variables.ID" />
         <input hidden asp-for="@Model.Variables.TranID" />
+        <input hidden asp-for="@Model.Variables.Vou_Type" />
+        <input hidden asp-for="@Model.Variables.Status" />
+
         <div class="row mb-1 ">
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Vou_No">
-                    <label for="txt1">Voucher No</label>
+                    <input type="text" class="form-control" id="Vou_No" placeholder="Type here any text" asp-for="@Model.Variables.Vou_No">
+                    <label for="Vou_No">Voucher No</label>
                 </div>
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="date" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Vou_Date">
-                    <label for="txt1">Voucher Date</label>
+                    <input type="date" class="form-control" id="Vou_Date" placeholder="Type here any text" asp-for="@Model.Variables.Vou_Date">
+                    <label for="Vou_Date">Voucher Date</label>
                 </div>
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Sr_No">
-                    <label for="txt1">Sr No</label>
+                    <input type="text" class="form-control" id="Sr_No" placeholder="Type here any text" asp-for="@Model.Variables.Sr_No">
+                    <label for="Sr_No">Sr No</label>
                 </div>
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Ref_No">
-                    <label for="txt1">Ref. No</label>
+                    <input type="text" class="form-control" id="Ref_No" placeholder="Type here any text" asp-for="@Model.Variables.Ref_No">
+                    <label for="Ref_No">Ref. No</label>
                 </div>
             </div>
         </div>
@@ -61,20 +70,20 @@
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.DR">
-                    <label for="txt1">Debit</label>
+                    <input type="text" class="form-control" id="DR" placeholder="Type here any text" asp-for="@Model.Variables.DR">
+                    <label for="DR">Debit</label>
                 </div>
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.CR">
-                    <label for="txt1">Credit</label>
+                    <input type="text" class="form-control" id="CR" placeholder="Type here any text" asp-for="@Model.Variables.CR">
+                    <label for="CR">Credit</label>
                 </div>
             </div>
             <div class=col-md-3>
                 <div class="form-floating mb-1">
-                    <input type="text" class="form-control" id="txt1" placeholder="Type here any text" asp-for="@Model.Variables.Description">
-                    <label for="txt1">Remarks</label>
+                    <input type="text" class="form-control" id="Description" placeholder="Type here any text" asp-for="@Model.Variables.Description">
+                    <label for="Description">Remarks</label>
                 </div>
             </div>
         </div>
@@ -138,18 +147,33 @@
 
         </div>
         <div class="row mb-1">
-            <div class="col">
+            <div class="col-2">
                 <button type="submit"
                         class="btn btn-primary"
                         asp-page-handler="Save">
                     <i class="bi bi-save text-white"></i>
                     SAVE
                 </button>
-                <button type="submit" class="btn btn-primary"><i class="bi bi-arrow-left-square text-white"></i> BACK</button>
             </div>
+            <div class="col-2">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-arrow-left-square text-white"></i> BACK</button>
+            </div>
+            @if (Model.IsBalance)
+            {
+                <div class="col-3">
+                    <button type="submit" 
+                        class="btn btn-primary" 
+                        asp-page-handler="SaveVoucher"
+                        asp-route-Vou_No="@Model.Variables.Vou_No"
+                    >
+                    <i class="bi bi-save text-white"></i> 
+                    SAVE VOUCHER
+                </button>
+                </div>
+            }
         </div>
     </div>
-    <div class=container>
+    <div class="container">
         <Table class="table table-hover" id="TableList">
             <thead>
                 <tr>
@@ -159,7 +183,14 @@
                     <th style="width:10%">Debit</th>
                     <th style="width:10%">Credit</th>
                     <th style="width:20%">Description</th>
-                    <th style="width:10%"><i class="bi bi-database-add"></i></th>
+                    <th style="width:10%">
+                        <button type="submit" class="btn-link border-0 transparent"
+                                asp-page-handler="Add"
+                                asp-route-Vou_No="@Model.Variables.Vou_No"
+                                asp-route-Sr_No="-1">
+                            <i class="bi bi-database-add"></i>
+                        </button>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -177,7 +208,12 @@
                             <td>@Row["CR"]</td>
                             <td>@Row["Description"]</td>
                             <td>
-                                <button class="btn-link border-0 bg-transparent"><i class="bi bi-pencil-fill"></i></button>
+                                <button class="btn-link border-0 bg-transparent"
+                                asp-page-handler="Edit"
+                                asp-route-Vou_No="@Row["Vou_No"]"
+                                asp-route-Sr_No="@Row["Sr_No"]">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
                                 <button class="btn-link border-0 bg-transparent"><i class="bi bi-trash-fill"></i></button>
                             </td>
                         </tr>
