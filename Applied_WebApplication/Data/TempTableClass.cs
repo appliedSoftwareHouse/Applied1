@@ -165,8 +165,9 @@ namespace Applied_WebApplication.Data
 
         private int MaxID()
         {
-            var MaxID = (int)TempVoucher.Compute("MAX(ID)", "");
-            return MaxID + 1;
+            var MaxID = TempVoucher.Compute("MAX(ID)", "");
+            if(MaxID == DBNull.Value) { MaxID = 0; }
+            return (int)MaxID + 1;
         }
 
         internal void Delete()

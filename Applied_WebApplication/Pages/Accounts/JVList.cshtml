@@ -1,0 +1,100 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.JVListModel
+@{
+    var UserName = User.Identity.Name;
+    var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+}
+
+
+
+<div class="container AppHeading-2">
+    <h5 class="TextCenter">JOURNAL VOUCHER (LIST)</h5>
+</div>
+
+
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <dir class="col">
+                <div class="form-floating">
+                    <input type="date" id="txtDateFrom" asp-for="@Model.Variables.DateFrom" placeholder="Date From" />
+                    <label for="txtDateFrom"><i class="bi bi-calendar-plus"></i></label>
+                </div>
+            </dir>
+            <dir class="col">
+                <div class="form-floating">
+                    <input type="date" id="txtDateTo" asp-for="@Model.Variables.DateFrom" placeholder="Date To" />
+                    <label for="txtDateFrom"><i class="bi bi-calendar-minus"></i></label>
+                </div>
+            </dir>
+            <dir class="col"></dir>
+            <dir class="col"></dir>
+            <dir class="col"></dir>
+        </div>
+    </div>
+
+
+
+
+    <!-------------------Table -->
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Vou Code</th>
+                    <th>Vou Date</th>
+                    <th>Ref_No</th>
+                    <th>Sr. No.</th>
+                    <th>Company</th>
+                    <th>Debit</th>
+                    <th>Credit</th>
+                    <th>..</th>
+
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.JVList != null)
+                {
+                    @foreach (DataRow Row in Model.JVList.Rows)
+                    {
+                        string _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
+                        string _Vou_Date = DateTime.Parse(Row["Vou_Date"].ToString()).ToString(AppRegistry.FormatDate);
+                        string _Inv_Date = DateTime.Parse(Row["Inv_Date"].ToString()).ToString(AppRegistry.FormatDate);
+                        string _Pay_Date = DateTime.Parse(Row["Pay_Date"].ToString()).ToString(AppRegistry.FormatDate);
+                        decimal _Amount = (decimal)Row["Amount"];
+                        <tr>
+                            <td>@Row["Vou_No"].ToString()</td>
+                            <td>@_Vou_Date</td>
+                            <td>@_TitleCompany</td>
+                            <td>@Row["Inv_No"]</td>
+                            <td>@_Inv_Date</td>
+                            <td>@_Pay_Date</td>
+                            <td>@_Amount.ToString(FMTCurrency)</td>
+                            <td>
+                                <a formaction="get"
+                           asp-page="BillPayable"
+                           asp-route-id=@Row["ID"]
+                           asp-route-id2="-1">
+
+                                    <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
+                                </a>
+                                <a asp-page="BillPayableList"
+                           asp-page-handler="Delete"
+                           asp-route-id=@Row["ID"]
+                           asp-route-Srno="1">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <!--Buttons Area-->
+    <div>
+        <input type="submit" class="btn btn-primary" value="Add" asp-page="BillPayable" asp-route-id="0" asp-page-handler="New" formmethod="get" />
+    </div>
+</form>

@@ -25,23 +25,32 @@ namespace Applied_WebApplication.Data
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
         public DataRowCollection Rows => MyDataTable.Rows;
+        public DataColumnCollection Columns => MyDataTable.Columns;
+        
 
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
 
+
+
+
         #endregion
 
-        #region DataTable
+        #region Constructor
+
         public DataTableClass(string _UserName, Tables _Tables)
         {
             SetTableClass(_UserName, _Tables, "");
         }
-
         public DataTableClass(string _UserName, Tables _Tables, string _Filter)
         {
             SetTableClass(_UserName, _Tables, _Filter);
         }
+
+        #endregion
+
+        #region DataTable
 
         public void SetTableClass(string _UserName, Tables _Tables, string? Filter)
         {
@@ -476,6 +485,19 @@ namespace Applied_WebApplication.Data
             MyDataView.Sort = Sort;
             MyDataView.RowFilter = filter;
             return MyDataView.ToTable();
+        }
+
+        #endregion
+
+        #region Max
+        public int GetMaxTranID(VoucherType _VouType)
+        {
+            int Result = 0;
+            if(Columns.Contains("TranID"))
+            {
+                Result = (int)MyDataTable.Compute("MAX(TranID)", string.Format("Vou_Type='{0}'", _VouType.ToString())) +1 ;
+            }
+            return Result;
         }
 
         #endregion

@@ -1,7 +1,6 @@
 using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
@@ -41,6 +40,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     TempClass.CurrentRow["Vou_No"] = "NEW";
                     TempClass.CurrentRow["Vou_Date"] = DateTime.Now;
                     TempClass.CurrentRow["Sr_No"] = 1;
+                    TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
                     Row2Variable(TempClass.CurrentRow);
                 }
             }
@@ -76,11 +76,16 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
             Voucher = TempClass.TempVoucher;
-            var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
-            var _CR = (decimal)Voucher.Compute("SUM(CR)", "");
-            if (_DR == _CR) { IsBalance = true; } else { IsBalance = false; }
+            if (Voucher.Rows.Count > 0)
+            {
+                var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
+                var _CR = (decimal)Voucher.Compute("SUM(CR)", "");
+                if (_DR == _CR) { IsBalance = true; } else { IsBalance = false; }
+            }
         }
 
+
+        #region Methods
 
         private void Row2Variable(DataRow Row)
         {
@@ -104,7 +109,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         }
 
-        private int MaxSrNo(DataTable _Table)
+        private static int MaxSrNo(DataTable _Table)
         {
             int _MaxNo = (int)_Table.Compute("MAX(Sr_No)", "");
             return _MaxNo + 1;
@@ -130,11 +135,13 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return NewNum;
         }
+        #endregion
 
         #region POST
 
         public IActionResult OnPostSave()
         {
+            #region Variables Setup
 
             Variables.Ref_No ??= string.Empty;
             Variables.Description ??= string.Empty;
@@ -142,7 +149,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Variables.Vou_Type ??= string.Empty;
             Variables.Vou_No ??= string.Empty;
             ErrorMessages = new();
-
+            #endregion
 
             var TempClass = new TempTableClass(UserName, Tables.Ledger, Variables.Vou_No);
             var _View = TempClass.MyDataView;
@@ -193,12 +200,10 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No });
 
         }
-
         public IActionResult OnPostBack()
         {
             return RedirectToPage("../Index");
         }
-
         public IActionResult OnPostSaveVoucher(string Vou_No)
         {
 
@@ -239,7 +244,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
                     #region SAVE VOUCHER
                     string NewVouNo = Vou_No;
-                    if (Vou_No == "NEW") { NewVouNo = NewVoucherNo((DateTime)Voucher.Rows[0]["Vou_Date"]); }
+                    int NewTranID = 0;
+                    if (Vou_No == "NEW")
+                    {
+                        NewVouNo = NewVoucherNo((DateTime)Voucher.Rows[0]["Vou_Date"]);
+                        NewTranID = SourceClass.GetMaxTranID(VoucherType.JV);
+                    }
 
                     foreach (DataRow Row in Voucher.Rows)
                     {
@@ -247,6 +257,7 @@ namespace Applied_WebApplication.Pages.Accounts
                         {
                             Row["ID"] = 0;
                             Row["Vou_No"] = NewVouNo;
+                            Row["TranID"] = NewTranID;
                         }
 
                         SourceClass.CurrentRow = Row;
@@ -254,9 +265,11 @@ namespace Applied_WebApplication.Pages.Accounts
                         ErrorMessages.AddRange(SourceClass.TableValidation.MyMessages);
                     }
 
-                    if(ErrorMessages.Count==0)
+                    if (ErrorMessages.Count == 0)
                     {
-                        foreach (DataRow Row in Voucher.Rows)
+                        TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
+
+                        foreach (DataRow Row in TempClass.TempVoucher.Rows)
                         {
                             TempClass.CurrentRow = Row;
                             TempClass.Delete();
@@ -266,7 +279,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
             }
 
-            return Page();
+            return RedirectToPage("JV", new { Vou_No, Sr_No = 1 });
         }
 
         #endregion
