@@ -75,6 +75,63 @@
             return ReturnValue;
         }
 
+        public static DateTime GetDate(string UserName, string Key)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            if (tb_Registry.MyDataView.Count == 1)
+            {
+                return (DateTime)tb_Registry.MyDataView[0]["dValue"];
+            }
+            else
+            {
+                return DateTime.Now;
+            }
+        }
+
+        public static int GetnNumber(string UserName, string Key)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            if (tb_Registry.MyDataView.Count == 1)
+            {
+                return (int)tb_Registry.MyDataView[0]["nValue"];
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public static decimal GetnCurrency(string UserName, string Key)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            if (tb_Registry.MyDataView.Count == 1)
+            {
+                return (decimal)tb_Registry.MyDataView[0]["mValue"];
+            }
+            else
+            {
+                return 0.00M;
+            }
+        }
+
+        public static string GetnText(string UserName, string Key)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            if (tb_Registry.MyDataView.Count == 1)
+            {
+                return (string)tb_Registry.MyDataView[0]["cValue"];
+            }
+            else
+            {
+                return string.Empty;
+            }
+        }
+
+
         public static DateTime[] GetDates(string UserName, string Key)
         {
             DateTime[] Dates = new DateTime[2];

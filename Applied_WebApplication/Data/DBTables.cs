@@ -21,6 +21,7 @@ public enum Tables
     BillReceivable2 = 115,
     view_BillReceivable = 116,
     OBALCompany = 117,
+    JVList = 118,
 
     Customers = 201,
     City = 202,

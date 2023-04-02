@@ -15,7 +15,7 @@ namespace Applied_WebApplication.Data
         public string UserName { get; set; }
         public DataTable SourceData { get; set; }
         public DataTable TempVoucher { get; set; }
-        public DataView MyDataView => TempVoucher.AsDataView();
+        public DataView MyDataView { get; set; } 
        public string MyTableName { get; set; }
         public Tables TableID { get; set; }
         public UserProfile UProfile { get; set; }
@@ -123,13 +123,14 @@ namespace Applied_WebApplication.Data
             _Adapter.Fill(_DataSet, MyTableName);
             if (_DataSet.Tables.Count == 1)
             {
+                MyDataView = new DataView(_DataSet.Tables[0]);
                 ReturnTable = _DataSet.Tables[0];
             }
             _Command.Connection.Close();                    // Close Database Connection.
             return ReturnTable;
         }
 
-        internal void Save()
+        public void Save()
         {
             TableValidate = new(TempVoucher);
             TableValidate.Validation(CurrentRow);
@@ -170,7 +171,7 @@ namespace Applied_WebApplication.Data
             return (int)MaxID + 1;
         }
 
-        internal void Delete()
+        public void Delete()
         {
             ErrorMessages = new();
             try
@@ -179,7 +180,9 @@ namespace Applied_WebApplication.Data
                 var _Command = CommandDelete(TempConnection, TempVoucher, CurrentRow);
                 if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                 var _Records = _Command.ExecuteNonQuery(); _Command.Connection.Close();
-                if (_Records == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Delete...", Color.Red)); }
+
+                if (_Records == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Delete...",0, Color.Red)); }
+                else { ErrorMessages.Add(MessageClass.SetMessage(_Records + "Record(s) Deleted...",_Records,Color.Red)); }
 
             }
             catch (Exception e)
@@ -188,6 +191,18 @@ namespace Applied_WebApplication.Data
             }
 
         }
+
+        public bool Seek(int ID)
+        {
+            MyDataView.RowFilter = string.Format("ID={0}", ID);
+            if(MyDataView.Count==1)
+            {
+                CurrentRow = MyDataView[0].Row;
+                return true;
+            }
+            return false;
+        }
+        
 
         public DataRow NewRecord()
         {

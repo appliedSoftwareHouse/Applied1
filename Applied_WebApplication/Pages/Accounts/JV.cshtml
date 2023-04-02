@@ -161,14 +161,13 @@
             @if (Model.IsBalance)
             {
                 <div class="col-3">
-                    <button type="submit" 
-                        class="btn btn-primary" 
+                    <button type="submit"
+                            class="btn btn-primary"
                         asp-page-handler="SaveVoucher"
-                        asp-route-Vou_No="@Model.Variables.Vou_No"
-                    >
-                    <i class="bi bi-save text-white"></i> 
-                    SAVE VOUCHER
-                </button>
+                        asp-route-Vou_No="@Model.Variables.Vou_No">
+                        <i class="bi bi-save text-white"></i>
+                        SAVE VOUCHER
+                    </button>
                 </div>
             }
         </div>
@@ -214,7 +213,11 @@
                                 asp-route-Sr_No="@Row["Sr_No"]">
                                     <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button class="btn-link border-0 bg-transparent"><i class="bi bi-trash-fill"></i></button>
+                                <button class="btn-link border-0 bg-transparent"
+                                asp-page-handler="Delete"
+                                asp-route-ID="@Row["ID"]">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
                             </td>
                         </tr>
                     }

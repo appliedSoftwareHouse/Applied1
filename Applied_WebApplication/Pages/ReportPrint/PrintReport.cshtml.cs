@@ -106,8 +106,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #region Supplier / Vendore Ledger
         public IActionResult OnGetGLCompany()
         {
-
-            // ReportClass MyReport = new();
             ReportClass.ReportFilters Filters = new ReportClass.ReportFilters
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),

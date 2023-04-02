@@ -213,6 +213,7 @@ namespace Applied_WebApplication.Data
             }
 
             tb_Ledger.MyDataView.RowFilter = _Filter;
+            tb_Ledger.MyDataView.Sort = "Vou_Date";
 
             return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
         }

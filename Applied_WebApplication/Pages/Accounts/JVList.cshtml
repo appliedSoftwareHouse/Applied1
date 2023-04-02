@@ -15,23 +15,29 @@
 
 
 <form method="post">
-    <div class="container">
-        <div class="row">
-            <dir class="col">
+    <div class="container bg-info">
+        <div class="row d-flex align-items-center text-black">
+            <dir class="col-md-3">
                 <div class="form-floating">
-                    <input type="date" id="txtDateFrom" asp-for="@Model.Variables.DateFrom" placeholder="Date From" />
-                    <label for="txtDateFrom"><i class="bi bi-calendar-plus"></i></label>
+                    <input class="form-control" type="date" id="txtDateFrom" asp-for="@Model.Variables.DateFrom" placeholder="Date From" />
+                    <label for="txtDateFrom">From</label>
                 </div>
             </dir>
-            <dir class="col">
+            <dir class="col-md-3">
                 <div class="form-floating">
-                    <input type="date" id="txtDateTo" asp-for="@Model.Variables.DateFrom" placeholder="Date To" />
-                    <label for="txtDateFrom"><i class="bi bi-calendar-minus"></i></label>
+                    <input class="form-control" type="date" id="txtDateTo" asp-for="@Model.Variables.DateTo" placeholder="Date To" />
+                    <label for="txtDateFrom">To</label>
                 </div>
             </dir>
-            <dir class="col"></dir>
-            <dir class="col"></dir>
-            <dir class="col"></dir>
+            <dir class="col-md-3">
+                <div class="form-floating">
+                    <input class="form-control" id="txtTest" placeholder="Test" />
+                    <label formaction="txtTest">Test</label>
+                </div>
+            </dir>
+            <dir class="col-md-3">
+                <button type="submit" class="btn btn-premary" asp-page-handler="Refresh">REFRESH</button>
+            </dir>
         </div>
     </div>
 
@@ -43,13 +49,11 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Vou Code</th>
-                    <th>Vou Date</th>
-                    <th>Ref_No</th>
-                    <th>Sr. No.</th>
-                    <th>Company</th>
+                    <th>Date</th>
+                    <th>Code</th>
                     <th>Debit</th>
                     <th>Credit</th>
+                    <th>Description</th>
                     <th>..</th>
 
                 </tr>
@@ -59,33 +63,24 @@
                 {
                     @foreach (DataRow Row in Model.JVList.Rows)
                     {
-                        string _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
-                        string _Vou_Date = DateTime.Parse(Row["Vou_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                        string _Inv_Date = DateTime.Parse(Row["Inv_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                        string _Pay_Date = DateTime.Parse(Row["Pay_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                        decimal _Amount = (decimal)Row["Amount"];
+                        
+                        decimal _DR = (decimal.Parse(Row["DR"].ToString()));
+                        decimal _CR = (decimal.Parse(Row["CR"].ToString()));
+                      
                         <tr>
+                            <td>@Row["Vou_Date"].ToString()</td>
                             <td>@Row["Vou_No"].ToString()</td>
-                            <td>@_Vou_Date</td>
-                            <td>@_TitleCompany</td>
-                            <td>@Row["Inv_No"]</td>
-                            <td>@_Inv_Date</td>
-                            <td>@_Pay_Date</td>
-                            <td>@_Amount.ToString(FMTCurrency)</td>
+                           <td>@_DR.ToString(FMTCurrency)</td>
+                            <td>@_CR.ToString(FMTCurrency)</td>
+                            <td>@Row["Description"].ToString()</td>
+                            
                             <td>
-                                <a formaction="get"
-                           asp-page="BillPayable"
-                           asp-route-id=@Row["ID"]
-                           asp-route-id2="-1">
-
-                                    <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
-                                </a>
-                                <a asp-page="BillPayableList"
-                           asp-page-handler="Delete"
-                           asp-route-id=@Row["ID"]
-                           asp-route-Srno="1">
-                                    <i class="bi bi-trash text-danger"></i>
-                                </a>
+                                <button type="submit" class="btn-link border-0"
+                                asp-route-Vou_No="@Row["Vou_No"]"
+                                asp-route-Sr_No="1"
+                                asp-page="JV">
+                                <i class="bi bi-database-add"></i>
+                                </button>
                             </td>
                         </tr>
                     }
@@ -95,6 +90,10 @@
     </div>
     <!--Buttons Area-->
     <div>
-        <input type="submit" class="btn btn-primary" value="Add" asp-page="BillPayable" asp-route-id="0" asp-page-handler="New" formmethod="get" />
+        <button type="submit" class="btn btn-primary btn-sm"
+                asp-page="JV">
+            <i class="bi bi-plus-lg"></i>
+        </button>
+
     </div>
 </form>

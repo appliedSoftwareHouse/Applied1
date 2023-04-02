@@ -284,6 +284,7 @@ namespace Applied_WebApplication.Data
         // Get Singal Title from DataTable by ID=??
         public static string GetTitle(string UserName, Tables _TableName, int ID)
         {
+            if(ID.Equals(DBNull.Value)) { ID = 0; }
             string _Title;  //= string.Empty;
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
