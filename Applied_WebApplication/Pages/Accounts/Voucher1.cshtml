@@ -11,6 +11,7 @@
 }
 
 
+
 @if (Model.ErrorMessages.Count > 0)
 {
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
@@ -112,14 +113,14 @@
                 </div>
             </div>
             <div class="col-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" asp-for="@Model.Variables.DR" id="DR" readonly>
+                <div class="form-floating mb-3" onchange="FormatAmount()">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.DR" id="txtDR" readonly>
                     <label for="DR">Debit [DR]</label>
                 </div>
             </div>
             <div class="col-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" asp-for="@Model.Variables.CR" id="CR" readonly>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.CR" id="txtCR" readonly>
                     <label for="CR">Credit [CR]</label>
                 </div>
             </div>
@@ -201,3 +202,6 @@
         </div>
     }
 </form>
+
+<!------------------------------------------------->
+<script src="~/js/Voucher.js"></script>

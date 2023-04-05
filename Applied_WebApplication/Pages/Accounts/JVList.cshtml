@@ -18,19 +18,19 @@
     <div class="container bg-info">
         <div class="row d-flex align-items-center text-black">
             <dir class="col-md-3">
-                <div class="form-floating">
+                <div class="form-floating mt-2">
                     <input class="form-control" type="date" id="txtDateFrom" asp-for="@Model.Variables.DateFrom" placeholder="Date From" />
                     <label for="txtDateFrom">From</label>
                 </div>
             </dir>
             <dir class="col-md-3">
-                <div class="form-floating">
+                <div class="form-floating mt-2">
                     <input class="form-control" type="date" id="txtDateTo" asp-for="@Model.Variables.DateTo" placeholder="Date To" />
                     <label for="txtDateFrom">To</label>
                 </div>
             </dir>
             <dir class="col-md-3">
-                <div class="form-floating">
+                <div class="form-floating mt-2">
                     <input class="form-control" id="txtTest" placeholder="Test" />
                     <label formaction="txtTest">Test</label>
                 </div>
@@ -49,12 +49,17 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                    <th>Date</th>
-                    <th>Code</th>
-                    <th>Debit</th>
-                    <th>Credit</th>
-                    <th>Description</th>
-                    <th>..</th>
+                    <th style="width:10%">Date</th>
+                    <th style="width:10%">Code</th>
+                    <th style="width:10%">Debit</th>
+                    <th style="width:10%">Credit</th>
+                    <th style="width:30%">Description</th>
+                    <th>
+                        <button type="submit" id="ListbuttonGreen"
+                                asp-page-handler="JV">
+                            <i class="bi bi-database-add"></i>
+                        </button>
+                    </th>
 
                 </tr>
             </thead>
@@ -63,23 +68,27 @@
                 {
                     @foreach (DataRow Row in Model.JVList.Rows)
                     {
-                        
+                        string _Date = AppFunctions.GetDate(Row["Vou_Date"]);
                         decimal _DR = (decimal.Parse(Row["DR"].ToString()));
                         decimal _CR = (decimal.Parse(Row["CR"].ToString()));
                       
                         <tr>
-                            <td>@Row["Vou_Date"].ToString()</td>
+                            <td>@_Date</td>
                             <td>@Row["Vou_No"].ToString()</td>
                            <td>@_DR.ToString(FMTCurrency)</td>
                             <td>@_CR.ToString(FMTCurrency)</td>
                             <td>@Row["Description"].ToString()</td>
                             
                             <td>
-                                <button type="submit" class="btn-link border-0"
+                                <button type="submit" id="Listbutton"
                                 asp-route-Vou_No="@Row["Vou_No"]"
-                                asp-route-Sr_No="1"
-                                asp-page="JV">
-                                <i class="bi bi-database-add"></i>
+                                asp-page-handler="JV">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <button type="submit" id="ListbuttonRed"
+                                asp-route-Vou_No="@Row["Vou_No"]"
+                                asp-asp-page-handler="Delete">
+                                    <i class="bi bi-trash-fill"></i>
                                 </button>
                             </td>
                         </tr>

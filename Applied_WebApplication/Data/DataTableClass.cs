@@ -495,7 +495,9 @@ namespace Applied_WebApplication.Data
             int Result = 0;
             if(Columns.Contains("TranID"))
             {
-                Result = (int)MyDataTable.Compute("MAX(TranID)", string.Format("Vou_Type='{0}'", _VouType.ToString())) +1 ;
+                var MaxNo = MyDataTable.Compute("MAX(TranID)", string.Format("Vou_Type='{0}'", _VouType.ToString()));
+                if(MaxNo.Equals(DBNull.Value)) { MaxNo = 0; }
+                Result =  (int)MaxNo +1 ;
             }
             return Result;
         }

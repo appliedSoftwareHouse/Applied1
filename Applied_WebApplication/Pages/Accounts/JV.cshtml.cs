@@ -25,7 +25,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 TempTableClass TempClass;
                 Variables = new();              // Setup of Variables
-                if (Vou_No == null)
+                if (Vou_No == null || Vou_No == "New")
                 {
 
                     TempClass = new TempTableClass(UserName, Tables.Ledger, "New");
@@ -291,7 +291,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
             }
 
-            return RedirectToPage("JV", new { Vou_No, Sr_No = 1 });
+            return RedirectToPage("JVList");
         }
         public IActionResult OnPostDelete(int ID)
         {

@@ -37,6 +37,11 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("JVList");
         }
 
+        public IActionResult OnPostJV(string Vou_No)
+        {
+            return RedirectToPage("JV", routeValues: new { Vou_No });
+        }
+
         public class MyParameters
         {
             public DateTime DateFrom { get; set; }

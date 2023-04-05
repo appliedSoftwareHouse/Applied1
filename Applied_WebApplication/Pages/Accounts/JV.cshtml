@@ -15,7 +15,6 @@
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
 }
 
-
 <div class="AppHeading-2">
     <h5 class="TextCenter">Journal Voucher (JV)</h5>
 </div>
@@ -147,16 +146,22 @@
 
         </div>
         <div class="row mb-1">
-            <div class="col-2">
+            <div class="col-4">
                 <button type="submit"
                         class="btn btn-primary"
                         asp-page-handler="Save">
                     <i class="bi bi-save text-white"></i>
                     SAVE
                 </button>
+                <button type="submit"
+                        class="btn btn-primary"
+                        asp-page-handler="Back">
+                    <i class="bi bi-arrow-left-square text-white"></i>
+                    BACK
+                </button>
             </div>
             <div class="col-2">
-                <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-arrow-left-square text-white"></i> BACK</button>
+                
             </div>
             @if (Model.IsBalance)
             {
@@ -176,14 +181,14 @@
         <Table class="table table-hover" id="TableList">
             <thead>
                 <tr>
-                    <th style="width:10%">SR. No</th>
-                    <th style="width:10%">Ref No.</th>
+                    <th style="width:7%">SR. No</th>
+                    <th style="width:13%">Ref No.</th>
                     <th style="width:30%">Account Title</th>
                     <th style="width:10%">Debit</th>
                     <th style="width:10%">Credit</th>
                     <th style="width:20%">Description</th>
                     <th style="width:10%">
-                        <button type="submit" class="btn-link border-0 transparent"
+                        <button type="submit" id="ListbuttonGreen"
                                 asp-page-handler="Add"
                                 asp-route-Vou_No="@Model.Variables.Vou_No"
                                 asp-route-Sr_No="-1">
@@ -207,13 +212,13 @@
                             <td>@Row["CR"]</td>
                             <td>@Row["Description"]</td>
                             <td>
-                                <button class="btn-link border-0 bg-transparent"
+                                <button id="Listbutton"
                                 asp-page-handler="Edit"
                                 asp-route-Vou_No="@Row["Vou_No"]"
                                 asp-route-Sr_No="@Row["Sr_No"]">
                                     <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button class="btn-link border-0 bg-transparent"
+                                <button id="ListbuttonRed"
                                 asp-page-handler="Delete"
                                 asp-route-ID="@Row["ID"]">
                                     <i class="bi bi-trash-fill"></i>

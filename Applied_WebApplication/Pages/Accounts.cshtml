@@ -6,77 +6,92 @@
 
 <form method="post">
 
-    <div class="container p-2 mt-2 bg-success text-white rounded-2">
-        <h2 class="callout">Accounts Department</h2>
+    <div class="AppHeading-2">
+        <h4 class="TextCenter">Accounts Department</h4>
     </div>
 
-    <div class="dropdown py-2">
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" >
-            Directory
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item" href=".\Accounts\Directory\COA">Chart of Accounts</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\Directory\Class">Calss of Accounts</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\Directory\Nature">Nature of Accounts</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\Directory\Notes">Financial Notes</a></li>
-        </ul>
+    <div class="container">
+        <div class="row d-flex">
 
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Transactions
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item" href=".\Accounts\CashBook">Cash Expense</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\WriteCheque">Cheque</a></li>
-            <li><a class="dropdown-item" href="#">Cheque Return</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\BillPayableList">Bill Payable</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\BillReceivableList">Bill Receivable</a></li>
-            <li><a class="dropdown-item" href="#">Pay Bill</a></li>
-            <li><a class="dropdown-item" href=".\Accounts\VouchersList">Journal Entry</a></li>
-            <li><a class="dropdown-item" asp-page=".\Applied\Posting">Voucher Posting</a></li>
-            <li><a class="dropdown-item" asp-page=".\Applied\UnPost">Voucher Un-Post</a></li>
-            <li><button class="dropdown-item" asp-page-handler="OBalPost">Posting Opening Balances</button></li>
-            <li><button class="dropdown-item" asp-page-handler="OBalPostCompany">Posting Company Balances</button></li>
-            <li><button class="dropdown-item" asp-page-handler="OBalPostStock">Posting Stock Balances</button></li>
-        </ul>
+            <div class="dropdown py-2">
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Directory
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href=".\Accounts\Directory\COA">Chart of Accounts</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\Directory\Class">Calss of Accounts</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\Directory\Nature">Nature of Accounts</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\Directory\Notes">Financial Notes</a></li>
+                </ul>
 
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Reports
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item active" href="#">Voucher</a></li>
-            <li><a class="dropdown-item" asp-page=".\ReportPrint\GeneralLedgers">General Ledger</a></li>
-            <li><a class="dropdown-item" href="#">Customer Ledger</a></li>
-            <li><a class="dropdown-item" href="#">Vendor Ledger</a></li>
-            <li><a class="dropdown-item" asp-page=".\ReportPrint\TrialBalance">Trial Balance</a></li>
-            <li><a class="dropdown-item" href="#">Profit & Loss Account</a></li>
-            <li><a class="dropdown-item" href="#">Balance Sheet</a></li>
-            <li>
-                <a class="dropdown-item"
-                   asp-page=".\ReportPrint\PrintReport" 
-                   asp-page-handler="COAList">Chart of Accounts (List)</a>
-            </li>
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Transactions
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href=".\Accounts\CashBook">Cash Expense</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\WriteCheque">Cheque</a></li>
+                    <li><a class="dropdown-item" href="#">Cheque Return</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\BillPayableList">Bill Payable</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\BillReceivableList">Bill Receivable</a></li>
+                    <li><a class="dropdown-item" href="#">Pay Bill</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\VouchersList">Journal Entry</a></li>
+                    <li><a class="dropdown-item" href=".\Accounts\JVList">Journal Voucher</a></li>
 
-        </ul>
-        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Opening Balances
-        </button>
-        <ul class="dropdown-menu dropdown-menu-dark">
-            <li><a class="dropdown-item active" href="./Sales/OBAL_Company">Companies</a></li>
-            <li><a class="dropdown-item active" href="./Stock/OBStock">Stock</a></li>
-        </ul>
+
+                </ul>
+
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Reports
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" asp-page="#">Voucher</a></li>
+                    <li><a class="dropdown-item" asp-page=".\ReportPrint\GeneralLedgers">General Ledger</a></li>
+                    <li><a class="dropdown-item" asp-page=".\ReportPrint\TrialBalance">Trial Balance</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" asp-page="#">Profit & Loss Account</a></li>
+                    <li><a class="dropdown-item" asp-page="#">Balance Sheet</a></li>
+                    <li>
+                        <a class="dropdown-item"
+                           asp-page=".\ReportPrint\PrintReport"
+                           asp-page-handler="COAList">Chart of Accounts (List)</a>
+                    </li>
+
+                </ul>
+
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Opening Balances
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" href="./Sales/OBAL_Company">Companies</a></li>
+                    <li><a class="dropdown-item" href="./Stock/OBStock">Stock</a></li>
+                </ul>
+
+                <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Posting
+                </button>
+                <ul class="dropdown-menu dropdown-menu-dark">
+                    <li><a class="dropdown-item" asp-page=".\Applied\Posting">Voucher Posting</a></li>
+                    <li><a class="dropdown-item" asp-page=".\Applied\UnPost">Voucher Un-Post</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><button class="dropdown-item" asp-page-handler="OBalPost">Posting Opening Balances</button></li>
+                    <li><button class="dropdown-item" asp-page-handler="OBalPostCompany">Posting Company Balances</button></li>
+                    <li><button class="dropdown-item" asp-page-handler="OBalPostStock">Posting Stock Balances</button></li>
+                </ul>
+
+            </div>
+        </div>
+
         <hr />
-
-    
 
     </div>
 </form>
 
 
-@if(Model.ThisMessages.Count>0)
+@if (Model.ThisMessages.Count > 0)
 {
-   <div class="container">
-    @foreach (Message message in Model.ThisMessages)
-    {
+    <div class="container">
+        @foreach (Message message in Model.ThisMessages)
+        {
             if (message.ErrorID == 1)
             {
                 <div class="error-msg bg-info"> @message.Msg; </div>
@@ -93,8 +108,8 @@
             }
 
 
-       
-    }
-</div>
+
+        }
+    </div>
 
 }
