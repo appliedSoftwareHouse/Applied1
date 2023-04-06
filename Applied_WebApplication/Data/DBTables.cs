@@ -90,7 +90,8 @@ public enum PostType
     BillReceivable = 5,
     Payment = 6,
     Receipt = 7,
-    JV = 8
+    JV = 8,
+    BOM=9
 }
 public enum VoucherStatus
 {

@@ -22,25 +22,25 @@
     <div clsss="container">
         <input type="text" id="ID" asp-for="@Model.Variables.ID" hidden />
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Batch" id="Batch">
                     <label for="Batch">Batch</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="date" class="form-control" asp-for="@Model.Variables.MFDate" id="MFDate">
                     <label for="MFDate">Manufacturing Date</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="date" class="form-control" asp-for="@Model.Variables.EXPDate" id="ExpDate">
                     <label for="ExpDate">Manufacturing Date</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating">
                     <select class="form-select" id="Process" asp-for="@Model.Variables.Process">
                         <option selected>Select....</option>
@@ -53,7 +53,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Products" aria-label="Floating label Company" asp-for="@Model.Variables.Product">
                         <option selected>@Title_Inventory</option>
@@ -66,19 +66,19 @@
                     <label for="Customer">Finished Goods (Products)</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="number" class="form-control" asp-for="@Model.Variables.Qty" id="Qty">
                     <label for="Qty">Quantity</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="number" class="form-control" asp-for="@Model.Variables.Rate" id="Rate">
                     <label for="Rate">Avg Rate of Product</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Amount" id="Amount">
                     <label for="number">Amount</label>
@@ -86,7 +86,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Project" aria-label="Floating label Project" asp-for="@Model.Variables.Project">
                         <option selected>@Title_Project</option>
@@ -99,7 +99,7 @@
                     <label for="Project">Project</label>
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Employee" aria-label="Floating label Employee" asp-for="@Model.Variables.Employee">
                         <option selected>@Title_Employee</option>
@@ -111,7 +111,7 @@
                     <label for="Employee">Employee</label>
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Remarks" id="Remarks">
                     <label for="Remarks">Remarks</label>
@@ -119,10 +119,10 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-1 d-grid">
-                <button type="submit" class="btn btn-primary" asp-page-handler="Save">SAVE</button>
+            <div class="col-md-2 col-2">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save"><i class="bi bi-save"></i> SAVE</button>
             </div>
-            <div class="col-1 d-grid">
+            <div class="col-md-2 col-2">
                 <button type="submit" class="btn btn-primary" asp-page-handler="Back">BACK</button>
             </div>
 

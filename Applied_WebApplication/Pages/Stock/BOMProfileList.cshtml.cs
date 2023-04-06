@@ -45,7 +45,6 @@ namespace Applied_WebApplication.Pages.Stock
             return RedirectToPage("BOMProfileList");
 
         }
-
         public async Task<IActionResult> OnPostSaveAsync(int ID)
         {
             //ErrorMessages = Save(int ID);
@@ -55,13 +54,11 @@ namespace Applied_WebApplication.Pages.Stock
             return RedirectToPage("BOMProfileList", routeValues: new { ID });
 
         }
-
         public IActionResult OnPostEdit(int ID)
         {
             return RedirectToPage("BOMProfileList", new { ID });
 
         }
-
         public IActionResult OnPostDelete(int ID)
         {
             ErrorMessages = new();
@@ -85,8 +82,6 @@ namespace Applied_WebApplication.Pages.Stock
 
             return RedirectToPage("BOMProfileList");
         }
-
-
         public IActionResult OnPostBOM(int ID)
         {
             return RedirectToPage("BOMProfile", new { ID = 0, TranID = ID });

@@ -142,6 +142,7 @@ tr:hover {
     display: inline-block;
 }
 
+
 #ListbuttonRed {
     background-color: transparent;
     color: red;
@@ -154,6 +155,33 @@ tr:hover {
 
 
 #ListbuttonGreen {
+    background-color: transparent;
+    color: darkgreen;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.listbutton-red {
+    background-color: transparent;
+    color: red;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.listbutton-blue {
+    background-color: transparent;
+    color: darkblue;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+}
+
+.listbutton-green {
     background-color: transparent;
     color: darkgreen;
     border: none;

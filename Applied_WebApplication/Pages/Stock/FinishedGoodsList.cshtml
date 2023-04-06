@@ -7,8 +7,43 @@
 }
 
 <form method="post">
+    <div class="container">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                        FILTER
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingFilter" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <div class="row align-items-center">
+                            <div class="col-md-3">
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" id="txtDate1" placeholder="Enter Date from" asp-for="@Model.Variables.DateFrom">
+                                    <label for="txtDate1">From</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-3">
+                                    <input type="date" class="form-control" id="txtDate2" placeholder="Enter Date To" asp-for="@Model.Variables.DateTo">
+                                    <label for="txtDate2">To</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-outline-primary" asp-page-handler="Refresh">Refresh</button>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!------------------- Table --->
     <div class="continer">
-        <table name="TableList" style="table table-hover">
+        <table name="TableList" class="table table-hover">
             <thead>
                 <tr>
                     <th style="width:10%">Batch</th>
@@ -19,9 +54,8 @@
                     <th style="width:10%">Amount</th>
                     <th style="width:10%">
                         <button type="submit"
-                                class="btn btn-link btn-outline-light"
+                                class="listbutton-green"
                                 asp-page-handler="Edit">
-
                             <i class="bi bi-database-fill-add text-success"></i>
                         </button>
                     </th>
@@ -41,19 +75,22 @@
                         <td>@Row["Rate"]</td>
                         <td>@Row["Amount"]</td>
                         <td>
-                            <button type="submit"
-                                class="btn btn-link btn-outline-light"
+                            <button type="submit" class="listbutton-blue"
                                 asp-page-handler="Edit"
                                 asp-route-id="@Row["ID"]">
-
-                                <i class="bi bi-pencil-fill text-primary"></i>
-
+                                <i class="bi bi-pencil-fill"></i>
                             </button>
-                            <button type="submit"
-                                class="btn btn-link btn-outline-light"
+
+                            <button type="submit" class="listbutton-green"
+                                asp-page-handler="Process"
+                                asp-route-ID="@Row["ID"]">
+                                <i class="bi bi-box-fill"></i>
+                            </button>
+
+                            <button type="submit" class="listbutton-red"
                                 asp-page-handler="Delete"
                                 asp-route-id="@Row["ID"]">
-                                <i class="bi bi-trash-fill text-danger"></i>
+                                <i class="bi bi-trash-fill"></i>
                             </button>
                         </td>
                     </tr>

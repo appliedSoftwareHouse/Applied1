@@ -54,12 +54,14 @@ namespace Applied_WebApplication.Data
 
         public void SetTableClass(string _UserName, Tables _Tables, string? Filter)
         {
+
             UserProfile UProfile = new(_UserName);
             ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
             MyConnection = new SQLiteConnection(ConnectionString);
             MyUserName = _UserName;
             MyTableName = _Tables.ToString();
-            View_Filter ??= string.Empty;
+            Filter ??= string.Empty;
+            View_Filter = Filter;
             GetDataTable();
             MyDataView ??= new DataView();
             TableValidation = new(MyDataTable);
@@ -106,8 +108,10 @@ namespace Applied_WebApplication.Data
 
                 if (_DataSet.Tables.Count == 1)
                 {
+                    
                     MyDataTable = _DataSet.Tables[0];
                     MyDataView = MyDataTable.AsDataView();
+                    if(MyDataTable.Rows.Count>0) { CurrentRow = MyDataTable.Rows[0]; }
                 }
                 else { MyDataTable = new DataTable(); MyConnection.Close(); }
 

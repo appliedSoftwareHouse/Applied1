@@ -102,7 +102,7 @@
                     <th>Amount</th>
                     <th>Westage %</th>
                     <th>
-                        <button class="btn btn-link text-success" asp-page-handler="New">
+                        <button class="listbutton-green" asp-page-handler="New">
                             <i class="bi bi-database-add"> </i>
                         </button>
                     </th>
@@ -126,8 +126,8 @@
                             <td>@_Amount</td>
                             <td>@Row["Westage"].ToString()</td>
                             <td>
-                                <button type="submit" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
-                                <button type="submit" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
+                                <button type="submit" class="listbutton-blue" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
+                                <button type="submit" class="listbutton-red" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
                             </td>
                         </tr>
                     }

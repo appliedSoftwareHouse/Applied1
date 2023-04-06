@@ -62,7 +62,7 @@
                     <th>Title of BOM Profile</th>
                     <th>Status</th>
                     <th>
-                        <button class="btn btn-link text-success" asp-page-handler="New">
+                        <button type="submit" class="listbutton-green" asp-page-handler="New">
                             <i class="bi bi-database-add"> </i>
                         </button>
                     </th>
@@ -78,9 +78,21 @@
                             <td>@Row["Title"]</td>
                             <td>@Row["Status"]</td>
                             <td>
-                                <button type="submit" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
-                                <button type="submit" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
-                                <button type="submit" asp-page-handler="BOM" asp-route-ID="@Row["ID"]"><i class="bi bi-box-fill"></i></button>
+                                <button type="submit" class="listbutton-blue"
+                                asp-route-ID="@Row["ID"]"
+                                asp-page-handler="Edit">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                                <button type="submit" class="listbutton-red"
+                                asp-route-ID="@Row["ID"]"
+                                asp-page-handler="Delete">
+                                    <i class="bi bi-trash-fill"></i>
+                                </button>
+                                <button type="submit" class="listbutton-green"
+                                asp-route-ID="@Row["ID"]"
+                                asp-page-handler="BOM">
+                                    <i class="bi bi-box-fill"></i>
+                                </button>
                             </td>
                         </tr>
                     }
