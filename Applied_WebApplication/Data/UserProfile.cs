@@ -17,11 +17,7 @@ namespace Applied_WebApplication.Data
         public string DBFileName { get; set; }
         public string Company { get; set; }
         public string Designation { get; set; }
-        public string DateFormat { get; set; }
-        public string CurrencyFormat { get; set; }
-        private string default_DateFormat = "dd/MM/yyyy";
-        private string default_CurrencyFormat = "N";
-
+        
         public UserProfile()
         {
             if (UserName == null)
@@ -33,9 +29,7 @@ namespace Applied_WebApplication.Data
                 Company = "Applied Software House";
                 Designation = "Applied Account User";
                 DBFilePath = "";
-                DateFormat = default_DateFormat;
-                CurrencyFormat = default_CurrencyFormat;
-            }
+                }
         }
 
         public UserProfile(string UserName)
@@ -52,8 +46,6 @@ namespace Applied_WebApplication.Data
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
                 DBFilePath = _Row["DataFile"].ToString();
-                if (string.IsNullOrEmpty(_Row["DateFormat"].ToString())) { DateFormat = default_DateFormat; } else { DateFormat = _Row["DateFormat"].ToString(); }
-                if (string.IsNullOrEmpty(_Row["CurrencyFormat"].ToString())) { CurrencyFormat = default_CurrencyFormat; } else { CurrencyFormat = _Row["CurrencyFormat"].ToString(); }
                 DBFileName = DBFilePath.Replace(".\\wwwroot\\SQLiteDB\\", string.Empty);          // Replace Path with string.Empty
 
             }
@@ -71,8 +63,6 @@ namespace Applied_WebApplication.Data
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
                 DBFilePath = _Row["DataFile"].ToString();
-                if (string.IsNullOrEmpty(_Row["DateFormat"].ToString())) { DateFormat = default_DateFormat; } else { DateFormat = _Row["DateFormat"].ToString(); }
-                if (string.IsNullOrEmpty(_Row["CurrencyFormat"].ToString())) { CurrencyFormat = default_CurrencyFormat; } else { CurrencyFormat = _Row["CurrencyFormat"].ToString(); }
 
             }
         }

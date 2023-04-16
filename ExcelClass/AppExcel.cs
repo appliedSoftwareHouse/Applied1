@@ -4,7 +4,6 @@
 using System;
 using System.Data;
 using System.Security.Claims;
-using Excel = Microsoft.Office.Interop.Excel;
 using DataTable = System.Data.DataTable;
 
 namespace ExcelClass
@@ -26,16 +25,16 @@ namespace ExcelClass
             // If using Professional version, put your serial key below.
             // Create a new empty workbook.
 
-            MyMessage = "Start Excel sheet.";
+            //MyMessage = "Start Excel sheet.";
 
-            var AppExcel = new Excel.Application();
-            Excel.Workbook AppBook = AppExcel.Workbooks.Add(Excel.XlWBATemplate.xlWBATWorksheet); ;
-            Excel.Worksheet AppSheet = (Excel.Worksheet)AppBook.Worksheets[1];
+            //var AppExcel = new Excel.Application();
+            //Excel.Workbook AppBook = AppExcel.Workbooks.Add(Excel.XlWBATemplate.xlWBATWorksheet); ;
+            //Excel.Worksheet AppSheet = (Excel.Worksheet)AppBook.Worksheets[1];
 
-            AppSheet.Cells[1, "A"] = 123;
+            //AppSheet.Cells[1, "A"] = 123;
 
 
-            AppExcel.Save("C:\\Test.xlxs");
+            //AppExcel.Save("C:\\Test.xlxs");
 
             return "C:\\Test.xlxs";
 

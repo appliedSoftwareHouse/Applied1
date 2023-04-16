@@ -1,17 +1,61 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.Stock.BOMProcessModel
 @{
+    var UserName = User.Identity.Name;
 }
 
 <div class="cotainer AppHeading-2">
     <h5 class="TextCenter">BOM Process</h5>
 </div>
 
-<div class="continer">
+<div class="container">
     <div class="row">
         <div class="col-md-3">1</div>
         <div class="col-md-3">2</div>
         <div class="col-md-3">3</div>
         <div class="col-md-3">4</div>
     </div>
+</div>
+
+<div class="container">
+    <table class="table-list">
+        <thead class="table-header">
+            <tr>
+                <th>Inventory</th>
+                <th>Flow</th>
+                <th>Quantity</th>
+                <th>Unit</th>
+                <th>Rate</th>
+                <th>Amount</th>
+                <th>Westage</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Profile != null)
+            {
+                @foreach (DataRow Row in Model.Profile.Rows)
+                {
+                    var _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                    var _TitleUOM = AppFunctions.GetTitle(UserName, Tables.Inv_UOM, (int)Row["UOM"]);
+                    var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+                    var _Westage = _Amount * ((decimal)Row["Westage"] / 100);
+                    var _NetAmount = _Amount + _Westage;
+
+                    <tr>
+                        <td>@_TitleInventory</td>
+                        <td>@Row["In_Out"]</td>
+                        <td>@Row["Qty"]</td>
+                        <td>@_TitleUOM</td>
+                        <td>@AppRegistry.Amount(UserName,Row["Rate"])</td>
+                        <td>@AppRegistry.Amount(UserName,_Amount)</td>
+                        <td>@AppRegistry.Amount(UserName,_Westage)</td>
+                        <td>@AppRegistry.Currency(UserName,_NetAmount)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+
+    </table>
 </div>

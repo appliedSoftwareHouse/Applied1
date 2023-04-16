@@ -5,11 +5,10 @@
     var UserName = User.Identity.Name;
     var ProfileDB = new AppliedUsersClass();
     var MyUserProfile = new UserProfile(ProfileDB.UserRecord(UserName));
-    var CurrencyAmount = 123456789.999;
 }
 
-<div class="mt-3 p-2 bg-success text-white rounded">
-    <h3>PROFILE </h3>
+<div class="AppHeading-2">
+    <h3>USER PROFILE </h3>
 </div>
 <br />
 
@@ -21,7 +20,8 @@
     <div class="p-2 bg-light border rounded">Designation : @MyUserProfile.Designation</div>
     <div class="p-2 bg-light border rounded">Company : @MyUserProfile.Company</div>
     <div class="p-2 bg-light border rounded">Email : @MyUserProfile.Email</div>
-    <div class="p-2 bg-light border rounded">Date Format : @DateTime.Now.ToString(MyUserProfile.DateFormat)</div>
+    @*
+     <div class="p-2 bg-light border rounded">Date Format : @DateTime.Now.ToString(MyUserProfile.DateFormat)</div>
     <div class="p-2 bg-light border rounded">Currency Format : @CurrencyAmount.ToString(MyUserProfile.CurrencyFormat)</div>
-
+    *@
 </div>

@@ -5,8 +5,8 @@
     var UserName = User.Identity.Name;
     var ProfileDB = new AppliedUsersClass();
     var MyUserProfile = new UserProfile(ProfileDB.UserRecord(UserName));
-    var DateFormat = MyUserProfile.DateFormat;
-    var CurrencyFormat = MyUserProfile.CurrencyFormat;
+    //var DateFormat = MyUserProfile.DateFormat;
+    //var CurrencyFormat = MyUserProfile.CurrencyFormat;
     var CurrencyAmount = 123456789.99;
     var DateStockExpiry = Model.Variables.StockExpiry.ToString("yyyy-MM-dd");
 
@@ -25,128 +25,7 @@
 
 <form method="post">
     <div class="container">
-        <div class="row mb-2">
-            <div class="col-md-3 d-grid bg-light aligns-items-center justify-content-center">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                        Currency Format
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item">Select Currency Format</a></li>
-                        <li>
-                            <a class="dropdown-item"
-                               asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="1">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat1)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item"
-                               asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="2">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat2)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item"
-                               asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="3">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat3)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="4">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat4)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="5">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat5)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateCurrencyFormat"
-                               asp-route-id="6">
-                                @CurrencyAmount.ToString(Model.CurrencyFormat6)
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-3 d-grid bg-light aligns-items-center justify-content-center">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                        Date Format
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item">Select Date Format</a></li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="1">
-                                @DateTime.Now.ToString(@Model.DateFormat1)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="2">
-                                @DateTime.Now.ToString(@Model.DateFormat2)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="3">
-                                @DateTime.Now.ToString(@Model.DateFormat3)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="4">
-                                @DateTime.Now.ToString(@Model.DateFormat4)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="5">
-                                @DateTime.Now.ToString(@Model.DateFormat5)
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item" asp-page="Setting"
-                               asp-page-handler="UpdateDateFormat"
-                               asp-route-id="6">
-                                @DateTime.Now.ToString(@Model.DateFormat6)
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="col-md-3 d-grid">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="Currencysign" asp-for="@Model.Variables.CurrencySign" placeholder="Currency Symbol">
-                    <label for="Currencysign">Currency Symbol</label>
-                </div>
-                
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <input type="number" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.StockExpiry">
-                    <label for="OBalance">Stock Expire days</label>
-                </div>
-            </div>
-        </div>
+
         <div class="row mb-2">
             <div class="col-md-3">
                 <div class="form-floating mb-1">
@@ -178,7 +57,38 @@
                     <label for="OBDate">Opening Balance Date</label>
                 </div>
             </div>
-           
+        </div>
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.DateFormat">
+                        <option selected>@Model.Variables.DateFormat</option>
+                        @foreach (string Item in Model.DateFormats)
+                        {
+                            <option value="@Item">@Item</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Date Format</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating">
+                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.CurrencyFormat">
+                        <option selected>@Model.Variables.CurrencyFormat</option>
+                        @foreach (string Item in Model.CurrencyFormats)
+                        {
+                            <option value="@Item">@Item</option>
+                        }
+                    </select>
+                    <label for="floatingSelect">Currency Format</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.CurrencySign">
+                    <label for="OBDate">Currency Sign</label>
+                </div>
+            </div>
         </div>
         <div class="row mb-2">
             <div class="col-md-3">
@@ -193,7 +103,7 @@
                     <label for="OBalance">Fiscal Year End</label>
                 </div>
             </div>
-           
+
         </div>
         <div class="row mb-2">
             <div class="col">

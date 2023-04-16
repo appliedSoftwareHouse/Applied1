@@ -10,8 +10,8 @@
     var UserData = new UserProfile(UserName);
     var CashCode = 1;
     var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
-    var NumFormat = GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
-    var DateFormat = GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
+    var FMTAmount = AppRegistry.GetText(UserName, "FMTCurrency");
+    var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
     var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
@@ -53,20 +53,6 @@
                         <option value="1">Posted</option>
                         <option value="2">Submitted</option>
                     </select>
-
-
-
-                    @*<div class="form-check">
-                        @if (Model.Variables.IsPosted)
-                        {
-                            <input class="form-check-input" type="checkbox" value="" name="rbPosted" checked asp-for="@Model.Variables.IsPosted">
-                        }
-                        else
-                        {
-                        <input class="form-check-input" type="checkbox" value="" name="rbPosted" asp-for="@Model.Variables.IsPosted">
-                       }
-                       <label class="form-check-label" for="rbPosted">Posted</label>
-                    </div>*@
                 }
             </div>
             <div class="col-md-2 mb-1">
@@ -99,8 +85,11 @@
                 @if (Model.Cashbook.Rows.Count > 0)
                 {
                     <div>
-                        <table class="table" id="MyTable">
-                            <thead>
+                        <table class="table-list">
+                            <div class="caption">
+                                <h3>CASH BOOK</h3>
+                            </div>
+                            <thead class="table-header">
                                 <tr>
                                     <th style="width:10%">Date</th>
                                     <th style="width:10%">Vou No</th>
@@ -122,20 +111,23 @@
 
                                 @foreach (DataRow Row in Model.Cashbook.Rows)
                                 {
+                                    decimal _DR = (decimal)Row["DR"];
+                                    decimal _CR = (decimal)Row["CR"];
+                                    DateTime _Date = (DateTime)Row["Vou_Date"];
+
                                     <tr>
-                                        <td>@DateTime.Parse(Row["Vou_Date"].ToString()).ToString(DateFormat)</td>
+                                        <td>@_Date.ToString(FMTDate)</td>
                                         <td>@Row["Vou_No"].ToString()</td>
                                         <td>@Row["Description"].ToString()</td>
-                                        <td style="text-align: right">@decimal.Parse(Row["DR"].ToString()).ToString(NumFormat)</td>
-                                        <td style="text-align: right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
-
+                                        <td class="table-col-amount">@_DR.ToString(FMTAmount)</td>
+                                        <td class="table-col-amount">@_CR.ToString(FMTAmount)</td>
                                         @if (decimal.Parse(Row["BAL"].ToString()) > 0)
                                         {
-                                            <td class="align-right">@decimal.Parse(Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                            <td class="table-col-amount">@Row["CR"]</td>
                                         }
                                         else
                                         {
-                                            <td class="text-danger align-right">@decimal.Parse(Row["BAL"].ToString()).ToString(NumFormat)</td>
+                                            <td class="table-col-amount-red">@Row["CR"]</td>
                                         }
 
                                         @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
@@ -180,6 +172,7 @@
                                                 </div>
                                             </td>
                                         }
+
                                     </tr>
                                 }
 

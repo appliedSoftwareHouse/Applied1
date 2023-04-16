@@ -129,7 +129,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 BillPay1.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
                 BillPay1.Save();
 
-                Row2["TranID"] = BillPay1.CurrentRow["ID"];                                                                 // Assign a TranID value from New ID of Bill Payable
+                Row2["TranID"] = BillPay1.CurrentRow["ID"];                          // Assign a TranID value from New ID of Bill Payable
                 BillPay2.Save();
             }
             else

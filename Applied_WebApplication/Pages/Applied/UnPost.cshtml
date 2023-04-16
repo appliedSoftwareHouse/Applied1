@@ -3,8 +3,8 @@
 @model Applied_WebApplication.Pages.Applied.UnPostModel
 @{
     var UserName = User.Identity.Name;
-    var NumFormat = GetUserValue(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
-    var DateFormat = GetUserValue(UserName, "DateFormat");                                                           // Get format of Number to Display
+    var NumFormat = AppRegistry.GetText(UserName, "CurrencyFormat");                                                     // Get format of Currency to display
+    var DateFormat = AppRegistry.GetText(UserName, "DateFormat");                                                           // Get format of Number to Display
 }
 
 <div class="container AppHeading-2">
@@ -52,9 +52,9 @@
 @if (Model.UnpostTable != null)
 {
 
-    <div id="TableList" class="container overflow-scroll" style="min-height:400px;  max-height: 100vh">
+    <div class="container overflow-scroll" style="min-height:400px;  max-height: 100vh">
         <div class="row">
-            <table class="table table-bordered table-hover">
+            <table class="table-list">
                 <thead>
                     <tr>
                         <th style="width:10%">Vou No</th>

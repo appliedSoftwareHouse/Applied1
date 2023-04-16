@@ -40,6 +40,7 @@ body {
     margin-left: auto;
     padding-left: 10px;
 }
+
 .AppHeading {
     margin-top: 1px;
     margin-bottom: 10px;
@@ -66,7 +67,7 @@ body {
     color: whitesmoke;
     border-block: double;
     height: 40px;
-    font-size:8px;
+    font-size: 8px;
 }
 
 AppHeading-2:hover {
@@ -114,23 +115,53 @@ AppHeading-2:hover {
     width: 120px;
 }
 
-#TableList {
-    table-layout:auto;
+.table-list {
+    display: table;
     width: 100%;
-    border: 5px solid #E0E0F8;
-    padding: 5px;
-    background: #EFFBFB;
-    overflow: scroll
-
+    border: 2px solid black;
+    margin: 0 auto;
+    padding-left: 2px;
+    padding-right: 2px
 }
 
+.table1, th {
+    background: lightblue;
+    text-align: center;
+    font-weight: bold;
+}
+
+
+.table-list, td:hover {
+    background-color: DodgerBlue;
+}
+
+
+    .table-list td {
+        background: #f3f6f4
+    }
+
+
+
+
+
+.table-col-amount {
+    text-align: right
+}
+
+.table-col-amount-red {
+    text-align: right;
+    color: darkred
+}
+
+
+.table-caption {
+    display: table-caption;
+    text-align: center;
+    text-transform: uppercase;
+    color: red;
+}
 .TableFooter {
     background: #F9DBDB
-}
-
-tr:hover {
-    background-color: #D6EEEE;
-
 }
 
 #Listbutton {
@@ -150,7 +181,6 @@ tr:hover {
     text-align: center;
     text-decoration: none;
     display: inline-block;
-
 }
 
 

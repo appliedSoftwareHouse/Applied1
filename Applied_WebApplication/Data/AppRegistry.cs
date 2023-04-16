@@ -1,4 +1,7 @@
-﻿namespace Applied_WebApplication.Data
+﻿using System.Data;
+using System.Data.SQLite;
+
+namespace Applied_WebApplication.Data
 {
     public interface IAppRegistry
     {
@@ -8,13 +11,18 @@
         public static readonly string FormatDate;
         public static readonly string FormatDateY2;
         public static readonly string FormatDateM2;
+      
     }
 
 
     public class AppRegistry : IAppRegistry
     {
-        public AppRegistry(string UserName)
+        private string UserName { get; set; }
+
+        public AppRegistry(string _UserName)
         {
+            UserName = _UserName;
+
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
 
 
@@ -31,14 +39,45 @@
         public static readonly string FormatDateY2 = "dd-MMM-yy";
         public static readonly string FormatDateM2 = "dd-MM-yy";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
-        
+     
 
         public static DateTime GetFiscalFrom() { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
         public static DateTime GetFiscalTo() { return new DateTime(2023, 06, 30); }
 
         public static string GetFormatCurrency(string UserName)
         {
-            return GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+            return GetText(UserName, "FMTCurrency");
+        }
+
+
+        public static string Currency(string UserName, object Amount)
+        {
+            var _Format = GetText(UserName, "FMTCurrency");
+            var _Sign = GetCurrencySign(UserName);
+            var _Amount = ((decimal)Amount).ToString(_Format);
+            return string.Concat(_Amount, " ",_Sign);
+        }
+        public static string Amount(string UserName, object Amount)
+        {
+            var _Format = GetText(UserName, "FMTCurrency");
+            return ((decimal)Amount).ToString(_Format);
+
+        }
+
+        public static string Date(string UserName, DateTime Date)
+        {
+            var _Format = GetText(UserName, "FMTDate");
+            return Date.ToString(_Format);
+
+        }
+
+
+
+        public static string GetCurrencySign(string UserName)
+        {
+            var sign = GetText(UserName, "CurrencySign");
+            if(sign.Length > 0) { return sign; }
+            return "Rs.";
         }
 
         public static object GetKey(string UserName, string Key, KeyType keytype)
@@ -89,7 +128,7 @@
             }
         }
 
-        public static int GetnNumber(string UserName, string Key)
+        public static int GetNumber(string UserName, string Key)
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
@@ -103,7 +142,7 @@
             }
         }
 
-        public static decimal GetnCurrency(string UserName, string Key)
+        public static decimal GetCurrency(string UserName, string Key)
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
@@ -117,7 +156,7 @@
             }
         }
 
-        public static string GetnText(string UserName, string Key)
+        public static string GetText(string UserName, string Key)
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
@@ -204,5 +243,32 @@
             int Days = (int)GetKey(UserName, "StockExpiry", KeyType.Number);
             return Days;   // One Year of Expiry Date
         }
+
+
+        #region Registry Table
+        public static object Get(string UserName, object Key, KeyType KeyType)
+        {
+            var _Text = string.Format("SELECT * FROM [Registry] WHERE Code='{0}'", Key.ToString());
+            SQLiteConnection _Connection = ConnectionClass.AppConnection(UserName);
+            SQLiteCommand _Command = new(_Text,_Connection);
+            SQLiteDataAdapter _Adapter = new(_Command);
+            DataSet _DataSet = new();
+            _Adapter.Fill(_DataSet, "Registry");
+            if(_DataSet.Tables.Count==1)
+            {
+                if (_DataSet.Tables[0].Rows.Count==1) 
+                {
+                    if(KeyType == KeyType.Text) { return _DataSet.Tables[0].Rows[0]["cValue"]; }
+                    if(KeyType == KeyType.Date) { return _DataSet.Tables[0].Rows[0]["dValue"]; }
+                    if(KeyType == KeyType.Number) { return _DataSet.Tables[0].Rows[0]["nValue"]; }
+                    if(KeyType == KeyType.Currency) { return _DataSet.Tables[0].Rows[0]["mValue"]; }
+                    if(KeyType == KeyType.Boolean) { return _DataSet.Tables[0].Rows[0]["bValue"]; }
+                }
+            }
+
+            return null;
+        }
+        #endregion
+
     }
 }

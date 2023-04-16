@@ -2,6 +2,7 @@
 using Microsoft.ReportingServices.Interfaces;
 using System.Data;
 using System.Security.Claims;
+using System.Text;
 using static AppReporting.ReportClass;
 
 namespace AppReporting
@@ -121,6 +122,40 @@ namespace AppReporting
             }
             return PreviewTable;
         }
+
+
+        public static string GetQueryText(ReportFilters ReportFilter)
+        {
+            // Create a query to fatch data from Data Table for Display Reports.
+            string DateFormat = "yyyy-MM-dd";
+            if (ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
+            string _TableName = ReportFilter.TableName.ToString();
+            string _TableColumns = ReportFilter.Columns;
+            StringBuilder _SQL = new();
+            StringBuilder _Where = new();
+
+            _SQL.Append("SELECT ");
+            _SQL.Append(_TableColumns);
+            _SQL.Append(" FROM [" + _TableName + "]");
+
+            if (ReportFilter.Dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.Dt_From.ToString(DateFormat)); }
+            if (ReportFilter.Dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.Dt_To.ToString(DateFormat)); }
+            if (ReportFilter.N_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.N_ID.ToString() + " AND"); }
+            if (ReportFilter.N_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.N_COA.ToString() + " AND"); }
+            if (ReportFilter.N_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.N_Customer.ToString() + " AND"); }
+            if (ReportFilter.N_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.N_Project.ToString() + " AND"); }
+            if (ReportFilter.N_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.N_Employee.ToString() + " AND"); }
+            if (ReportFilter.N_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.N_InvCategory.ToString() + " AND"); }
+            if (ReportFilter.N_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.N_InvSubCategory.ToString() + " AND"); }
+            if (ReportFilter.N_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.N_Inventory.ToString() + " AND"); }
+            if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
+            string Where = _Where.ToString();
+            //if (Where.EndsWith("AND")) { Where = Where.Substring(0, Where.Length - 3); }
+            if (Where.EndsWith("AND")) { Where = Where[..^3]; }
+
+            return string.Concat(_SQL.ToString(), Where);
+        }
+
 
         public class ReportFilters
         {

@@ -19,6 +19,7 @@ namespace Applied_WebApplication.Data
         public TableValidationClass TableValidation;
         public int ErrorCount { get => TableValidation.MyMessages.Count; }
         public int Count => MyDataView.Count;
+        public int Tb_Count => MyDataTable.Rows.Count;
         public string MyTableName { get; set; }
         public bool IsError = false;
         public string MyMessage { get; set; }
@@ -26,7 +27,7 @@ namespace Applied_WebApplication.Data
         public DataRow CurrentRow { get; set; }
         public DataRowCollection Rows => MyDataTable.Rows;
         public DataColumnCollection Columns => MyDataTable.Columns;
-        
+
 
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
@@ -100,7 +101,7 @@ namespace Applied_WebApplication.Data
             {
                 if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
                 var _CommandText = string.Format("SELECT * FROM [{0}]", MyTableName);
-                if (View_Filter.Length > 0) { _CommandText += "WHERE " + View_Filter; }
+                if (View_Filter.Length > 0) { _CommandText += " WHERE " + View_Filter; }
                 SQLiteCommand _Command = new(_CommandText, MyConnection);
                 SQLiteDataAdapter _Adapter = new(_Command);
                 DataSet _DataSet = new();
@@ -108,10 +109,13 @@ namespace Applied_WebApplication.Data
 
                 if (_DataSet.Tables.Count == 1)
                 {
-                    
+
                     MyDataTable = _DataSet.Tables[0];
                     MyDataView = MyDataTable.AsDataView();
-                    if(MyDataTable.Rows.Count>0) { CurrentRow = MyDataTable.Rows[0]; }
+                    if (MyDataTable.Rows.Count > 0)
+                    {
+                        if(CurrentRow==null) { CurrentRow = MyDataTable.Rows[0]; }
+                    }
                 }
                 else { MyDataTable = new DataTable(); MyConnection.Close(); }
 
@@ -497,11 +501,11 @@ namespace Applied_WebApplication.Data
         public int GetMaxTranID(VoucherType _VouType)
         {
             int Result = 0;
-            if(Columns.Contains("TranID"))
+            if (Columns.Contains("TranID"))
             {
                 var MaxNo = MyDataTable.Compute("MAX(TranID)", string.Format("Vou_Type='{0}'", _VouType.ToString()));
-                if(MaxNo.Equals(DBNull.Value)) { MaxNo = 0; }
-                Result =  (int)MaxNo +1 ;
+                if (MaxNo.Equals(DBNull.Value)) { MaxNo = 0; }
+                Result = (int)MaxNo + 1;
             }
             return Result;
         }

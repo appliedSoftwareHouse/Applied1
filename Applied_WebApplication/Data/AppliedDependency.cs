@@ -35,7 +35,7 @@ namespace Applied_WebApplication.Data
         public string UserDBPath { get; }
         public string GuestDBPath { get; }
         public string DefaultDB { get; set; }
-        public string LocalDB { get; }
+       public string LocalDB { get; }
         public string DefaultPath { get; }
         public CultureInfo AppCurture { get; }
         public string CultureString { get; }

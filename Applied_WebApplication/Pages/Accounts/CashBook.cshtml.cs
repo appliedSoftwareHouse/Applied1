@@ -16,6 +16,9 @@ namespace Applied_WebApplication.Pages.Accounts
         public BookRecord MyRecord { get; set; }
         public DataTable Cashbook = new DataTable();
         public List<Message> ErrorMessages = new();
+        public string FMTNumber { get; set; }
+        public string FMTCurrency { get; set; }
+        public string FMTDate { get; set;}
         public string UserName => User.Identity.Name;
 
         #region Get / POST
@@ -75,9 +78,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 ErrorMessages.Add(MessageClass.SetMessage("No record Found.....!"));
             }
 
-
-            //Variables.BookTitle = GetTitle(UserName, Tables.COA, Variables.CashBookID);
+            FMTNumber = GetText(UserName, "MFT");
             
+
         }
        
         #endregion
