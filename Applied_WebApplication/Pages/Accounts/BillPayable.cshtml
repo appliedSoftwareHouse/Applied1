@@ -299,7 +299,7 @@
         <form method="get">
             <div class="container">
                 <table class="table-list">
-                    <thead class="bg-light">
+                    <thead>
                         <tr>
                             <th style="width:8%;">S-No</th>
                             <th style="width:25%;">Inventory</th>
@@ -352,11 +352,11 @@
                         }
                     </tbody>
                     <tfoot>
-                        <tr style="background:lightblue">
+                        <tr>
                             <td></td>
                             <td></td>
                             <td><b>TOTAL</b></td>
-                            <td style="text-align: right"><b>@Model.Variables.TotQty.ToString(CurrencyFormat)</b></td>
+                            <td class=""><b>@Model.Variables.TotQty.ToString(CurrencyFormat)</b></td>
                             <td></td>
                             <td style="text-align: right"><b>@Model.Variables.TotAmt.ToString(CurrencyFormat)</b></td>
                             <td></td>
@@ -364,7 +364,6 @@
                             <td style="text-align: right"><b>@Model.Variables.TotInv.ToString(CurrencyFormat)</b></td>
                             <td></td>
                         </tr>
-
                     </tfoot>
                 </table>
             </div>

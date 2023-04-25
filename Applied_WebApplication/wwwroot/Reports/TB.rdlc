@@ -383,7 +383,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!DR.Value</Value>
+                                  <Value>=IIF(Fields!BAL.Value&gt;0,Fields!BAL.Value,0)</Value>
                                   <Style>
                                     <Format>#,0.00;(#,0.00);''</Format>
                                   </Style>
@@ -428,7 +428,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CR.Value</Value>
+                                  <Value>=IIF(Fields!BAL.Value&lt;0,ABS(Fields!BAL.Value),0)</Value>
                                   <Style>
                                     <Format>#,0.00;(#,0.00);''</Format>
                                   </Style>
@@ -569,7 +569,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!DR.Value)</Value>
+                                  <Value>=Sum(IIF(Fields!BAL.Value&gt;0,Fields!BAL.Value,0))</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00);''</Format>
@@ -606,6 +606,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -617,7 +618,7 @@
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Sum(Fields!CR.Value)</Value>
+                                  <Value>=Sum(IIF(Fields!BAL.Value&lt;0,ABS(Fields!BAL.Value),0))</Value>
                                   <Style>
                                     <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00);''</Format>

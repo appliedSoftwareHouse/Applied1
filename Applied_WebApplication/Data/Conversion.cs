@@ -1,8 +1,9 @@
-﻿namespace Applied_WebApplication.Data
+﻿using System.Data.Entity.ModelConfiguration.Conventions;
+
+namespace Applied_WebApplication.Data
 {
     public class Conversion
     {
-
 
         public static string Row2Money(object _Value)
         {
@@ -13,7 +14,7 @@
             {
                 var Amount = (decimal)_Value;
                 _Result = Amount.ToString(AppRegistry.FormatCurrency1);
-            
+
             }
             catch (Exception e)
             {
@@ -21,5 +22,17 @@
             }
             return _Result;
         }
+
+        public static int ToInteger(object _Value)
+        {
+            var type = _Value.GetType();
+
+            if (type == typeof(string)) { return int.Parse((string)_Value); }
+            if (type == typeof(decimal)) { return int.Parse(_Value.ToString()); }
+            if (type == typeof(long)) { return int.Parse(_Value.ToString()); }
+            if (type == typeof(int)) { return (int)_Value; }
+            return 0;
+        }
+
     }
 }

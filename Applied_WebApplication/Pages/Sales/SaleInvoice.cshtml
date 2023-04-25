@@ -1,0 +1,322 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Sales.SaleInvoiceModel
+@{
+
+    var UserName = User.Identity.Name;
+    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
+    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.Company);
+    var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.Employees, Model.Variables.Employee);
+    var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, Model.Variables.Project);
+    var TitleTax = AppFunctions.GetTitle(UserName, Tables.Taxes, Model.Variables.Tax);
+
+    var FMTCurrency1 = AppRegistry.FormatCurrency1;
+    var FMTCurrency2 = AppRegistry.FormatCurrency2;
+
+
+}
+
+<style>
+    .container-bg {
+        background-color: antiquewhite
+    }
+
+    .row {
+        margin-bottom: 3px;
+        height: 40px;
+    }
+
+    .input-group-text {
+        width: 120px;
+    }
+
+    .form-control {
+        width: 70%;
+    }
+
+    .btns {
+        width: 90px
+    }
+
+</style>
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">SALE INVOICE</h5>
+</div>
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+
+
+<form method="post">
+    <div class="container container-bg">
+        <input hidden asp-for="@Model.Variables.ID1" />
+        <input hidden asp-for="@Model.Variables.ID2" />
+        <input hidden asp-for="@Model.Variables.Status" />
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtVouNo">Vou. No.</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Vou_No"
+                           placeholder="Voucher No." aria-label="Voucher No" aria-describedby="txtVouNo">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtVouDate">Vou. Date</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Vou_Date"
+                           placeholder="Voucher Date" aria-label="Voucher Date" aria-describedby="txtVouDate">
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtRefNo">Ref. No.</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Ref_No"
+                           placeholder="Reference No." aria-label="Reference No" aria-describedby="txtRefNo">
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtCompany">Company</label>
+                    <select class="form-select" id="txtCompany" asp-for="@Model.Variables.Company">
+                        <option selected>@TitleCompany</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtInvNo">Inv. No.</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Inv_No"
+                           placeholder="Invoice No." aria-label="Invoice No" aria-describedby="txtInvNo">
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtInvDate">Inv. Date</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Inv_Date"
+                           placeholder="Invoice Date" aria-label="Invoice Date" aria-describedby="txtInvDate">
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtEmployee">Salesman</label>
+                    <select class="form-select" id="txtEmployee" asp-for="@Model.Variables.Employee">
+                        <option selected>@TitleEmployee</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtPayDate">Pay Date</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Pay_Date"
+                           placeholder="Payment Date" aria-label="Payment Date" aria-describedby="txtPayDate">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtRemarks">Remaks</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Remarks"
+                           placeholder="Remarks" aria-label="Remarks" aria-describedby="txtRemarks">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtSrNo">Sr. No.</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Sr_No"
+                           placeholder="Serial No." aria-label="Serial No" aria-describedby="txtSrNo">
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtComments">Comments</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Comments"
+                           placeholder="Comments" aria-label="Comments" aria-describedby="txtComments">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtInventory">Inventory</label>
+                    <select class="form-select" id="txtInventory" asp-for="@Model.Variables.Inventory">
+                        <option selected>@TitleInventory</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtQty">Quantity</span>
+                    <input type="number" class="form-control" asp-for="@Model.Variables.Qty"
+                           placeholder="Quantity" aria-label="Quantity" aria-describedby="txtQty">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtRate">Rate</span>
+                    <input type="number" class="form-control" asp-for="@Model.Variables.Rate"
+                           placeholder="Rate" aria-label="Rate" aria-describedby="txtRate">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtTax">Sales Tax</label>
+                    <select class="form-select" id="txtTax" asp-for="@Model.Variables.Tax">
+                        <option selected>@TitleTax</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Taxes))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtRate">Tax Rate</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Rate"
+                           placeholder="Tax Rate" aria-label="Tax Rate" aria-describedby="txtRate">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtNetAmount">Net Amount</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.NetAmount"
+                           placeholder="Net Amount" aria-label="Net Amount" aria-describedby="txtNetAmount">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtBatch">Batch</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Batch"
+                           placeholder="Batch" aria-label="Batch" aria-describedby="txtBatch">
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtProject">Project</label>
+                    <select class="form-select" id="txtProject">
+                        <option selected>@TitleProject</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Project))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtDescription">Description</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Description"
+                           placeholder="Description" aria-label="Description" aria-describedby="txtDescription">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-save"></i> Add</button></div>
+            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-save"></i> New</button></div>
+            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
+            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-save"></i> Print</button></div>
+            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-save"></i> Back</button></div>
+        </div>
+    </div>
+
+
+    <!-----Table Area-->
+
+    <div class="container">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Sr. No.</th>
+                    <th>Inventory</th>
+                    <th>Batch</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Sales Tax</th>
+                    <th>Tax Amount</th>
+                    <th>Net Amount</th>
+                    <th>ADD</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Invoice != null)
+                {
+                    @if (Model.Invoice.Rows.Count > 0)
+                    {
+                        @foreach (DataRow Row in Model.Invoice.Rows)
+                        {
+                            var _TitleStock = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
+                            var _Qty = (decimal)Row["Qty"];
+                            var _Rate = (decimal)Row["Rate"];
+                            var _Amount = _Qty * _Rate;
+                            var _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
+                            var _TaxAmount = _Amount * (_TaxRate / 100);
+                            var _NetAmount = _Amount + _TaxAmount;
+
+                            <tr>
+                                <td>@Row["Sr_No"]</td>
+                                <td>_TitleStock</td>
+                                <td>@Row["Batch"]</td>
+                                <td>@_Qty.ToString(FMTCurrency1)</td>
+                                <td>@_Rate.ToString(FMTCurrency2)</td>
+                                <td>@_Amount.ToString(FMTCurrency1)</td>
+                                <td>@_TaxRate.ToString(FMTCurrency2+"%")</td>
+                                <td>@_TaxAmount.ToString(FMTCurrency1)</td>
+                                <td>@_NetAmount.ToString(FMTCurrency1)</td>
+                                <td>
+                                    <button class="listbutton-blue"><i class="bi bi-pencil-fill"></i></button>
+                                    <button class="listbutton-red"><i class="bi bi-trash-fill"></i></button>
+
+                                </td>
+                            </tr>
+                        }
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td>
+                            No Record Found
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
+
+<script src="~/js/SaleInvoice.js"></script>

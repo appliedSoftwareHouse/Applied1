@@ -9,7 +9,7 @@ namespace Applied_WebApplication.Data
     {
         public ClaimsIdentity UserIdentity;
         public string UserID { get; set; }
-        public string UserName { get; set; }
+        public string Name { get; set; }
         public string Password { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
@@ -20,9 +20,10 @@ namespace Applied_WebApplication.Data
         
         public UserProfile()
         {
-            if (UserName == null)
+            if (Name == null)
             {
-                UserName = "Test UserName";
+                UserID = "Guest";
+                Name = "Test UserName";
                 Password = "Guest";
                 Email = "info@jahangir.com";
                 Role = "Guest";
@@ -39,7 +40,7 @@ namespace Applied_WebApplication.Data
             if (_Row != null)
             {
                 UserID = _Row["UserID"].ToString();
-                UserName = _Row["DisplayName"].ToString();
+                Name = _Row["DisplayName"].ToString();
                 Password = _Row["Password"].ToString();
                 Email = _Row["UserEmail"].ToString();
                 Role = _Row["Role"].ToString();
@@ -56,7 +57,7 @@ namespace Applied_WebApplication.Data
             if (_Row != null)
             {
                 UserID = _Row["UserID"].ToString();
-                UserName = _Row["DisplayName"].ToString();
+                Name = _Row["DisplayName"].ToString();
                 Password = _Row["Password"].ToString();
                 Email = _Row["UserEmail"].ToString();
                 Role = _Row["Role"].ToString();

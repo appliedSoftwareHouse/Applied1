@@ -1,6 +1,8 @@
 using AppReporting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.VisualBasic;
+using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 
 using DataTable = System.Data.DataTable;
@@ -115,7 +117,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
 
             DataTable tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
-           
+
             ReportClass reports = new ReportClass
             {
                 AppUser = User,
@@ -153,54 +155,43 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Trial Balance
-        public IActionResult OnGetTB()
+        public async Task<IActionResult> OnGetTBPrintAsync(DateTime Date1, DateTime Date2)
         {
-
-            //ReportClass MyReport = new();
-            ReportClass.ReportFilters Filters = new ReportClass.ReportFilters
-            {
-                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
-                N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
-                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
-            };
-
-            DataTableClass TB = new(UserName, Tables.TB);
-            //           For the specific date, type code here for datatable. 
-
-
-            ReportClass reports = new ReportClass
-            {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "TB.rdlc",
-                ReportDataSet = "dset_TB",
-                ReportData = TB.MyDataTable,
-                RecordSort = "Code",
-
-                OutputFilePath = AppGlobals.PrintedReportPath,
-                OutputFile = "TB",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
-
-            };
-
-            reports.ReportParameters.Add("CompanyName", CompanyName);
-            reports.ReportParameters.Add("Heading1", CompanyName);
-            reports.ReportParameters.Add("Heading2", "As on " + DateTime.Now.ToString(AppRegistry.FormatDate));
-            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
-
-            ReportLink = reports.GetReportLink();
-
-            IsShowPdf = !reports.IsError;
-
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(reports.MyMessage)); }
-
-
+            TrialBalance TB = new(User);
+            TB.MyDataTable = TB.TB_Dates(Date1, Date2);
+            TB.Heading2 = string.Format("From {0} to {1}", Date1.ToString(AppRegistry.FormatDate), Date2.ToString(AppRegistry.FormatDate));
+            TB.SetParameters();
+            await Task.Run(() => (ReportLink = TB.MyReportClass.GetReportLink()));
+            IsShowPdf = !TB.MyReportClass.IsError;
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(TB.MyReportClass.MyMessage)); }
             return Page();
         }
 
+        public async Task<IActionResult> OnGetOBTBAsync()
+        {
+            var OBDate = AppRegistry.GetDate(UserName, "OBDate");
+            var DateFormat = AppRegistry.FormatDate;
+            TrialBalance TB = new(User);
+            TB.Heading2 = "Opening Balances as on " + OBDate.ToString(DateFormat);
+            TB.MyDataTable = TB.TBOB_Data();
+            await Task.Run(() => (ReportLink = TB.MyReportClass.GetReportLink()));
+
+            IsShowPdf = !TB.MyReportClass.IsError;
+
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(TB.MyReportClass.MyMessage)); }
+            return Page();
+        }
+
+
+
         #endregion
 
+        #region Sales Invoice
+        public IActionResult OnGetSaleInvoice(int TranID)
+        {
+            return Page();
+        }
+        #endregion
 
 
 

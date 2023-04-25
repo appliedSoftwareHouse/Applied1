@@ -328,6 +328,7 @@ namespace Applied_WebApplication.Data
 
             foreach (DataRow Row in OBALCompany.Rows)
             {
+                var TranID = Row["ID"];
                 Voucher = new();
                 if ((decimal)Row["Amount"] >= 0) { _DR = (decimal)Row["Amount"]; _CR = 0.00M; }
                 else
@@ -342,47 +343,54 @@ namespace Applied_WebApplication.Data
                 {
                     Voucher.Add(tb_Ledger.MyDataView[0].Row);
                     Voucher.Add(tb_Ledger.MyDataView[1].Row);
+
                 }
                 else
                 {
-                    tb_Ledger.NewRecord();
-                    tb_Ledger.CurrentRow["ID"] = 0;
-                    tb_Ledger.CurrentRow["TranID"] = Row["ID"];
-                    tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.OBalCom.ToString();
-                    tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
-                    tb_Ledger.CurrentRow["Vou_No"] = VoucherType.OBalCom.ToString();
-                    tb_Ledger.CurrentRow["SR_No"] = 1;
-                    tb_Ledger.CurrentRow["Ref_No"] = "OBalance";
-                    tb_Ledger.CurrentRow["BookID"] = 0;
-                    tb_Ledger.CurrentRow["COA"] = (int)Row["COA"];
-                    tb_Ledger.CurrentRow["DR"] = _DR;
-                    tb_Ledger.CurrentRow["CR"] = _CR;
-                    tb_Ledger.CurrentRow["Customer"] = Row["Company"];
-                    tb_Ledger.CurrentRow["Project"] = Row["Project"];
-                    tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
-                    tb_Ledger.CurrentRow["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
-                    tb_Ledger.CurrentRow["Comments"] = DBNull.Value;
-                    Voucher.Add(tb_Ledger.CurrentRow);
+                    Voucher.Add(tb_Ledger.NewRecord());
+                    Voucher.Add(tb_Ledger.NewRecord());
+                   
+                    Voucher[0]["ID"] = 0;
+                    Voucher[1]["ID"] = 0;
+                    Voucher[0]["TranID"] = (int)TranID;
+                    Voucher[1]["TranID"] = (int)TranID;
 
-                    tb_Ledger.NewRecord();
-                    tb_Ledger.CurrentRow["ID"] = 0;
-                    tb_Ledger.CurrentRow["TranID"] = Row["ID"];
-                    tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.OBalCom.ToString();
-                    tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
-                    tb_Ledger.CurrentRow["Vou_No"] = VoucherType.OBalCom.ToString();
-                    tb_Ledger.CurrentRow["SR_No"] = 2;
-                    tb_Ledger.CurrentRow["Ref_No"] = "OBalance";
-                    tb_Ledger.CurrentRow["BookID"] = 0;
-                    tb_Ledger.CurrentRow["COA"] = OBCom;
-                    tb_Ledger.CurrentRow["DR"] = _CR;                                           // DR equal of CR of first entry
-                    tb_Ledger.CurrentRow["CR"] = _DR;                                           // CR equal of DR of first entry
-                    tb_Ledger.CurrentRow["Customer"] = Row["Company"];
-                    tb_Ledger.CurrentRow["Project"] = Row["Project"];
-                    tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
-                    tb_Ledger.CurrentRow["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
-                    tb_Ledger.CurrentRow["Comments"] = DBNull.Value;
-                    Voucher.Add(tb_Ledger.CurrentRow);
                 }
+
+                //Voucher[0]["ID"] = Row["ID"];
+                //Voucher[0]["TranID"] = Row["TranID"];
+                Voucher[0]["Vou_Type"] = VoucherType.OBalCom.ToString();
+                Voucher[0]["Vou_Date"] = Vou_Date;
+                Voucher[0]["Vou_No"] = VoucherType.OBalCom.ToString();
+                Voucher[0]["SR_No"] = 1;
+                Voucher[0]["Ref_No"] = "OBalance";
+                Voucher[0]["BookID"] = 0;
+                Voucher[0]["COA"] = (int)Row["COA"];
+                Voucher[0]["DR"] = _DR;
+                Voucher[0]["CR"] = _CR;
+                Voucher[0]["Customer"] = Row["Company"];
+                Voucher[0]["Project"] = Row["Project"];
+                Voucher[0]["Employee"] = Row["Employee"];
+                Voucher[0]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                Voucher[0]["Comments"] = DBNull.Value;
+             
+                //Voucher[1]["ID"] = Row["ID"];
+                //Voucher[1]["TranID"] = Row["TranID"];
+                Voucher[1]["Vou_Type"] = VoucherType.OBalCom.ToString();
+                Voucher[1]["Vou_Date"] = Vou_Date;
+                Voucher[1]["Vou_No"] = VoucherType.OBalCom.ToString();
+                Voucher[1]["SR_No"] = 2;
+                Voucher[1]["Ref_No"] = "OBalance";
+                Voucher[1]["BookID"] = 0;
+                Voucher[1]["COA"] = OBCom;
+                Voucher[1]["DR"] = _CR;                                           // DR equal of CR of first entry
+                Voucher[1]["CR"] = _DR;                                           // CR equal of DR of first entry
+                Voucher[1]["Customer"] = Row["Company"];
+                Voucher[1]["Project"] = Row["Project"];
+                Voucher[1]["Employee"] = Row["Employee"];
+                Voucher[1]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                Voucher[1]["Comments"] = DBNull.Value;
+                
 
                 // Validation of Voucher;
                 bool IsValidated1 = tb_Ledger.TableValidation.Validation(Voucher[0]);

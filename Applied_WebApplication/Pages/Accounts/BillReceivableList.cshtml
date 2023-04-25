@@ -25,7 +25,7 @@
                     <th style="width:10%">
                         <button type="submit"
                                 class="btn btn-link btn-outline-light"
-                                asp-page-handler="Edit">
+                                asp-page-handler="Add">
 
                             <i class="bi bi-database-fill-add text-success"></i>
                         </button>
@@ -50,15 +50,15 @@
                         <td>@_Amount.ToString(FMTCurrency)</td>
                         <td>
                             <a formaction="get"
-                           asp-page="BillReceivable"
-                           asp-route-TranID=@Row["ID"]
-                           asp-route-ID2="1">
+                           asp-page="./Sale/SaleInvoice"
+                           asp-route-TranID="@Row["ID"]"
+                           asp-route-Sr_No="1">
 
                                 <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
                             </a>
                             <a asp-page="BillReceivableList"
                            asp-page-handler="Delete"
-                           asp-route-id=@Row["ID"]
+                           asp-route-id="@Row["ID"]"
                            asp-route-Srno="1">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>

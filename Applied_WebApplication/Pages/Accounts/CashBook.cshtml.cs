@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Data.Entity;
 using System.Drawing;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.AppRegistry;
@@ -15,6 +16,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public MyParameters Variables { get; set; }
         public BookRecord MyRecord { get; set; }
         public DataTable Cashbook = new DataTable();
+ 
         public List<Message> ErrorMessages = new();
         public string FMTNumber { get; set; }
         public string FMTCurrency { get; set; }
@@ -140,7 +142,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 return Page();
             }
         }
-
         public IActionResult OnPostDelete(int ID)
         {
             ErrorMessages = new();
@@ -160,6 +161,11 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
             }
             return RedirectToPage("CashBook");
+        }
+        
+        public DataTable Entries(int ID)
+        {
+            return GetRecords(UserName, Tables.Ledger, "ID=" + ID);
         }
 
         [BindProperties]

@@ -5,24 +5,48 @@
     var UserName = User.Identity.Name;
 }
 
+
 <div class="container AppHeading-2">
-    <h4 class="TextCenter">TRIAL BALANCE</h4>
+    <h5 class="TextCenter">TRIAL BALANCE</h5>
 </div>
 
 
 <form method="post">
-<div class="conatianer">
-    <div class="row">
-        <div class="col-10">
-            <h5 class="TextCenter">TRIAL BALANCE FILTER AREA</h5>
+    <div class="conatianer">
+        <div class="row mb-1">
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text input-group-sm" id="basic-addon1">From</span>
+                    <input type="date" class="form-control" placeholder="Date From" asp-for="@Model.Variables.DateFrom" aria-label="Date1" aria-describedby="basic-addon1">
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="input-group mb-3">
+                    <span class="input-group-text input-group-sm" id="basic-addon1">To</span>
+                    <input type="date" class="form-control" placeholder="Date To" asp-for="@Model.Variables.DateTo" aria-label="Date2" aria-describedby="basic-addon2">
+                </div>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="OBTB">Opening</button>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="TBALL">All</button>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Refresh">Refresh</button>
+            </div>
+            <div class="col-1">
+                <button type="submit"
+                        class="btn btn-primary btn-sm float-end"
+                        asp-page-handler="TBPrint">
+                    PRINT
+                </button>
+            </div>
+
+
         </div>
-        <div class="col-2 align-items-end">
-           
-                <button type="submit" class="btn btn-primary"  asp-page-handler="TB">PRINT</button>
-          
-        </div>
+
     </div>
-</div>
 </form>
 <div class="container">
     <table class="table-list">
@@ -32,7 +56,6 @@
                 <th>Title of Account</th>
                 <th>Debit</th>
                 <th>Credit</th>
-                <th>Amount</th>
             </tr>
         </thead>
         <tbody>

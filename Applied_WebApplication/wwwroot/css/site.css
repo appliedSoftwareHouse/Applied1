@@ -124,24 +124,15 @@ AppHeading-2:hover {
     padding-right: 2px
 }
 
+    .table-list tr:hover {
+        background-color: #ffff99;
+    }
+
 .table1, th {
     background: lightblue;
     text-align: center;
     font-weight: bold;
 }
-
-
-.table-list, td:hover {
-    background-color: DodgerBlue;
-}
-
-
-    .table-list td {
-        background: #f3f6f4
-    }
-
-
-
 
 
 .table-col-amount {

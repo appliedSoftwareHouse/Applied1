@@ -21,33 +21,25 @@
     <Compile Remove="DataSets\**" />
     <Compile Remove="Reports\**" />
     <Compile Remove="wwwroot\LocalDB\**" />
-    <Compile Remove="wwwroot\PrintedReports\Guest\**" />
-    <Compile Remove="wwwroot\PrintedReports\HFSSteel\**" />
-    <Compile Remove="wwwroot\PrintedReports\Users\**" />
+    <Compile Remove="wwwroot\PrintedReports\**" />
     <Compile Remove="wwwroot\Reports\PrintReports\**" />
     <Compile Remove="wwwroot\SQLiteDB\**" />
     <Content Remove="DataSets\**" />
     <Content Remove="Reports\**" />
     <Content Remove="wwwroot\LocalDB\**" />
-    <Content Remove="wwwroot\PrintedReports\Guest\**" />
-    <Content Remove="wwwroot\PrintedReports\HFSSteel\**" />
-    <Content Remove="wwwroot\PrintedReports\Users\**" />
+    <Content Remove="wwwroot\PrintedReports\**" />
     <Content Remove="wwwroot\Reports\PrintReports\**" />
     <Content Remove="wwwroot\SQLiteDB\**" />
     <EmbeddedResource Remove="DataSets\**" />
     <EmbeddedResource Remove="Reports\**" />
     <EmbeddedResource Remove="wwwroot\LocalDB\**" />
-    <EmbeddedResource Remove="wwwroot\PrintedReports\Guest\**" />
-    <EmbeddedResource Remove="wwwroot\PrintedReports\HFSSteel\**" />
-    <EmbeddedResource Remove="wwwroot\PrintedReports\Users\**" />
+    <EmbeddedResource Remove="wwwroot\PrintedReports\**" />
     <EmbeddedResource Remove="wwwroot\Reports\PrintReports\**" />
     <EmbeddedResource Remove="wwwroot\SQLiteDB\**" />
     <None Remove="DataSets\**" />
     <None Remove="Reports\**" />
     <None Remove="wwwroot\LocalDB\**" />
-    <None Remove="wwwroot\PrintedReports\Guest\**" />
-    <None Remove="wwwroot\PrintedReports\HFSSteel\**" />
-    <None Remove="wwwroot\PrintedReports\Users\**" />
+    <None Remove="wwwroot\PrintedReports\**" />
     <None Remove="wwwroot\Reports\PrintReports\**" />
     <None Remove="wwwroot\SQLiteDB\**" />
   </ItemGroup>
@@ -58,8 +50,6 @@
 
   <ItemGroup>
     <Content Remove="Pages\ReportPrint\CompanyGL.cshtml" />
-    <Content Remove="wwwroot\PrintedReports\COAList" />
-    <Content Remove="wwwroot\PrintedReports\COAList.pdf" />
   </ItemGroup>
 
   <ItemGroup>
@@ -76,7 +66,6 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\Backup\" />
-    <Folder Include="wwwroot\PrintedReports\" />
   </ItemGroup>
 
   <ItemGroup>

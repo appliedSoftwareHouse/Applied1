@@ -9,25 +9,35 @@ namespace Applied_WebApplication.Pages.Accounts
     public class VouchersListModel : PageModel
     {
         [BindProperty]
-        public MyParameters Variables { get; set; } = new();
-        public DataTable Vouchers { get; set; } = new();
+        public MyParameters Variables { get; set; }
+        public DataTable Vouchers { get; set; }
+        public List<Message> ErrorMessages = new List<Message>();
         public string UserName => User.Identity.Name;
 
         public void OnGet()
         {
-            
-
-            Variables = new()
+            try
             {
-                VouType = (string)AppRegistry.GetKey(UserName, "Vou_VouType", KeyType.Text),
-                DateFrom = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtFrom", KeyType.Date),
-                DateTo = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtTo", KeyType.Date)
-            };
+               
+                Variables = new()
+                {
+                    VouType = (string)AppRegistry.GetKey(UserName, "Vou_VouType", KeyType.Text),
+                    DateFrom = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtFrom", KeyType.Date),
+                    DateTo = (DateTime)AppRegistry.GetKey(UserName, "Vou_DtTo", KeyType.Date)
+                };
 
-            if (string.IsNullOrEmpty(Variables.VouType)) { Variables.VouType = VoucherType.Cash.ToString(); }
+                if (string.IsNullOrEmpty(Variables.VouType)) { Variables.VouType = VoucherType.Cash.ToString(); }
 
-            Vouchers = GetData();
+                Vouchers = GetData();
 
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage(e.Message));
+                
+            }
+
+            
         }
 
         public DataTable GetData()

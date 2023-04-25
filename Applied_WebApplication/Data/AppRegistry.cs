@@ -11,7 +11,7 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDate;
         public static readonly string FormatDateY2;
         public static readonly string FormatDateM2;
-      
+
     }
 
 
@@ -39,10 +39,19 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDateY2 = "dd-MMM-yy";
         public static readonly string FormatDateM2 = "dd-MM-yy";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
-     
 
-        public static DateTime GetFiscalFrom() { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
-        public static DateTime GetFiscalTo() { return new DateTime(2023, 06, 30); }
+
+        public static DateTime GetFiscalFrom()
+        { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
+        public static DateTime GetFiscalTo() 
+        { return new DateTime(2023, 06, 30); }
+
+        public static DateTime GetFiscalFrom(string UserName)
+        { return GetDate(UserName, "FiscalStart"); }
+
+        public static DateTime GetFiscalTo(string UserName)
+        { return GetDate(UserName, "FiscalEnd"); }
+
 
         public static string GetFormatCurrency(string UserName)
         {
@@ -55,7 +64,7 @@ namespace Applied_WebApplication.Data
             var _Format = GetText(UserName, "FMTCurrency");
             var _Sign = GetCurrencySign(UserName);
             var _Amount = ((decimal)Amount).ToString(_Format);
-            return string.Concat(_Amount, " ",_Sign);
+            return string.Concat(_Amount, " ", _Sign);
         }
         public static string Amount(string UserName, object Amount)
         {
@@ -76,7 +85,7 @@ namespace Applied_WebApplication.Data
         public static string GetCurrencySign(string UserName)
         {
             var sign = GetText(UserName, "CurrencySign");
-            if(sign.Length > 0) { return sign; }
+            if (sign.Length > 0) { return sign; }
             return "Rs.";
         }
 
@@ -162,7 +171,9 @@ namespace Applied_WebApplication.Data
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
             {
-                return (string)tb_Registry.MyDataView[0]["cValue"];
+                var value = tb_Registry.MyDataView[0]["cValue"];
+                if (value == DBNull.Value) { return ""; }
+                return (string)value;
             }
             else
             {
@@ -250,19 +261,19 @@ namespace Applied_WebApplication.Data
         {
             var _Text = string.Format("SELECT * FROM [Registry] WHERE Code='{0}'", Key.ToString());
             SQLiteConnection _Connection = ConnectionClass.AppConnection(UserName);
-            SQLiteCommand _Command = new(_Text,_Connection);
+            SQLiteCommand _Command = new(_Text, _Connection);
             SQLiteDataAdapter _Adapter = new(_Command);
             DataSet _DataSet = new();
             _Adapter.Fill(_DataSet, "Registry");
-            if(_DataSet.Tables.Count==1)
+            if (_DataSet.Tables.Count == 1)
             {
-                if (_DataSet.Tables[0].Rows.Count==1) 
+                if (_DataSet.Tables[0].Rows.Count == 1)
                 {
-                    if(KeyType == KeyType.Text) { return _DataSet.Tables[0].Rows[0]["cValue"]; }
-                    if(KeyType == KeyType.Date) { return _DataSet.Tables[0].Rows[0]["dValue"]; }
-                    if(KeyType == KeyType.Number) { return _DataSet.Tables[0].Rows[0]["nValue"]; }
-                    if(KeyType == KeyType.Currency) { return _DataSet.Tables[0].Rows[0]["mValue"]; }
-                    if(KeyType == KeyType.Boolean) { return _DataSet.Tables[0].Rows[0]["bValue"]; }
+                    if (KeyType == KeyType.Text) { return _DataSet.Tables[0].Rows[0]["cValue"]; }
+                    if (KeyType == KeyType.Date) { return _DataSet.Tables[0].Rows[0]["dValue"]; }
+                    if (KeyType == KeyType.Number) { return _DataSet.Tables[0].Rows[0]["nValue"]; }
+                    if (KeyType == KeyType.Currency) { return _DataSet.Tables[0].Rows[0]["mValue"]; }
+                    if (KeyType == KeyType.Boolean) { return _DataSet.Tables[0].Rows[0]["bValue"]; }
                 }
             }
 

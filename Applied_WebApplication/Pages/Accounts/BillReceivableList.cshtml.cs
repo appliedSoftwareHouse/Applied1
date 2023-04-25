@@ -19,7 +19,10 @@ namespace Applied_WebApplication.Pages.Accounts
         public void OnGetEdit()
         {
         }
-
+        public IActionResult OnPostAdd()
+        {
+            return RedirectToPage("../Sales/SaleInvoice");
+        }
         public IActionResult OnPost(int? id)
         {
             id ??= 0;

@@ -10,7 +10,7 @@ namespace Applied_WebApplication.Data
         public string SQLAction { get; set; }
         public DataTable MyDataTable { get; set; }
 
-        public List<Message> MyMessages = new List<Message>();
+        public List<Message> MyMessages = new();
         public PostType MyVoucherType { get; set; }
         private DataView MyDataView { get; set; }
         public int Count => MyMessages.Count;

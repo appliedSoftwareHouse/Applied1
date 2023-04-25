@@ -39,8 +39,8 @@ namespace Applied_WebApplication.Pages.Account
                     var Claims = new List<Claim>
                     {
                     new Claim(ClaimTypes.Name, uprofile.UserID),
-                    new Claim(ClaimTypes.GivenName, uprofile.UserName),
-                    new Claim(ClaimTypes.Surname, uprofile.UserName),
+                    new Claim(ClaimTypes.GivenName, uprofile.Name),
+                    new Claim(ClaimTypes.Surname, uprofile.Name),
                     new Claim(ClaimTypes.Email, uprofile.Email),
                     new Claim(ClaimTypes.Role,uprofile.Role),
                     new Claim("Company", uprofile.Company),
@@ -55,7 +55,7 @@ namespace Applied_WebApplication.Pages.Account
                     Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
                     Encoding.GetEncoding("windows-1252");
 
-                    return RedirectToPage("/Index", uprofile.UserName);
+                    return RedirectToPage("/Index", uprofile.Name);
                 }
             }
             return Page();

@@ -122,13 +122,8 @@
                                         <td class="table-col-amount">@_DR.ToString(FMTAmount)</td>
                                         <td class="table-col-amount">@_CR.ToString(FMTAmount)</td>
                                         @if (decimal.Parse(Row["BAL"].ToString()) > 0)
-                                        {
-                                            <td class="table-col-amount">@Row["CR"]</td>
-                                        }
-                                        else
-                                        {
-                                            <td class="table-col-amount-red">@Row["CR"]</td>
-                                        }
+                                        {  <td class="table-col-amount">@Row["CR"]</td> }
+                                        else { <td class="table-col-amount-red">@Row["CR"]</td> }
 
                                         @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
@@ -162,6 +157,7 @@
                                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                             </div>
                                                             <div class="modal-body">
+
                                                                 Show General Voucher Transaction.
                                                             </div>
                                                             <div class="modal-footer">
@@ -172,10 +168,8 @@
                                                 </div>
                                             </td>
                                         }
-
                                     </tr>
                                 }
-
                             </tbody>
                         </table>
                     </div>

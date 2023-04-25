@@ -26,15 +26,15 @@ namespace Applied_WebApplication.Pages.Account
   
             Variables = new()
             {
-                OBCompany = (int)AppRegistry.GetKey(UserName, "OBCompany", KeyType.Number),
-                OBStock = (int)AppRegistry.GetKey(UserName, "OBStock", KeyType.Number),
-                FiscalStart = (DateTime)AppRegistry.GetKey(UserName, "FiscalStart", KeyType.Date),
-                FiscalEnd = (DateTime)AppRegistry.GetKey(UserName, "FiscalEnd", KeyType.Date),
-                StockExpiry = (int)AppRegistry.GetKey(UserName, "StockExpiry", KeyType.Number),
-                CurrencySign = (string)AppRegistry.GetKey(UserName, "CurrencySign", KeyType.Text),
-                OBDate = (DateTime)AppRegistry.GetKey(UserName, "OBDate", KeyType.Date),
-                CurrencyFormat = (string)AppRegistry.GetText(UserName, "FMTCurrency"),
-                DateFormat = (string)AppRegistry.GetText(UserName, "FMTDate")
+                OBCompany = AppRegistry.GetNumber(UserName, "OBCompany"),
+                OBStock = AppRegistry.GetNumber(UserName, "OBStock"),
+                FiscalStart = AppRegistry.GetDate(UserName, "FiscalStart"),
+                FiscalEnd = AppRegistry.GetDate(UserName, "FiscalEnd"),
+                StockExpiry = AppRegistry.GetNumber(UserName, "StockExpiry"),
+                CurrencySign = AppRegistry.GetText(UserName, "CurrencySign"),
+                OBDate = AppRegistry.GetDate(UserName, "OBDate"),
+                CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
+                DateFormat = AppRegistry.GetText(UserName, "FMTDate")
                 
         };
         }

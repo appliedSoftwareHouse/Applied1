@@ -161,6 +161,18 @@ namespace Applied_WebApplication.Data
             return _Table.NewRecord();
         }
 
+        public static DataTable GetVoucher(string UserName,  int TranID, VoucherType VouType)
+        {
+            var Filter = string.Format("TranID={0} AND Vou_Type = '{1}'", TranID, VouType);
+            DataTableClass _Table = new(UserName, Tables.Ledger, Filter);
+            if (_Table.MyDataTable.Rows.Count >=2)
+            {
+                return _Table.MyDataTable;
+            }
+            return new DataTable();
+        }
+
+
         public static string GetDate(object _Date)
         {
             return DateTime.Parse(_Date.ToString()).ToString(AppRegistry.FormatDate);

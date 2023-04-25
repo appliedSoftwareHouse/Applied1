@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using NPOI.OpenXmlFormats;
+using NPOI.OpenXmlFormats.Wordprocessing;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 
@@ -49,29 +51,75 @@ namespace Applied_WebApplication.Data
             SetTableClass(_UserName, _Tables, _Filter);
         }
 
+        public DataTableClass(string _UserName, string _Text, string _Filter)
+        {
+            if (_Text.Length > 0 || _Text != null)
+            {
+
+
+            }
+        }
+
+
         #endregion
 
         #region DataTable
 
         public void SetTableClass(string _UserName, Tables _Tables, string? Filter)
         {
+            try
+            {
+                UserProfile UProfile = new(_UserName);
+                ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
+                MyConnection = new SQLiteConnection(ConnectionString);
+                MyUserName = _UserName;
+                Filter ??= string.Empty;
+                View_Filter = Filter;
+                MyTableName = _Tables.ToString();
+                GetDataTable();
+                MyDataView ??= new DataView();
+                TableValidation = new(MyDataTable);
+                if (Filter != null) { View_Filter = Filter; }
+                CheckError();
 
-            UserProfile UProfile = new(_UserName);
-            ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
-            MyConnection = new SQLiteConnection(ConnectionString);
-            MyUserName = _UserName;
-            MyTableName = _Tables.ToString();
-            Filter ??= string.Empty;
-            View_Filter = Filter;
-            GetDataTable();
-            MyDataView ??= new DataView();
-            TableValidation = new(MyDataTable);
-            if (Filter != null) { View_Filter = Filter; }
-            CheckError();
+                Command_Update = new SQLiteCommand(MyConnection);
+                Command_Delete = new SQLiteCommand(MyConnection);
+                Command_Insert = new SQLiteCommand(MyConnection);
+            }
+            catch (Exception e)
+            {
+                MyMessage = e.Message;
+            }
 
-            Command_Update = new SQLiteCommand(MyConnection);
-            Command_Delete = new SQLiteCommand(MyConnection);
-            Command_Insert = new SQLiteCommand(MyConnection);
+        }
+
+
+        public void SetTableClass(string _UserName, string _Text, string? Filter)
+        {
+            try
+            {
+                UserProfile UProfile = new(_UserName);
+                ConnectionString = _Text;
+                MyConnection = new SQLiteConnection(ConnectionString);
+                MyUserName = _UserName;
+
+                Filter ??= string.Empty;
+                View_Filter = Filter;
+
+                GetDataTable();
+                MyDataView ??= new DataView();
+                TableValidation = new(MyDataTable);
+                if (Filter != null) { View_Filter = Filter; }
+                CheckError();
+
+                Command_Update = new SQLiteCommand(MyConnection);
+                Command_Delete = new SQLiteCommand(MyConnection);
+                Command_Insert = new SQLiteCommand(MyConnection);
+            }
+            catch (Exception e)
+            {
+                MyMessage = e.Message;
+            }
         }
 
 
@@ -93,6 +141,36 @@ namespace Applied_WebApplication.Data
             return datatable;
         }
 
+        public static DataTable GetTable(string UserName, string _Text, string? _Sort)                      // Load Database 
+        {
+            DataTable _Table = new DataTable();
+            if (_Text.Length > 0)
+            {
+                try
+                {
+                    _Sort ??= string.Empty;
+                    if (_Sort.Length > 0) { _Text = string.Concat(_Text, "ORDER BY ", _Sort); }
+                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+
+                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                    SQLiteCommand _Command = new(_Text, MyConnection);
+                    SQLiteDataAdapter _Adapter = new(_Command);
+                    DataSet _DataSet = new();
+                    _Adapter.Fill(_DataSet);
+
+                    if (_DataSet.Tables.Count == 1)
+                    {
+                        _Table = _DataSet.Tables[0];
+                    }
+                }
+                catch (Exception)
+                {
+                    _Table = new DataTable();
+                }
+            }
+            return _Table;
+        }
+
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
@@ -111,10 +189,11 @@ namespace Applied_WebApplication.Data
                 {
 
                     MyDataTable = _DataSet.Tables[0];
+                    MyTableName = MyDataTable.TableName;
                     MyDataView = MyDataTable.AsDataView();
                     if (MyDataTable.Rows.Count > 0)
                     {
-                        if(CurrentRow==null) { CurrentRow = MyDataTable.Rows[0]; }
+                        if (CurrentRow == null) { CurrentRow = MyDataTable.Rows[0]; }
                     }
                 }
                 else { MyDataTable = new DataTable(); MyConnection.Close(); }
