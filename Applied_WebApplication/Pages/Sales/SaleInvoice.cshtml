@@ -283,20 +283,20 @@
                             var _Qty = (decimal)Row["Qty"];
                             var _Rate = (decimal)Row["Rate"];
                             var _Amount = _Qty * _Rate;
-                            var _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
-                            var _TaxAmount = _Amount * (_TaxRate / 100);
+                            var _TaxRate = (AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]))/100;
+                            var _TaxAmount = _Amount * (_TaxRate);
                             var _NetAmount = _Amount + _TaxAmount;
 
                             <tr>
-                                <td>@Row["Sr_No"]</td>
-                                <td>_TitleStock</td>
+                                <td style="width:5%">@Row["Sr_No"]</td>
+                                <td>@_TitleStock</td>
                                 <td>@Row["Batch"]</td>
-                                <td>@_Qty.ToString(FMTCurrency1)</td>
-                                <td>@_Rate.ToString(FMTCurrency2)</td>
-                                <td>@_Amount.ToString(FMTCurrency1)</td>
-                                <td>@_TaxRate.ToString(FMTCurrency2+"%")</td>
-                                <td>@_TaxAmount.ToString(FMTCurrency1)</td>
-                                <td>@_NetAmount.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_Qty.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_Rate.ToString(FMTCurrency2)</td>
+                                <td class="table-col-amount">@_Amount.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2+"%")</td>
+                                <td class="table-col-amount">@_TaxAmount.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_NetAmount.ToString(FMTCurrency1)</td>
                                 <td>
                                     <button class="listbutton-blue"><i class="bi bi-pencil-fill"></i></button>
                                     <button class="listbutton-red"><i class="bi bi-trash-fill"></i></button>
