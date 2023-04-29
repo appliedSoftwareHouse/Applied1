@@ -42,7 +42,7 @@ namespace Applied_WebApplication.Pages.Sales
                 if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempVoucher.Rows[0]["ID"]; }
                 TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
 
-                if (TempInvoice1.TempVoucher.Rows.Count == 0)
+                if (TempInvoice1.CountTemp == 0)
                 {
                     TempInvoice1.CurrentRow = TempInvoice1.NewRecord();
                     TempInvoice1.CurrentRow["ID"] = 0;
@@ -52,6 +52,17 @@ namespace Applied_WebApplication.Pages.Sales
                 else
                 {
                     TempInvoice1.CurrentRow = TempInvoice1.TempVoucher.Rows[0];
+                }
+
+                if (TempInvoice2.CountTemp == 0)
+                {
+                    TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
+                    TempInvoice2.CurrentRow["ID"] = 0;
+                    TempInvoice2.CurrentRow["Sr_No"] = 1;
+                }
+                else
+                {
+                    TempInvoice2.CurrentRow = TempInvoice2.TempVoucher.Rows[0];
                 }
 
                 Row1 = TempInvoice1.CurrentRow;
@@ -72,11 +83,11 @@ namespace Applied_WebApplication.Pages.Sales
                 if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempVoucher.Rows[0]["ID"]; }
                 TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
 
-                if (TempInvoice1.Count > 0)
+                if (TempInvoice1.CountTemp > 0)
                 {
                     TempInvoice1.CurrentRow = TempInvoice1.TempVoucher.Rows[0];
                 }
-                
+
                 if (Sr_No > 0)
                 {
                     TempInvoice2.MyDataView.RowFilter = $"Sr_No={Sr_No}";
@@ -89,14 +100,13 @@ namespace Applied_WebApplication.Pages.Sales
                         Row2Variables();
                         return;
                     }
-
                 }
 
                 if (Sr_No == -1)
                 {
                     TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
                     var Max_SrNo = TempInvoice2.TempVoucher.Compute("MAX(Sr_No)", "");
-                    TempInvoice2.CurrentRow["Sr_No"] = (int)Max_SrNo;
+                    TempInvoice2.CurrentRow["Sr_No"] = (int)Max_SrNo + 1;
 
                     Row1 = TempInvoice1.CurrentRow;
                     Row2 = TempInvoice2.CurrentRow;
@@ -104,17 +114,10 @@ namespace Applied_WebApplication.Pages.Sales
 
                     Row2Variables();
                     return;
-
                 }
-
-
             }
-
             #endregion
-
         }
-
-
         #endregion
 
         #region Variables / Rows
@@ -147,13 +150,14 @@ namespace Applied_WebApplication.Pages.Sales
                 Tax = (int)Row2["Tax"],
                 Description = Row2["Description"].ToString(),
                 Project = (int)Row2["Project"],
-
-
-                Amount = (Variables.Qty * Variables.Rate),
-                TaxRate = (int)AppFunctions.GetTaxRate(UserName, Variables.Tax),
-                TaxAmount = Variables.Amount * Variables.TaxRate,
-                NetAmount = Variables.Amount + Variables.TaxAmount
             };
+
+            Variables.Amount = (Variables.Qty * Variables.Rate);
+            Variables.TaxRate = (int)AppFunctions.GetTaxRate(UserName, Variables.Tax);
+            Variables.TaxAmount = (Variables.Amount * Variables.TaxRate) / 100;
+            Variables.NetAmount = Variables.Amount + Variables.TaxAmount;
+
+
         }
         private void Variables2Row()
         {
@@ -206,22 +210,25 @@ namespace Applied_WebApplication.Pages.Sales
                 TempInvoice1.Save(false);
                 TempInvoice2.CurrentRow["TranID"] = TempInvoice1.CurrentRow["ID"];
                 TempInvoice2.Save(false);
-                ErrorMessages.Add(MessageClass.SetMessage("Sale Invoice saved sucessfully !!!", Color.Yellow));
-
             }
             else
             {
                 ErrorMessages.AddRange(TempInvoice1.ErrorMessages);
                 ErrorMessages.AddRange(TempInvoice2.ErrorMessages);
-
             }
 
+            // Reset and Update Web Page Data
 
-            TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
-            Invoice = TempInvoice2.TempVoucher;
+            if (ErrorMessages.Count == 0)
+            {
+                TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
+                if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.MyDataView[0]["ID"]; }
+                TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
+                Invoice = TempInvoice2.TempVoucher;
+                var message2 = $"Serial No {Variables.Sr_No} of Invoice No {Variables.Vou_No} has been saved successfully.";
+                ErrorMessages.Add(MessageClass.SetMessage(message2, Color.Yellow));
+            }
             return Page();
-
-
         }
         public IActionResult OnPostEdit(int Sr_No)
         {
@@ -237,33 +244,9 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostNew()
         {
-            if (Variables == null) { return Page(); }                    // Not Execute if variable not define properly.
-
-            var VouNumber = Variables.Vou_No;
-            TempTableClass TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-            if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.MyDataView[0]["ID"]; }
-            TempTableClass TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
-            Invoice = TempInvoice2.TempVoucher;
-
-            if (TempInvoice1.CountTemp == 1)
-            {
-                var Max_SrNo = TempInvoice2.TempVoucher.Compute("Max(Sr_No)", $"TranID={Variables.TranID}");
-
-                TempInvoice1.CurrentRow = TempInvoice1.TempVoucher.Rows[0];
-                TempInvoice2.NewRecord();
-                TempInvoice2.CurrentRow["TranID"] = Variables.TranID;
-                TempInvoice2.CurrentRow["Sr_No"] = Conversion.ToInteger(Max_SrNo) + 1;
-                Row1 = TempInvoice1.CurrentRow;
-                Row2 = TempInvoice2.CurrentRow;
-                Row2Variables();
-
-                var Vou_No = Variables.Vou_No;
-                var Sr_No = -1;
-
-                return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
-            }
-
-            return RedirectToPage();
+            var Vou_No = Variables.Vou_No;
+            var Sr_No = -1;
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
         }
         public IActionResult OnPostSave()
         {
@@ -330,7 +313,7 @@ namespace Applied_WebApplication.Pages.Sales
 
                         Variables.Vou_No = GetNewVouNo(Variables.Vou_Date, "SL");
                         SourceTable1.CurrentRow["Vou_No"] = Variables.Vou_No;
-                        //SourceTable1.CurrentRow["ID"] = 0;
+                        SourceTable1.CurrentRow["ID"] = 0;
 
                     }
 
@@ -352,7 +335,6 @@ namespace Applied_WebApplication.Pages.Sales
                         foreach (DataRow Row in SourceTable2.Rows)
                         {
                             SourceTable2.CurrentRow = Row;
-                            //SourceTable2.CurrentRow["TranID"] = Variables.TranID;
                             SourceTable2.Delete();
                         }
                     }
@@ -362,10 +344,14 @@ namespace Applied_WebApplication.Pages.Sales
                         SourceTable2.NewRecord();
                         SourceTable2.CurrentRow.ItemArray = Row.ItemArray;
 
-                        if (TargetVouNo == "NEW") { SourceTable2.CurrentRow["ID"] = 0; }
-
-                        SourceTable2.CurrentRow["TranID"] = Variables.TranID;
+                        if (TargetVouNo.ToUpper() == "NEW")
+                        {
+                            SourceTable2.CurrentRow["TranID"] = SourceTable1.CurrentRow["ID"];
+                            SourceTable2.CurrentRow["ID"] = 0;
+                        }
+                        
                         SourceTable2.Save();
+                        //Variables.Sr_No = Conversion.ToInteger(SourceTable2.CurrentRow["Sr_No"]);
                         ErrorMessages.AddRange(SourceTable2.TableValidation.MyMessages);
                         if (ErrorMessages.Count > 0)
                         {
@@ -386,11 +372,14 @@ namespace Applied_WebApplication.Pages.Sales
 
                     #endregion
 
-                    ErrorMessages.Add(MessageClass.SetMessage("Sale Invoice SAVE in system successfully.", Color.Green));
+                    //var message = $"Save Serial No {Variables.Sr_No} of Sale invoice {Variables.Vou_No} SAVED successfully., ";
+                    var message = $"Sale invoice {Variables.Vou_No} SAVED successfully., ";
+                    ErrorMessages.Add(MessageClass.SetMessage(message, Color.Green));
                 }
             }
             IsSaved = true;
-            return Page();
+
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No = Variables.Vou_No, Sr_No = 1 });
 
 
         }

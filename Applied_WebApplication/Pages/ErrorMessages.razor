@@ -2,6 +2,53 @@
     [Parameter] public List<Message> Errors { get; set; }
 }
 
+<style>
+    .error-msg {
+        margin-left: auto;
+        background-color: Tomato;
+        padding: 0px;
+        color: white;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 10px;
+    }
+
+    .alert {
+        margin-left: auto;
+        background-color: Tomato;
+        padding: 0px;
+        color: white;
+        margin-top: 3px;
+        margin-bottom: 3px;
+        margin-right: auto;
+        margin-left: auto;
+        padding-left: 10px;
+    }
+
+    .color-green{
+        background: greenyellow;
+        color: black
+    }
+
+    .color-yellow{
+        background: yellow; 
+        color:black
+    }
+
+    .color-red{
+          background: red;
+        color:black
+    }
+
+     .color-blue{
+          background: lightblue;
+        color:black
+    }
+</style>
+
+
 <div class="container">
     @foreach (Message _Error in Errors)
     {
@@ -11,22 +58,26 @@
         }
         if (_Error.Colour == System.Drawing.Color.Green)
         {
-            <div class="error-msg" style="background: greenyellow; color:black"> @_Error.Msg; </div>
+            <div class="error-msg color-green"> @_Error.Msg; </div>
         }
 
         if (_Error.Colour == System.Drawing.Color.Blue)
         {
-            <div class="error-msg" style="background: lightblue; color:black"> @_Error.Msg; </div>
+            <div class="error-msg color-blue"> @_Error.Msg; </div>
         }
 
         if (_Error.Colour == System.Drawing.Color.Yellow)
         {
-            <div class="error-msg" style="background: yellow; color:black"> @_Error.Msg; </div>
+            <div class="alert color-yellow alert-dismissible fade show" role="alert">
+                @_Error.Msg
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            @*<div class="error-msg color-yellow"> @_Error.Msg; </div>*@
         }
 
         if (_Error.Colour == System.Drawing.Color.Red)
         {
-            <div class="error-msg" style="background: Red; color:yellow"> @_Error.Msg; </div>
+            <div class="error-msg color-red"> @_Error.Msg; </div>
         }
     }
 </div>

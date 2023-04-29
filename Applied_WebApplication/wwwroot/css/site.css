@@ -17,17 +17,6 @@ body {
     margin-bottom: 60px;
 }
 
-.error-msg {
-    margin-left: auto;
-    background-color: Tomato;
-    padding: 0px;
-    color: white;
-    margin-top: 3px;
-    margin-bottom: 3px;
-    margin-right: auto;
-    margin-left: auto;
-    padding-left: 10px;
-}
 
 .app-msg {
     margin-left: auto;
