@@ -15,8 +15,18 @@
     var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
+    var _BAL = 0.00M;
 
 }
+
+<style>
+    .date-1{
+        width:100px
+    }
+
+
+</style>
+
 
 <form method="post">
 
@@ -28,8 +38,10 @@
                 <label>CASH BOOK</label>
             </div>
             <div class="col-md-2 mb-1">
+                <div class="date-1">
                 <label for="From">=></label>
                 <input type="date" id="MinDate" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
+                </div>
             </div>
             <div class="col-md-2 mb-1">
                 <label for="To"><=</label>
@@ -86,16 +98,13 @@
                 {
                     <div>
                         <table class="table-list">
-                            <div class="caption">
-                                <h3>CASH BOOK</h3>
-                            </div>
                             <thead class="table-header">
                                 <tr>
                                     <th style="width:10%">Date</th>
                                     <th style="width:10%">Vou No</th>
                                     <th style="width:40%">Description</th>
-                                    <th style="width:10%; text-align: right">Debit</th>
-                                    <th style="width:10%; text-align: right">Credit</th>
+                                    <th style="width:10%; text-align: right">Paid</th>
+                                    <th style="width:10%; text-align: right">Received</th>
                                     <th style="width:10%; text-align: right">Balance</th>
                                     <!--CASH BOOK ADD BUTTON-->
                                     <th style="width:10%; text-align: right">
@@ -109,10 +118,13 @@
                             </thead>
                             <tbody>
 
+                                
                                 @foreach (DataRow Row in Model.Cashbook.Rows)
                                 {
+
                                     decimal _DR = (decimal)Row["DR"];
                                     decimal _CR = (decimal)Row["CR"];
+                                    _BAL += (_CR - _DR);
                                     DateTime _Date = (DateTime)Row["Vou_Date"];
 
                                     <tr>
@@ -121,14 +133,20 @@
                                         <td>@Row["Description"].ToString()</td>
                                         <td class="table-col-amount">@_DR.ToString(FMTAmount)</td>
                                         <td class="table-col-amount">@_CR.ToString(FMTAmount)</td>
-                                        @if (decimal.Parse(Row["BAL"].ToString()) > 0)
-                                        {  <td class="table-col-amount">@Row["CR"]</td> }
-                                        else { <td class="table-col-amount-red">@Row["CR"]</td> }
+                                        @if (decimal.Parse(_BAL.ToString()) > 0)
+                                        {
+                                            <td class="table-col-amount">@_BAL.ToString(FMTAmount)</td>
+                                        }
+                                        else
+                                        {
+                                            <td class="table-col-amount-red">@_BAL.ToString(FMTAmount)</td>
+                                        }
 
                                         @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
                                             <td>
-                                                <a asp-page="CashBookRecord" 
+                                                <div class="text-center">
+                                                <a  asp-page="CashBookRecord" 
                                                 asp-route-id="@Row["ID"]" 
                                                 asp-page-handler="Edit">
                                                 <i class="bi bi-pencil-fill text-primary"></i></a>
@@ -137,7 +155,7 @@
                                                 asp-route-ID="@Row["ID"]">
                                                     <i class="bi bi-trash-fill text-danger"></i>
                                                 </button>
-                                                
+                                                </div>
                                               
                                             </td>
                                         }

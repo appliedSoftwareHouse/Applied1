@@ -24,8 +24,6 @@ namespace Applied_WebApplication.Data
         }
         private DataTable GetRecords()                                                                                                      // Get Records for Ledger.
         {
-
-
             if (UserName == null || string.IsNullOrEmpty(UserName)) { return new DataTable(); }
 
             LedgerParamaters _Parameters = new()
@@ -117,15 +115,15 @@ namespace Applied_WebApplication.Data
             decimal Balance = 0M;
             bool IsBalance = false;
             bool IsFirstOBal = false;
-            decimal DR = 0.00M;
-            decimal CR = 0.00M;
+            //decimal DR = 0.00M;
+            //decimal CR = 0.00M;
             DataRow _NewRow;
 
             foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
             {
                 if ((DateTime)_Row["Vou_Date"] < Param.Date_From)                                               // Skip vouchers if less than from From Date
                 {
-                    Balance += ((decimal)_Row["DR"] - (decimal)_Row["CR"]);
+                    Balance += ((decimal)_Row["CR"] - (decimal)_Row["DR"]);
                     IsFirstOBal = true;
                 }
                 else
@@ -145,15 +143,15 @@ namespace Applied_WebApplication.Data
                                 _NewRow["Status"] = "Posted";
                                 if (Balance >= 0)                                                                       // Debit Amount of Voucher
                                 {
-                                    _NewRow["DR"] = Balance;
-                                    _NewRow["CR"] = 0;
+                                    _NewRow["DR"] = 0.00M;
+                                    _NewRow["CR"] = Balance;
                                     _NewRow["BAL"] = Balance;
                                 }
                                 // Credit Amout of voucher
                                 else
                                 {
-                                    _NewRow["DR"] = 0;
-                                    _NewRow["CR"] = Balance;
+                                    _NewRow["DR"] = Balance;
+                                    _NewRow["CR"] = 0.00M;
                                     _NewRow["BAL"] = Balance;
                                 }
                                 _Ledger.Rows.Add(_NewRow);
@@ -161,9 +159,9 @@ namespace Applied_WebApplication.Data
                             }
                         }
 
-                        DR = decimal.Parse(_Row["DR"].ToString());
-                        CR = decimal.Parse(_Row["CR"].ToString());
-                        Balance += (DR - CR);
+                        var DR = decimal.Parse(_Row["DR"].ToString());
+                        var CR = decimal.Parse(_Row["CR"].ToString());
+                        Balance += (CR - DR);
 
                         _NewRow = _Ledger.NewRow();
                         _NewRow["ID"] = _Row["ID"];

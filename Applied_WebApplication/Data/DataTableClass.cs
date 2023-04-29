@@ -51,11 +51,19 @@ namespace Applied_WebApplication.Data
             SetTableClass(_UserName, _Tables, _Filter);
         }
 
+        public DataTableClass(string _UserName, string _Text)
+        {
+            if (_Text.Length > 0 || _Text != null)
+            {
+                SetTableClass(_UserName, _Text, "");
+            }
+        }
+
         public DataTableClass(string _UserName, string _Text, string _Filter)
         {
             if (_Text.Length > 0 || _Text != null)
             {
-
+                SetTableClass(_UserName, _Text, _Filter);
 
             }
         }

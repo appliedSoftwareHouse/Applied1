@@ -212,13 +212,13 @@ namespace Applied_WebApplication.Data
 
         public void Save(bool Validate)
         {
-            //ErrorMessages = new();
+            
             if (Validate)
             {
                 TableValidate = new(TempVoucher);
                 TableValidate.Validation(CurrentRow);
             }
-            //ErrorMessages = TableValidate.MyMessages;
+          
             if (ErrorMessages.Count == 0)
             {
                 SQLiteCommand _Command;
@@ -247,6 +247,8 @@ namespace Applied_WebApplication.Data
 
             }
         }
+
+     
 
         #endregion
 
