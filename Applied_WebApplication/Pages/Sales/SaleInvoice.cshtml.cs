@@ -80,7 +80,15 @@ namespace Applied_WebApplication.Pages.Sales
             {
                 Variables.Vou_No = Vou_No;
                 TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-                if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempVoucher.Rows[0]["ID"]; }
+
+                if(TempInvoice1.CountTemp==0 && TempInvoice1.Count>0)
+                {
+                    Variables.TranID = (int)TempInvoice1.SourceData.Rows[0]["ID"];
+                }
+                if(TempInvoice1.CountTemp>0)
+                {
+                    Variables.TranID = (int)TempInvoice1.TempVoucher.Rows[0]["TranID"];
+                }
                 TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
 
                 if (TempInvoice1.CountTemp > 0)
@@ -90,6 +98,7 @@ namespace Applied_WebApplication.Pages.Sales
 
                 if (Sr_No > 0)
                 {
+                    TempInvoice2.MyDataView = TempInvoice2.TempVoucher.AsDataView();
                     TempInvoice2.MyDataView.RowFilter = $"Sr_No={Sr_No}";
                     if (TempInvoice2.MyDataView.Count > 0)
                     {
@@ -329,10 +338,12 @@ namespace Applied_WebApplication.Pages.Sales
                     Variables.TranID = (int)SourceTable1.CurrentRow["ID"];
 
 
-                    DataTableClass SourceTable2 = new(UserName, Tables.BillReceivable2, $"TranID={Variables.TranID}");
-                    if (SourceTable2.Count > 0)                   // Delete if Invoice exist in source table.
+                    DataTableClass SourceTable2 = new(UserName, Tables.BillReceivable2);
+                    SourceTable2.MyDataView.RowFilter = $"TranID={Variables.TranID}";
+                    var _Table = SourceTable2.MyDataView.ToTable();
+                    if (_Table.Rows.Count > 0)                   // Delete if Invoice exist in source table.
                     {
-                        foreach (DataRow Row in SourceTable2.Rows)
+                        foreach (DataRow Row in _Table.Rows)
                         {
                             SourceTable2.CurrentRow = Row;
                             SourceTable2.Delete();
@@ -351,7 +362,6 @@ namespace Applied_WebApplication.Pages.Sales
                         }
                         
                         SourceTable2.Save();
-                        //Variables.Sr_No = Conversion.ToInteger(SourceTable2.CurrentRow["Sr_No"]);
                         ErrorMessages.AddRange(SourceTable2.TableValidation.MyMessages);
                         if (ErrorMessages.Count > 0)
                         {

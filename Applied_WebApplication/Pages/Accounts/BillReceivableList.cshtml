@@ -4,13 +4,21 @@
 @{
     var UserName = User.Identity.Name;
     var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+    var FMTDate = AppRegistry.FormatDateY2;
 }
 
-<div class="container AppHeading-2">
+<div class="AppHeading-2">
     <h5 class="TextCenter">BILL RECEIVABLE (LIST)</h5>
 </div>
 
 <form method="post">
+
+    <div class="container">
+        <div class="row">
+            <div class="col">Filter Area</div>
+        </div>
+    </div>
+
     <div class="container">
         <table class="table table-hover">
             <thead>
@@ -26,7 +34,6 @@
                         <button type="submit"
                                 class="btn btn-link btn-outline-light"
                                 asp-page-handler="Add">
-
                             <i class="bi bi-database-fill-add text-success"></i>
                         </button>
                     </th>
@@ -36,32 +43,31 @@
                 @foreach (DataRow Row in Model.BillReceivable.Rows)
                 {
                     string _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
-                    string _Vou_Date = DateTime.Parse(Row["Vou_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                    string _Inv_Date = DateTime.Parse(Row["Inv_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                    string _Pay_Date = DateTime.Parse(Row["Pay_Date"].ToString()).ToString(AppRegistry.FormatDate);
-                    decimal _Amount = (decimal)Row["Amount"];
+                    var _Vou_Date = (DateTime)Row["Vou_Date"];
+                    var _Inv_Date = (DateTime)Row["Inv_Date"];
+                    var _Pay_Date = (DateTime)Row["Pay_Date"];
+                    var _Amount = (decimal)Row["Amount"];
                     <tr>
                         <td>@Row["Vou_No"].ToString()</td>
-                        <td>@_Vou_Date</td>
+                        <td>@_Vou_Date.ToString(FMTDate)</td>
                         <td>@_TitleCompany</td>
                         <td>@Row["Inv_No"]</td>
-                        <td>@_Inv_Date</td>
-                        <td>@_Pay_Date</td>
-                        <td>@_Amount.ToString(FMTCurrency)</td>
-                        <td>
-                            <a formaction="get"
-                           asp-page="./Sale/SaleInvoice"
-                           asp-route-TranID="@Row["ID"]"
-                           asp-route-Sr_No="1">
+                        <td>@_Inv_Date.ToString(FMTDate)</td>
+                        <td>@_Pay_Date.ToString(FMTDate)</td>
+                        <td class="table-col-amount">@_Amount.ToString(FMTCurrency)</td>
+                        <td class="text-center">
+                            <button type="submit" class="listbutton-blue"
+                                asp-page-handler="Show"
+                                asp-route-ID="@Row["ID"]"
+                                >
+                                <i class="bi bi-pencil-fill" style="margin-right:5px"></i>
+                            </button>
 
-                                <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
-                            </a>
-                            <a asp-page="BillReceivableList"
-                           asp-page-handler="Delete"
-                           asp-route-id="@Row["ID"]"
-                           asp-route-Srno="1">
-                                <i class="bi bi-trash text-danger"></i>
-                            </a>
+                            <button type="submit" class="listbutton-red"
+                                asp-page-handler="Delete"
+                                asp-route-ID="@Row["ID"]">
+                                <i class="bi bi-trash-fill" style="margin-right:5px"></i>
+                            </button>
                         </td>
                     </tr>
                 }

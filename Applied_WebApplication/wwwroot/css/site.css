@@ -95,6 +95,7 @@ AppHeading-2:hover {
 }
 
 .Text-Heading2 {
+    display:container;
     text-align: center;
     padding: 0px;
     color: #7e02ff;
@@ -142,35 +143,6 @@ AppHeading-2:hover {
 }
 .TableFooter {
     background: #F9DBDB
-}
-
-#Listbutton {
-    background-color: transparent;
-    color: blue;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-}
-
-
-#ListbuttonRed {
-    background-color: transparent;
-    color: red;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-}
-
-
-#ListbuttonGreen {
-    background-color: transparent;
-    color: darkgreen;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
 }
 
 .listbutton-red {

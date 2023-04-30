@@ -21,6 +21,7 @@ namespace Applied_WebApplication.Data
         public TableValidationClass TableValidation;
         public int ErrorCount { get => TableValidation.MyMessages.Count; }
         public int Count => MyDataView.Count;
+        public int CountView => MyDataView.Count;
         public int Tb_Count => MyDataTable.Rows.Count;
         public string MyTableName { get; set; }
         public bool IsError = false;

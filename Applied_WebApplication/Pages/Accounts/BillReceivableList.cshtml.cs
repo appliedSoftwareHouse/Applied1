@@ -23,11 +23,27 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             return RedirectToPage("../Sales/SaleInvoice");
         }
-        public IActionResult OnPost(int? id)
-        {
-            id ??= 0;
-            return RedirectToPage("./BillReceivable", routeValues: new { id });
 
+        public IActionResult OnPostShow(int ID)
+        {
+            DataTableClass _Table = new(UserName, Tables.BillReceivable, $"ID={ID}");
+            if (_Table.Count > 0)
+            {
+                var Vou_No = _Table.CurrentRow["Vou_No"];
+                var Sr_No = 1;
+                return RedirectToPage("../Sales/SaleInvoice", routeValues: new { Vou_No, Sr_No });
+            }
+            return RedirectToPage("../Sales/SaleInvoice");
+        }
+
+        public IActionResult OnPostDelete(int ID)
+        {
+            DataTableClass _Table = new(UserName, Tables.BillReceivable, $"ID={ID}");
+            if (_Table.Count > 0)
+            {
+                // Code for delete a sales invoices 
+            }
+                return Page();
         }
     }
 }
