@@ -4,10 +4,11 @@
     public class CreateDatabase
     {
         private readonly RequestDelegate _next;
-        private readonly ConnectionClass _Class = new();
+        //private readonly ConnectionClass _Class = new();
 
-        public CreateDatabase(RequestDelegate next)
+        public CreateDatabase(RequestDelegate next, string UserName)
         {
+            ConnectionClass _Class = new(UserName);
             if (_Class.DBFile_Exist)
             {
                 _next = next;

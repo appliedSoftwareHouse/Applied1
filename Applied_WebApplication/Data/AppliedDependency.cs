@@ -8,11 +8,10 @@ namespace Applied_WebApplication.Data
         string AppPath { get; set; }
         string AppRoot { get; }
         string ReportPath { get; }
+        string AppDBTempPath { get; }
         string PrintedReportPath { get; }
         string PrintedReportPathLink { get; }
-        string DefaultDB { get; }
-        string LocalDB { get; }
-        string DefaultPath { get; }
+        //string DefaultPath { get; }
         string UserDBPath { get; }
         string GuestDBPath { get; }
         CultureInfo AppCurture { get; }
@@ -30,12 +29,13 @@ namespace Applied_WebApplication.Data
         public string AppPath { get; set; }
         public string AppRoot { get; }
         public string ReportPath { get; }
+        public string AppDBTempPath { get; }
         public string PrintedReportPath { get; }
         public string PrintedReportPathLink { get; }
         public string UserDBPath { get; }
         public string GuestDBPath { get; }
-        public string DefaultDB { get; set; }
-       public string LocalDB { get; }
+        public string DefaultDBPath { get; set; }
+        public string LocalDBPath { get; }
         public string DefaultPath { get; }
         public CultureInfo AppCurture { get; }
         public string CultureString { get; }
@@ -52,20 +52,20 @@ namespace Applied_WebApplication.Data
 
             AppPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             AppRoot = ".\\wwwroot\\";
+            AppDBTempPath = $"{AppRoot}\\DBTemp\\";
             ReportPath = string.Concat(AppRoot, "Reports\\");
             PrintedReportPath = string.Concat(AppRoot, "PrintedReports\\");
             PrintedReportPathLink = "~/PrintedReports/";
-            DefaultDB = string.Concat(AppRoot, "SQLiteDB\\");
-            LocalDB = string.Concat(AppPath, "\\LocalDB\\");
-            UserDBPath = string.Concat(DefaultDB, "AppliedUsers.db");
-            GuestDBPath = string.Concat(DefaultDB, "Applied.db");
+            DefaultDBPath = string.Concat(AppRoot, "SQLiteDB\\");
+            LocalDBPath = string.Concat(AppPath, "\\LocalDB\\");
+            UserDBPath = string.Concat(DefaultDBPath, "AppliedUsers.db");
+            GuestDBPath = string.Concat(DefaultDBPath, "Applied.db");
             CultureString = "en-US";
             AppCurture = new CultureInfo(CultureString, false);
             InputDatesFormat = "yyyy-MM-dd";
             DateFormat = "dd-MM-yyyy";
             CurrencyFormat = "#0.00";
             ReportFooter = "Powered by Applied Software House, +92 336 2454 230";
-
 
             // If User is existing in class.
             if (AppUser != null)
@@ -77,9 +77,6 @@ namespace Applied_WebApplication.Data
                     PrintedReportPathLink = string.Concat(PrintedReportPath, UserName, "/");
                 }
             }
-
-
-
         }
     }
 }

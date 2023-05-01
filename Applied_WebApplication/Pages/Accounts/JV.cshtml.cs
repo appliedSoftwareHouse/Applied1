@@ -29,9 +29,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 {
 
                     TempClass = new TempTableClass(UserName, Tables.Ledger, "New");
-                    if (TempClass.TempVoucher.Rows.Count > 0)
+                    if (TempClass.TempTable.Rows.Count > 0)
                     {
-                        TempClass.CurrentRow = TempClass.TempVoucher.Rows[0];
+                        TempClass.CurrentRow = TempClass.TempTable.Rows[0];
                         Row2Variable(TempClass.CurrentRow);
                     }
                     else
@@ -53,15 +53,15 @@ namespace Applied_WebApplication.Pages.Accounts
                     TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
                     if (Sr_No == -1)
                     {
-                        if (TempClass.TempVoucher.Rows.Count > 0)
+                        if (TempClass.TempTable.Rows.Count > 0)
                         {
                             TempClass.CurrentRow = TempClass.NewRecord();
                             TempClass.CurrentRow["ID"] = 0;
-                            TempClass.CurrentRow["TranID"] = TempClass.TempVoucher.Rows[0]["TranID"];
-                            TempClass.CurrentRow["Vou_Type"] = TempClass.TempVoucher.Rows[0]["Vou_Type"];
-                            TempClass.CurrentRow["Vou_No"] = TempClass.TempVoucher.Rows[0]["Vou_No"];
-                            TempClass.CurrentRow["Vou_Date"] = TempClass.TempVoucher.Rows[0]["Vou_Date"];
-                            TempClass.CurrentRow["Sr_No"] = MaxSrNo(TempClass.TempVoucher);
+                            TempClass.CurrentRow["TranID"] = TempClass.TempTable.Rows[0]["TranID"];
+                            TempClass.CurrentRow["Vou_Type"] = TempClass.TempTable.Rows[0]["Vou_Type"];
+                            TempClass.CurrentRow["Vou_No"] = TempClass.TempTable.Rows[0]["Vou_No"];
+                            TempClass.CurrentRow["Vou_Date"] = TempClass.TempTable.Rows[0]["Vou_Date"];
+                            TempClass.CurrentRow["Sr_No"] = MaxSrNo(TempClass.TempTable);
                             TempClass.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
                             Row2Variable(TempClass.CurrentRow);
                         }
@@ -69,7 +69,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     else
                     {
                         Sr_No ??= 1;
-                        var _DataView = TempClass.MyDataView;
+                        var _DataView = TempClass.TempView;
                         _DataView.RowFilter = string.Format("SR_No={0}", (int)Sr_No);
                         if (_DataView.Count == 1)
                         {
@@ -79,7 +79,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     }
                 }
 
-                Voucher = TempClass.TempVoucher;
+                Voucher = TempClass.TempTable;
                 if (Voucher.Rows.Count > 0)
                 {
                     var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
@@ -164,7 +164,7 @@ namespace Applied_WebApplication.Pages.Accounts
             #endregion
 
             var TempClass = new TempTableClass(UserName, Tables.Ledger, Variables.Vou_No);
-            var _View = TempClass.MyDataView;
+            var _View = TempClass.TempView;
             _View.RowFilter = string.Format("Sr_No={0}", Variables.Sr_No);
             if (_View.Count == 1) { TempClass.CurrentRow = _View[0].Row; }
             else
@@ -232,7 +232,7 @@ namespace Applied_WebApplication.Pages.Accounts
             TempTableClass TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
             DataTableClass SourceClass = new(UserName, Tables.Ledger);
 
-            var Voucher = TempClass.TempVoucher;
+            var Voucher = TempClass.TempTable;
 
             if (Voucher.Rows.Count > 0)
             {
@@ -281,7 +281,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     {
                         TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
 
-                        foreach (DataRow Row in TempClass.TempVoucher.Rows)
+                        foreach (DataRow Row in TempClass.TempTable.Rows)
                         {
                             TempClass.CurrentRow = Row;
                             TempClass.Delete();
@@ -297,7 +297,7 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             int Sr_No;
             TempTableClass _TempTable = new(UserName, Tables.Ledger, Variables.Vou_No);
-            _TempTable.Seek(ID);
+            _TempTable.TempSeek(ID);
             _TempTable.Delete();
             ErrorMessages.AddRange(_TempTable.ErrorMessages);
             if (ErrorMessages[0].ErrorID==0)

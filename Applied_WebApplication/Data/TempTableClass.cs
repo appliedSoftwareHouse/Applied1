@@ -13,9 +13,10 @@ namespace Applied_WebApplication.Data
         #region Setup
 
         public string UserName { get; set; }
-        public DataTable SourceData { get; set; }
-        public DataTable TempVoucher { get; set; }
-        public DataView MyDataView { get; set; }
+        public DataTable SourceTable { get; set; }
+        public DataView SourceView { get; set; }
+        public DataTable TempTable { get; set; }
+        public DataView TempView { get; set; }
         public string MyTableName { get; set; }
         public Tables TableID { get; set; }
         public UserProfile UProfile { get; set; }
@@ -23,8 +24,8 @@ namespace Applied_WebApplication.Data
         public string ConnectionString { get; set; }
         public SQLiteConnection MyConnection { get; set; }
         public SQLiteConnection TempConnection { get; set; }
-        public int Count => SourceData.Rows.Count;
-        public int CountTemp => TempVoucher.Rows.Count;
+        public int CountSource => SourceTable.Rows.Count;
+        public int CountTemp => TempTable.Rows.Count;
 
         public DataRow CurrentRow;
 
@@ -49,13 +50,17 @@ namespace Applied_WebApplication.Data
             MyConnection = new SQLiteConnection(ConnectionString);
             CommandText = string.Format("SELECT * FROM [{0}] WHERE Vou_No='{1}'", TableID.ToString(), VoucherNo);
             Command = new SQLiteCommand(CommandText, MyConnection);
-            SourceData = GetDataTable();
-            TempVoucher = CreateTempTable(UserName, SourceData);
+            SourceTable = GetDataTable();
+            TempTable = CreateTempTable(UserName, SourceTable);
             if (CurrentRow == null)
             {
-                if (CountTemp > 0) { CurrentRow = TempVoucher.Rows[0]; } else { CurrentRow = NewRecord(); }
+                if (CountTemp > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
-            TableValidate = new(TempVoucher);
+
+            SourceView = SourceTable.AsDataView();
+            TempView = TempTable.AsDataView();
+
+            TableValidate = new(TempTable);
         }
 
         public TempTableClass(string _UserName, Tables _TableID, int _TranID)
@@ -68,13 +73,17 @@ namespace Applied_WebApplication.Data
             MyConnection = new SQLiteConnection(ConnectionString);
             CommandText = string.Format("SELECT * FROM [{0}] WHERE TranID={1}", TableID.ToString(), TranID);
             Command = new SQLiteCommand(CommandText, MyConnection);
-            SourceData = GetDataTable();
-            TempVoucher = CreateTempTable(UserName, SourceData);
+            SourceTable = GetDataTable();
+            TempTable = CreateTempTable(UserName, SourceTable);
             if (CurrentRow == null)
             {
-                if (Count > 0) { CurrentRow = TempVoucher.Rows[0]; } else { CurrentRow = NewRecord(); }
+                if (CountTemp > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
-            TableValidate = new(TempVoucher);
+
+            SourceView = SourceTable.AsDataView();
+            TempView = TempTable.AsDataView();
+
+            TableValidate = new(TempTable);
         }
 
         private DataTable GetDataTable()
@@ -91,46 +100,105 @@ namespace Applied_WebApplication.Data
 
         public DataTable CreateTempTable(string UserName, DataTable _Table)
         {
-            #region Setup
-            TempConnection = AppFunctions.GetTempConnection(UserName);
-            MyConnection = ConnectionClass.AppConnection(UserName);
+            DataTable ResultTable = new DataTable();
+            TempConnection = ConnectionClass.AppTempConnection(UserName);
+            MyTableName = _Table.TableName;
 
-            var MyTableName = _Table.TableName;
-            var ReturnTable = new DataTable();
-            bool IsVou_No = false;
+            TempTableIsExist(_Table);
 
-            var _CommandText = string.Empty;
-            var _Command = new SQLiteCommand(TempConnection);
-            var _Adapter = new SQLiteDataAdapter();
-            var _DataSet = new DataSet();
-
-            var _Vou_No = "NEW";
-            var _TranID = 0;
-
+            var _VouNo = "New";
             if (_Table.Columns.Contains("Vou_No"))
             {
-                IsVou_No = true;
-                if(_Table.Rows.Count>0)
-                { 
-                _Vou_No = _Table.Rows[0]["Vou_No"].ToString().ToUpper();
+                if (_Table.Rows.Count > 0)
+                {
+                    _VouNo = _Table.Rows[0]["Vou_No"].ToString();
                 }
+                ResultTable = FromVouNo(_Table, _VouNo);
             }
             else
             {
-                IsVou_No = false ;
-                if (_Table.Rows.Count > 0)
+                var _TranID = 0;
+                if (_Table.Columns.Contains("TranID"))
                 {
-                    _TranID = (int)_Table.Rows[0]["TranID"];
+                    if (_Table.Rows.Count > 0)
+                    {
+                        _TranID = (int)_Table.Rows[0]["TranID"];
+                    }
+                    ResultTable = FromTranID(_Table, _TranID);
                 }
             }
+            return ResultTable;
+        }
+
+        private DataTable FromVouNo(DataTable _Table, string _VouNo)
+        {
             
+            var _Command = new SQLiteCommand(TempConnection);
+            var _TableName = _Table.TableName;
+            var _Filter = $"Vou_No='{_VouNo}'";
+            var _CommandText = $"SELECT * FROM {_TableName} WHERE {_Filter}";
 
-            #endregion
+            DataTable TempTable = LoadTempTable(_CommandText);
 
-            #region Create a Datatable in Temp Database
+            foreach (DataRow Row in TempTable.Rows)
+            {
+                _CommandText = $"DELETE FROM {_TableName} WHERE {(int)Row["ID"]}";
+                _Command.CommandText = _CommandText;
+                _Command.ExecuteNonQuery();
+            }
 
-            _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{MyTableName}'";
-            _Command = new SQLiteCommand(_CommandText, TempConnection);
+            foreach (DataRow Row in _Table.Rows)
+            {
+                DataRow TempRow = TempTable.NewRow();
+                TempRow.ItemArray = Row.ItemArray;
+                _Command = CommandInsert(TempConnection, TempTable, TempRow);
+                _Command.ExecuteNonQuery();
+            }
+
+            _CommandText = $"SELECT * FROM {_TableName} WHERE {_Filter}";
+            var ResultTable = LoadTempTable(_CommandText);
+
+            return ResultTable;
+        }
+
+        private DataTable FromTranID(DataTable _Table, int _TranID)
+        {
+            
+            var _Command = new SQLiteCommand(TempConnection);
+            var _TableName = _Table.TableName;
+            var _Filter = $"TranID={_TranID}";
+            var _CommandText = $"SELECT * FROM {_TableName} WHERE {_Filter}";
+            var TempTable = LoadTempTable(_CommandText);
+
+            foreach (DataRow Row in TempTable.Rows)
+            {
+                _CommandText = $"DELETE FROM {_TableName} WHERE {(int)Row["ID"]}";
+                _Command.CommandText = _CommandText;
+                _Command.ExecuteNonQuery();
+            }
+
+            foreach (DataRow Row in _Table.Rows)
+            {
+                DataRow TempRow = TempTable.NewRow();
+                TempRow.ItemArray = Row.ItemArray;
+                _Command = CommandInsert(TempConnection, TempTable, TempRow);
+                _Command.ExecuteNonQuery();
+            }
+
+            _CommandText = $"SELECT * FROM {_TableName} WHERE {_Filter}";
+            var ResultTable = LoadTempTable(_CommandText);
+
+            return ResultTable;
+        }
+
+        #region Create or Load Table from Temp DataBase.
+
+        private void TempTableIsExist(DataTable _Table)
+        {
+            var _TableName = _Table.TableName;
+
+            var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{_TableName}'";
+            var _Command = new SQLiteCommand(_CommandText, TempConnection);
 
             long TableExist = (long)_Command.ExecuteScalar();
             if (TableExist == 0)
@@ -149,57 +217,28 @@ namespace Applied_WebApplication.Data
                 _Command.CommandText = _Text.ToString();
                 _Command.ExecuteNonQuery();
             }
-            #endregion
-
-
-            if (_Vou_No == "NEW")
-            {
-                _CommandText = $"SELECT * FROM {MyTableName}";
-                _Command.CommandText = new(_CommandText);                // Get a Voucher from Temp Table.
-                _Adapter = new SQLiteDataAdapter(_Command);
-                _DataSet = new DataSet();
-                _Adapter.Fill(_DataSet, MyTableName);                               // Created a Temp Table
-                if (_DataSet.Tables.Count == 1)
-                { return _DataSet.Tables[0]; }
-            }
-            else
-            {
-                // Load a Voucher if exist in Temp Data table and delete all for refresh.
-
-                if(IsVou_No)
-                {
-                    _CommandText = $"SELECT * FROM {MyTableName} WHERE Vou_No='{_Vou_No}'";
-                }
-                else
-                {
-                    _CommandText = $"SELECT * FROM {MyTableName} WHERE TranID={_TranID}";
-                }
-                
-                _Command = new(_CommandText, TempConnection);
-                _Adapter = new(_Command);
-                _DataSet = new();
-                _Adapter.Fill(_DataSet, MyTableName);
-                if(_DataSet.Tables.Count == 1)
-                {
-                    foreach(DataRow Row in _DataSet.Tables[0].Rows)
-                    {
-                        _CommandText = $"DELETE FROM {MyTableName} WHERE ID={(int)Row["ID"]}";
-                        _Command = new(_CommandText, TempConnection);
-                        _Command.ExecuteNonQuery();
-                    }
-                }
-               
-                foreach(DataRow Row in _Table.Rows)
-                {
-                    Row["ID"] = 0;
-                    _Command = CommandInsert(TempConnection, _Table, Row);
-                    _Command.ExecuteNonQuery();
-                }
-            }
-
-            _Command.Connection.Close();                    // Close Database Connection.
-            return ReturnTable;
         }
+
+        #endregion
+
+        #region Load Table
+
+        private DataTable LoadTempTable(string _CommandText)
+        {
+            
+            var _Command = new SQLiteCommand(_CommandText, TempConnection);
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+
+            _Adapter.Fill(_DataSet, MyTableName);
+            if (_DataSet.Tables.Count > 0)
+            {
+                return _DataSet.Tables[0];
+            }
+            return new DataTable();
+        }
+
+        #endregion`
 
         #region Save
 
@@ -213,23 +252,23 @@ namespace Applied_WebApplication.Data
 
             if (Validate)
             {
-                TableValidate = new(TempVoucher);
+                TableValidate = new(TempTable);
                 TableValidate.Validation(CurrentRow);
             }
 
             if (ErrorMessages.Count == 0)
             {
                 SQLiteCommand _Command;
-                var _View = MyDataView;
+                var _View = TempView;
                 _View.RowFilter = string.Format("ID={0}", CurrentRow["ID"]);
                 if (_View.Count == 1)
                 {
-                    _Command = CommandUpdate(TempConnection, TempVoucher, CurrentRow);
+                    _Command = CommandUpdate(TempConnection, TempTable, CurrentRow);
                 }
                 else
                 {
                     CurrentRow["ID"] = MaxID();
-                    _Command = CommandInsert(TempConnection, TempVoucher, CurrentRow);
+                    _Command = CommandInsert(TempConnection, TempTable, CurrentRow);
                 }
                 try
                 {
@@ -245,25 +284,23 @@ namespace Applied_WebApplication.Data
 
             }
         }
-
-
-
-        #endregion
-
         private int MaxID()
         {
-            var MaxID = TempVoucher.Compute("MAX(ID)", "");
+            var MaxID = TempTable.Compute("MAX(ID)", "");
             if (MaxID == DBNull.Value) { MaxID = 0; }
             return (int)MaxID + 1;
         }
 
+        #endregion
+
+        #region Delete Record
         public void Delete()
         {
             //ErrorMessages = new();
             try
             {
 
-                var _Command = CommandDelete(TempConnection, TempVoucher, CurrentRow);
+                var _Command = CommandDelete(TempConnection, TempTable, CurrentRow);
                 if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                 var _Records = _Command.ExecuteNonQuery(); _Command.Connection.Close();
 
@@ -277,22 +314,21 @@ namespace Applied_WebApplication.Data
             }
 
         }
+        #endregion
 
-        public bool Seek(int ID)
+        public bool TempSeek(int ID)
         {
-            MyDataView.RowFilter = string.Format("ID={0}", ID);
-            if (MyDataView.Count == 1)
+            TempView.RowFilter = string.Format("ID={0}", ID);
+            if (TempView.Count == 1)
             {
-                CurrentRow = MyDataView[0].Row;
+                CurrentRow = TempView[0].Row;
                 return true;
             }
             return false;
         }
-
-
         public DataRow NewRecord()
         {
-            CurrentRow = TempVoucher.NewRow();
+            CurrentRow = TempTable.NewRow();
 
             foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
             {
@@ -387,10 +423,7 @@ namespace Applied_WebApplication.Data
 
         private static SQLiteCommand CommandDelete(SQLiteConnection _Connection, DataTable _Table, DataRow _Row)
         {
-            var _Columns = _Table.Columns;
             var _Command = new SQLiteCommand(_Connection);
-            var _CommandString = new StringBuilder();
-            var _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
             var _TableName = _Table.TableName;
 
             if ((int)_Row["ID"] > 0)

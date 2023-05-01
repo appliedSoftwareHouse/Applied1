@@ -129,11 +129,13 @@ namespace Applied_WebApplication.Data
         // Get Value of any column from any Data Table.
         public static string GetColumnValue(string UserName, Tables _Table, string _Column, int ID)
         {
-            if (UserName == null) { return ""; }
+            if (UserName.Length == 0) { return ""; }
             if (ID == 0) { return ""; }
-            string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
-            ConnectionClass _Connection = new(UserName);
-            SQLiteDataAdapter _Adapter = new(_Text, _Connection.AppliedConnection);
+            
+            string _Text = $"SELECT [{_Column}] From [{ _Table}] where ID={ID}";
+            
+            SQLiteConnection _Connection = ConnectionClass.AppConnection(UserName);
+            SQLiteDataAdapter _Adapter = new(_Text, _Connection);
             DataSet _DataSet = new DataSet();
             _Adapter.Fill(_DataSet);
             if (_DataSet.Tables.Count > 0)
@@ -141,7 +143,11 @@ namespace Applied_WebApplication.Data
                 return _DataSet.Tables[0].Rows[0][0].ToString();
             }
             return "";
+
+            //string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
+            //ConnectionClass _Connection = new(UserName);
         }
+
         // Get Data Rows from DataTable by filter conditions.
         public static DataTable GetRecords(string UserName, Tables _TableName, string _Filter)
         {
@@ -153,7 +159,7 @@ namespace Applied_WebApplication.Data
         public static DataRow GetRecord(string UserName, Tables _TableName, int id)
         {
             DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = String.Concat("ID=", id.ToString());
+            _Table.MyDataView.RowFilter = $"ID={id}";
             if (_Table.MyDataView.Count == 1)
             {
                 return _Table.MyDataView[0].Row;
@@ -163,7 +169,7 @@ namespace Applied_WebApplication.Data
 
         public static DataTable GetVoucher(string UserName,  int TranID, VoucherType VouType)
         {
-            var Filter = string.Format("TranID={0} AND Vou_Type = '{1}'", TranID, VouType);
+            var Filter = $"TranID={TranID} AND Vou_Type = '{VouType}'";
             DataTableClass _Table = new(UserName, Tables.Ledger, Filter);
             if (_Table.MyDataTable.Rows.Count >=2)
             {
@@ -221,7 +227,7 @@ namespace Applied_WebApplication.Data
         public static DataRow GetDataRow(string UserName, Tables _TableName, int ID)
         {
             DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
+            _Table.MyDataView.RowFilter = $"ID={ID}";
             if (_Table.MyDataView.Count == 1)
             { return _Table.MyDataView[0].Row; }
             else { return _Table.MyDataTable.NewRow(); }
@@ -249,7 +255,7 @@ namespace Applied_WebApplication.Data
             if(ID.Equals(DBNull.Value)) { ID = 0; }
             string _Title;  //= string.Empty;
             DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = string.Concat("ID=", ID.ToString());
+            _Table.MyDataView.RowFilter = $"ID={ID}";
             if (_Table.MyDataView.Count > 0)
             {
                 _Title = _Table.MyDataView[0]["Title"].ToString();
@@ -308,12 +314,9 @@ namespace Applied_WebApplication.Data
 
 
         #region Temporary Local Database
-        internal static SQLiteConnection GetTempConnection(string UserName)
+        public static SQLiteConnection GetTempConnection(string UserName)
         {
             StringBuilder TempConnectionString = new();
-
-
-            //TempConnectionString.Append("Data Source=");
             TempConnectionString.Append(AppGlobals.LocalDB);
             TempConnectionString.Append(UserName);
             string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
@@ -323,7 +326,7 @@ namespace Applied_WebApplication.Data
             if (!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
             if (!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
 
-            SQLiteConnection _TempConnection = new("Data Source=" + _FileName);
+            SQLiteConnection _TempConnection = new($"Data Source={_FileName}");
             _TempConnection.Open();
 
             return _TempConnection;

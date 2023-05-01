@@ -447,7 +447,6 @@ namespace Applied_WebApplication.Data
             TableValidation = new TableValidationClass(CurrentRow.Table);
             if (CurrentRow != null)
             {
-                //TableValidation.MyDataTable = CurrentRow.Table;
                 MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
 
                 try

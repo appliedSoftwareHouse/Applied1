@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using System.Data;
 using System.Data.SQLite;
+using System.Text;
 using static Applied_WebApplication.Data.AppFunctions;
 using DataSet = System.Data.DataSet;
 
@@ -8,41 +9,36 @@ namespace Applied_WebApplication.Data
 {
     public class ConnectionClass : IdentityUser
     {
-
+        public AppliedDependency AppGlobal = new();
         public SQLiteConnection AppliedConnection = new();
-        private AppliedUsersClass UsersTableClass = new();
-
+        public SQLiteConnection TempConnection = new();
+        private readonly AppliedUsersClass UsersTableClass = new();
+        private UserProfile uProfile = new();
         public string DBFile_Path { get; set; }
+        
         public string DBFile_Name = "";
 
-        public bool DBFile_Exist { get => File.Exists(DBFile_Path); }
-
-
-
-
-        public ConnectionClass()
-        {
-            DBFile_Path = UsersTableClass.GetClientDBFile(UserName);
-
-            if (File.Exists(DBFile_Path)) { CreateAppliedDataBase(); }
-            AppliedConnection = new("Data Source=" + DBFile_Path);
-        }
+        public bool DBFile_Exist => File.Exists(DBFile_Path); 
 
         public ConnectionClass(string _UserName)
         {
-            DBFile_Path = UsersTableClass.GetClientDBFile(_UserName);
+            uProfile = new(_UserName);
+            DBFile_Path = uProfile.
 
-            if (!DBFile_Exist) { CreateAppliedDataBase(); }
+            //if (!DBFile_Exist) { CreateAppliedDataBase(); }
             AppliedConnection = new("Data Source=" + DBFile_Path);                      // Established a Connection with Database File
             AppliedConnection.Open();
+
+            TempConnection = new("DataSource=" + AppGlobal.AppDBTempPath);
+            TempConnection.Open();
 
         }
 
         private void CreateAppliedDataBase()
         {
-            CreateTablesClass TableClass = new();
+            //CreateTablesClass TableClass = new();
             SQLiteConnection.CreateFile(DBFile_Path);
-            SQLiteCommand _Command = new();
+            //SQLiteCommand _Command = new();
             SQLiteConnection _Connection = new SQLiteConnection("Data Source=" + DBFile_Path); _Connection.Open();
         }
 
@@ -51,6 +47,12 @@ namespace Applied_WebApplication.Data
         {
             ConnectionClass _ConnectionClass = new(UserName);                           // Establishe Connection Class
             return _ConnectionClass.AppliedConnection;
+        }
+
+        public static SQLiteConnection AppTempConnection(string UserName)
+        {
+            ConnectionClass _ConnectionClass = new(UserName);                           // Establishe Connection Class
+            return _ConnectionClass.TempConnection;
         }
 
 
@@ -102,7 +104,7 @@ namespace Applied_WebApplication.Data
             }
             return UsersTable;
         }
-        internal string GetClientDBFile(string _User)
+        internal static string GetClientDBFile(string _User)
         {
             UserProfile userProfile = new(_User);
             if (userProfile.DBFilePath == null)
@@ -111,8 +113,6 @@ namespace Applied_WebApplication.Data
             }
             return userProfile.DBFilePath;
         }
-
-
     }
 }
 

@@ -13,10 +13,14 @@ namespace Applied_WebApplication.Data
         public string Password { get; set; }
         public string Email { get; set; }
         public string Role { get; set; }
-        public string DBFilePath { get; set; }
-        public string DBFileName { get; set; }
+        public string DataBaseFile { get; set; }
+        public string TempDataBaseFile { get; set; }
+        //public string DBFileName { get; set; }
+        //public string DBFileTempName { get; set; }
         public string Company { get; set; }
         public string Designation { get; set; }
+
+        readonly IAppliedDependency AppGlobal;
         
         public UserProfile()
         {
@@ -29,12 +33,15 @@ namespace Applied_WebApplication.Data
                 Role = "Guest";
                 Company = "Applied Software House";
                 Designation = "Applied Account User";
-                DBFilePath = "";
+                DataBaseFile = $"{AppGlobal.DefaultPath}";
+                //DBFilePath = "";
+                //DBFileTempPath = "";
                 }
         }
 
         public UserProfile(string UserName)
         {
+            AppliedDependency AppGlobal = new();
             AppliedUsersClass UserClass = new();
             DataRow _Row = UserClass.UserRecord(UserName);
             if (_Row != null)
@@ -46,8 +53,10 @@ namespace Applied_WebApplication.Data
                 Role = _Row["Role"].ToString();
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
-                DBFilePath = _Row["DataFile"].ToString();
-                DBFileName = DBFilePath.Replace(".\\wwwroot\\SQLiteDB\\", string.Empty);          // Replace Path with string.Empty
+                DataBaseFile = _Row["DataFile"].ToString();
+                DBFileTempPath = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.db";
+                //DBFileName = DBFilePath.Replace(".\\wwwroot\\SQLiteDB\\", string.Empty);                         // Replace Path with string.Empty
+                //DBFileTempName = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.Temp";                    // Create a Temp DB File Name 
 
             }
         }
@@ -63,7 +72,7 @@ namespace Applied_WebApplication.Data
                 Role = _Row["Role"].ToString();
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
-                DBFilePath = _Row["DataFile"].ToString();
+                DataBaseFile = _Row["DataFile"].ToString();
 
             }
         }
