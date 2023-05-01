@@ -12,34 +12,28 @@ namespace Applied_WebApplication.Data
         public AppliedDependency AppGlobal = new();
         public SQLiteConnection AppliedConnection = new();
         public SQLiteConnection TempConnection = new();
-        private readonly AppliedUsersClass UsersTableClass = new();
-        private UserProfile uProfile = new();
-        public string DBFile_Path { get; set; }
+        //private readonly AppliedUsersClass UsersTableClass = new();
+        private UserProfile uProfile;
+        public string DataBaseFile { get; set; }
+        public string DataBaseTempFile { get; set; }
         
         public string DBFile_Name = "";
 
-        public bool DBFile_Exist => File.Exists(DBFile_Path); 
+        public bool DBFile_Exist => File.Exists(DataBaseFile); 
 
         public ConnectionClass(string _UserName)
         {
             uProfile = new(_UserName);
-            DBFile_Path = uProfile.
+            DataBaseFile = uProfile.DataBaseFile;
+            DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{uProfile.UserID}.Temp";
 
             //if (!DBFile_Exist) { CreateAppliedDataBase(); }
-            AppliedConnection = new("Data Source=" + DBFile_Path);                      // Established a Connection with Database File
+            AppliedConnection = new($"Data Source={DataBaseFile}");                      // Established a Connection with Database File
             AppliedConnection.Open();
 
-            TempConnection = new("DataSource=" + AppGlobal.AppDBTempPath);
+            TempConnection = new("DataSource=" + DataBaseTempFile);
             TempConnection.Open();
 
-        }
-
-        private void CreateAppliedDataBase()
-        {
-            //CreateTablesClass TableClass = new();
-            SQLiteConnection.CreateFile(DBFile_Path);
-            //SQLiteCommand _Command = new();
-            SQLiteConnection _Connection = new SQLiteConnection("Data Source=" + DBFile_Path); _Connection.Open();
         }
 
 
@@ -107,11 +101,11 @@ namespace Applied_WebApplication.Data
         internal static string GetClientDBFile(string _User)
         {
             UserProfile userProfile = new(_User);
-            if (userProfile.DBFilePath == null)
+            if (userProfile.DataBaseFile == null)
             {
                 userProfile = new("Guest");                                             // If Database File not found switch to Guest Profile.
             }
-            return userProfile.DBFilePath;
+            return userProfile.DataBaseFile;
         }
     }
 }

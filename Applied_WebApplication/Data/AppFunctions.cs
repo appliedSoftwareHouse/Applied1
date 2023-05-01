@@ -143,9 +143,6 @@ namespace Applied_WebApplication.Data
                 return _DataSet.Tables[0].Rows[0][0].ToString();
             }
             return "";
-
-            //string _Text = string.Concat("SELECT [", _Column, "] From [", _Table, "] where ID=", ID.ToString());
-            //ConnectionClass _Connection = new(UserName);
         }
 
         // Get Data Rows from DataTable by filter conditions.
@@ -316,20 +313,20 @@ namespace Applied_WebApplication.Data
         #region Temporary Local Database
         public static SQLiteConnection GetTempConnection(string UserName)
         {
-            StringBuilder TempConnectionString = new();
-            TempConnectionString.Append(AppGlobals.LocalDB);
-            TempConnectionString.Append(UserName);
-            string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
-            TempConnectionString.Append("\\" + UserName + "DB.temp");                     // Get Full Path and File Name;
-            string _FileName = TempConnectionString.ToString();
+            //StringBuilder TempConnectionString = new();
+            //TempConnectionString.Append(AppGlobals.LocalDB);
+            //TempConnectionString.Append(UserName);
+            //string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
+            //TempConnectionString.Append("\\" + UserName + "DB.temp");                     // Get Full Path and File Name;
+            //string _FileName = TempConnectionString.ToString();
 
-            if (!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
-            if (!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
+            //if (!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
+            //if (!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
 
-            SQLiteConnection _TempConnection = new($"Data Source={_FileName}");
-            _TempConnection.Open();
+            //SQLiteConnection _TempConnection = new($"Data Source={_FileName}");
+            //_TempConnection.Open();
 
-            return _TempConnection;
+            return ConnectionClass.AppTempConnection(UserName);
         }
 
 

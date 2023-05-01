@@ -79,7 +79,7 @@ namespace Applied_WebApplication.Data
             try
             {
                 UserProfile UProfile = new(_UserName);
-                ConnectionString = string.Concat("Data Source=", UProfile.DBFilePath);
+                ConnectionString = string.Concat("Data Source=", UProfile.DataBaseFile);
                 MyConnection = new SQLiteConnection(ConnectionString);
                 MyUserName = _UserName;
                 Filter ??= string.Empty;

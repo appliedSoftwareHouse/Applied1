@@ -20,7 +20,7 @@ namespace Applied_WebApplication.Data
         public string MyTableName { get; set; }
         public Tables TableID { get; set; }
         public UserProfile UProfile { get; set; }
-        public string DBPath => UProfile.DBFilePath;
+        public string DBPath => UProfile.DataBaseFile;
         public string ConnectionString { get; set; }
         public SQLiteConnection MyConnection { get; set; }
         public SQLiteConnection TempConnection { get; set; }

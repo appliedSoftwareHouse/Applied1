@@ -21,9 +21,7 @@ namespace Applied_WebApplication.Pages.Account
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (!ModelState.IsValid) return Page();          // Return the login page if user login unsuccessful.
-
-
+            if (!ModelState.IsValid) { return Page(); }          // Return the login page if user login unsuccessful.
 
             UserTableClass.UserView.RowFilter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
 
@@ -45,7 +43,7 @@ namespace Applied_WebApplication.Pages.Account
                     new Claim(ClaimTypes.Role,uprofile.Role),
                     new Claim("Company", uprofile.Company),
                     new Claim("Designation", uprofile.Designation),
-                    new Claim("DBFilePath", uprofile.DBFilePath),
+                    new Claim("DataBaseFile", uprofile.DataBaseFile),
                     new Claim("AppSession", Guid.NewGuid().ToString())
                     };
                     var Identity = new ClaimsIdentity(Claims, "MyCookieAuth");

@@ -14,13 +14,11 @@ namespace Applied_WebApplication.Data
         public string Email { get; set; }
         public string Role { get; set; }
         public string DataBaseFile { get; set; }
-        public string TempDataBaseFile { get; set; }
-        //public string DBFileName { get; set; }
-        //public string DBFileTempName { get; set; }
+        public string DataBaseTempFile { get; set; }
         public string Company { get; set; }
         public string Designation { get; set; }
 
-        readonly IAppliedDependency AppGlobal;
+        public readonly AppliedDependency AppGlobal;
         
         public UserProfile()
         {
@@ -33,7 +31,7 @@ namespace Applied_WebApplication.Data
                 Role = "Guest";
                 Company = "Applied Software House";
                 Designation = "Applied Account User";
-                DataBaseFile = $"{AppGlobal.DefaultPath}";
+                DataBaseFile = $"{AppGlobal.DataBasePath}Applied.db";
                 //DBFilePath = "";
                 //DBFileTempPath = "";
                 }
@@ -54,7 +52,7 @@ namespace Applied_WebApplication.Data
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
                 DataBaseFile = _Row["DataFile"].ToString();
-                DBFileTempPath = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.db";
+                DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.db";
                 //DBFileName = DBFilePath.Replace(".\\wwwroot\\SQLiteDB\\", string.Empty);                         // Replace Path with string.Empty
                 //DBFileTempName = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.Temp";                    // Create a Temp DB File Name 
 
@@ -73,7 +71,7 @@ namespace Applied_WebApplication.Data
                 Company = _Row["Company"].ToString();
                 Designation = _Row["Designation"].ToString();
                 DataBaseFile = _Row["DataFile"].ToString();
-
+                //DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{UserID}\\{UserID}.db";
             }
         }
 

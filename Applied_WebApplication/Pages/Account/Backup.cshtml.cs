@@ -18,8 +18,8 @@ namespace Applied_WebApplication.Pages.Account
         public void OnPost()
         {
             UserProfile uprofile = new(User.Identity.Name);
-            string backupfilename = DateTime.Now.ToString("yyyymmddhhmmss_") + uprofile.DBFileName;
-            if (System.IO.File.Exists(uprofile.DBFilePath))
+            string backupfilename = DateTime.Now.ToString("yyyymmddhhmmss_") + uprofile.DataBaseFile;
+            if (System.IO.File.Exists(uprofile.DataBaseFile))
             {
                 Message = "Process is uder development.";
 
