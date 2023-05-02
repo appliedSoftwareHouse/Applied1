@@ -12,8 +12,7 @@ namespace Applied_WebApplication.Data
         public AppliedDependency AppGlobal = new();
         public SQLiteConnection AppliedConnection = new();
         public SQLiteConnection TempConnection = new();
-        //private readonly AppliedUsersClass UsersTableClass = new();
-        private UserProfile uProfile;
+        private UserProfile UProfile { get; set; }
         public string DataBaseFile { get; set; }
         public string DataBaseTempFile { get; set; }
         
@@ -23,17 +22,14 @@ namespace Applied_WebApplication.Data
 
         public ConnectionClass(string _UserName)
         {
-            uProfile = new(_UserName);
-            DataBaseFile = uProfile.DataBaseFile;
-            DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{uProfile.UserID}.Temp";
+            UProfile = new(_UserName);
+            DataBaseFile = UProfile.DataBaseFile;
+            DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{UProfile.UserID}.Temp";
 
-            //if (!DBFile_Exist) { CreateAppliedDataBase(); }
             AppliedConnection = new($"Data Source={DataBaseFile}");                      // Established a Connection with Database File
             AppliedConnection.Open();
 
-            TempConnection = new("DataSource=" + DataBaseTempFile);
-            TempConnection.Open();
-
+            TempConnection = AppTempConnection(UserName);
         }
 
 
@@ -43,12 +39,35 @@ namespace Applied_WebApplication.Data
             return _ConnectionClass.AppliedConnection;
         }
 
-        public static SQLiteConnection AppTempConnection(string UserName)
+        #region Temporary Database Connection
+
+        public static SQLiteConnection AppTempConnection(UserProfile _Profile)
         {
-            ConnectionClass _ConnectionClass = new(UserName);                           // Establishe Connection Class
-            return _ConnectionClass.TempConnection;
+            if (!Directory.Exists(_Profile.DataBaseTempPath)) { Directory.CreateDirectory(_Profile.DataBaseTempPath); }
+            if (!File.Exists(_Profile.DataBaseTempFile)) { SQLiteConnection.CreateFile(_Profile.DataBaseTempFile); }
+
+            SQLiteConnection _TempConnection = new($"Data Source={_Profile.DataBaseTempFile}");
+            _TempConnection.Open();
+
+            //ConnectionClass _ConnectionClass = new(UserName);                           // Establishe Connection Class
+            return _TempConnection;
         }
 
+
+        public static SQLiteConnection AppTempConnection(string UserName)
+        {
+            
+            UserProfile _Profile = new(UserName);
+            if (!Directory.Exists(_Profile.DataBaseTempPath)) { Directory.CreateDirectory(_Profile.DataBaseTempPath); }
+            if (!File.Exists(_Profile.DataBaseTempFile)) { SQLiteConnection.CreateFile(_Profile.DataBaseTempFile); }
+
+            SQLiteConnection _TempConnection = new($"Data Source={_Profile.DataBaseTempFile}");
+            _TempConnection.Open();
+
+            return _TempConnection;
+        }
+
+        #endregion
 
     }           // END()
 

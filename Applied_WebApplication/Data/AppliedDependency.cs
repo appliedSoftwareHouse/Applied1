@@ -47,7 +47,7 @@ namespace Applied_WebApplication.Data
 
             AppPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
             AppRoot = ".\\wwwroot\\";
-            AppDBTempPath = $"{AppRoot}\\DBTemp\\";
+            AppDBTempPath = $"{AppRoot}DBTemp\\";
             ReportPath = string.Concat(AppRoot, "Reports\\");
             PrintedReportPath = string.Concat(AppRoot, "PrintedReports\\");
             PrintedReportPathLink = "~/PrintedReports/";

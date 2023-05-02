@@ -22,6 +22,9 @@
 
 <form method="post">
     <div class="container">
+        <input type="text" asp-for="@Model.Variables.ID" hidden />
+        <input type="text" asp-for="@Model.Variables.Address" hidden />
+        <input type="text" asp-for="@Model.Variables.City" hidden />
         <div>
             <div class="row">
                 <div class="col">
@@ -44,7 +47,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col">
                     <div class="input-group mb-3">
@@ -65,7 +67,6 @@
                     </div>
                 </div>
             </div>
-
             <div class="row">
                 <div class="col">
                     <div class="input-group mb-3">
@@ -86,24 +87,23 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <input type="text" asp-for="@Model.Variables.ID" hidden />
+            <div class="row">
+
+                <div class="col">
+                    <button type="post" class="btn ptn-primary"
+                            asp-route-ID=@Model.Variables.ID
+                            asp-page-handler="SAVE">
+                        <i class="bi bi-save"></i> SAVE
+                    </button>
 
 
-            <div class="col">
-                <a class="btn btn-primary"
-                   asp-route-id=@Model.Variables.ID
-                   asp-page-handler="SAVE">
-                    SAVE
-                </a>
-                <a class="btn btn-primary"
-                   asp-page="./Employees"
-                   asp-page-handler="BACK">
-                    BACK
-                </a>
+                    <a class="btn btn-primary"
+                       asp-page="./Employees"
+                       asp-page-handler="BACK">
+                        <i class="bi bi-arrow-left-square"></i> BACK
+                    </a>
 
-
+                </div>
             </div>
         </div>
     </div>

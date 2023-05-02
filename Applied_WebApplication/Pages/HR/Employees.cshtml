@@ -6,84 +6,68 @@
 
 }
 
-<div class="container AppHeading">
-    <div class="row">
-        <div class="col-10">
-            <h3 class="TextCenter">EMPLOYEES LIST</h3>
-        </div>
-        <div class="col-2 align-items-center">
-            <a asp-page="./Employee"
-               asp-route-id=0 >
-                <i class="bi bi-file-earmark-plus"></i>
-                ADD
-            </a> |
-            <a asp-page="./ReportPrint/PrintReport/"
-               asp-page-handler="Employee">
-            </a>
+<div class="AppHeading-2">
 
- @*           <button type="submit" class="btn btn-primary"
-                    asp-page="./Employee"
-                    asp-route-itemid="0">
-                <i class="bi bi-file-earmark-plus"></i>
-                ADD
-            </button>
-            <button class="btn btn-primary mb-1" type="submit"
-                    asp-page="./ReportPrint/PrintReport"
-                    asp-page-handler="Print">
-                <i class="bi bi-printer-fill"></i>
-                Print
-            </button>
- *@       </div>
-    </div>
-</div>
+    <h3 class="TextCenter">EMPLOYEES LIST</h3>
 
-<div class="container">
-    <div class="row">
-        <div class="col"></div>
-        <div class="col"></div>
-        <div class="col">
-        </div>
-    </div>
 </div>
 
 
 
-<!-- Table of Employee List. -->
-<div class="container">
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th>Code</th>
-                <th>Title</th>
-                <th>Designation</th>
-                <th>FullName</th>
-                <th>City</th>
-                <th>..</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DataRow Row in Model.MyTable.Rows)
-            {
+<form method="post">
+    <!-- Table of Employee List. -->
+    <div class="container">
+        <table class="table table-hover">
+            <thead>
                 <tr>
-                    <td>@Row["Code"]</td>
-                    <td>@Row["Title"]</td>
-                    <td>@Row["Designation"]</td>
-                    <td>@Row["Full_Name"]</td>
-                    <td>@Row["City"]</td>
-                    <td>
-                        <a asp-page="./Employee"
-                       asp-route-id=@Row["ID"]
-                       asp-page-handler="Edit">
-                            Edit
-                        </a> |
-                        <a asp-page="./Employee"
-                       asp-route-id=@Row["ID"]
-                       asp-page-handler="Delete">
-                            Delete
-                        </a>
-                    </td>
+                    <th>Code</th>
+                    <th>Title</th>
+                    <th>Designation</th>
+                    <th>FullName</th>
+                    <th>City</th>
+                    <th>
+                        <button class="btn listbutton-green"
+                                asp-page-handler="Edit"
+                                asp-route-id="0">
+                            <i class="bi bi-database-fill-add"></i>
+                        </button>
+
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @if (Model.MyTable.Rows.Count > 0)
+                {
+                    @foreach (DataRow Row in Model.MyTable.Rows)
+                    {
+                        <tr>
+                            <td>@Row["Code"]</td>
+                            <td>@Row["Title"]</td>
+                            <td>@Row["Designation"]</td>
+                            <td>@Row["Full_Name"]</td>
+                            <td>@Row["City"]</td>
+                            <td>
+                                <div class="text-center">
+                                    <button class="btn listbutton-blue"
+                                    asp-page-handler="Edit"
+                                    asp-route-ID=@Row["ID"]>
+                                        <i class="bi bi-pencil-fill "></i>
+                                    </button>
+
+                                    <button class="btn listbutton-red"
+                                    asp-page-handler="Delete"
+                                    asp-route-ID=@Row["ID"]>
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td>No Record Found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</form>

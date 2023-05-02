@@ -78,10 +78,11 @@ namespace Applied_WebApplication.Data
         {
             try
             {
-                UserProfile UProfile = new(_UserName);
-                ConnectionString = string.Concat("Data Source=", UProfile.DataBaseFile);
-                MyConnection = new SQLiteConnection(ConnectionString);
+                //UserProfile UProfile = new(_UserName);
+                //ConnectionString = string.Concat("Data Source=", UProfile.DataBaseFile);
+                //MyConnection = new SQLiteConnection(ConnectionString);
                 MyUserName = _UserName;
+                MyConnection = ConnectionClass.AppConnection(_UserName);
                 Filter ??= string.Empty;
                 View_Filter = Filter;
                 MyTableName = _Tables.ToString();
@@ -107,10 +108,13 @@ namespace Applied_WebApplication.Data
         {
             try
             {
-                UserProfile UProfile = new(_UserName);
-                ConnectionString = _Text;
-                MyConnection = new SQLiteConnection(ConnectionString);
+                //UserProfile UProfile = new(_UserName);
+                //ConnectionString = _Text;
+                //MyConnection = new SQLiteConnection(ConnectionString);
+                //MyUserName = _UserName;
+
                 MyUserName = _UserName;
+                MyConnection = ConnectionClass.AppConnection(_UserName);
 
                 Filter ??= string.Empty;
                 View_Filter = Filter;

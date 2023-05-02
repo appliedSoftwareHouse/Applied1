@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 
@@ -7,6 +8,7 @@ namespace Applied_WebApplication.Pages.HR
     {
         public MyParameters Variables { get; set; }
         public DataTable MyTable { get; set; }
+        public string UserName => User.Identity.Name;
 
         public void OnGet()
         {
@@ -16,6 +18,27 @@ namespace Applied_WebApplication.Pages.HR
             MyTable = _Table.MyDataView.ToTable();
             Variables = new();
         }
+
+        public IActionResult OnPostEdit(int ID)
+        {
+            return RedirectToPage("Employee", routeValues: new { ID });
+        }
+
+        public IActionResult OnPostDelete(int ID)
+        {
+            DataTableClass Employee = new(UserName, Tables.Employees, $"ID={ID}");
+            if(Employee.Count == 1)
+            {
+                Employee.CurrentRow = Employee.Rows[0];
+                var Deleted = Employee.Delete();
+                if (Deleted)
+                { 
+                return RedirectToPage("Employee");
+                }
+            }
+            return Page();
+        }
+
 
         public class MyParameters
         {
