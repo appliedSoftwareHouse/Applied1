@@ -34,5 +34,17 @@ namespace Applied_WebApplication.Data
             return 0;
         }
 
+
+        public static DateTime ToDateTime(object _Value)
+        {
+            var type = _Value.GetType();
+
+            if (type == typeof(string)) { return DateTime.Parse((string)_Value); }
+            if (type == typeof(decimal)) { return DateTime.Parse(_Value.ToString()); }
+            if (type == typeof(long)) { return DateTime.Parse(_Value.ToString()); }
+            if (type == typeof(DateTime)) { return (DateTime)_Value; }
+            return new DateTime();
+        }
+
     }
 }

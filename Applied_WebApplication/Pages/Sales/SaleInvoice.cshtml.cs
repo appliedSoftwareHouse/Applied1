@@ -228,10 +228,10 @@ namespace Applied_WebApplication.Pages.Sales
 
             if (ErrorMessages.Count == 0)
             {
-                //TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-                //if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempView[0]["ID"]; }
-                //TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID);
-                Invoice =    TempInvoice2.TempTable;
+                TempInvoice1.TempRefresh();
+                TempInvoice2.TempRefresh();
+
+                Invoice =   TempInvoice2.TempTable;
                 var message2 = $"Serial No {Variables.Sr_No} of Invoice No {Variables.Vou_No} has been saved successfully.";
                 ErrorMessages.Add(MessageClass.SetMessage(message2, Color.Yellow));
             }
