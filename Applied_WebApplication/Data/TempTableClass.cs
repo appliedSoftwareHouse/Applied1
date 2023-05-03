@@ -1,8 +1,6 @@
 ﻿using Applied_WebApplication.Pages;
-using Microsoft.AspNetCore.Mvc;
 using NPOI.HSSF.Model;
 using NPOI.OpenXmlFormats.Dml.Chart;
-using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
@@ -42,12 +40,9 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        #region Constructors
-
         public TempTableClass(string _UserName, Tables _TableID, string _VoucherNo)
         {
             VoucherNo = _VoucherNo;
-            TranID = 0;
             UserName = _UserName;
             TableID = _TableID;
             UProfile = new UserProfile(UserName);
@@ -70,7 +65,6 @@ namespace Applied_WebApplication.Data
 
         public TempTableClass(string _UserName, Tables _TableID, int _TranID)
         {
-            VoucherNo = "";
             TranID = _TranID;
             UserName = _UserName;
             TableID = _TableID;
@@ -92,8 +86,6 @@ namespace Applied_WebApplication.Data
             TableValidate = new(TempTable);
         }
 
-        #endregion
-
         private DataTable GetDataTable()
         {
             SQLiteDataAdapter _Adapter = new(Command);
@@ -105,6 +97,7 @@ namespace Applied_WebApplication.Data
             }
             return new DataTable();
         }
+
         public DataTable CreateTempTable(string UserName, DataTable _Table)
         {
             DataTable ResultTable = new DataTable();
@@ -137,8 +130,6 @@ namespace Applied_WebApplication.Data
             return ResultTable;
         }
 
-        #region Get Table From Voucher Number / TranID
-
         private DataTable FromVouNo(DataTable _Table, string _VouNo)
         {
             
@@ -169,6 +160,7 @@ namespace Applied_WebApplication.Data
 
             return ResultTable;
         }
+
         private DataTable FromTranID(DataTable _Table, int _TranID)
         {
             
@@ -198,36 +190,6 @@ namespace Applied_WebApplication.Data
 
             return ResultTable;
         }
-
-        #endregion
-
-
-        #region Refresh Data Tables
-
-        public void TempRefresh()
-        {
-            var _CommandText = "";
-            if (TempTable.Columns.Contains("Vou_No"))
-            {
-                _CommandText = $"SELECT * FROM {MyTableName} WHERE Vou_No='{VoucherNo}'";
-            }
-            
-            if (TempTable.Columns.Contains("TranID"))
-            {
-                _CommandText = $"SELECT * FROM {MyTableName} WHERE TranID={TranID}";
-            }
-            var _Command = new SQLiteCommand(_CommandText, TempConnection);
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-
-            _Adapter.Fill(_DataSet, MyTableName);
-            if (_DataSet.Tables.Count == 1)
-            {
-                TempTable = _DataSet.Tables[0];
-            }
-        }
-
-        #endregion
 
         #region Create or Load Table from Temp DataBase.
 

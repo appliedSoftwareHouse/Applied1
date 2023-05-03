@@ -15,52 +15,55 @@
 
 </style>
 
-
-<div class="container AppHeading">
-    <h3 class="TextCenter"> EMPLOYEE'S RECORD'</h3>
+<div class="AppHeading-2">
+    <h5 class="TextCenter"> EMPLOYEE'S RECORD</h5>
 </div>
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
 
 <form method="post">
     <div class="container">
         <input type="text" asp-for="@Model.Variables.ID" hidden />
-        <input type="text" asp-for="@Model.Variables.Address" hidden />
-        <input type="text" asp-for="@Model.Variables.City" hidden />
         <div>
             <div class="row">
-                <div class="col">
-                    <div class="input-group mb-3">
+                <div class="col-md-4">
+                    <div class="input-group-sm mb-3">
                         <span class="input-group-text">Code</span>
                         <input type="text" asp-for="@Model.Variables.Code" class="form-control">
                     </div>
                 </div>
-                <div class="col">
-                    <div class="input-group mb-3">
+                <div class="col-md-4">
+                    <div class="input-group-sm mb-3">
                         <span class="input-group-text">Name</span>
                         <input type="text" asp-for="@Model.Variables.Title" class="form-control">
                     </div>
 
                 </div>
-                <div class="col">
-                    <div class="input-group mb-3">
+                <div class="col-md-4">
+                    <div class="input-group-sm mb-3">
                         <span class="input-group-text">Designation</span>
                         <input type="text" asp-for="@Model.Variables.Designation" class="form-control">
                     </div>
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Full Name</span>
                         <input type="text" asp-for="@Model.Variables.FullName" class="form-control">
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Contact #</span>
                         <input type="text" asp-for="@Model.Variables.Contact" class="form-control">
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Identity Card</span>
                         <input type="text" asp-for="@Model.Variables.CNIC" class="form-control">
@@ -68,41 +71,48 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col-md-8">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">Address</span>
+                        <input type="text" asp-for="@Model.Variables.Address" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text">City</span>
+                        <input type="text" asp-for="@Model.Variables.City" class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Birth Date</span>
                         <input type="date" asp-for="@Model.Variables.DOB" class="form-control">
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Joing Date</span>
                         <input type="date" asp-for="@Model.Variables.Join" class="form-control">
                     </div>
                 </div>
-                <div class="col">
+                <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text">Left Date</span>
-                        <input type="date" asp-for="@Model.Variables.left" class="form-control">
+                        <input type="date" asp-for="@Model.Variables.Left" class="form-control">
                     </div>
                 </div>
             </div>
             <div class="row">
 
                 <div class="col">
-                    <button type="post" class="btn ptn-primary"
+                    <button type="post" class="btn btn-primary"
                             asp-route-ID=@Model.Variables.ID
                             asp-page-handler="SAVE">
                         <i class="bi bi-save"></i> SAVE
                     </button>
-
-
-                    <a class="btn btn-primary"
-                       asp-page="./Employees"
-                       asp-page-handler="BACK">
-                        <i class="bi bi-arrow-left-square"></i> BACK
-                    </a>
-
+                    <a class="btn btn-primary" asp-page="./Employees"><i class="bi bi-arrow-left-square"></i> BACK</a>
                 </div>
             </div>
         </div>

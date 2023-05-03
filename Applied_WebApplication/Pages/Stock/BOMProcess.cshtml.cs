@@ -26,7 +26,7 @@ namespace Applied_WebApplication.Pages.Stock
                 {
                     Variables.BOMProcess = (int)TableClass.CurrentRow["Process"];
                     DataTableClass BOMClass = new(UserName, Tables.BOMProfile2, "TranID=" + Variables.BOMProcess.ToString());
-                    if (BOMClass.Tb_Count > 0)
+                    if (BOMClass.CountTable > 0)
                     {
                         Profile = BOMClass.MyDataTable;
                     }

@@ -16,13 +16,14 @@ namespace Applied_WebApplication.Data
         public DataTable MyDataTable;
         public DataView MyDataView;
         public SQLiteConnection MyConnection;
-        public string MyConnectionString => MyConnection.ConnectionString;            //10-Mar-23
-        public string ConnectionString;
+        //public string MyConnectionString => MyConnection.ConnectionString;            //10-Mar-23
+        //public string ConnectionString;
         public TableValidationClass TableValidation;
-        public int ErrorCount { get => TableValidation.MyMessages.Count; }
+        public int ErrorCount  => TableValidation.MyMessages.Count;
+        public List<Message> ErrorMessages => TableValidation.MyMessages;
         public int Count => MyDataView.Count;
-        public int CountView => MyDataView.Count;
-        public int Tb_Count => MyDataTable.Rows.Count;
+        //public int CountView => MyDataView.Count;
+        public int CountTable => MyDataTable.Rows.Count;
         public string MyTableName { get; set; }
         public bool IsError = false;
         public string MyMessage { get; set; }
@@ -599,6 +600,21 @@ namespace Applied_WebApplication.Data
                 Result = (int)MaxNo + 1;
             }
             return Result;
+        }
+
+        public void RemoveNull()
+        {
+            foreach (DataColumn Column in CurrentRow.Table.Columns)
+            {
+                if (CurrentRow[Column] == DBNull.Value)
+                {
+                    var _Type = Column.DataType;
+                    if(_Type == typeof(int)) { CurrentRow[Column] = 0; }
+                    if(_Type == typeof(string)) { CurrentRow[Column] = ""; }
+                    if(_Type == typeof(DateTime)) { CurrentRow[Column] = new DateTime(); }
+                    if(_Type == typeof(bool)) { CurrentRow[Column] = false; }
+                }
+            }
         }
 
         #endregion

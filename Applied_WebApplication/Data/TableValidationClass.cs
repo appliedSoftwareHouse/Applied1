@@ -84,14 +84,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.OBALStock.ToString()) { ValidateTable_OBALStock(Row); }
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
+            if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
-
-
-
-
-
+     
 
         #region Methods => Seek / Sucess
         private bool Seek(string _Column, string _Value)
@@ -529,6 +526,25 @@ namespace Applied_WebApplication.Data
             if (((string)Row["Description"]).Length == 0) { MyMessages.Add(SetMessage("Description of the transaction must be some value.")); }
             if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
             if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
+        }
+
+        private void ValidateTable_Employees(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+
+            if (Row["Code"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee's record code is not defined.")); }
+            if (Row["Title"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee's Name is not defined.")); }
+            if (Row["Full_Name"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee Full Name  is not defined.")); }
+            if (Row["Designation"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee's designation is not defined.")); }
+            if (Row["Contact"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee Contact number is not defined.")); }
+            if (Row["CNIC"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee national identity number is not defined.")); }
+            if ((DateTime)Row["JOIN"] == new DateTime()) { MyMessages.Add(SetMessage("Joining Date is not defined.")); }
+            if ((DateTime)Row["DOB"] == new DateTime()) { MyMessages.Add(SetMessage("Employee's date of birth is not defined.")); }
+            
         }
 
         #endregion

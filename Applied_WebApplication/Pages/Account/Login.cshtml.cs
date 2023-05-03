@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Pages.Account
         [BindProperty]
         public Credential MyCredential { get; set; }
         public string Username { get; set; }
-        private readonly AppliedUsersClass UserTableClass = new();                       // Make Connection and get Applied Users Table.
+        private AppliedUsersClass UserTableClass = new();                       // Make Connection and get Applied Users Table.
 
         public void OnGet()
         {
@@ -23,7 +23,7 @@ namespace Applied_WebApplication.Pages.Account
         {
             if (!ModelState.IsValid) { return Page(); }          // Return the login page if user login unsuccessful.
 
-            UserTableClass.UserView.RowFilter = $"UserID='{MyCredential.Username}'";                 // Get a Record for the sucessful logged user.
+            UserTableClass.UserView.RowFilter = "UserID='" + MyCredential.Username + "'";                 // Get a Record for the sucessful logged user.
 
             if (UserTableClass.UserView.Count == 1)
             {
