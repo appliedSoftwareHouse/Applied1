@@ -12,21 +12,19 @@ namespace Applied_WebApplication.Data
     {
         #region Initial
 
-        public string MyUserName { get; set; }
-        public DataTable MyDataTable;
-        public DataView MyDataView;
-        public SQLiteConnection MyConnection;
-        //public string MyConnectionString => MyConnection.ConnectionString;            //10-Mar-23
-        //public string ConnectionString;
-        public TableValidationClass TableValidation;
+        public string UserName { get; set; }
+        public DataTable MyDataTable { get; set; }
+        public DataView MyDataView { get; set; }
+        public SQLiteConnection MyConnection { get; set; }
+        public TableValidationClass TableValidation { get; set; }
         public int ErrorCount  => TableValidation.MyMessages.Count;
         public List<Message> ErrorMessages => TableValidation.MyMessages;
         public int Count => MyDataView.Count;
-        //public int CountView => MyDataView.Count;
         public int CountTable => MyDataTable.Rows.Count;
+        public int CountView => MyDataView.Count;
         public string MyTableName { get; set; }
-        public bool IsError = false;
-        public string MyMessage { get; set; }
+        public bool IsError { get; set; } = false;
+    public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
         public DataRowCollection Rows => MyDataTable.Rows;
@@ -36,9 +34,6 @@ namespace Applied_WebApplication.Data
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
         private SQLiteCommand Command_Insert;
-
-
-
 
         #endregion
 
@@ -52,7 +47,6 @@ namespace Applied_WebApplication.Data
         {
             SetTableClass(_UserName, _Tables, _Filter);
         }
-
         public DataTableClass(string _UserName, string _Text)
         {
             if (_Text.Length > 0 || _Text != null)
@@ -60,7 +54,6 @@ namespace Applied_WebApplication.Data
                 SetTableClass(_UserName, _Text, "");
             }
         }
-
         public DataTableClass(string _UserName, string _Text, string _Filter)
         {
             if (_Text.Length > 0 || _Text != null)
@@ -69,28 +62,37 @@ namespace Applied_WebApplication.Data
 
             }
         }
+        #endregion
 
+        #region Connection
+
+        private SQLiteConnection GetConnection()
+        {
+            if(UserName==null) { return null; }
+            MyConnection ??=MyConnection = ConnectionClass.AppConnection(UserName); 
+            if (MyConnection.State != ConnectionState.Open) {  MyConnection.Open(); }
+            return MyConnection;
+        }
 
         #endregion
 
+
+
         #region DataTable
 
-        public void SetTableClass(string _UserName, Tables _Tables, string? Filter)
+        public void SetTableClass(string _UserName, Tables _Tables, string? _Filter)
         {
             try
             {
-                //UserProfile UProfile = new(_UserName);
-                //ConnectionString = string.Concat("Data Source=", UProfile.DataBaseFile);
-                //MyConnection = new SQLiteConnection(ConnectionString);
-                MyUserName = _UserName;
-                MyConnection = ConnectionClass.AppConnection(_UserName);
-                Filter ??= string.Empty;
-                View_Filter = Filter;
+                UserName = _UserName;
+                MyConnection = GetConnection();
+                _Filter ??= string.Empty;
+                View_Filter = _Filter;
                 MyTableName = _Tables.ToString();
                 GetDataTable();
                 MyDataView ??= new DataView();
                 TableValidation = new(MyDataTable);
-                if (Filter != null) { View_Filter = Filter; }
+                if (_Filter != null) { View_Filter = _Filter; }
                 CheckError();
 
                 Command_Update = new SQLiteCommand(MyConnection);
@@ -101,31 +103,22 @@ namespace Applied_WebApplication.Data
             {
                 MyMessage = e.Message;
             }
-
         }
-
-
-        public void SetTableClass(string _UserName, string _Text, string? Filter)
+        public void SetTableClass(string _UserName, string? _Text, string? _Filter)
         {
+            _Filter ??= string.Empty;
+            _Text ??= string.Empty;
+
             try
             {
-                //UserProfile UProfile = new(_UserName);
-                //ConnectionString = _Text;
-                //MyConnection = new SQLiteConnection(ConnectionString);
-                //MyUserName = _UserName;
-
-                MyUserName = _UserName;
-                MyConnection = ConnectionClass.AppConnection(_UserName);
-
-                Filter ??= string.Empty;
-                View_Filter = Filter;
-
+                UserName = _UserName;
+                MyConnection = GetConnection();
+                View_Filter = _Filter;
                 GetDataTable();
                 MyDataView ??= new DataView();
                 TableValidation = new(MyDataTable);
-                if (Filter != null) { View_Filter = Filter; }
+                if (_Filter.Length > 0) { View_Filter = _Filter; }
                 CheckError();
-
                 Command_Update = new SQLiteCommand(MyConnection);
                 Command_Delete = new SQLiteCommand(MyConnection);
                 Command_Insert = new SQLiteCommand(MyConnection);
@@ -135,8 +128,6 @@ namespace Applied_WebApplication.Data
                 MyMessage = e.Message;
             }
         }
-
-
         public static DataTable GetTable(string UserName, Tables _Table)                      // Load Database 
         {
             SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
@@ -154,7 +145,6 @@ namespace Applied_WebApplication.Data
             else { datatable = new DataTable(); }
             return datatable;
         }
-
         public static DataTable GetTable(string UserName, string _Text, string? _Sort)                      // Load Database 
         {
             DataTable _Table = new DataTable();
@@ -184,17 +174,15 @@ namespace Applied_WebApplication.Data
             }
             return _Table;
         }
-
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
 
             try
             {
-                if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
                 var _CommandText = string.Format("SELECT * FROM [{0}]", MyTableName);
                 if (View_Filter.Length > 0) { _CommandText += " WHERE " + View_Filter; }
-                SQLiteCommand _Command = new(_CommandText, MyConnection);
+                SQLiteCommand _Command = new(_CommandText, GetConnection());
                 SQLiteDataAdapter _Adapter = new(_Command);
                 DataSet _DataSet = new();
                 _Adapter.Fill(_DataSet, MyTableName);
@@ -207,7 +195,7 @@ namespace Applied_WebApplication.Data
                     MyDataView = MyDataTable.AsDataView();
                     if (MyDataTable.Rows.Count > 0)
                     {
-                        if (CurrentRow == null) { CurrentRow = MyDataTable.Rows[0]; }
+                        CurrentRow ??= MyDataTable.Rows[0];
                     }
                 }
                 else { MyDataTable = new DataTable(); MyConnection.Close(); }
@@ -219,7 +207,20 @@ namespace Applied_WebApplication.Data
             }
             return;
         }
+        internal DataTable GetTable(string filter)
+        {
+            MyDataView.RowFilter = filter;
+            return MyDataView.ToTable();
+        }
+        internal DataTable GetTable(string filter, string Sort)
+        {
+            MyDataView.Sort = Sort;
+            MyDataView.RowFilter = filter;
+            return MyDataView.ToTable();
+        }
+        #endregion
 
+        #region New Row / Refresh
         public DataRow NewRecord()
         {
             CurrentRow = MyDataTable.NewRow();
@@ -244,6 +245,21 @@ namespace Applied_WebApplication.Data
             if (MyDataTable == null) { IsError = true; }
             if (MyDataView == null) { IsError = true; }
             if (CurrentRow == null) { IsError = true; }
+        }
+        public void Refresh()
+        {
+            var Filter = string.Empty;
+            if(View_Filter.Length > 0) { Filter = $"WHERE {Filter}"; }; 
+            var _CommandText = $"SELECT * FROM {MyTableName} {Filter}";
+            var _Command = new SQLiteCommand(_CommandText, GetConnection());
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, MyTableName);
+            if(_DataSet.Tables.Count > 0)
+            {
+                MyDataTable = _DataSet.Tables[0];
+                MyDataView = MyDataTable.AsDataView();
+            }
         }
         #endregion
 
@@ -529,7 +545,6 @@ namespace Applied_WebApplication.Data
                 return 1;
             }
         }
-
         public void Add()
         {
             IsError = false;
@@ -559,9 +574,6 @@ namespace Applied_WebApplication.Data
 
             }
         }
-
-
-
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
             DataTableClass tb_table = new(UserName, table, "");
@@ -573,19 +585,6 @@ namespace Applied_WebApplication.Data
 
         #region Get Table
 
-
-        internal DataTable GetTable(string filter)
-        {
-            MyDataView.RowFilter = filter;
-            return MyDataView.ToTable();
-        }
-
-        internal DataTable GetTable(string filter, string Sort)
-        {
-            MyDataView.Sort = Sort;
-            MyDataView.RowFilter = filter;
-            return MyDataView.ToTable();
-        }
 
         #endregion
 
