@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Applied_WebApplication/wwwroot/DBTemp/HFSSteel/HFSSteelTemp.db
