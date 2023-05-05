@@ -41,7 +41,6 @@ namespace Applied_WebApplication.Pages.Sales
                 Variables.Sr_No = 1;
 
                 TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-                //if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempTable.Rows[0]["ID"]; }
                 TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, -1);
 
                 if (TempInvoice1.CountTemp == 0)
@@ -77,23 +76,52 @@ namespace Applied_WebApplication.Pages.Sales
 
             #region Sales Invoices exist
 
-
-
             if (Vou_No != null && Sr_No != null)
             {
                 if (Vou_No.ToUpper() == "NEW")
                 {
                     Sr_No ??= 1;
+                    
                     TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Vou_No);
-                    if (TempInvoice1.CountTemp > 0)
-                    {
-                        Row1 = TempInvoice1.CurrentRow;                                                 // Note: Current Row has been assigned from TempTableClass
-                        TranID = (int)TempInvoice1.CurrentRow["ID"];
+                    TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, -1);
 
-                        TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, TranID);
-                        Row2 = TempInvoice2.Get_SrNo(Sr_No);
-                        Invoice = TempInvoice2.TempTable;
+                    if (TempInvoice1.CountTemp == 0)
+                    {
+                        TempInvoice1.CurrentRow = TempInvoice1.NewRecord();
+                        TempInvoice1.CurrentRow["ID"] = 0;
+                        TempInvoice1.CurrentRow["Vou_No"] = "New";
+                        TempInvoice1.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
                     }
+                    else
+                    {
+                        TempInvoice1.CurrentRow = TempInvoice1.TempTable.Rows[0];
+                    }
+
+                    if (TempInvoice2.CountTemp == 0)
+                    {
+                        TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
+                        TempInvoice2.CurrentRow["ID"] = 0;
+                        TempInvoice2.CurrentRow["Sr_No"] = 1;
+                    }
+                    else
+                    {
+                        if (Sr_No == -1)
+                        {
+                            TempInvoice2.NewRecord();
+                            TempInvoice2.CurrentRow["ID"] = 0;
+                            TempInvoice2.CurrentRow["Sr_No"] = MaxSrNo(TempInvoice2.TempTable);
+                        }
+                        else
+                        {
+                            TempInvoice2.CurrentRow = TempInvoice2.TempTable.Rows[0];
+                        }
+                    }
+
+                    Row1 = TempInvoice1.CurrentRow;
+                    Row2 = TempInvoice2.CurrentRow;
+                    Row2Variables();
+                    Invoice = TempInvoice2.TempTable;
+
                     return;
                 }
                 else
@@ -129,8 +157,7 @@ namespace Applied_WebApplication.Pages.Sales
                         if (Sr_No == -1)
                         {
                             TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
-                            var Max_SrNo = TempInvoice2.TempTable.Compute("MAX(Sr_No)", "");
-                            TempInvoice2.CurrentRow["Sr_No"] = (int)Max_SrNo + 1;
+                            var Max_SrNo = MaxSrNo(TempInvoice2.TempTable);
                         }
 
                         Row1 = TempInvoice1.CurrentRow;
@@ -145,6 +172,14 @@ namespace Applied_WebApplication.Pages.Sales
             #endregion
         }
         #endregion
+
+        public int MaxSrNo(DataTable _Table)
+        {
+            var MaxSrNo = _Table.Compute("MAX(Sr_No)", "");
+            if(MaxSrNo==DBNull.Value) { return 1; }
+            else { return (int)MaxSrNo + 1; }
+        }
+
 
         #region Variables / Rows
         private void Row2Variables()
@@ -335,11 +370,9 @@ namespace Applied_WebApplication.Pages.Sales
 
                     if (Variables.Vou_No.ToUpper() == "NEW")
                     {
-
                         Variables.Vou_No = GetNewVouNo(Variables.Vou_Date, "SL");
                         SourceTable1.CurrentRow["Vou_No"] = Variables.Vou_No;
                         SourceTable1.CurrentRow["ID"] = 0;
-
                     }
 
                     #region Save
@@ -398,7 +431,6 @@ namespace Applied_WebApplication.Pages.Sales
 
                     #endregion
 
-                    //var message = $"Save Serial No {Variables.Sr_No} of Sale invoice {Variables.Vou_No} SAVED successfully., ";
                     var message = $"Sale invoice {Variables.Vou_No} SAVED successfully., ";
                     ErrorMessages.Add(MessageClass.SetMessage(message, Color.Green));
                 }

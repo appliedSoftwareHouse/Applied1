@@ -44,17 +44,17 @@ namespace Applied_WebApplication.Data
         {
             VoucherNo = _VoucherNo;
             UserName = _UserName;
-            TableID = _TableID;
+            MyTableName = _TableID.ToString();
             UProfile = new UserProfile(UserName);
             MyConnection = ConnectionClass.AppConnection(UserName);
             View_Filter = $"Vou_No='{VoucherNo}'";
-            CommandText = $"SELECT * FROM [{TableID}] WHERE {View_Filter}";
+            CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
             Command = new SQLiteCommand(CommandText, GetConnection());
             SourceTable = GetDataTable();
             TempTableIsExist(SourceTable);                              // Create a duplicate table in Temporary Database of App, if not exist.
             if (VoucherNo.ToUpper() == "NEW")
             {
-                MyTableName = SourceTable.TableName;
+                //MyTableName = SourceTable.TableName;
                 View_Filter = $"Vou_No='{VoucherNo}'";
                 TempRefresh();
             }
@@ -100,12 +100,12 @@ namespace Applied_WebApplication.Data
             if (TranID == -1)
             {
 
-                #region Source Table    
-                CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
+                #region Source Table
+                CommandText = $"SELECT * FROM [{MyTableName}]";
                 Command = new(CommandText, GetConnection());
                 _Adapter = new(Command);
                 _DataSet = new DataSet();
-                _Adapter.Fill(_DataSet, TableID.ToString());
+                _Adapter.Fill(_DataSet, MyTableName);
                 if (_DataSet.Tables.Count>0)
                 {
                     SourceTable = _DataSet.Tables[0];
@@ -165,7 +165,7 @@ namespace Applied_WebApplication.Data
             Command.Connection = GetConnection();
             SQLiteDataAdapter _Adapter = new(Command);
             DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, TableID.ToString());
+            _Adapter.Fill(_DataSet, MyTableName);
             if (_DataSet.Tables.Count == 1)
             {
                 return _DataSet.Tables[0];
@@ -297,7 +297,7 @@ namespace Applied_WebApplication.Data
                 //================================================== Create Table if not exist.
                 StringBuilder _Text = new();
 
-                _Text.Append(string.Concat("CREATE TABLE [", MyTableName, "] ("));
+                _Text.Append(string.Concat("CREATE TABLE [", _TableName, "] ("));
                 string _LastColumn = _Table.Columns[_Table.Columns.Count - 1].ToString();
                 foreach (DataColumn Column in _Table.Columns)
                 {
