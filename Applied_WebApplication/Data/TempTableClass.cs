@@ -17,7 +17,6 @@ namespace Applied_WebApplication.Data
         public bool IsNew { get; set; }
         public SQLiteConnection MyConnection { get; set; }
         public SQLiteConnection TempConnection { get; set; }
-        //public string DBPath => UProfile.DataBaseFile;
         public DataTable SourceTable { get; set; }
         public DataView SourceView { get; set; }
         public DataTable TempTable { get; set; }
@@ -69,7 +68,7 @@ namespace Applied_WebApplication.Data
                 if (CountTemp > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
 
-            
+
             SourceView = SourceTable.AsDataView();
             TempView = TempTable.AsDataView();
 
@@ -80,25 +79,50 @@ namespace Applied_WebApplication.Data
         {
             TranID = _TranID;
             UserName = _UserName;
-            TableID = _TableID;
+            MyTableName = _TableID.ToString();
             UProfile = new UserProfile(UserName);
+            SourceTable = new();
+            TempTable = new();
 
-            if (TranID >0)
+            SQLiteDataAdapter _Adapter;
+            DataSet _DataSet;
+
+            if (TranID > 0)
             {
                 View_Filter = $"TranID={TranID}";
-                CommandText = $"SELECT * FROM [{TableID}] WHERE {View_Filter}";
-                Command = new SQLiteCommand(CommandText, GetConnection());
+                CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
+                Command = new(CommandText, GetConnection());
                 SourceTable = GetDataTable();
-            }
-            if( TranID == -1)
-            { 
-                           
-            
-            }
+                TempTableIsExist(SourceTable);                                               // Create a duplicate table in Temporary Database of App, if not exist.
+                TempTable = CreateTempTable(UserName, SourceTable);
 
+            }
+            if (TranID == -1)
+            {
 
-            TempTableIsExist(SourceTable);                                               // Create a duplicate table in Temporary Database of App, if not exist.
-            TempTable = CreateTempTable(UserName, SourceTable);
+                #region Source Table    
+                CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
+                Command = new(CommandText, GetConnection());
+                _Adapter = new(Command);
+                _DataSet = new DataSet();
+                _Adapter.Fill(_DataSet, TableID.ToString());
+                if (_DataSet.Tables.Count>0)
+                {
+                    SourceTable = _DataSet.Tables[0];
+                }
+                #endregion
+
+                #region Temp Table
+                Command = new(CommandText, GetTempConnection());
+                _Adapter = new SQLiteDataAdapter(Command);
+                _DataSet = new();
+                _Adapter.Fill(_DataSet, TableID.ToString());
+                if (_DataSet.Tables.Count == 1)
+                {
+                    TempTable = _DataSet.Tables[0];
+                }
+                #endregion
+            }
 
             if (CurrentRow == null)
             {
@@ -238,7 +262,7 @@ namespace Applied_WebApplication.Data
             return ResultTable;
         }
 
-        
+
 
         public void TempRefresh()
         {
