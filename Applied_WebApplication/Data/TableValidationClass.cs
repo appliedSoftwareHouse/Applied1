@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Applied_WebApplication.Pages;
+using System.Data;
 using System.Drawing;
 using static Applied_WebApplication.Data.MessageClass;
 
@@ -47,6 +48,14 @@ namespace Applied_WebApplication.Data
             if(MyDataView==null) { MyDataView = Row.Table.AsDataView(); }
             return Validation(Row);
         }
+
+        public static List<Message> RowValidation(DataRow Row)
+        {
+            TableValidationClass MyValidationClass = new TableValidationClass(Row.Table);
+            MyValidationClass.Validation(Row);
+            return MyValidationClass.MyMessages;
+        }
+
 
         public bool Validation(DataRow Row)
         {

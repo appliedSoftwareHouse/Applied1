@@ -1,6 +1,7 @@
 ﻿using Applied_WebApplication.Pages;
 using NPOI.HSSF.Model;
 using NPOI.OpenXmlFormats.Dml.Chart;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
@@ -45,16 +46,11 @@ namespace Applied_WebApplication.Data
             VoucherNo = _VoucherNo;
             UserName = _UserName;
             MyTableName = _TableID.ToString();
-            UProfile = new UserProfile(UserName);
-            MyConnection = ConnectionClass.AppConnection(UserName);
             View_Filter = $"Vou_No='{VoucherNo}'";
-            CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
-            Command = new SQLiteCommand(CommandText, GetConnection());
-            SourceTable = GetDataTable();
+            SourceTable = DataTableClass.GetTable(UserName, _TableID, View_Filter);
             TempTableIsExist(SourceTable);                              // Create a duplicate table in Temporary Database of App, if not exist.
             if (VoucherNo.ToUpper() == "NEW")
             {
-                //MyTableName = SourceTable.TableName;
                 View_Filter = $"Vou_No='{VoucherNo}'";
                 TempRefresh();
             }
@@ -75,8 +71,9 @@ namespace Applied_WebApplication.Data
             TableValidate = new(TempTable);
         }
 
-        public TempTableClass(string _UserName, Tables _TableID, int _TranID)
+        public TempTableClass(string _UserName, Tables _TableID, int _TranID, bool? IsNew)
         {
+            IsNew ??= false;
             TranID = _TranID;
             UserName = _UserName;
             MyTableName = _TableID.ToString();
@@ -87,46 +84,51 @@ namespace Applied_WebApplication.Data
             SQLiteDataAdapter _Adapter;
             DataSet _DataSet;
 
-            if (TranID > 0)
+            #region New Voucher
+
+            if ((bool)IsNew)
             {
                 View_Filter = $"TranID={TranID}";
                 CommandText = $"SELECT * FROM [{MyTableName}] WHERE {View_Filter}";
-                Command = new(CommandText, GetConnection());
-                SourceTable = GetDataTable();
-                TempTableIsExist(SourceTable);                                               // Create a duplicate table in Temporary Database of App, if not exist.
-                TempTable = CreateTempTable(UserName, SourceTable);
-
-            }
-            if (TranID == -1)
-            {
-
-                #region Source Table
-                CommandText = $"SELECT * FROM [{MyTableName}]";
-                Command = new(CommandText, GetConnection());
+                Command = new(CommandText, GetTempConnection());
                 _Adapter = new(Command);
                 _DataSet = new DataSet();
                 _Adapter.Fill(_DataSet, MyTableName);
-                if (_DataSet.Tables.Count>0)
-                {
-                    SourceTable = _DataSet.Tables[0];
-                }
-                #endregion
-
-                #region Temp Table
-                Command = new(CommandText, GetTempConnection());
-                _Adapter = new SQLiteDataAdapter(Command);
-                _DataSet = new();
-                _Adapter.Fill(_DataSet, TableID.ToString());
-                if (_DataSet.Tables.Count == 1)
+                if (_DataSet.Tables.Count > 0)
                 {
                     TempTable = _DataSet.Tables[0];
+                    SourceTable = TempTable.Clone();
                 }
-                #endregion
+                else
+                {
+                    TempTable = new DataTable();
+                    SourceTable = new DataTable();
+                }
             }
+
+            #endregion
+
+            else
+            {
+                View_Filter = $"TranID={TranID}";
+                SourceTable = DataTableClass.GetTable(UserName, _TableID, View_Filter );
+                TempTableIsExist(SourceTable);                                               // Create a duplicate table in Temporary Database of App, if not exist.
+                TempTable = CreateTempTable(UserName, SourceTable);
+            }
+
+            #region Current Row
 
             if (CurrentRow == null)
             {
-                if (CountTemp > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
+                if (CountTemp > 0)
+                {
+                    CurrentRow = TempTable.Rows[0];
+                }
+                else
+                {
+                    CurrentRow = NewRecord();
+                }
+                #endregion
             }
 
             SourceView = SourceTable.AsDataView();
@@ -160,16 +162,17 @@ namespace Applied_WebApplication.Data
 
         #region Get Table / From Voucher No / Tran ID / & Refresh
 
-        private DataTable GetDataTable()
+        public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
         {
-            Command.Connection = GetConnection();
-            SQLiteDataAdapter _Adapter = new(Command);
-            DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, MyTableName);
-            if (_DataSet.Tables.Count == 1)
-            {
-                return _DataSet.Tables[0];
-            }
+            var _Connection = ConnectionClass.AppTempConnection(UserName);
+            var _TableName = _Table.ToString();
+            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, _TableName);
+            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
             return new DataTable();
         }
         public DataTable CreateTempTable(string _UserName, DataTable _Table)
@@ -405,6 +408,19 @@ namespace Applied_WebApplication.Data
             }
 
         }
+
+        public static bool Delete(string UserName, Tables _Table, int ID)
+        {
+            var _Connection = ConnectionClass.AppTempConnection(UserName);
+            var _TableName = _Table.ToString();
+            var _CommandText = $"DELETE FROM [{_TableName}] WHERE ID={ID}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _RecordNo = _Command.ExecuteNonQuery();
+            if (_RecordNo == 0) { return false; }
+            return true;
+
+        }
+
         #endregion
 
         public bool TempSeek(int ID)

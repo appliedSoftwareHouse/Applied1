@@ -1,4 +1,5 @@
 ﻿using NPOI.OpenXmlFormats;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI.OpenXmlFormats.Wordprocessing;
 using System.Data;
 using System.Data.SQLite;
@@ -17,14 +18,14 @@ namespace Applied_WebApplication.Data
         public DataView MyDataView { get; set; }
         public SQLiteConnection MyConnection { get; set; }
         public TableValidationClass TableValidation { get; set; }
-        public int ErrorCount  => TableValidation.MyMessages.Count;
+        public int ErrorCount => TableValidation.MyMessages.Count;
         public List<Message> ErrorMessages => TableValidation.MyMessages;
         public int Count => MyDataView.Count;
         public int CountTable => MyDataTable.Rows.Count;
         public int CountView => MyDataView.Count;
         public string MyTableName { get; set; }
         public bool IsError { get; set; } = false;
-    public string MyMessage { get; set; }
+        public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
         public DataRowCollection Rows => MyDataTable.Rows;
@@ -68,15 +69,13 @@ namespace Applied_WebApplication.Data
 
         private SQLiteConnection GetConnection()
         {
-            if(UserName==null) { return null; }
-            MyConnection ??=MyConnection = ConnectionClass.AppConnection(UserName); 
-            if (MyConnection.State != ConnectionState.Open) {  MyConnection.Open(); }
+            if (UserName == null) { return null; }
+            MyConnection ??= MyConnection = ConnectionClass.AppConnection(UserName);
+            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
             return MyConnection;
         }
 
         #endregion
-
-
 
         #region DataTable
 
@@ -249,13 +248,13 @@ namespace Applied_WebApplication.Data
         public void Refresh()
         {
             var Filter = string.Empty;
-            if(View_Filter.Length > 0) { Filter = $"WHERE {Filter}"; }; 
+            if (View_Filter.Length > 0) { Filter = $"WHERE {Filter}"; };
             var _CommandText = $"SELECT * FROM {MyTableName} {Filter}";
             var _Command = new SQLiteCommand(_CommandText, GetConnection());
             var _Adapter = new SQLiteDataAdapter(_Command);
             var _DataSet = new DataSet();
             _Adapter.Fill(_DataSet, MyTableName);
-            if(_DataSet.Tables.Count > 0)
+            if (_DataSet.Tables.Count > 0)
             {
                 MyDataTable = _DataSet.Tables[0];
                 MyDataView = MyDataTable.AsDataView();
@@ -462,46 +461,62 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Save / Delete / NewID
+
         public void Save()
         {
+            Save(true);
+        }
+
+
+        public void Save(bool? Validate)
+        {
+            Validate ??= true;
             IsError = false;
-            TableValidation = new TableValidationClass(CurrentRow.Table);
+
             if (CurrentRow != null)
             {
-                MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
+                TableValidation = new TableValidationClass(CurrentRow.Table);
 
-                try
+                if ((bool)Validate)
                 {
-                    if (MyDataView.Count > 0)
+                    if (TableValidation.Validation(CurrentRow))
                     {
-                        TableValidation.SQLAction = CommandAction.Update.ToString();
-                        if (TableValidation.Validation(CurrentRow))
+                        if (TableValidation.MyMessages.Count > 0)
                         {
-                            CommandUpdate();
-                            Command_Update.ExecuteNonQuery();
-                            GetDataTable();
-                            MyMessage = "Update record in " + MyTableName;
+                            IsError = true;
+                            return;
                         }
                     }
+                }
 
+                MyDataView.RowFilter = "ID=" + CurrentRow["ID"].ToString();
+                try
+                {
                     if (MyDataView.Count == 0)
                     {
                         TableValidation.SQLAction = CommandAction.Insert.ToString();
-                        if (TableValidation.Validation(CurrentRow))
-                        {
-                            CommandInsert();
-                            Command_Insert.ExecuteNonQuery();
-                            GetDataTable();
-                            MyMessage = "Insert record in " + MyTableName;
-                        }
+                        CommandInsert();
+                        Command_Insert.ExecuteNonQuery();
+                        GetDataTable();
+                        MyMessage = "Insert record in " + MyTableName;
+                    }
+
+                    if (MyDataView.Count > 0)
+                    {
+                        TableValidation.SQLAction = CommandAction.Update.ToString();
+                        CommandUpdate();
+                        Command_Update.ExecuteNonQuery();
+                        GetDataTable();
+                        MyMessage = "Update record in " + MyTableName;
                     }
                 }
                 catch (Exception e)
                 {
                     TableValidation.MyMessages.Add(MessageClass.SetMessage(e.Message));
                     MyMessage = e.Message;
+                    IsError = true;
                 }
-                if (TableValidation.MyMessages.Count > 0) { IsError = true; }
+                //if (TableValidation.MyMessages.Count > 0) { IsError = true; }
 
             }
         }
@@ -583,10 +598,39 @@ namespace Applied_WebApplication.Data
         #endregion
 
 
-        #region Get Table
+
+
+        #region Static Methods
+
+        public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
+        {
+            var _Connection = ConnectionClass.AppConnection(UserName);
+            var _TableName = _Table.ToString();
+            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, _TableName);
+            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            return new DataTable();
+        }
+
+        public static bool Delete(string UserName, Tables _Table, int ID)
+        {
+            var _Connection = ConnectionClass.AppConnection(UserName);
+            var _TableName = _Table.ToString();
+            var _CommandText = $"DELETE FROM {_TableName} WHERE ID={ID}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _RecordNo = _Command.ExecuteNonQuery();
+            if (_RecordNo == 0) { return false; }
+            return true;
+
+        }
 
 
         #endregion
+
 
         #region Max
         public int GetMaxTranID(VoucherType _VouType)
@@ -608,10 +652,10 @@ namespace Applied_WebApplication.Data
                 if (CurrentRow[Column] == DBNull.Value)
                 {
                     var _Type = Column.DataType;
-                    if(_Type == typeof(int)) { CurrentRow[Column] = 0; }
-                    if(_Type == typeof(string)) { CurrentRow[Column] = ""; }
-                    if(_Type == typeof(DateTime)) { CurrentRow[Column] = new DateTime(); }
-                    if(_Type == typeof(bool)) { CurrentRow[Column] = false; }
+                    if (_Type == typeof(int)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(string)) { CurrentRow[Column] = ""; }
+                    if (_Type == typeof(DateTime)) { CurrentRow[Column] = new DateTime(); }
+                    if (_Type == typeof(bool)) { CurrentRow[Column] = false; }
                 }
             }
         }
