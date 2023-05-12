@@ -28,7 +28,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 if (Vou_No == null || Vou_No == "New")
                 {
 
-                    TempClass = new TempTableClass(UserName, Tables.Ledger, "New");
+                    TempClass = new TempTableClass(UserName, Tables.Ledger, "New", true);
                     if (TempClass.TempTable.Rows.Count > 0)
                     {
                         TempClass.CurrentRow = TempClass.TempTable.Rows[0];
@@ -50,7 +50,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
                 else
                 {
-                    TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
+                    TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
                     if (Sr_No == -1)
                     {
                         if (TempClass.TempTable.Rows.Count > 0)
@@ -163,7 +163,7 @@ namespace Applied_WebApplication.Pages.Accounts
             ErrorMessages = new();
             #endregion
 
-            var TempClass = new TempTableClass(UserName, Tables.Ledger, Variables.Vou_No);
+            var TempClass = new TempTableClass(UserName, Tables.Ledger, Variables.Vou_No, true);
             var _View = TempClass.TempView;
             _View.RowFilter = string.Format("Sr_No={0}", Variables.Sr_No);
             if (_View.Count == 1) { TempClass.CurrentRow = _View[0].Row; }
@@ -229,7 +229,7 @@ namespace Applied_WebApplication.Pages.Accounts
             #endregion
 
 
-            TempTableClass TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
+            TempTableClass TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
             DataTableClass SourceClass = new(UserName, Tables.Ledger);
 
             var Voucher = TempClass.TempTable;
@@ -279,7 +279,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
                     if (ErrorMessages.Count == 0)
                     {
-                        TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No);
+                        TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
 
                         foreach (DataRow Row in TempClass.TempTable.Rows)
                         {
@@ -296,7 +296,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostDelete(int ID)
         {
             int Sr_No;
-            TempTableClass _TempTable = new(UserName, Tables.Ledger, Variables.Vou_No);
+            TempTableClass _TempTable = new(UserName, Tables.Ledger, Variables.Vou_No, true);
             _TempTable.TempSeek(ID);
             _TempTable.Delete();
             ErrorMessages.AddRange(_TempTable.ErrorMessages);

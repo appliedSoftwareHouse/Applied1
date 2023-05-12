@@ -16,37 +16,47 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public decimal Tot_DR { get; set; } = 0.00M;
         public decimal Tot_CR { get; set; } = 0.00M;
         public string UserName => User.Identity.Name;
+        public List<Message> ErrorMessages { get; set; }
 
 
         public void OnGet()
         {
-            
-            string UserName = User.Identity.Name;
-
-            if (Variables == null)
+            try
             {
-                Variables = new()
+
+
+
+                string UserName = User.Identity.Name;
+
+                if (Variables == null)
                 {
-                    DateFrom = AppRegistry.GetDate(UserName, "TBDate1"),
-                    DateTo = AppRegistry.GetDate(UserName, "TBDate2"),
-                    ReportType = "ALL",
-                    Tot_DR = 0.00M,
-                    Tot_CR = 0.00M
-                };
+                    Variables = new()
+                    {
+                        DateFrom = AppRegistry.GetDate(UserName, "TBDate1"),
+                        DateTo = AppRegistry.GetDate(UserName, "TBDate2"),
+                        ReportType = "ALL",
+                        Tot_DR = 0.00M,
+                        Tot_CR = 0.00M
+                    };
+                }
+
+                TrialBalance TBal = new(User);
+                TB = TBal.TB_Dates(Variables.DateFrom, Variables.DateTo);
+
+                foreach (DataRow Row in TB.Rows)
+                {
+                    decimal _Amount = decimal.Parse(Row["DR"].ToString()) - decimal.Parse(Row["CR"].ToString());
+                    if (_Amount >= 0) { Tot_DR += _Amount; }
+                    if (_Amount < 0) { Tot_CR += Math.Abs(_Amount); }
+
+                    Variables.Tot_DR = Tot_DR;
+                    Variables.Tot_CR = Tot_CR;
+
+                }
             }
-
-            TrialBalance TBal = new(User);
-            TB = TBal.TB_Dates(Variables.DateFrom, Variables.DateTo);
-
-            foreach (DataRow Row in TB.Rows)
+            catch (Exception e)
             {
-                decimal _Amount = decimal.Parse(Row["DR"].ToString()) - decimal.Parse(Row["CR"].ToString());
-                if (_Amount >= 0) { Tot_DR += _Amount; }
-                if (_Amount < 0) { Tot_CR += Math.Abs(_Amount); }
-
-                Variables.Tot_DR = Tot_DR;
-                Variables.Tot_CR = Tot_CR;
-
+                ErrorMessages.Add(MessageClass.SetMessage(e.Message));
             }
         }
 
@@ -79,8 +89,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
             var Date1 = Variables.DateFrom;
             var Date2 = Variables.DateTo;
-            
-            return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new {Date1, Date2});                  // PrintReport Folder is not include in Project.
+
+            return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new { Date1, Date2 });                  // PrintReport Folder is not include in Project.
         }
 
 

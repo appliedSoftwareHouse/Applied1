@@ -604,7 +604,11 @@ namespace Applied_WebApplication.Data
 
         public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
         {
-            var _Connection = ConnectionClass.AppConnection(UserName);
+            return GetTable(UserName, _Table, _Filter, ConnectionClass.AppConnection(UserName));
+        }
+
+        public static DataTable GetTable(string UserName, Tables _Table, string _Filter, SQLiteConnection _Connection)
+        {
             var _TableName = _Table.ToString();
             if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
             var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
@@ -615,6 +619,7 @@ namespace Applied_WebApplication.Data
             if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
             return new DataTable();
         }
+
 
         public static bool Delete(string UserName, Tables _Table, int ID)
         {

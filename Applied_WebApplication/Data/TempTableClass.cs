@@ -41,7 +41,7 @@ namespace Applied_WebApplication.Data
 
         #region Constructor
 
-        public TempTableClass(string _UserName, Tables _TableID, string _VoucherNo)
+        public TempTableClass(string _UserName, Tables _TableID, string _VoucherNo, bool IsLoad)
         {
             VoucherNo = _VoucherNo;
             UserName = _UserName;
@@ -566,6 +566,16 @@ namespace Applied_WebApplication.Data
                 }
             }
             return NewRecord();
+        }
+
+        internal static void Setup(string userName, Tables billReceivable, string vou_No)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal static void Setup(string userName, Tables billReceivable, int TranID)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

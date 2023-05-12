@@ -10,6 +10,10 @@
     <h5 class="TextCenter">TRIAL BALANCE</h5>
 </div>
 
+@if (Model.ErrorMessages.Count>0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}
 
 <form method="post">
     <div class="conatianer">
