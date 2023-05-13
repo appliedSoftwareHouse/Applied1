@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using NPOI.SS.Formula.Functions;
 using System.Data;
+using System.Data.Entity.Core.Metadata.Edm;
 using System.Text;
 using System.Text.RegularExpressions;
 using static System.Data.Entity.Infrastructure.Design.Executor;
@@ -21,11 +22,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public void OnGet()
         {
+            ErrorMessages = new();
+
             try
             {
-
-
-
                 string UserName = User.Identity.Name;
 
                 if (Variables == null)
@@ -51,7 +51,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
                     Variables.Tot_DR = Tot_DR;
                     Variables.Tot_CR = Tot_CR;
-
                 }
             }
             catch (Exception e)
@@ -79,8 +78,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var MaxDate = Ledger.MyDataTable.Compute("MAX(Vou_Date)", "");
             AppRegistry.SetKey(UserName, "TBDate1", MinDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "TBDate2", MaxDate, KeyType.Date);
-
-
             return RedirectToPage();
 
             //return RedirectToPage("./PrintReport", pageHandler: "OBTB");
@@ -89,7 +86,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
             var Date1 = Variables.DateFrom;
             var Date2 = Variables.DateTo;
-
             return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new { Date1, Date2 });                  // PrintReport Folder is not include in Project.
         }
 
@@ -109,7 +105,5 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public decimal Tot_CR { get; set; }
 
         }
-
-
     }
 }

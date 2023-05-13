@@ -64,7 +64,6 @@ namespace Applied_WebApplication.Data
                 if (CountTemp > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
 
-
             SourceView = SourceTable.AsDataView();
             TempView = TempTable.AsDataView();
 

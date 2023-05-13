@@ -1,6 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using NPOI.HSSF.Record;
 using System.Data;
+using System.Data.SqlClient;
+using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
 
@@ -17,91 +20,118 @@ namespace Applied_WebApplication.Pages.Sales
         public DataRow Row1 { get; set; }
         public DataRow Row2 { get; set; }
         public bool IsSaved { get; set; } = false;
-        public bool IsLoad { get; set; } = false;
+        public bool Refresh { get; set; } = false;
         public string Vou_No { get; set; }
         public int TranID { get; set; }
+        public bool IsNew { get; set; }
 
+        public SQLiteCommand MyCommand = new();
+
+
+        TempDBClass TempInvoice11 { get; set; } = new();
+        TempDBClass TempInvoice22 { get; set; } = new();
+
+        public string _Filter1;
+        public string _Filter2;
         #endregion
 
         #region GET
 
-        public void OnGet(string? Vou_No, int? Sr_No, bool? _IsLoad)
+        public void OnGet(string? Vou_No, int? Sr_No, bool? _Refresh)
         {
-            Vou_No ??= "SL2305-0001";
-            _IsLoad ??= true;
 
-            //var TranID = 0;
-            //var IsNew = false;
-
-            //TempTableClass TempInvoice1;
-            //TempTableClass TempInvoice2;
-
-            TempDBClass TempInvoice11;
-            TempDBClass TempInvoice22;
-
-            IsLoad = (bool)_IsLoad;
-            //Sr_No ??= 1;
-
-            if (IsLoad)                         // Setup a Voucher in as Temp Data Base; (Reset)
+            #region Nill, Nill & Nill Vales
+            if (Vou_No == null && Sr_No == null && _Refresh == null)
             {
-                var _Filter1 = $"Vou_No='{Vou_No}'";
-                TempInvoice11  = new(UserName, Tables.BillReceivable, _Filter1, IsLoad);
-                var _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
-                TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, IsLoad);
+                Vou_No ??= "NEW";
+                _Refresh ??= true;
+                Refresh = (bool)_Refresh;
+
+                if (Refresh)                         // Setup a Voucher in as Temp Data Base; (Reset)
+                {
+                    _Filter1 = $"Vou_No='{Vou_No}'";
+                    TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, Refresh);
+                    _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
+                    TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, Refresh);
+
+                    MyCommand = TempDBClass.CommandDeleteAll(TempInvoice11.MyTempConnection, Tables.BillReceivable);
+                    MyCommand.ExecuteNonQuery();
+
+                    MyCommand = TempDBClass.CommandDeleteAll(TempInvoice11.MyTempConnection, Tables.BillReceivable2);
+                    MyCommand.ExecuteNonQuery();
+                }
+                Row1 = TempInvoice11.CurrentRow;
+                Row2 = TempInvoice22.CurrentRow;
+
+                Row1["ID"] = MaxID(Tables.BillReceivable); 
+                Row2["ID"] = 0;
+                Row1["Vou_No"] = "NEW";
+                Row2["TranID"] = Row1["ID"];
+                Row2["Sr_No"] = 1;
+                Row1["Status"] = VoucherStatus.Submitted.ToString();
+
+                Invoice = TempInvoice22.TempTable;
+
+                Row2Variables();
+                return;
+            }
+            #endregion
+
+            if (Vou_No.Length == 0) { Vou_No = "NEW"; }
+
+            Variables = new();
+
+            if (Vou_No.ToUpper() == "NEW")
+            {
+                IsNew = true;
+
+                _Filter1 = $"Vou_No='NEW'";
+                TempInvoice11 = new TempDBClass(UserName, Tables.BillReceivable, _Filter1, false);
+                if (TempInvoice11.CountTemp > 0)
+                {
+                    TranID = (int)TempInvoice11.CurrentRow["ID"];
+                    Row1 = TempInvoice11.CurrentRow;
+                }
+                else
+                {
+                    Row1 = TempInvoice11.NewRecord();
+                    Row1["Vou_No"] = "NEW";
+                    Row1["Status"] = VoucherStatus.Submitted.ToString(); ;
+                    TranID = 1;
+                    Sr_No = -1;
+                }
+
+                _Filter2 = $"TranID={TranID}";
+                TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
+                if (Sr_No == -1)
+                {
+                    Row2 = TempInvoice22.NewRecord();
+                    Row2["Sr_No"] = MaxSrNo(TempInvoice22.TempTable);
+                    Row2["TranID"] = TranID;
+                }
+                else
+                {
+                    if (TempInvoice22.CountTemp > 0)
+                    {
+                        TempInvoice22.TempView.RowFilter = $"Sr_No={Sr_No}";
+                        if (TempInvoice22.TempView.Count > 0)
+                        {
+                            Row2 = TempInvoice22.TempView[0].Row;
+                        }
+                        else
+                        {
+                            Row2 = TempInvoice22.CurrentRow;                 // Error id not found the record, pass empty row
+                        }
+
+                    }
+                }
+
+                Invoice = TempInvoice22.TempTable;
+                Row2Variables();
+                return;
             }
 
-
-            //if (Vou_No.Length == 0) { Vou_No = "NEW"; }
-            
-            //Variables = new();
-            
-            //if (Vou_No.ToUpper() == "NEW")
-            //{
-            //    IsNew = true;
-
-            //    TempInvoice1 = new (UserName, Tables.BillReceivable, "NEW", true);
-            //    if (TempInvoice1.CountTemp > 0)
-            //    {
-            //        TranID = (int)TempInvoice1.CurrentRow["ID"];
-            //        Row1 = TempInvoice1.CurrentRow;
-            //    }
-            //    else
-            //    {
-            //        Row1 = TempInvoice1.NewRecord();
-            //        Row1["Vou_No"] = "NEW";
-            //        Row1["Status"] = VoucherStatus.Submitted.ToString(); ;
-            //        TranID = 1;
-            //        Sr_No = -1;
-            //    }
-
-            //    TempInvoice2 = new (UserName, Tables.BillReceivable2, TranID, IsNew);
-            //    if (Sr_No == -1)
-            //    {
-            //        Row2 = TempInvoice2.NewRecord();
-            //        Row2["Sr_No"] = MaxSrNo(TempInvoice2.TempTable);
-            //        Row2["TranID"] = Row1["ID"];
-            //    }
-            //    else
-            //    {
-            //        if (TempInvoice2.CountTemp > 0)
-            //        {
-            //            TempInvoice2.TempView.RowFilter = $"Sr_No={Sr_No}";
-            //            if (TempInvoice2.TempView.Count > 0)
-            //            {
-            //                Row2 = TempInvoice2.TempView[0].Row;
-            //            }
-            //            else
-            //            {
-            //                Row2 = TempInvoice2.CurrentRow;                 // Error id not found the record, pass empty row
-            //            }
-
-            //        }
-            //    }
-
-            //    Invoice = TempInvoice2.TempTable;
-            //    Row2Variables();
-            //    return;
-            //}
+            #region Temp
 
             //if (Vou_No.Length == 11)
             //{
@@ -152,147 +182,8 @@ namespace Applied_WebApplication.Pages.Sales
 
             //}
 
-            //#region Temp
 
-
-            ////#region Null Values
-            ////if (Vou_No == null && Sr_No == null)
-            ////{
-            ////    Variables.Vou_No = "New";
-            ////    Variables.Sr_No = 1;
-
-            ////    TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-            ////    TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, -1);
-
-            ////    if (TempInvoice1.CountTemp == 0)
-            ////    {
-            ////        TempInvoice1.CurrentRow = TempInvoice1.NewRecord();
-            ////        TempInvoice1.CurrentRow["ID"] = 0;
-            ////        TempInvoice1.CurrentRow["Vou_No"] = "New";
-            ////        TempInvoice1.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
-            ////    }
-            ////    else
-            ////    {
-            ////        TempInvoice1.CurrentRow = TempInvoice1.TempTable.Rows[0];
-            ////    }
-
-            ////    if (TempInvoice2.CountTemp == 0)
-            ////    {
-            ////        TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
-            ////        TempInvoice2.CurrentRow["ID"] = 0;
-            ////        TempInvoice2.CurrentRow["Sr_No"] = 1;
-            ////    }
-            ////    else
-            ////    {
-            ////        TempInvoice2.CurrentRow = TempInvoice2.TempTable.Rows[0];
-            ////    }
-
-            ////    Row1 = TempInvoice1.CurrentRow;
-            ////    Row2 = TempInvoice2.CurrentRow;
-            ////    Row2Variables();
-            ////    Invoice = TempInvoice2.TempTable;
-            ////    return;
-            ////}
-            ////#endregion
-
-            ////#region Sales Invoices exist
-
-            ////if (Vou_No != null && Sr_No != null)
-            ////{
-            ////    if (Vou_No.ToUpper() == "NEW")
-            ////    {
-            ////        Sr_No ??= 1;
-
-            ////        TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Vou_No);
-            ////        TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, -1);
-
-            ////        if (TempInvoice1.CountTemp == 0)
-            ////        {
-            ////            TempInvoice1.CurrentRow = TempInvoice1.NewRecord();
-            ////            TempInvoice1.CurrentRow["ID"] = 0;
-            ////            TempInvoice1.CurrentRow["Vou_No"] = "New";
-            ////            TempInvoice1.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
-            ////        }
-            ////        else
-            ////        {
-            ////            TempInvoice1.CurrentRow = TempInvoice1.TempTable.Rows[0];
-            ////        }
-
-            ////        if (TempInvoice2.CountTemp == 0)
-            ////        {
-            ////            TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
-            ////            TempInvoice2.CurrentRow["ID"] = 0;
-            ////            TempInvoice2.CurrentRow["Sr_No"] = 1;
-            ////        }
-            ////        else
-            ////        {
-            ////            if (Sr_No == -1)
-            ////            {
-            ////                TempInvoice2.NewRecord();
-            ////                TempInvoice2.CurrentRow["ID"] = 0;
-            ////                TempInvoice2.CurrentRow["Sr_No"] = MaxSrNo(TempInvoice2.TempTable);
-            ////            }
-            ////            else
-            ////            {
-            ////                TempInvoice2.CurrentRow = TempInvoice2.TempTable.Rows[0];
-            ////            }
-            ////        }
-
-            ////        Row1 = TempInvoice1.CurrentRow;
-            ////        Row2 = TempInvoice2.CurrentRow;
-            ////        Row2Variables();
-            ////        Invoice = TempInvoice2.TempTable;
-
-            ////        return;
-            ////    }
-            ////    else
-            ////    {
-            ////        Variables.Vou_No = Vou_No;
-            ////        TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No);
-
-            ////        if (TempInvoice1.CountTemp > 0)
-            ////        {
-            ////            TempInvoice1.CurrentRow = TempInvoice1.SourceTable.Rows[0];
-            ////            TranID = (int)TempInvoice1.CurrentRow["ID"];
-            ////        }
-
-            ////        TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, TranID);
-
-            ////        if (TempInvoice2.CountTemp > 0)
-            ////        {
-            ////            Row1 = TempInvoice1.CurrentRow;
-            ////            if (Sr_No > 0)
-            ////            {
-            ////                TempInvoice2.TempView = TempInvoice2.TempTable.AsDataView();
-            ////                if (TempInvoice1.CountTemp == 0)
-            ////                {
-            ////                    TempInvoice2.TempView.RowFilter = $"Sr_No={Sr_No}";
-            ////                    if (TempInvoice2.TempView.Count > 0)
-            ////                    {
-            ////                        TempInvoice2.CurrentRow = TempInvoice2.TempView[0].Row;
-            ////                        Row2 = TempInvoice2.CurrentRow;
-            ////                        Invoice = TempInvoice2.TempTable;
-            ////                    }
-            ////                }
-            ////            }
-            ////            if (Sr_No == -1)
-            ////            {
-            ////                TempInvoice2.CurrentRow = TempInvoice2.NewRecord();
-            ////                var Max_SrNo = MaxSrNo(TempInvoice2.TempTable);
-            ////            }
-
-            ////            Row1 = TempInvoice1.CurrentRow;
-            ////            Row2 = TempInvoice2.CurrentRow;
-            ////            Invoice = TempInvoice2.TempTable;
-
-            ////            Row2Variables();
-            ////            return;
-            ////        }
-            ////    }
-            ////}
-            ////#endregion
-
-            //#endregion
+            #endregion
         }
         #endregion
 
@@ -302,6 +193,15 @@ namespace Applied_WebApplication.Pages.Sales
             if (MaxSrNo == DBNull.Value) { return 1; }
             else { return (int)MaxSrNo + 1; }
         }
+
+        public int MaxID(Tables _Tables)
+        {
+            DataTable _Table= DataTableClass.GetTable(UserName, _Tables);
+            var MaxTranID = _Table.Compute("MAX(ID)", "");
+            if (MaxTranID == DBNull.Value) { return 1; }
+            else { return (int)MaxTranID + 1; }
+        }
+
 
 
         #region Variables / Rows
@@ -378,36 +278,45 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostAdd()
         {
-            TempTableClass TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Variables.Vou_No, true);
-            if (TempInvoice1.CountTemp > 0) { Variables.TranID = (int)TempInvoice1.TempView[0]["ID"]; } else { Variables.TranID = -1; }
-            TempTableClass TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, Variables.TranID, false);
+            Vou_No = Variables.Vou_No;
+            TranID = Variables.TranID;
 
-            Row1 = TempInvoice1.NewRecord();
-            Row2 = TempInvoice2.NewRecord();
+            _Filter1 = $"Vou_No='{Vou_No}'";
+            TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, false);
+            _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
+            TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
+            TempInvoice22.TempView.RowFilter = $"Sr_No={Variables.Sr_No}";
+            if (TempInvoice22.TempView.Count==0) { TempInvoice22.NewRecord(); }
+
+            Row1 = TempInvoice11.CurrentRow;
+            Row2 = TempInvoice22.CurrentRow;
+
             Variables2Row();
 
-            var ValidRow1 = TempInvoice1.TableValidate.Validation(Row1);
-            var ValidRow2 = TempInvoice2.TableValidate.Validation(Row2);
+            var ValidRow1 = TempInvoice11.TableValidate.Validation(Row1);
+            var ValidRow2 = TempInvoice22.TableValidate.Validation(Row2);
 
             if (ValidRow1 && ValidRow2)
             {
-                TempInvoice1.Save(false);
-                TempInvoice2.CurrentRow["TranID"] = TempInvoice1.CurrentRow["ID"];
-                TempInvoice2.View_Filter = $"TranID={TempInvoice2.CurrentRow["TranID"]}";
-                TempInvoice2.Save(false);
+                TempInvoice11.Save(TempInvoice11.MyTempConnection, false);
+                TempInvoice22.CurrentRow["TranID"] = TempInvoice11.CurrentRow["ID"];
+                TempInvoice22.Save(TempInvoice22.MyTempConnection, false);
             }
             else
             {
-                ErrorMessages.AddRange(TempInvoice1.ErrorMessages);
-                ErrorMessages.AddRange(TempInvoice2.ErrorMessages);
+                ErrorMessages.AddRange(TempInvoice11.ErrorMessages);
+                ErrorMessages.AddRange(TempInvoice22.ErrorMessages);
             }
 
             // Reset and Update Web Page Data
-
             if (ErrorMessages.Count == 0)
             {
-                TempInvoice2.TempRefresh();
-                Invoice = TempInvoice2.TempTable;
+                _Filter1 = $"Vou_No='{Vou_No}'";
+                TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, false);
+                _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
+                TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
+
+                Invoice = TempInvoice22.TempTable;
                 var message2 = $"Serial No {Variables.Sr_No} of Invoice No {Variables.Vou_No} has been saved successfully.";
                 ErrorMessages.Add(MessageClass.SetMessage(message2, Color.Yellow));
             }

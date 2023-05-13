@@ -1,4 +1,7 @@
-﻿using NPOI.HSSF.Record;
+﻿using Applied_WebApplication.Pages;
+using NPOI.HSSF.Record;
+using NPOI.OpenXmlFormats.Spreadsheet;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
@@ -23,7 +26,9 @@ namespace Applied_WebApplication.Data
         public DataView SourceView { get; set; }
         public DataView TempView { get; set; }
         public DataRow CurrentRow { get; set; }
+        public TableValidationClass TableValidate { get; set; }
         public List<Message> MyMessages { get; set; }
+        public List<Message> ErrorMessages { get; set; }
 
         public int CountSource => SourceTable.Rows.Count;
         public int CountTemp => TempTable.Rows.Count;
@@ -34,19 +39,18 @@ namespace Applied_WebApplication.Data
         public string VoucherNo { get; set; }
         public int TranID { get; set; }
 
-        public bool IsLoad { get; set; }
+        public bool Refresh { get; set; }
         public bool IsNew { get; set; }
 
-        public TempDBClass(string _UserName, Tables _Table, string _Filter, bool _IsLoad)
+        public TempDBClass() { }
+
+        public TempDBClass(string _UserName, Tables _Table, string _Filter, bool _Refresh)
         {
             UserName = _UserName;
             MyTableName = _Table.ToString();
-            //VoucherNo = _VouNo;
-            IsLoad = _IsLoad;
+            Refresh = _Refresh;
             ViewFilter = _Filter;
             MyMessages = new();
-
-            
 
             if (ViewFilter.Length == 0)
             {
@@ -57,51 +61,58 @@ namespace Applied_WebApplication.Data
             MyConnection = ConnectionClass.AppConnection(UserName);
             MyTempConnection = ConnectionClass.AppTempConnection(UserName);
 
-            SourceTable = DataTableClass.GetTable(UserName, _Table, ViewFilter);
-        
+            SourceTable = GetTable(_Table, ViewFilter, MyConnection);
             CreateTempTable(SourceTable);           // Create a Temp Table if not exist;
             TempTable = DataTableClass.GetTable(UserName, _Table, ViewFilter, MyTempConnection);
 
-            if (CountSource > 0 && CountTemp > 0)
+            SourceView = SourceTable.AsDataView();
+            TempView = TempTable.AsDataView();
+            TableValidate = new(TempTable);
+
+            if (Refresh)
             {
-                if (IsLoad)
+                foreach (DataRow Row in TempTable.Rows)
                 {
-                    foreach (DataRow Row in TempTable.Rows)
+                    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
+                    var _Records = MyCommand.ExecuteNonQuery();
+                    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
+                }
+
+                if (CountSource > 0)
+                {
+                    foreach (DataRow Row in SourceTable.Rows)
                     {
-                        MyCommandText = $"DELETE FROM {MyTableName} WHERE {ViewFilter}";
-                        MyCommand = new(MyCommandText, MyTempConnection);
-                        var _Records = MyCommand.ExecuteNonQuery();
-                        MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
-                        TempTable = DataTableClass.GetTable(UserName, _Table, ViewFilter, MyTempConnection);           // Refresh Temp Table.
+                        CurrentRow = TempTable.NewRow();
+                        CurrentRow.ItemArray = Row.ItemArray;
+                        Save(MyTempConnection, false);
                     }
                 }
             }
 
-            if(SourceTable.Rows.Count > 0) 
-            {
-            
-            
-            
-            }
-
-
-
-
-            SourceView = SourceTable.AsDataView();
-            TempView = TempTable.AsDataView();
-
             if (CurrentRow == null)
             {
-                if (SourceTable.Rows.Count > 0) { CurrentRow = SourceTable.Rows[0]; } else { CurrentRow = NewRecord(); }
+                if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
         }
 
-        public TempDBClass(string _UserName, Tables _Table, int _TranID, bool _IsLoad)
-        {
+        #region Get Table
 
+        public static DataTable GetTable(Tables _Table, string _Filter, SQLiteConnection _Connection)
+        {
+            var _TableName = _Table.ToString();
+            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, _TableName);
+            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            return new DataTable();
         }
 
+        #endregion
 
+        #region New Record
         public DataRow NewRecord()
         {
             CurrentRow = SourceTable.NewRow();
@@ -120,18 +131,59 @@ namespace Applied_WebApplication.Data
             }
             return CurrentRow;
         }
+        #endregion`
 
-        public bool Save()
+        #region Save
+        public void Save()
         {
-
-            return false;
+            Save(MyConnection, true);
         }
-
-        public bool Delete()
+        public void Save(SQLiteConnection _Connection)
         {
-
-            return false;
+            Save(_Connection, true);
         }
+        public void Save(SQLiteConnection _Connection, bool? _Validate)
+        {
+            _Connection ??= MyConnection;
+            _Validate ??= true;
+            ErrorMessages ??= new();
+
+            if ((bool)_Validate)
+            {
+                TableValidate = new(TempTable);
+                TableValidate.Validation(CurrentRow);
+            }
+
+            if (ErrorMessages.Count == 0)
+            {
+                SQLiteCommand _Command;
+                var _View = TempView;
+                _View.RowFilter = string.Format("ID={0}", CurrentRow["ID"]);
+
+                if (_View.Count == 1)
+                {
+                    _Command = CommandUpdate(_Connection, TempTable, CurrentRow);
+                }
+                else
+                {
+                    if ((int)CurrentRow["ID"] == 0) {CurrentRow["ID"] = MaxID();}
+                    _Command = CommandInsert(_Connection, TempTable, CurrentRow);
+                }
+                try
+                {
+                    if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
+                    var _Record = _Command.ExecuteNonQuery(); _Command.Connection.Close();
+                    if (_Record == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Saved", Color.Red)); }
+                }
+                catch (Exception e)
+                {
+                    ErrorMessages.Add(MessageClass.SetMessage(e.Message, Color.Red));
+
+                }
+
+            }
+        }
+        #endregion
 
         #region Create a Temp Table if not exist
 
@@ -163,5 +215,129 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Command Update, Insert & Delete
+
+        private static SQLiteCommand CommandInsert(SQLiteConnection _Connection, DataTable _Table, DataRow _Row)
+        {
+            var _Columns = _Table.Columns;
+            var _Command = new SQLiteCommand(_Connection);
+            var _CommandString = new StringBuilder();
+            var _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
+            var _TableName = _Table.TableName;
+            //var _ParameterName;
+
+            _CommandString.Append("INSERT INTO [");
+            _CommandString.Append(_TableName);
+            _CommandString.Append("] VALUES (");
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                string _ColumnName = _Column.ColumnName.ToString();
+                _CommandString.Append(string.Concat('@', _Column.ColumnName));
+                if (_ColumnName != _LastColumn)
+                { _CommandString.Append(','); }
+                else
+                { _CommandString.Append(") "); }
+            }
+
+            _Command.CommandText = _CommandString.ToString();           // Generate Command string from string builder.
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column == null) { continue; }
+                var _ParameterName = string.Concat('@', _Column.ColumnName.Replace(" ", ""));
+                _Command.Parameters.AddWithValue(_ParameterName, _Row[_Column.ColumnName]);
+            }
+
+            return _Command;
+
+        }
+
+        private static SQLiteCommand CommandUpdate(SQLiteConnection _Connection, DataTable _Table, DataRow _Row)
+        {
+            var _Columns = _Table.Columns;
+            var _Command = new SQLiteCommand(_Connection);
+            var _CommandString = new StringBuilder();
+            var _LastColumn = _Columns[_Columns.Count - 1].ColumnName.ToString();
+            var _TableName = _Table.TableName;
+
+            _CommandString.Append(string.Concat("UPDATE [", _TableName, "] SET "));
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column.ColumnName == "ID") { continue; }
+                _CommandString.Append(string.Concat("[", _Column.ColumnName, "]"));
+                _CommandString.Append('=');
+                _CommandString.Append(string.Concat('@', _Column.ColumnName.Replace(" ", "")));
+
+                if (_Column.ColumnName == _LastColumn)
+                {
+                    _CommandString.Append(string.Concat(" WHERE ID = @ID"));
+                }
+                else
+                {
+                    _CommandString.Append(',');
+                }
+            }
+
+            _Command.CommandText = _CommandString.ToString();           // Generate Command string from string builder.
+
+            foreach (DataColumn _Column in _Columns)
+            {
+                if (_Column == null) { continue; }
+                var _ParameterName = string.Concat('@', _Column.ColumnName.Replace(" ", ""));
+                _Command.Parameters.AddWithValue(_ParameterName, _Row[_Column.ColumnName]);
+            }
+
+
+            return _Command;
+        }
+
+        private static SQLiteCommand CommandDelete(SQLiteConnection _Connection, DataTable _Table, DataRow _Row)
+        {
+            var _Command = new SQLiteCommand(_Connection);
+            var _TableName = _Table.TableName;
+
+            if ((int)_Row["ID"] > 0)
+            {
+                _Command.Parameters.AddWithValue("@ID", _Row["ID"]);
+                _Command.CommandText = "DELETE FROM [" + _TableName + "]  WHERE ID=@ID";
+            }
+            return _Command;
+        }
+
+        public static SQLiteCommand CommandDeleteAll(SQLiteConnection _Connection, Tables _Table)
+        {
+            var _Command = new SQLiteCommand(_Connection)
+            {
+                CommandText = $"DELETE FROM [{_Table}]  WHERE ID>0"
+            };
+            return _Command;
+        }
+
+        #endregion
+
+        #region GetID and NewID
+        internal DataRow Get_ID(int? ID)
+        {
+            if (TempView.Count > 0)
+            {
+                TempView.RowFilter = $"ID={ID}";
+                if (TempView.Count > 1)
+                {
+                    return TempView[0].Row;
+                }
+            }
+            return NewRecord();
+        }
+        internal int MaxID()
+        {
+            var MaxID = TempTable.Compute("MAX(ID)", "");
+            if (MaxID == DBNull.Value) { MaxID = 0; }
+            return (int)MaxID + 1;
+        }
+        #endregion
+
+        // END
     }
 }
