@@ -42,7 +42,11 @@ namespace Applied_WebApplication.Data
         public bool Refresh { get; set; }
         public bool IsNew { get; set; }
 
-        public TempDBClass() { }
+        #region Constructor
+
+        public TempDBClass() 
+        {
+        }
 
         public TempDBClass(string _UserName, Tables _Table, string _Filter, bool _Refresh)
         {
@@ -51,6 +55,7 @@ namespace Applied_WebApplication.Data
             Refresh = _Refresh;
             ViewFilter = _Filter;
             MyMessages = new();
+            ErrorMessages = new();
 
             if (ViewFilter.Length == 0)
             {
@@ -94,6 +99,8 @@ namespace Applied_WebApplication.Data
                 if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
         }
+
+        #endregion
 
         #region Get Table
 
@@ -184,6 +191,23 @@ namespace Applied_WebApplication.Data
             }
         }
         #endregion
+
+        #region Delete
+        public bool Delete()
+        {
+            return true;
+        }
+
+        public  bool DeleteAll()
+        {
+            MyCommand = CommandDeleteAll(MyTempConnection, MyTableName);
+            var _Records = MyCommand.ExecuteNonQuery();
+            MyMessages.Add(MessageClass.SetMessage($"{_Records}(s) have been effected."));
+            if(_Records == 0 ) { return false; }
+            return true;
+        }
+        #endregion
+
 
         #region Create a Temp Table if not exist
 
@@ -306,7 +330,7 @@ namespace Applied_WebApplication.Data
             return _Command;
         }
 
-        public static SQLiteCommand CommandDeleteAll(SQLiteConnection _Connection, Tables _Table)
+        public static SQLiteCommand CommandDeleteAll(SQLiteConnection _Connection, string _Table)
         {
             var _Command = new SQLiteCommand(_Connection)
             {
@@ -336,6 +360,17 @@ namespace Applied_WebApplication.Data
             if (MaxID == DBNull.Value) { MaxID = 0; }
             return (int)MaxID + 1;
         }
+
+        internal int MaxTableID()
+        {
+            var _CommandText = $"SELECT MAX(ID) AS MaxID FROM [{MyTableName}]";
+            var _Command = new SQLiteCommand(_CommandText, MyConnection);
+            var MaxID = _Command.ExecuteScalar();
+            if (MaxID == DBNull.Value) { return 1; }
+            var MaxTranID = Conversion.ToInteger(MaxID) + 1;
+            return MaxTranID;
+        }
+
         #endregion
 
         // END
