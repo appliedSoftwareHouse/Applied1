@@ -44,7 +44,7 @@ namespace Applied_WebApplication.Data
 
         #region Constructor
 
-        public TempDBClass() 
+        public TempDBClass()
         {
         }
 
@@ -90,6 +90,7 @@ namespace Applied_WebApplication.Data
                         CurrentRow = TempTable.NewRow();
                         CurrentRow.ItemArray = Row.ItemArray;
                         Save(MyTempConnection, false);
+                        TempTable = GetTable(MyTableName, ViewFilter, MyTempConnection);
                     }
                 }
             }
@@ -104,6 +105,7 @@ namespace Applied_WebApplication.Data
 
         #region Get Table
 
+
         public static DataTable GetTable(Tables _Table, string _Filter, SQLiteConnection _Connection)
         {
             var _TableName = _Table.ToString();
@@ -116,6 +118,20 @@ namespace Applied_WebApplication.Data
             if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
             return new DataTable();
         }
+
+        public static DataTable GetTable(string _Table, string _Filter, SQLiteConnection _Connection)
+        {
+            var _TableName = _Table.ToString();
+            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, _TableName);
+            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            return new DataTable();
+        }
+
 
         #endregion
 
@@ -173,7 +189,7 @@ namespace Applied_WebApplication.Data
                 }
                 else
                 {
-                    if ((int)CurrentRow["ID"] == 0) {CurrentRow["ID"] = MaxID();}
+                    if ((int)CurrentRow["ID"] == 0) { CurrentRow["ID"] = MaxID(); }
                     _Command = CommandInsert(_Connection, TempTable, CurrentRow);
                 }
                 try
@@ -181,6 +197,11 @@ namespace Applied_WebApplication.Data
                     if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                     var _Record = _Command.ExecuteNonQuery(); _Command.Connection.Close();
                     if (_Record == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Saved", Color.Red)); }
+                    //else
+                    //{
+                    //    TempTable = TempRefresh(_Connection);
+                    //}
+
                 }
                 catch (Exception e)
                 {
@@ -190,6 +211,11 @@ namespace Applied_WebApplication.Data
 
             }
         }
+
+        private DataTable TempRefresh(SQLiteConnection _Connection)
+        {
+            return GetTable(MyTableName, ViewFilter, _Connection);
+        }
         #endregion
 
         #region Delete
@@ -198,12 +224,12 @@ namespace Applied_WebApplication.Data
             return true;
         }
 
-        public  bool DeleteAll()
+        public bool DeleteAll()
         {
             MyCommand = CommandDeleteAll(MyTempConnection, MyTableName);
             var _Records = MyCommand.ExecuteNonQuery();
             MyMessages.Add(MessageClass.SetMessage($"{_Records}(s) have been effected."));
-            if(_Records == 0 ) { return false; }
+            if (_Records == 0) { return false; }
             return true;
         }
         #endregion
@@ -332,10 +358,9 @@ namespace Applied_WebApplication.Data
 
         public static SQLiteCommand CommandDeleteAll(SQLiteConnection _Connection, string _Table)
         {
-            var _Command = new SQLiteCommand(_Connection)
-            {
-                CommandText = $"DELETE FROM [{_Table}]  WHERE ID>0"
-            };
+            if (_Connection.State != ConnectionState.Open) { _Connection.Open(); }
+            var _CommandText = $"DELETE FROM [{_Table}]  WHERE ID>0";
+            var _Command = new SQLiteCommand(_CommandText, _Connection);
             return _Command;
         }
 

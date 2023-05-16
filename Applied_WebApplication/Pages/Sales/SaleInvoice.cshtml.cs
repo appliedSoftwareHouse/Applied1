@@ -11,6 +11,7 @@ namespace Applied_WebApplication.Pages.Sales
 {
     public class SaleInvoiceModel : PageModel
     {
+     
         #region Setup
         [BindProperty]
         public MyParameters Variables { get; set; }
@@ -20,7 +21,7 @@ namespace Applied_WebApplication.Pages.Sales
         public DataRow Row1 { get; set; }
         public DataRow Row2 { get; set; }
         public bool IsSaved { get; set; } = false;
-        public bool Refresh { get; set; } = false;
+        public bool IsRefresh { get; set; } = false;
         public string Vou_No { get; set; }
         public int TranID { get; set; }
         public bool IsNew { get; set; }
@@ -38,22 +39,22 @@ namespace Applied_WebApplication.Pages.Sales
 
         #region GET
 
-        public void OnGet(string? Vou_No, int? Sr_No, bool? _Refresh)
+        public void OnGet(string? Vou_No, int? Sr_No, bool? Refresh)
         {
 
             #region Nill, Nill & Nill Vales
-            if (Vou_No == null && Sr_No == null && _Refresh == null)
+            if (Vou_No == null && Sr_No == null && Refresh == null)
             {
                 Vou_No ??= "NEW";
-                _Refresh ??= true;
-                Refresh = (bool)_Refresh;
+                Refresh ??= true;
+                IsRefresh = (bool)Refresh;
 
-                if (Refresh)                         // Setup a Voucher in as Temp Data Base; (Reset)
+                if (IsRefresh)                         // Setup a Voucher in as Temp Data Base; (Reset)
                 {
                     _Filter1 = $"Vou_No='{Vou_No}'";
-                    TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, Refresh);
+                    TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, IsRefresh);
                     _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
-                    TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, Refresh);
+                    TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, IsRefresh);
 
                     TempInvoice11.DeleteAll();
                     TempInvoice22.DeleteAll();
@@ -129,65 +130,64 @@ namespace Applied_WebApplication.Pages.Sales
                 return;
             }
 
-            #region Temp
+            #region Voucher Exist
 
-            //if (Vou_No.Length == 11)
-            //{
+            if (Vou_No.Length == 11)
+            {
+                Refresh ??= true;
+                IsRefresh = (bool)Refresh;
+                _Filter1 = $"Vou_No='{Vou_No}'";
 
-            //    TempInvoice1 = new TempTableClass(UserName, Tables.BillReceivable, Vou_No, true);
-            //    if (TempInvoice1.CountTemp > 0)
-            //    {
-            //        TranID = (int)TempInvoice1.CurrentRow["ID"];
-            //        Row1 = TempInvoice1.CurrentRow;
-            //    }
-            //    else
-            //    {
-            //        ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
-            //        return;
-            //    }
+                TempInvoice11 = new TempDBClass(UserName, Tables.BillReceivable, _Filter1, IsRefresh);
+                if (TempInvoice11.CountTemp > 0)
+                {
+                    TranID = (int)TempInvoice11.CurrentRow["ID"];
+                    Row1 = TempInvoice11.CurrentRow;
+                }
+                else
+                {
+                    ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
+                    return;
+                }
 
-            //    TempInvoice2 = new TempTableClass(UserName, Tables.BillReceivable2, TranID, IsNew);
-            //    if (Sr_No == -1)
-            //    {
-            //        Row2 = TempInvoice2.NewRecord();
-            //        Row2["Sr_No"] = MaxSrNo(TempInvoice2.TempTable);
-            //        Row2["TranID"] = Row1["ID"];
-            //    }
-            //    else
-            //    {
-            //        if (TempInvoice2.CountTemp > 0)
-            //        {
-            //            TempInvoice2.TempView.RowFilter = $"Sr_No={Sr_No}";
-            //            if (TempInvoice2.TempView.Count > 0)
-            //            {
-            //                Row2 = TempInvoice2.TempView[0].Row;
-            //            }
-            //            else
-            //            {
-            //                Row2 = TempInvoice2.CurrentRow;
-            //            }
+                _Filter2 = $"TranID={TranID}";
+                TempInvoice22 = new TempDBClass(UserName, Tables.BillReceivable2, _Filter2, IsRefresh);
+                if (Sr_No == -1)
+                {
+                    Row2 = TempInvoice22.NewRecord();
+                    Row2["Sr_No"] = MaxSrNo(TempInvoice22.TempTable);
+                    Row2["TranID"] = Row1["ID"];
+                }
+                else
+                {
+                    if (TempInvoice22.CountTemp > 0)
+                    {
+                        TempInvoice22.TempView.RowFilter = $"Sr_No={Sr_No}";
+                        if (TempInvoice22.TempView.Count > 0)
+                        {
+                            Row2 = TempInvoice22.TempView[0].Row;
+                        }
+                        else
+                        {
+                            Row2 = TempInvoice22.CurrentRow;
+                        }
+                    }
+                    else
+                    {
+                        ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
+                        return;
+                    }
+                }
+                Invoice = TempInvoice22.TempTable;
+                Row2Variables();
+                return;
 
-            //        }
-            //        else
-            //        {
-            //            ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
-            //            return;
-            //        }
-            //    }
-            //    Invoice = TempInvoice2.TempTable;
-            //    Row2Variables();
-            //    return;
-
-            //}
+            }
 
 
             #endregion
         }
         #endregion
-
-        
-        
-
 
         #region Variables / Rows
         private void Row2Variables()
@@ -271,7 +271,8 @@ namespace Applied_WebApplication.Pages.Sales
             _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
             TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
             TempInvoice22.TempView.RowFilter = $"Sr_No={Variables.Sr_No}";
-            if (TempInvoice22.TempView.Count == 0) { TempInvoice22.NewRecord(); }
+            if (TempInvoice22.TempView.Count == 0) { TempInvoice22.NewRecord(); } 
+            else { TempInvoice22.CurrentRow = TempInvoice22.TempView[0].Row; }
 
             Row1 = TempInvoice11.CurrentRow;
             Row2 = TempInvoice22.CurrentRow;
@@ -309,26 +310,28 @@ namespace Applied_WebApplication.Pages.Sales
         }
         public IActionResult OnPostEdit(int? Sr_No)
         {
+            Sr_No ??= 1;
             var Vou_No = Variables.Vou_No;
-            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
+            var Refresh = false;
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });
         }
         public IActionResult OnPostDelete(int? Sr_No)
         {
             var Vou_No = Variables.Vou_No;
+            var Refresh = false;
             // Write code here for delete the record.
 
-            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });
         }
-
         public IActionResult OnPostNew()
         {
             var Vou_No = Variables.Vou_No;
             var Sr_No = -1;
-            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
+            var Refresh = false;
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });
         }
 
         #endregion
-
 
         #region Save
 
@@ -344,19 +347,18 @@ namespace Applied_WebApplication.Pages.Sales
                 var IsSaved = Save_Voucher();
                 if (!IsSaved) { return Page(); }
             }
-
             var Vou_No = Variables.Vou_No;
             var Sr_No = 1;
-            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No });
-
+            var Refresh = true;
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });
         }
 
         private bool Save_Voucher()
         {
             _Filter1 = $"Vou_No = '{Variables.Vou_No}'";
-            TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, false);
+            TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, IsRefresh);
             _Filter2 = $"TranID = {TempInvoice11.TempTable.Rows[0]["ID"]}";
-            TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
+            TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, IsRefresh);
 
             #region Validation
             // Validate Data
@@ -414,7 +416,7 @@ namespace Applied_WebApplication.Pages.Sales
                     TargetTable2.MyDataView.RowFilter = $"TranID={Variables.TranID}";
 
                     DataView TempView2 = TargetTable2.MyDataView;
-                    foreach (DataRow Row in TargetTable2.Rows)
+                    foreach (DataRow Row in TempView2.ToTable().Rows)
                     {
                         TempView2.RowFilter = $"ID={Row["ID"]}";
                         if (TempView2.Count == 0)
@@ -531,7 +533,6 @@ namespace Applied_WebApplication.Pages.Sales
 
         #endregion
 
-
         #region Max
         public int MaxSrNo(DataTable _Table)
         {
@@ -540,7 +541,7 @@ namespace Applied_WebApplication.Pages.Sales
             else { return (int)MaxSrNo + 1; }
         }
 
-#end
+        #endregion
 
         #region New Voucher Number
         private string GetNewVouNo(DateTime _Date, string _VouTag)
@@ -576,7 +577,6 @@ namespace Applied_WebApplication.Pages.Sales
 
 
         #endregion
-
 
         #region Print & Back
 
@@ -628,7 +628,6 @@ namespace Applied_WebApplication.Pages.Sales
 
         }
         #endregion
-
 
     }
 }
