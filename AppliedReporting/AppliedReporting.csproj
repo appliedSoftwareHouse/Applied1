@@ -32,6 +32,21 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="DataSet1.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSet1.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="DataSet2.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSet2.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="DataSet3.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>DataSet3.xsd</DependentUpon>
+    </Compile>
     <Compile Update="ds_Ledger.Designer.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -47,9 +62,31 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ds_TB.xsd</DependentUpon>
     </Compile>
+    <Compile Update="SalesInvoice.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>SalesInvoice.xsd</DependentUpon>
+    </Compile>
+    <Compile Update="_F__Applied_Applied_WebApplication_wwwroot_SQLiteDB_Applied_DBDataSet.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>_F__Applied_Applied_WebApplication_wwwroot_SQLiteDB_Applied_DBDataSet.xsd</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="DataSet1.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet1.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="DataSet2.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet2.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="DataSet3.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>DataSet3.Designer.cs</LastGenOutput>
+    </None>
     <None Update="ds_Ledger.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>ds_Ledger.Designer.cs</LastGenOutput>
@@ -61,6 +98,14 @@
     <None Update="ds_TB.xsd">
       <Generator>MSDataSetGenerator</Generator>
       <LastGenOutput>ds_TB.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="SalesInvoice.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>SalesInvoice.Designer.cs</LastGenOutput>
+    </None>
+    <None Update="_F__Applied_Applied_WebApplication_wwwroot_SQLiteDB_Applied_DBDataSet.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>_F__Applied_Applied_WebApplication_wwwroot_SQLiteDB_Applied_DBDataSet.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
 

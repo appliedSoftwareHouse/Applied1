@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualBasic;
 using System.Data;
+using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
 
 using DataTable = System.Data.DataTable;
@@ -187,8 +188,49 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Sales Invoice
-        public IActionResult OnGetSaleInvoice(int TranID)
+        public IActionResult OnGetSaleInvoice(int ID)
         {
+
+            #region Get Data Table
+            var _CommandText = SQLQuery.SalesInvoice();
+            var _Command = new SQLiteCommand(_CommandText, ConnectionClass.AppConnection(UserName));
+
+            var _Adapter = new SQLiteDataAdapter(_Command);
+            var _DataSet = new DataSet();
+
+            _Command.Parameters.AddWithValue("@ID", ID);
+            _Adapter.Fill(_DataSet, "SalesInvoice");
+            if (_DataSet.Tables.Count > 0)
+            {
+                var _Table = _DataSet.Tables[0];
+                var MyReportClass = new ReportClass
+                {
+                    AppUser = User,
+                    ReportFilePath = AppGlobals.ReportPath,
+                    ReportFile = "SalesInvoice.rdlc",
+                    ReportDataSet = "ds_SaleInvoice",
+                    ReportData = _Table,
+                    RecordSort = "Sr_No",
+
+                    OutputFilePath = AppFunctions.AppGlobals.PrintedReportPath,
+                    OutputFile = "SaleInvoice",
+                    OutputFileLinkPath = AppFunctions.AppGlobals.PrintedReportPathLink
+
+                };
+
+                var Heading1 = "Sales Invoice";
+                var Heading2 = "Commercial";
+
+                MyReportClass.ReportParameters.Add("CompanyName", CompanyName);
+                MyReportClass.ReportParameters.Add("Heading1", Heading1);
+                MyReportClass.ReportParameters.Add("Heading2", Heading2);
+                MyReportClass.ReportParameters.Add("Footer", AppFunctions.AppGlobals.ReportFooter);
+
+            }
+
+
+            #endregion
+
             return Page();
         }
         #endregion
