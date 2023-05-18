@@ -220,10 +220,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var Heading1 = "Sales Invoice";
                 var Heading2 = "Commercial";
 
-                //SaleInvoice.ReportParameters.Add("CompanyName", CompanyName);
-                //SaleInvoice.ReportParameters.Add("Heading1", Heading1);
-                //SaleInvoice.ReportParameters.Add("Heading2", Heading2);
-                //SaleInvoice.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+                SaleInvoice.ReportParameters.Add("CompanyName", CompanyName);
+                SaleInvoice.ReportParameters.Add("Heading1", Heading1);
+                SaleInvoice.ReportParameters.Add("Heading2", Heading2);
+                SaleInvoice.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
                 await Task.Run(() => (ReportLink = SaleInvoice.GetReportLink()));
                 IsShowPdf = !SaleInvoice.IsError;
                 if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleInvoice.MyMessage)); }

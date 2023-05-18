@@ -27,6 +27,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Description], ");
             Text.Append("[B2].[Sr_No], ");
             Text.Append("[I].[Title] AS [Inventory], ");
+            Text.Append("[B2].[Batch], ");
             Text.Append("[B2].[Qty], ");
             Text.Append("[B2].[Rate], ");
             Text.Append("[B2].[Qty] * [B2].[Rate] AS [Amount], ");
