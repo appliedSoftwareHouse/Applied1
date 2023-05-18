@@ -14,7 +14,7 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
-            Text.Append("[B2].[TranID]", );
+            Text.Append("[B2].[TranID]," );
             Text.Append("[B1].[Vou_No], ");
             Text.Append("[B1].[Vou_Date], ");
             Text.Append("[C].[Title] AS [Company], ");
@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Project] [P] ON[P].[ID] = [B2].[Project] ");
             Text.Append("LEFT JOIN[Inventory] [I] ON[I].[ID] = [B2].[Inventory] ");
             Text.Append("LEFT JOIN[Taxes] [T] ON[T].[ID] = [B2].[Tax] ");
-            Text.Append("WHERE ID=@ID");
+            Text.Append("WHERE TranID=@ID");
 
             return Text.ToString();
        

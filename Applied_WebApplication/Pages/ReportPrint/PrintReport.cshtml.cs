@@ -188,7 +188,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Sales Invoice
-        public IActionResult OnGetSaleInvoice(int ID)
+        public async Task<IActionResult> OnGetSaleInvoiceAsync(int TranID)
         {
 
             #region Get Data Table
@@ -198,12 +198,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Adapter = new SQLiteDataAdapter(_Command);
             var _DataSet = new DataSet();
 
-            _Command.Parameters.AddWithValue("@ID", ID);
+            _Command.Parameters.AddWithValue("@ID", TranID);
             _Adapter.Fill(_DataSet, "SalesInvoice");
             if (_DataSet.Tables.Count > 0)
             {
                 var _Table = _DataSet.Tables[0];
-                var MyReportClass = new ReportClass
+                var SaleInvoice = new ReportClass
                 {
                     AppUser = User,
                     ReportFilePath = AppGlobals.ReportPath,
@@ -212,32 +212,29 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     ReportData = _Table,
                     RecordSort = "Sr_No",
 
-                    OutputFilePath = AppFunctions.AppGlobals.PrintedReportPath,
+                    OutputFilePath = AppGlobals.PrintedReportPath,
                     OutputFile = "SaleInvoice",
-                    OutputFileLinkPath = AppFunctions.AppGlobals.PrintedReportPathLink
-
+                    OutputFileLinkPath = AppGlobals.PrintedReportPathLink
                 };
 
                 var Heading1 = "Sales Invoice";
                 var Heading2 = "Commercial";
 
-                MyReportClass.ReportParameters.Add("CompanyName", CompanyName);
-                MyReportClass.ReportParameters.Add("Heading1", Heading1);
-                MyReportClass.ReportParameters.Add("Heading2", Heading2);
-                MyReportClass.ReportParameters.Add("Footer", AppFunctions.AppGlobals.ReportFooter);
-
+                //SaleInvoice.ReportParameters.Add("CompanyName", CompanyName);
+                //SaleInvoice.ReportParameters.Add("Heading1", Heading1);
+                //SaleInvoice.ReportParameters.Add("Heading2", Heading2);
+                //SaleInvoice.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+                await Task.Run(() => (ReportLink = SaleInvoice.GetReportLink()));
+                IsShowPdf = !SaleInvoice.IsError;
+                if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleInvoice.MyMessage)); }
+                return Page();
             }
-
 
             #endregion
 
             return Page();
         }
         #endregion
-
-
-
-
 
     }
 }

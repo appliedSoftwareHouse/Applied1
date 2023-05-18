@@ -28,8 +28,6 @@ namespace Applied_WebApplication.Pages.Sales
 
         public SQLiteCommand MyCommand = new();
 
-
-
         TempDBClass TempInvoice11 { get; set; } = new();
         TempDBClass TempInvoice22 { get; set; } = new();
 
@@ -582,7 +580,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostPrint()
         {
-            var TranID = Variables.TranID;
+            var TranID = Variables.ID1;
             return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
         }
         public IActionResult OnPostBack()

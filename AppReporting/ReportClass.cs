@@ -14,7 +14,7 @@ namespace AppReporting
         public string OutputFilePath { get; set; }                                    // Path where to printed report store.
         public string OutputFileLinkPath { get; set; }                             // Location to printed report PDF.
         public string OutputFileLink { get; set; }                                    // Location to printed report PDF.
-       
+
         public string ReportFilePath { get; set; }   // RDLC report path
         public string ReportFile { get; set; }   // RDLC report path + FileName
         public string ReportFileName { get; set; }                                       // Output File .pdf, .doc or .xls
@@ -40,8 +40,8 @@ namespace AppReporting
 
                 try
                 {
-                    if(File.Exists(FileName)) { File.Delete(FileName); }
-                    
+                    if (File.Exists(FileName)) { File.Delete(FileName); }
+
                     using (FileStream fstream = new FileStream(FileName, FileMode.Create))
                     {
                         fstream.Write(MyBytes, 0, MyBytes.Length);
@@ -71,13 +71,16 @@ namespace AppReporting
                 LocalReport RDLCreport = new LocalReport();
                 RDLCreport.LoadReportDefinition(ReportStream);
                 RDLCreport.DataSources.Add(new ReportDataSource(ReportDataSet, ReportData));
-                foreach (KeyValuePair<string, string> Item in ReportParameters)
+                if (ReportParameters.Count > 0)
                 {
-                    RDLCreport.SetParameters(new ReportParameter(Item.Key, Item.Value));
+                    foreach (KeyValuePair<string, string> Item in ReportParameters)
+                    {
+                        RDLCreport.SetParameters(new ReportParameter(Item.Key, Item.Value));
+                    }
                 }
                 MyBytes = RDLCreport.Render("PDF");
             }
-            
+
             catch (Exception e)
             {
                 MyMessage = e.Message;
@@ -88,9 +91,9 @@ namespace AppReporting
             return MyBytes;
         }
 
-        
 
-    private static DataTable GetPreview(DataTable reportData)
+
+        private static DataTable GetPreview(DataTable reportData)
         {
             // Show the Ledger if pdf fail to display ...............
 
