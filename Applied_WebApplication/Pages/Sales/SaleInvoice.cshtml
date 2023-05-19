@@ -242,11 +242,24 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Add</button></div>
-            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-fill-add"></i> New</button></div>
-            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
-            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-save"></i> Print</button></div>
-            <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+            @if (Model.Invoice.Rows.Count > 0)
+            {
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-fill-add"></i> New</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-save"></i> Print</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+            }
+            else
+            {
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New" disabled><i class="bi bi-database-fill-add"></i> New</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save" disabled><i class="bi bi-save"></i> SAVE</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print" disabled><i class="bi bi-save"></i> Print</button></div>
+                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+            }
+
+            
         </div>
     </div>
     <!-----Table Area-->
