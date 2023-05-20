@@ -15,7 +15,7 @@
 }
 
 <style>
-    
+
     .row {
         margin-bottom: 3px;
         height: 40px;
@@ -198,7 +198,7 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtTaxRate">Tax Rate</span>
                     <input type="text" class="form-control" asp-for="@Model.Variables.TaxRate" readonly
-                    placeholder="Tax Rate" aria-label="Tax Rate" aria-describedby="txtTaxRate">
+                           placeholder="Tax Rate" aria-label="Tax Rate" aria-describedby="txtTaxRate">
                     <input type="text" class="form-control" asp-for="@Model.Variables.TaxAmount" readonly
                            placeholder="Tax Amount" aria-label="Tax Amount" aria-describedby="txtTaxAmount">
                 </div>
@@ -242,24 +242,26 @@
             </div>
         </div>
         <div class="row">
-            @if (Model.Invoice.Rows.Count > 0)
+            @if (Model.Invoice != null)
             {
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-fill-add"></i> New</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-save"></i> Print</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
-            }
-            else
-            {
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New" disabled><i class="bi bi-database-fill-add"></i> New</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save" disabled><i class="bi bi-save"></i> SAVE</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print" disabled><i class="bi bi-save"></i> Print</button></div>
-                <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+                @if (Model.Invoice.Rows.Count > 0)
+                {
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-fill-add"></i> New</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-printer"></i> Print</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+                }
+                else
+                {
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New" disabled><i class="bi bi-database-fill-add"></i> New</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save" disabled><i class="bi bi-save"></i> SAVE</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print" disabled><i class="bi bi-printer"></i> Print</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
+                }
             }
 
-            
         </div>
     </div>
     <!-----Table Area-->
@@ -291,7 +293,7 @@
                             var _Qty = (decimal)Row["Qty"];
                             var _Rate = (decimal)Row["Rate"];
                             var _Amount = _Qty * _Rate;
-                            var _TaxRate = (AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]))/100;
+                            var _TaxRate = (AppFunctions.GetTaxRate(UserName, (int)Row["Tax"])) / 100;
                             var _TaxAmount = _Amount * (_TaxRate);
                             var _NetAmount = _Amount + _TaxAmount;
 

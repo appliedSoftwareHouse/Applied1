@@ -37,6 +37,7 @@ Pencil							<i class="bi bi-pencil"></i>
 User								<i class="bi bi-person-fill"></i>
 Save								<i class="bi bi-save"></i>
 Save								<i class="bi bi-save-fill"></i>
+Printer							<i class="bi bi-printer">
 
 Trash							<i class="bi bi-trash-fill"></i>
 Trash							<i class="bi bi-trash"></i>
