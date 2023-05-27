@@ -116,6 +116,7 @@ namespace Applied_WebApplication.Pages.Accounts
             CashBook.CurrentRow["Vou_No"] = MyRecord.Vou_No;
             CashBook.CurrentRow["Vou_Date"] = MyRecord.Vou_Date;
             CashBook.CurrentRow["Ref_No"] = MyRecord.Ref_No;
+            CashBook.CurrentRow["Sheet_No"] = MyRecord.Sheet_No;
             CashBook.CurrentRow["BookID"] = MyRecord.BookID;
             CashBook.CurrentRow["COA"] = MyRecord.COA;
             CashBook.CurrentRow["DR"] = MyRecord.DR;
@@ -193,6 +194,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public DateTime Vou_Date { get; set; } = DateTime.Now;
             public int COA { get; set; }
             public string Ref_No { get; set; }
+            public string Sheet_No { get; set; }
             public decimal DR { get; set; }
             public decimal CR { get; set; }
             public int Customer { get; set; }

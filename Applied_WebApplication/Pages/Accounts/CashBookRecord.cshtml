@@ -21,8 +21,6 @@
         width: 70%
     }
 
-    #Comments{
-        width: 15%
     }
 
 
@@ -49,7 +47,7 @@
         <div> <input type="text" hidden name="BookID" value=@Model.BookRecord.BookID class="form-control"> </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Vou_No">Vou. No.</span>
                     <input type="text"
@@ -61,7 +59,7 @@
                     <button name="auto" class="btn btn-outline-secondary" type="submit" asp-page-handler="AutoVoucher">Auto</button>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Vou_Date">Date</span>
                     <input type="Date"
@@ -73,7 +71,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Customer">Company</span>
                     <select class="form-select" name="Customer" asp-for="@Model.BookRecord.Customer">
@@ -85,7 +83,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="COA">Account</span>
                     <select class="form-select" name="COA" asp-for="@Model.BookRecord.COA">
@@ -99,7 +97,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Debit">Debit</span>
                     <input type="number"
@@ -109,7 +107,7 @@
                            placeholder="Voucher Date" />
                 </div>
             </div>
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Credit">Credit</span>
                     <input type="number"
@@ -123,7 +121,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="COAID">Projects</span>
                     <select class="form-select" name="Project" asp-for="@Model.BookRecord.Project">
@@ -135,8 +133,8 @@
                     </select>
                 </div>
             </div>
-            <div class="col">
-                <div class="col-6 input-group mb-3">
+            <div class="col-md-6">
+                <div class="col-md-6 input-group mb-3">
                     <span class="input-group-text"  id="COAID">Employee</span>
                     <select class="form-select" name="Employee" asp-for="@Model.BookRecord.Employee">
                         <option selected>@TitleEmployee</option>
@@ -149,7 +147,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="RefNo">Reference</span>
                     <input type="text"
@@ -159,7 +157,7 @@
                            placeholder="Voucher Date" />
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Description">Description</span>
                     <input type="text"
@@ -170,7 +168,16 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-md-6">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="Sheet_No">Sheet No</span>
+                    <input type="text"
+                           name="Sheet_No"
+                           value="@Model.BookRecord.Sheet_No"
+                           class="form-control">
+                </div>
+            </div>
+            <div class="col-md-6">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Comments">Comments</span>
                     <input type="text"

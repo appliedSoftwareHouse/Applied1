@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.Accounts
@@ -44,6 +45,12 @@ namespace Applied_WebApplication.Pages.Accounts
                 // Code for delete a sales invoices 
             }
                 return Page();
+        }
+
+        public IActionResult OnPostPrint(int ID)
+        {
+            var TranID = ID;
+            return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
         }
     }
 }

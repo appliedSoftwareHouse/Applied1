@@ -25,13 +25,38 @@ namespace Applied_WebApplication.Data
 
         public static int ToInteger(object _Value)
         {
-            var type = _Value.GetType();
+            try
+            {
+                var type = _Value.GetType();
 
-            if (type == typeof(string)) { return int.Parse((string)_Value); }
-            if (type == typeof(decimal)) { return int.Parse(_Value.ToString()); }
-            if (type == typeof(long)) { return int.Parse(_Value.ToString()); }
-            if (type == typeof(int)) { return (int)_Value; }
-            return 0;
+                if (type == typeof(string)) { return int.Parse((string)_Value); }
+                if (type == typeof(decimal)) { return int.Parse(_Value.ToString()); }
+                if (type == typeof(long)) { return int.Parse(_Value.ToString()); }
+                if (type == typeof(int)) { return (int)_Value; }
+                return 0;
+            }
+            catch (Exception)
+            {
+                return 0;
+            }
+        }
+
+        public static decimal ToDecimal(object _Value)
+        {
+            try
+            {
+                var type = _Value.GetType();
+
+                if (type == typeof(string)) { return decimal.Parse((string)_Value); }
+                if (type == typeof(int)) { return decimal.Parse(_Value.ToString()); }
+                if (type == typeof(long)) { return decimal.Parse(_Value.ToString()); }
+                if (type == typeof(decimal)) { return (decimal)_Value; }
+                return 0.00M;
+            }
+            catch (Exception)
+            {
+                return 0.00M;
+            }
         }
 
     }

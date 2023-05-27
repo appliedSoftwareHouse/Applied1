@@ -29,6 +29,7 @@ namespace Applied_WebApplication.Pages.Accounts
             BookRecord.Vou_No = GetNewCashVoucher(UserName);
             BookRecord.COA = (int)Row["COA"];
             BookRecord.Ref_No = Row["Ref_No"].ToString();
+            BookRecord.Sheet_No = Row["Sheet_No"].ToString();
             BookRecord.DR = (decimal)Row["DR"];
             BookRecord.CR = (decimal)Row["CR"];
             BookRecord.Customer = (int)Row["Customer"];
@@ -54,6 +55,7 @@ namespace Applied_WebApplication.Pages.Accounts
             BookRecord.Vou_No = Row["Vou_No"].ToString();
             BookRecord.COA = (int)Row["COA"];
             BookRecord.Ref_No = Row["Ref_No"].ToString();
+            BookRecord.Sheet_No = Row["Sheet_No"].ToString();
             BookRecord.DR = (decimal)Row["DR"];
             BookRecord.CR = (decimal)Row["CR"];
             BookRecord.Customer = (int)Row["Customer"];
@@ -75,6 +77,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Row["Vou_No"] = BookRecord.Vou_No;
             Row["COA"] = BookRecord.COA;
             Row["Ref_No"] = BookRecord.Ref_No;
+            Row["Sheet_No"] = BookRecord.Sheet_No;
             Row["DR"] = BookRecord.DR;
             Row["CR"] = BookRecord.CR;
             Row["Customer"] = BookRecord.Customer;

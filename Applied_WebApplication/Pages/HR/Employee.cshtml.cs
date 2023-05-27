@@ -60,9 +60,11 @@ namespace Applied_WebApplication.Pages.HR
 
         public IActionResult OnPostSave(int ID)
         {
-            DataTableClass Employees = new(UserName, Tables.Employees, $"ID={ID}");
+            DataTableClass Employees = new(UserName, Tables.Employees);
             Employees.NewRecord();
-            if (Employees.Count == 1) { Employees.CurrentRow = Employees.Rows[0]; }
+
+            Employees.MyDataView.RowFilter = $"ID={ID}";
+            if(Employees.MyDataView.Count == 1) { Employees.CurrentRow = Employees.MyDataView[0].Row; }
 
             RemoveNulls();
             Employees.CurrentRow["ID"] = Variables.ID;
@@ -84,12 +86,7 @@ namespace Applied_WebApplication.Pages.HR
             {
                 ErrorMessages.Add(MessageClass.SetMessage("Employee's record has been saved.", Color.Green));
             }
-                
-                
                 return Page(); 
-
-
-            //return RedirectToPage("Employee", routeValues: new { ID = Employees.CurrentRow["ID"] });
         }
 
         private void RemoveNulls()

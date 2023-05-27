@@ -1,0 +1,43 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.ReportPrint.ExpenseSheetModel
+@{
+    var UserName = User.Identity.Name;
+    var _ExpenseSheet = "Select";
+
+
+}
+
+<div class="AppHeading-2">
+    <h5 class="text-center">EXPENSE SHEET - PRINT</h5>
+</div>
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="ExpenseSheet">Expense Sheet</span>
+                    <select class="form-select" name="ExpenseSheetNo" asp-for="@Model.Variables.ExpenseSheetNo">
+                        <option selected>@_ExpenseSheet</option>
+                        @foreach (DataRow Row in Model.MyTable.Rows)
+                        {
+                            <option value="@Row["Sheet_No"]">@Row["Sheet_No"]</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3"></div>
+            <div class="col-md-3"></div>
+        </div>
+
+        <div class="row">
+            <button asp-page-handler="Print">
+                PRINT
+            </button>
+        </div>
+    </div>
+
+
+
+</form>

@@ -13,6 +13,10 @@
     <h5 class="TextCenter">POSTING VOUCHERS</h5>
 </div>
 
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}
 
 <!--HEADING MENU-->
 <form method="post">
@@ -79,7 +83,7 @@
                             <td>@Row["Title"]</td>
                             <td class="text-danger align-right">@decimal.Parse(Row["DR"].ToString()).ToString(NumFormat)</td>
                             <td class="text-danger align-right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
-                            <td>@Row["Status"]</td>
+                            <td class="TextCenter">@Row["Status"]</td>
                             <td>
                                 <form method="post">
                                     <input type="submit"
@@ -100,11 +104,6 @@
 }
 else
 {
-
-    @if (Model.ErrorMessages.Count> 0)
-    {
-        <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
-    }
 
     <h5>No Record Found</h5>
 }

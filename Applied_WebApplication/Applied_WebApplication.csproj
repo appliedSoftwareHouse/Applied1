@@ -54,6 +54,7 @@
 
   <ItemGroup>
     <Content Remove="Pages\ReportPrint\CompanyGL.cshtml" />
+    <Content Remove="wwwroot\Reports\ExpenseSheet.rdlc" />
     <Content Remove="wwwroot\Reports\SalesInvoice.rdlc" />
   </ItemGroup>
 
@@ -76,6 +77,7 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="Pages\ReportPrint\CompanyGL.cshtml" />
+    <None Include="wwwroot\Reports\ExpenseSheet.rdlc" />
     <None Include="wwwroot\Reports\SalesInvoice.rdlc" />
   </ItemGroup>
 

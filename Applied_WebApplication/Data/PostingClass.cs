@@ -1,12 +1,14 @@
 ﻿using Applied_WebApplication.Pages;
-using Microsoft.Extensions.Primitives;
 using System.Data;
-using System.Text;
+using System.Data.SQLite;
+using System.Drawing;
 
 namespace Applied_WebApplication.Data
 {
     public class PostingClass
     {
+        #region Cash Book
+
         public static bool PostCashBook(string UserName, int id)
         {
             bool Result;
@@ -92,7 +94,9 @@ namespace Applied_WebApplication.Data
             }
             return Result;
         }
+        #endregion
 
+        #region Bill Payable
         public static List<Message> PostBillPayable(string UserName, int id)
         {
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
@@ -203,7 +207,153 @@ namespace Applied_WebApplication.Data
 
             return ErrorMessages;
         }
+        #endregion
 
+        #region Bill Receivable / Sales Invoices
+        public static List<Message> PostBillReceivable(string UserName, int id)
+        {
+            List<Message> ErrorMessages = new List<Message>();
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+            List<DataRow> VoucherRows = new();
+            SQLiteParameter pID = new SQLiteParameter("@ID", id);
+            DataTable SaleInvoice = DataTableClass.GetTable(UserName, SQLQuery.SalesInvoice(), pID);
+
+            if (SaleInvoice == null)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Error: Sale invocie object is null here. Contact to Administrator"));
+                return ErrorMessages;
+            }
+
+            if (SaleInvoice.Rows.Count == 0)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Error: Sale invocie does't have any record to post. Contact to Administrator"));
+                return ErrorMessages;
+            }
+
+            if (SaleInvoice.Rows[0]["Status"].ToString() == VoucherStatus.Posted.ToString())
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Error: Sale Invocie is already posted. Contact to Administrator"));
+                return ErrorMessages;
+
+            }
+
+            int COA_DR = 4;
+            int COA_CR = 43;
+            int COA_Tax = 33;
+            bool IsValidated = true;
+            int SRNO = 1;
+            string Vou_No = SaleInvoice.Rows[0]["Vou_No"].ToString();
+
+            #region Check the voher is already exist in the ledger ? or not exist.
+            tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
+            if (tb_Ledger.Count > 0)
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Voucher Numbre is already exist in the ledger. Contact to Administrator."));
+                return ErrorMessages;
+            }
+            #endregion
+
+            foreach (DataRow Row in SaleInvoice.Rows)
+            {
+                Vou_No = Row["Vou_No"].ToString();
+
+                #region Debit Entry
+                tb_Ledger.NewRecord();
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = Row["TranID"];
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Receivable.ToString();
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = 0;
+                tb_Ledger.CurrentRow["COA"] = COA_DR;
+                tb_Ledger.CurrentRow["DR"] = 0;
+                tb_Ledger.CurrentRow["CR"] = Row["Amount"];
+                tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
+                tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
+                tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
+                tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
+                if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
+                else { VoucherRows.Add(tb_Ledger.CurrentRow); }
+                #endregion
+
+                #region Tax Entry
+                if (Conversion.ToDecimal(Row["Tax_Amount"]) > 0)
+                {
+                    tb_Ledger.NewRecord();
+                    tb_Ledger.CurrentRow["ID"] = 0;
+                    tb_Ledger.CurrentRow["TranID"] = Row["TranID"];
+                    tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Receivable.ToString();
+                    tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                    tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                    tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
+                    tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                    tb_Ledger.CurrentRow["BookID"] = 0;
+                    tb_Ledger.CurrentRow["COA"] = COA_Tax;
+                    tb_Ledger.CurrentRow["DR"] = Row["Tax_Amount"]; ;
+                    tb_Ledger.CurrentRow["CR"] = 0;
+                    tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
+                    tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
+                    tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
+                    tb_Ledger.CurrentRow["Description"] = string.Concat(Row["Tax"], ": ", Row["Description"]);
+                    tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
+                    tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
+                    if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
+                    else { VoucherRows.Add(tb_Ledger.CurrentRow); }
+                }
+                #endregion
+
+                #region Credit Entry
+                tb_Ledger.NewRecord();
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = Row["TranID"];
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Receivable.ToString();
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = 0;
+                tb_Ledger.CurrentRow["COA"] = COA_CR;
+                tb_Ledger.CurrentRow["DR"] = 0;
+                tb_Ledger.CurrentRow["CR"] = Row["Net_Amount"];
+                tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
+                tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
+                tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
+                tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
+                if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
+                else { VoucherRows.Add(tb_Ledger.CurrentRow); }
+                #endregion
+            }
+
+            // Save Voucher.
+            if (IsValidated)
+            {
+                foreach (DataRow Row in VoucherRows)
+                {
+                    var NoValidteAgain = false;
+                    tb_Ledger.CurrentRow = Row;
+                    tb_Ledger.Save(NoValidteAgain);
+                    ErrorMessages.AddRange(tb_Ledger.ErrorMessages);
+                }
+                DataTableClass.Replace(UserName, Tables.BillReceivable, id, "Status", VoucherStatus.Posted);
+                ErrorMessages.Add(MessageClass.SetMessage($"Voucher No {Vou_No}  has been posted sucessfully.", Color.Green));
+                
+            }
+            else
+            {
+                ErrorMessages.Add(MessageClass.SetMessage($"Voucher No {Vou_No}  has not been posted sucessfully.", Color.Red));
+            }
+
+            return ErrorMessages;
+        }
+        #endregion
+
+        #region Opening Balances Posting
         public static List<Message> PostOpeningBalance(string UserName)
         {
             List<Message> MyMessages = new List<Message>();
@@ -349,7 +499,7 @@ namespace Applied_WebApplication.Data
                 {
                     Voucher.Add(tb_Ledger.NewRecord());
                     Voucher.Add(tb_Ledger.NewRecord());
-                   
+
                     Voucher[0]["ID"] = 0;
                     Voucher[1]["ID"] = 0;
                     Voucher[0]["TranID"] = (int)TranID;
@@ -373,7 +523,7 @@ namespace Applied_WebApplication.Data
                 Voucher[0]["Employee"] = Row["Employee"];
                 Voucher[0]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
                 Voucher[0]["Comments"] = DBNull.Value;
-             
+
                 //Voucher[1]["ID"] = Row["ID"];
                 //Voucher[1]["TranID"] = Row["TranID"];
                 Voucher[1]["Vou_Type"] = VoucherType.OBalCom.ToString();
@@ -390,7 +540,7 @@ namespace Applied_WebApplication.Data
                 Voucher[1]["Employee"] = Row["Employee"];
                 Voucher[1]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
                 Voucher[1]["Comments"] = DBNull.Value;
-                
+
 
                 // Validation of Voucher;
                 bool IsValidated1 = tb_Ledger.TableValidation.Validation(Voucher[0]);
@@ -494,6 +644,9 @@ namespace Applied_WebApplication.Data
             }
             return MyMessages;
         }
+        #endregion
+
+
 
     }
 }

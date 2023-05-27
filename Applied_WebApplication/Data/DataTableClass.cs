@@ -173,6 +173,35 @@ namespace Applied_WebApplication.Data
             }
             return _Table;
         }
+
+        public static DataTable GetTable(string UserName, string _Text, SQLiteParameter _ID)                      // Load Database with ID Parameter
+        {
+            DataTable _Table = new DataTable();
+            if (_Text.Length > 0)
+            {
+                try
+                {
+                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                    SQLiteCommand _Command = new(_Text, MyConnection);
+                    SQLiteDataAdapter _Adapter = new(_Command);
+                    DataSet _DataSet = new();
+                    _Command.Parameters.Add(_ID);
+                    _Adapter.Fill(_DataSet);
+
+                    if (_DataSet.Tables.Count == 1)
+                    {
+                        _Table = _DataSet.Tables[0];
+                    }
+                }
+                catch (Exception)
+                {
+                    _Table = new DataTable();
+                }
+            }
+            return _Table;
+        }
+
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.

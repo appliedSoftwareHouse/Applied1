@@ -2,6 +2,8 @@ using AppReporting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.VisualBasic;
+using NPOI.OpenXmlFormats;
+using NPOI.SS.Formula.Functions;
 using System.Data;
 using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
@@ -207,7 +209,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     AppUser = User,
                     ReportFilePath = AppGlobals.ReportPath,
-                    ReportFile = "SalesInvoice.rdlc",
+                    ReportFile = "SalesInvoiceST.rdlc",
                     ReportDataSet = "ds_SaleInvoice",
                     ReportData = _Table,
                     RecordSort = "Sr_No",
@@ -232,6 +234,48 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #endregion
 
+            return Page();
+        }
+        #endregion
+
+        #region ExpenseSheet
+
+        public async Task<IActionResult> OnGetExpenseSheetAsync()
+        {
+            #region Get Data Table
+            var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
+            var _Connection = ConnectionClass.AppConnection(UserName);
+            var _Filter = $"Sheet_No='{_SheetNo}'";
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter), "");
+            
+            #endregion
+
+            var ExpenseSheet = new ReportClass
+            {
+                AppUser = User,
+                ReportFilePath = AppGlobals.ReportPath,
+                ReportFile = "ExpenseSheet.rdlc",
+                ReportDataSet = "ds_ExpenseSheet",
+                ReportData = _Table,
+                RecordSort = "Vou_No",
+
+                OutputFilePath = AppGlobals.PrintedReportPath,
+                OutputFile = "ExpenseSheet",
+                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+            };
+
+            await Task.Run(() => (ReportLink = ExpenseSheet.GetReportLink()));
+
+            var Heading1 = "PROJECT EXPENSES SHEET";
+            var Heading2 = $"Project Sheet # {_SheetNo}";
+
+            ExpenseSheet.ReportParameters.Add("CompanyName", CompanyName);
+            ExpenseSheet.ReportParameters.Add("Heading1", Heading1);
+            ExpenseSheet.ReportParameters.Add("Heading2", Heading2);
+            ExpenseSheet.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+            await Task.Run(() => (ReportLink = ExpenseSheet.GetReportLink()));
+            IsShowPdf = !ExpenseSheet.IsError;
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(ExpenseSheet.MyMessage)); }
             return Page();
         }
         #endregion

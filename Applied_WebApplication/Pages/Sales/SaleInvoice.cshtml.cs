@@ -119,7 +119,6 @@ namespace Applied_WebApplication.Pages.Sales
                         {
                             Row2 = TempInvoice22.CurrentRow;                 // Error id not found the record, pass empty row
                         }
-
                     }
                 }
 

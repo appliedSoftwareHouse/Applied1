@@ -68,6 +68,12 @@
                                 asp-route-ID="@Row["ID"]">
                                 <i class="bi bi-trash-fill" style="margin-right:5px"></i>
                             </button>
+
+                            <button type="submit" class="listbutton-blue"
+                                    asp-page-handler="Print"
+                                    asp-route-ID="@Row["ID"]">
+                                <i class="bi bi-printer" style="margin-right:5px"></i>
+                            </button>
                         </td>
                     </tr>
                 }

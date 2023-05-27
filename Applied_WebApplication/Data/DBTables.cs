@@ -22,6 +22,7 @@ public enum Tables
     view_BillReceivable = 116,
     OBALCompany = 117,
     JVList = 118,
+    ExpenseSheet = 119,
    
 
     Customers = 201,

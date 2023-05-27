@@ -14,7 +14,8 @@ namespace Applied_WebApplication.Pages.Applied
         public DataTable PostTable;
         public bool IsError { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
-        public string UserName => User.Identity.Name;
+        public  string UserName => User.Identity.Name;
+        private readonly string Submitted = VoucherStatus.Submitted.ToString();
 
         public void OnGet()
         {
@@ -33,7 +34,7 @@ namespace Applied_WebApplication.Pages.Applied
             switch (Variables.PostingType)
             {
                 case 1:                                                                                                                                 // Cash Book
-                    Filter = string.Concat("Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "' ");
+                    Filter = $"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}'";
                     DataTableClass CashBook = new(UserName, Tables.PostCashBook, Filter);
                     //CashBook.MyDataView.RowFilter = Filter;
                     PostTable = CashBook.MyDataTable;
@@ -47,8 +48,14 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
 
                 case 4:                                                                                                                                 // 
-                    Filter = string.Format("Vou_Date >='{0}' AND Vou_Date <='{1}' AND Status='{2}'", Date1, Date2, VoucherStatus.Submitted.ToString());
+                    Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND Status='{Submitted}'";
                     PostTable = AppFunctions.GetRecords(UserName, Tables.PostBillPayable, Filter);
+                    break;
+
+                case 5:                                                                                                                                 // Bill Receivable - Sales Invoice
+                    Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND [B1].[Status]='{VoucherStatus.Submitted}'";
+                    PostTable = GetTable(UserName, SQLQuery.PostBillReceivable(Filter), "Vou_Date");
+
                     break;
 
                 default:
@@ -67,9 +74,22 @@ namespace Applied_WebApplication.Pages.Applied
 
         public IActionResult OnPostPosting(int id, int PostingType)
         {
+            Variables = new()
+            {
+                PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
+                Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
+                Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
+            };
+
             if (PostingType == (int)PostType.CashBook) { PostingClass.PostCashBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
+            if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
             
+            if(ErrorMessages.Count>0)
+            {
+                return Page();
+            }
+
             return RedirectToPage();
         }
 
