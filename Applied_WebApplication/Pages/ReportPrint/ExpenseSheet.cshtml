@@ -3,9 +3,7 @@
 @model Applied_WebApplication.Pages.ReportPrint.ExpenseSheetModel
 @{
     var UserName = User.Identity.Name;
-    var _ExpenseSheet = "Select";
-
-
+    var _ExpenseSheet = AppRegistry.GetText(UserName, "Sheet_No");
 }
 
 <div class="AppHeading-2">
@@ -31,10 +29,33 @@
             <div class="col-md-3"></div>
         </div>
 
-        <div class="row">
-            <button asp-page-handler="Print">
+        <div class="row mt-3">
+            <div class="col-3">
+            <button class="btn btn-primary" asp-page-handler="Print">
                 PRINT
+                <i class="bi bi-printer"></i>
             </button>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" asp-page-handler="Excel">
+                    Excel
+                    <i class="bi bi-filetype-xls"></i>
+                </button>
+            </div>
+
+            <div class="col-3">
+                <button class="btn btn-primary" asp-page-handler="Word">
+                    Word
+                    <i class="bi bi-filetype-doc"></i>
+                </button>
+            </div>
+
+            <div class="col-3">
+                <button class="btn btn-primary" asp-page-handler="HTML">
+                    HTML
+                    <i class="bi bi-filetype-html"></i>
+                </button>
+            </div>
         </div>
     </div>
 

@@ -47,7 +47,7 @@ namespace Applied_WebApplication.Data
                 ReportFilePath = ReportPath,
                 ReportFile = "TB.rdlc",
                 ReportDataSet = "dset_TB",
-                ReportData = MyDataTable,
+                ReportSourceData = MyDataTable,
                 RecordSort = "Code",
 
                 OutputFilePath = AppFunctions.AppGlobals.PrintedReportPath,
@@ -56,10 +56,10 @@ namespace Applied_WebApplication.Data
 
             };
 
-            MyReportClass.ReportParameters.Add("CompanyName", CompanyName);
-            MyReportClass.ReportParameters.Add("Heading1", Heading1);
-            MyReportClass.ReportParameters.Add("Heading2", Heading2);
-            MyReportClass.ReportParameters.Add("Footer", AppFunctions.AppGlobals.ReportFooter);
+            MyReportClass.RptParameters.Add("CompanyName", CompanyName);
+            MyReportClass.RptParameters.Add("Heading1", Heading1);
+            MyReportClass.RptParameters.Add("Heading2", Heading2);
+            MyReportClass.RptParameters.Add("Footer", AppFunctions.AppGlobals.ReportFooter);
 
         }
 
@@ -82,7 +82,7 @@ namespace Applied_WebApplication.Data
             _Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
 
             SetParameters();
-            MyReportClass.ReportData = _Table;
+            MyReportClass.ReportSourceData = _Table;
             
             return _Table;
         }

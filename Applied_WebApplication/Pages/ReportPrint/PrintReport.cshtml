@@ -34,63 +34,46 @@
 }
 else
 {
-    if(Model.Preview.Rows.Count > 0)
+    if (Model.Preview.Rows.Count > 0)
     {
-
-    <form method="post">
-        <div class="container">
-            <table  class="table-list">
-                <thead class="bg-light">
-                    <tr>
-                        <th style="width:10%">Date</th>
-                        <th style="width:10%">Vou No.</th>
-                        <th style="width:50%">Description</th>
-                        <th style="width:10%">Debit</th>
-                        <th style="width:10%">Credit</th>
-                        <th style="width:10%">Balance</th>
-                        <th>
-                            <button class="btn btn-primary" asp-page-handler="COAExcel">Excel</button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.Preview.Rows)
-                    {
-                        string _Date = (DateTime.Parse(Row["Vou_Date"].ToString())).ToString(AppRegistry.FormatDate);
-                        string _VouNo = Row["Vou_No"].ToString();
-                        string _DR = decimal.Parse(Row["DR"].ToString()).ToString(AppRegistry.FormatCurrency1);
-                        string _CR = decimal.Parse(Row["CR"].ToString()).ToString(AppRegistry.FormatCurrency1);
-                        string _Bal = decimal.Parse(Row["Balance"].ToString()).ToString(AppRegistry.FormatCurrency1);
-                        string _Description = Row["Description"].ToString();
-
+        <form method="post">
+            <div class="container">
+                <table class="table-list">
+                    <thead class="bg-light">
                         <tr>
-                            <td>@_Date</td>
-                            <td>@_VouNo</td>
-                            <td>@_Description</td>
-                            <td style="text-align: right">@_DR</td>
-                            <td style="text-align: right">@_CR</td>
-                            <td style="text-align: right">@_Bal</td>
+                            <th style="width:10%">Date</th>
+                            <th style="width:10%">Vou No.</th>
+                            <th style="width:50%">Description</th>
+                            <th style="width:10%">Debit</th>
+                            <th style="width:10%">Credit</th>
+                            <th style="width:10%">Balance</th>
+                            <th>
+                                <button class="btn btn-primary" asp-page-handler="COAExcel">Excel</button>
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
-    </form>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow Row in Model.Preview.Rows)
+                        {
+                            string _Date = (DateTime.Parse(Row["Vou_Date"].ToString())).ToString(AppRegistry.FormatDate);
+                            string _VouNo = Row["Vou_No"].ToString();
+                            string _DR = decimal.Parse(Row["DR"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                            string _CR = decimal.Parse(Row["CR"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                            string _Bal = decimal.Parse(Row["Balance"].ToString()).ToString(AppRegistry.FormatCurrency1);
+                            string _Description = Row["Description"].ToString();
+
+                            <tr>
+                                <td>@_Date</td>
+                                <td>@_VouNo</td>
+                                <td>@_Description</td>
+                                <td style="text-align: right">@_DR</td>
+                                <td style="text-align: right">@_CR</td>
+                                <td style="text-align: right">@_Bal</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </form>
     }
 }
-
-
-</hr>
-@Model.MyMessage;
-
-@*}
-
-
-@
-
-<hr />
-<div class="alert alert-danger" role="alert">
-    @Model.MyMessage
-</div>
-
-*@

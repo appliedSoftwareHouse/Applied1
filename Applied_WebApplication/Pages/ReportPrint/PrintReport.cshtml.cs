@@ -1,15 +1,11 @@
 using AppReporting;
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.VisualBasic;
-using NPOI.OpenXmlFormats;
-using NPOI.SS.Formula.Functions;
+using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
-
-using DataTable = System.Data.DataTable;
-
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -49,16 +45,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
             reports.ReportFilePath = AppGlobals.ReportPath;
             reports.ReportFile = "COAList.rdlc";
             reports.ReportDataSet = "DataSet1";
-            reports.ReportData = COA.MyDataTable;
+            reports.ReportSourceData = COA.MyDataTable;
             reports.RecordSort = "Title";
 
             reports.OutputFilePath = AppGlobals.PrintedReportPath;
             reports.OutputFile = "COAList";
             reports.OutputFileLinkPath = AppGlobals.PrintedReportPathLink;
 
-            reports.ReportParameters.Add("CompanyName", CompanyName);
-            reports.ReportParameters.Add("Heading1", "Chart of Accounts");
-            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+            reports.RptParameters.Add("CompanyName", CompanyName);
+            reports.RptParameters.Add("Heading1", "Chart of Accounts");
+            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();
             IsShowPdf = !reports.IsError;
@@ -84,7 +80,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 ReportFilePath = AppGlobals.ReportPath,
                 ReportFile = "Ledger.rdlc",
                 ReportDataSet = "dsname_Ledger",
-                ReportData = tb_Ledger,
+                ReportSourceData = tb_Ledger,
                 RecordSort = "Vou_Date",
 
                 OutputFilePath = AppGlobals.PrintedReportPath,
@@ -96,10 +92,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             string _Heading1 = "GENERAL LEDGER";
             string _Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
 
-            reports.ReportParameters.Add("CompanyName", CompanyName);
-            reports.ReportParameters.Add("Heading1", _Heading1);
-            reports.ReportParameters.Add("Heading2", _Heading2);
-            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+            reports.RptParameters.Add("CompanyName", CompanyName);
+            reports.RptParameters.Add("Heading1", _Heading1);
+            reports.RptParameters.Add("Heading2", _Heading2);
+            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();
             IsShowPdf = !reports.IsError;
@@ -127,7 +123,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 ReportFilePath = AppGlobals.ReportPath,
                 ReportFile = "CompanyGL.rdlc",
                 ReportDataSet = "dsname_CompanyGL",
-                ReportData = tb_Ledger,
+                ReportSourceData = tb_Ledger,
                 RecordSort = "Vou_Date",
 
                 OutputFilePath = AppGlobals.PrintedReportPath,
@@ -146,10 +142,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
             var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
 
-            reports.ReportParameters.Add("CompanyName", CompanyName);
-            reports.ReportParameters.Add("Heading1", _Heading1);
-            reports.ReportParameters.Add("Heading2", _Heading2);
-            reports.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+            reports.RptParameters.Add("CompanyName", CompanyName);
+            reports.RptParameters.Add("Heading1", _Heading1);
+            reports.RptParameters.Add("Heading2", _Heading2);
+            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();                     // Create a report and provide link of pdf file location.
             IsShowPdf = !reports.IsError;                                   // Show PDF id no error found.
@@ -211,7 +207,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     ReportFilePath = AppGlobals.ReportPath,
                     ReportFile = "SalesInvoiceST.rdlc",
                     ReportDataSet = "ds_SaleInvoice",
-                    ReportData = _Table,
+                    ReportSourceData = _Table,
                     RecordSort = "Sr_No",
 
                     OutputFilePath = AppGlobals.PrintedReportPath,
@@ -222,10 +218,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var Heading1 = "Sales Invoice";
                 var Heading2 = "Commercial";
 
-                SaleInvoice.ReportParameters.Add("CompanyName", CompanyName);
-                SaleInvoice.ReportParameters.Add("Heading1", Heading1);
-                SaleInvoice.ReportParameters.Add("Heading2", Heading2);
-                SaleInvoice.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
+                SaleInvoice.RptParameters.Add("CompanyName", CompanyName);
+                SaleInvoice.RptParameters.Add("Heading1", Heading1);
+                SaleInvoice.RptParameters.Add("Heading2", Heading2);
+                SaleInvoice.RptParameters.Add("Footer", AppGlobals.ReportFooter);
                 await Task.Run(() => (ReportLink = SaleInvoice.GetReportLink()));
                 IsShowPdf = !SaleInvoice.IsError;
                 if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleInvoice.MyMessage)); }
@@ -240,11 +236,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #region ExpenseSheet
 
-        public async Task<IActionResult> OnGetExpenseSheetAsync()
+        public IActionResult OnGetExpenseSheet(ReportType _ReportType)
         {
             #region Get Data Table
             var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
-            var _Connection = ConnectionClass.AppConnection(UserName);
             var _Filter = $"Sheet_No='{_SheetNo}'";
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter), "");
             
@@ -254,29 +249,45 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "ExpenseSheet.rdlc",
+                ReportFile = "ExpenseSheet2.rdlc",
                 ReportDataSet = "ds_ExpenseSheet",
-                ReportData = _Table,
+                ReportSourceData = _Table,
                 RecordSort = "Vou_No",
 
                 OutputFilePath = AppGlobals.PrintedReportPath,
                 OutputFile = "ExpenseSheet",
                 OutputFileLinkPath = AppGlobals.PrintedReportPathLink
             };
-
-            await Task.Run(() => (ReportLink = ExpenseSheet.GetReportLink()));
-
             var Heading1 = "PROJECT EXPENSES SHEET";
             var Heading2 = $"Project Sheet # {_SheetNo}";
 
-            ExpenseSheet.ReportParameters.Add("CompanyName", CompanyName);
-            ExpenseSheet.ReportParameters.Add("Heading1", Heading1);
-            ExpenseSheet.ReportParameters.Add("Heading2", Heading2);
-            ExpenseSheet.ReportParameters.Add("Footer", AppGlobals.ReportFooter);
-            await Task.Run(() => (ReportLink = ExpenseSheet.GetReportLink()));
-            IsShowPdf = !ExpenseSheet.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(ExpenseSheet.MyMessage)); }
-            return Page();
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+
+            var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
+
+            ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
+
+            LocalReport report = new();
+            
+            var _ReportStream = new StreamReader(_ReportFile);
+            //using var rs = Assembly.GetExecutingAssembly().GetManifestResourceStream(_ReportFile);
+            report.LoadReportDefinition(_ReportStream);
+            report.DataSources.Add(_DataSource);
+            report.SetParameters(_Parameters);
+
+            //var _ReportType = ExportReport.ReportType.PDF;
+            var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
+            var _mimeType = ExportReport.GetReportMime(_ReportType);
+            var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+
+            var pdf = report.Render(_RenderFormat);
+            return File(pdf, _mimeType, ExpenseSheet.OutputFile +_Extention);
         }
         #endregion
 

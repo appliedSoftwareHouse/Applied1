@@ -30,8 +30,8 @@
 </style>
 
 
-<div class="container AppHeading">
-    <h3 class="TextCenter">GENERAL LEDGER (Report)</h3>
+<div class="container AppHeading-2">
+    <h5 class="TextCenter">GENERAL LEDGER (Report)</h5>
 </div>
 
 <form method="post">
@@ -83,7 +83,7 @@
             <div class="col-2">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                    Select All Accounts
+                    Select All
                 </label>
             </div>
             <div class="col-3">
@@ -93,7 +93,7 @@
                     Print
                     <i class="bi bi-printer"></i>
                 </button>
-                </div>
+            </div>
         </div>
 
         <!-- COMPANY-->
@@ -113,18 +113,39 @@
             <div class="col-2">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                    Select All Companies
+                    Select All
                 </label>
             </div>
-            <div class="col-3">
-                <button type="submit" id="ComPdf"
-                        class="btn btn-primary"
-                        asp-page-handler="Company">
-                    Print
+
+            <div class="col-1">
+                <button type="submit" id="ComPdf" class="btn btn-primary"
+                        asp-page-handler="Company">Print
                     <i class="bi bi-printer"></i>
                 </button>
-                
+
             </div>
+            <div class="col-1">
+                <button type="submit" id="ComExcel" class="btn btn-primary"
+                        asp-page-handler="CompanyExcel">Excel
+                    <i class="bi bi-filetype-xls"></i>
+                </button>
+
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComWord" class="btn btn-primary"
+                        asp-page-handler="CompanyWord">Word
+                    <i class="bi bi-filetype-doc"></i>
+                </button>
+
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComHTML" class="btn btn-primary"
+                        asp-page-handler="CompanyHTML">HTML
+                    <i class="bi bi-filetype-html"></i>
+                </button>
+
+            </div>
+
         </div>
     </div>
 </form>

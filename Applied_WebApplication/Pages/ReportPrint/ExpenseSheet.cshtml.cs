@@ -1,9 +1,11 @@
 using AppReporting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
-using Microsoft.Win32;
+using AppReportClass;
 using System.Data;
+using Microsoft.Reporting.NETCore;
+using static Applied_WebApplication.Data.AppFunctions;
+using Microsoft.ReportingServices.Interfaces;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -13,26 +15,38 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public Parameters Variables { get; set; }
         string UserName => User.Identity.Name;
         public DataTable MyTable { get; set; } = new DataTable();
-        public ReportClass.ReportFilters Parameters1 { get; set; }
 
         public void OnGet()
         {
             Variables = new();
-            MyTable = GetMyTable();
-
-
+            MyTable = GetExpenseSheetList();
         }
-
         public IActionResult OnPostPrint()
         {
-            Parameters1 = new();
             AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
-            return RedirectToPage("PrintReport", "ExpenseSheet");
+            return RedirectToPage("PrintReport", "ExpenseSheet", new { ReportType.PDF});
+        }
+
+        public IActionResult OnPostExcel()
+        {
+            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
+            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType=ReportType.Excel});
+        }
+
+        public IActionResult OnPostWord()
+        {
+            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
+            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = ReportType.Word });
+        }
+
+        public IActionResult OnPostHTML()
+        {
+            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
+            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = ReportType.HTML });
         }
 
 
-
-        private DataTable GetMyTable() 
+        private DataTable GetExpenseSheetList() 
         {
             DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheetList(), "Sheet_No");
             return _Table;
@@ -42,6 +56,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public class Parameters
         {
             public string ExpenseSheetNo {  get; set; }
+            public string ReportType { get; set; }
         }
 
     }

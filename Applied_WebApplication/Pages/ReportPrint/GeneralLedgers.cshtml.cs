@@ -1,4 +1,5 @@
 using AppReporting;
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -54,7 +55,19 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
           
 
-            return RedirectToPage("PrintReport", "GLCompany", new { Parameters });
+            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.PDF });
+
+        }
+
+        public IActionResult OnPostCompanyExcel()
+        {
+            var UserName = User.Identity.Name;
+            AppRegistry.SetKey(UserName, "GL_COA", Parameters.N_COA, KeyType.Number);
+            AppRegistry.SetKey(UserName, "GL_Company", Parameters.N_Customer, KeyType.Number);
+            AppRegistry.SetKey(UserName, "GL_Dt_From", Parameters.Dt_From, KeyType.Date);
+            AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
+
+            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.Excel });
 
         }
 
