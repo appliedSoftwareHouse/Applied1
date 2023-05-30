@@ -187,7 +187,7 @@ namespace Applied_WebApplication.Data
             return _Ledger;
         }
 
-        internal static DataTable GetGL(string userName, ReportClass.ReportFilters paramaters)
+        internal static DataTable GetGL(string userName, AppReportClass.ReportFilters paramaters)
         {
             DataTableClass tb_Ledger = new(userName, Tables.Ledger);
             DataTable Result = tb_Ledger.MyDataTable.Clone();
@@ -199,7 +199,7 @@ namespace Applied_WebApplication.Data
             return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
         }
 
-        internal static DataTable GetGLCompany(string userName, ReportClass.ReportFilters paramaters)
+        internal static DataTable GetGLCompany(string userName, AppReportClass.ReportFilters paramaters)
         {
             DataTableClass tb_Ledger = new(userName, Tables.Ledger);
             DataTable tb_Report = tb_Ledger.MyDataTable.Clone();
@@ -216,7 +216,7 @@ namespace Applied_WebApplication.Data
             return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
         }
 
-        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportClass.ReportFilters paramaters)
+        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, AppReportClass.ReportFilters paramaters)
         {
             DataTableClass tb_Ledger = new(userName, Tables.Ledger);
             DataTable Result = tb_Ledger.MyDataTable.Clone();
@@ -277,7 +277,7 @@ namespace Applied_WebApplication.Data
 
         }
 
-        internal static DataTable GetTB(string UserName, ReportClass.ReportFilters filters)
+        internal static DataTable GetTB(string UserName, AppReportClass.ReportFilters filters)
         {
             DataTableClass tc_TB = new(UserName, Tables.TB);
             DataTable tb_TrialBal = tc_TB.MyDataTable.Clone();

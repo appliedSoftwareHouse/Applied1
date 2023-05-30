@@ -27,6 +27,12 @@
         width: 30%
     }
 
+    .btn-print {
+        width: 80px;
+        height: 35px;
+        padding: 3px;
+    }
+
 </style>
 
 
@@ -86,12 +92,32 @@
                     Select All
                 </label>
             </div>
-            <div class="col-3">
-                <button type="submit" id="GLPdf"
-                        class="btn btn-primary"
+            <div class="col-1">
+                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
                         asp-page-handler="GL">
                     Print
                     <i class="bi bi-printer"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyExcel">
+                    Excel
+                    <i class="bi bi-filetype-xls"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print" 
+                        asp-page-handler="CompanyWord">
+                    Word
+                    <i class="bi bi-filetype-doc"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyHTML">
+                    Excel
+                    <i class="bi bi-filetype-html"></i>
                 </button>
             </div>
         </div>
@@ -113,38 +139,89 @@
             <div class="col-2">
                 <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
                 <label class="form-check-label" for="flexCheckDefault">
-                    Select All
+                    Select All A/c
                 </label>
             </div>
 
             <div class="col-1">
-                <button type="submit" id="ComPdf" class="btn btn-primary"
-                        asp-page-handler="Company">Print
+                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="Company">
+                    Print
                     <i class="bi bi-printer"></i>
                 </button>
-
             </div>
             <div class="col-1">
-                <button type="submit" id="ComExcel" class="btn btn-primary"
-                        asp-page-handler="CompanyExcel">Excel
+                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyExcel">
+                    Excel
                     <i class="bi bi-filetype-xls"></i>
                 </button>
-
             </div>
             <div class="col-1">
-                <button type="submit" id="ComWord" class="btn btn-primary"
-                        asp-page-handler="CompanyWord">Word
+                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyWord">
+                    Word
                     <i class="bi bi-filetype-doc"></i>
                 </button>
-
             </div>
             <div class="col-1">
-                <button type="submit" id="ComHTML" class="btn btn-primary"
-                        asp-page-handler="CompanyHTML">HTML
+                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyHTML">
+                    Excel
                     <i class="bi bi-filetype-html"></i>
                 </button>
-
             </div>
+        </div>
+
+        <div class="row mt-2">
+            <div class="col-6">
+                <div class="input-group">
+                    <span class="input-group-text" id="Employee">Employee</span>
+                    <select class="form-select" name="N_Employee" asp-for="@Model.Parameters.N_Employee">
+                        <option selected>@TitleCompany</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+                <label class="form-check-label" for="flexCheckDefault">
+                    Select All A/c
+                </label>
+            </div>
+
+            <div class="col-1">
+                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="GL">
+                    Print
+                    <i class="bi bi-printer"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyExcel">
+                    Excel
+                    <i class="bi bi-filetype-xls"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyWord">
+                    Word
+                    <i class="bi bi-filetype-doc"></i>
+                </button>
+            </div>
+            <div class="col-1">
+                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
+                        asp-page-handler="CompanyHTML">
+                    Excel
+                    <i class="bi bi-filetype-html"></i>
+                </button>
+            </div>
+
 
         </div>
     </div>

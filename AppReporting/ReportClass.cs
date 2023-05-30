@@ -129,7 +129,7 @@ namespace AppReporting
 
         #endregion
 
-        public static string GetQueryText(ReportFilters ReportFilter)
+        public static string GetQueryText(AppReportClass.ReportFilters ReportFilter)
         {
             // Create a query to fatch data from Data Table for Display Reports.
             string DateFormat = "yyyy-MM-dd";
@@ -160,26 +160,7 @@ namespace AppReporting
             return string.Concat(_SQL.ToString(), Where);
         }
 
-        public class ReportFilters
-        {
-            public string TableName { get; set; }
-            public string Columns { get; set; }
-            public DateTime Dt_From { get; set; }
-            public DateTime Dt_To { get; set; }
-            public int N_ID { get; set; }
-            public int N_COA { get; set; }
-            public int N_Customer { get; set; }
-            public int N_Employee { get; set; }
-            public int N_Project { get; set; }
-            public int N_Inventory { get; set; }
-            public int N_InvCategory { get; set; }
-            public int N_InvSubCategory { get; set; }
-
-            public bool All_COA { get; set; }
-            public bool All_Customer { get; set; }
-
-        }
-
+        
         public class ReportData
         {
             public string ReportFile { get; set; }

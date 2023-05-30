@@ -12,14 +12,7 @@ namespace AppReportClass
 {
     public class ExportReport
     {
-        //public enum ReportType
-        //{
-        //    PDF,
-        //    HTML,
-        //    Word,
-        //    Excel
-        //}
-
+        
         #region GET Report Vales
 
         public static string GetRenderFormat(ReportType _ReportType)
@@ -33,10 +26,10 @@ namespace AppReportClass
 
         public static string GetReportExtention(ReportType _ReportType)
         {
-            if (_ReportType == ReportType.PDF) { return "pdf"; }
-            if (_ReportType == ReportType.HTML) { return "html"; }
-            if (_ReportType == ReportType.Word) { return "docx"; }
-            if (_ReportType == ReportType.Excel) { return "xlsx"; }
+            if (_ReportType == ReportType.PDF) { return ".pdf"; }
+            if (_ReportType == ReportType.HTML) { return ".html"; }
+            if (_ReportType == ReportType.Word) { return ".docx"; }
+            if (_ReportType == ReportType.Excel) { return ".xlsx"; }
             return "";
         }
 
@@ -50,5 +43,25 @@ namespace AppReportClass
         }
 
         #endregion
+
+        #region ReportExport
+
+        public static byte[] Render(ReportParameters _ReportParameter)
+        {
+            var _ReportFile = string.Concat(_ReportParameter.ReportPath, _ReportParameter.ReportFile);
+            ReportDataSource _DataSource = new(_ReportParameter.DataSetName, _ReportParameter.ReportData);
+            LocalReport report = new();
+            var _ReportStream = new StreamReader(_ReportFile);
+            report.LoadReportDefinition(_ReportStream);
+            report.DataSources.Add(_DataSource);
+            report.SetParameters(_ReportParameter.DataParameters);
+            var _RenderFormat = GetRenderFormat(_ReportParameter.ReportType);
+            var reportData = report.Render(_RenderFormat);
+            return reportData;
+        }
+
+
+        #endregion
+
     }
 }

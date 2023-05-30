@@ -11,12 +11,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
 
         [BindProperty]
-        public ReportClass.ReportFilters Parameters { get; set; }
+        public AppReportClass.ReportFilters Parameters { get; set; }
 
         public void OnGet()
         {
             var UserName = User.Identity.Name;
-            Parameters = new ReportClass.ReportFilters
+            Parameters = new AppReportClass.ReportFilters
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
@@ -36,41 +36,53 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnPostGL()
         {
-            var UserName = User.Identity.Name;
-            AppRegistry.SetKey(UserName, "GL_COA", Parameters.N_COA, KeyType.Number);
-            AppRegistry.SetKey(UserName, "GL_Dt_From", Parameters.Dt_From, KeyType.Date);
-            AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
-            
-          
-
+            SetKeys();
             return RedirectToPage("PrintReport", "GL", new { Parameters });
         }
 
+        #region POST Company
+
         public IActionResult OnPostCompany()
         {
-            var UserName = User.Identity.Name;
-            AppRegistry.SetKey(UserName, "GL_COA", Parameters.N_COA, KeyType.Number);
-            AppRegistry.SetKey(UserName, "GL_Company", Parameters.N_Customer, KeyType.Number);
-            AppRegistry.SetKey(UserName, "GL_Dt_From", Parameters.Dt_From, KeyType.Date);
-            AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
-          
-
+            SetKeys();
             return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.PDF });
 
         }
 
         public IActionResult OnPostCompanyExcel()
         {
+            SetKeys();
+            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.Excel });
+
+        }
+
+        public IActionResult OnPostCompanyWord()
+        {
+            SetKeys();
+            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType = ReportType.Word });
+
+        }
+
+        public IActionResult OnPostCompanyHTML()
+        {
+            SetKeys();
+            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType = ReportType.HTML });
+
+        }
+
+        #endregion
+
+        public void SetKeys()
+        {
             var UserName = User.Identity.Name;
             AppRegistry.SetKey(UserName, "GL_COA", Parameters.N_COA, KeyType.Number);
             AppRegistry.SetKey(UserName, "GL_Company", Parameters.N_Customer, KeyType.Number);
             AppRegistry.SetKey(UserName, "GL_Dt_From", Parameters.Dt_From, KeyType.Date);
             AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
 
-            return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.Excel });
 
         }
 
+        //================================ END
     }
-
 }

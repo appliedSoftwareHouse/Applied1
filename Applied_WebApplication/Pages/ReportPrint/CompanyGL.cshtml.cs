@@ -8,7 +8,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
     public class CompanyGLModel : PageModel
     {
         [BindProperty]
-        public ReportClass.ReportFilters Parameters { get; set; }
+        public AppReportClass.ReportFilters Parameters { get; set; }
 
         public void OnGet()
         {

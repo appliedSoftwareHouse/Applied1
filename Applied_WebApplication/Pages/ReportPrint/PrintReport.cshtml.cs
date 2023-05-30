@@ -6,6 +6,7 @@ using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
+using Microsoft.ReportingServices.Interfaces;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -66,7 +67,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetGL()
         {
 
-            ReportClass.ReportFilters Filters = new ReportClass.ReportFilters
+            ReportFilters Filters = new AppReportClass.ReportFilters()
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
@@ -105,9 +106,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Supplier / Vendore Ledger
-        public IActionResult OnGetGLCompany()
+        public IActionResult OnGetGLCompany(ReportType _ReportType)
         {
-            ReportClass.ReportFilters Filters = new ReportClass.ReportFilters
+            ReportFilters Filters = new()
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
@@ -117,7 +118,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             DataTable tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
 
-            ReportClass reports = new ReportClass
+            ReportClass GLCompany = new ReportClass
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
@@ -142,14 +143,43 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
             var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
 
-            reports.RptParameters.Add("CompanyName", CompanyName);
-            reports.RptParameters.Add("Heading1", _Heading1);
-            reports.RptParameters.Add("Heading2", _Heading2);
-            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+            if (_ReportType == ReportType.PDF)
+            {
+                GLCompany.RptParameters.Add("CompanyName", CompanyName);
+                GLCompany.RptParameters.Add("Heading1", _Heading1);
+                GLCompany.RptParameters.Add("Heading2", _Heading2);
+                GLCompany.RptParameters.Add("Footer", AppGlobals.ReportFooter);
 
-            ReportLink = reports.GetReportLink();                     // Create a report and provide link of pdf file location.
-            IsShowPdf = !reports.IsError;                                   // Show PDF id no error found.
-            return Page();
+                ReportLink = GLCompany.GetReportLink();                     // Create a report and provide link of pdf file location.
+                IsShowPdf = !GLCompany.IsError;                                   // Show PDF id no error found.
+                return Page();
+            }
+            else
+            {
+                List<ReportParameter> _Parameters = new List<ReportParameter>
+                {
+                    new ReportParameter("CompanyName", CompanyName),
+                    new ReportParameter("Heading1", _Heading1),
+                    new ReportParameter("Heading2", _Heading2),
+                    new ReportParameter("Footer", AppGlobals.ReportFooter)
+                };
+                var _ReportParamaters = new ReportParameters()
+                {
+                    ReportPath = AppGlobals.ReportPath,
+                    ReportFile = "CompanyGL.rdlc",
+                    OutputPath = AppGlobals.PrintedReportPath,
+                    OutputFile = "CompanyGL",
+                    DataSetName = "dsname_CompanyGL",
+                    ReportData = tb_Ledger,
+                    DataParameters = _Parameters,
+                    ReportType = _ReportType
+                    
+                };
+                var reportData = ExportReport.Render(_ReportParamaters);
+                var _mimeType = ExportReport.GetReportMime(_ReportType);
+                var _Extention = ExportReport.GetReportExtention(_ReportType);
+                return File(reportData, _mimeType, GLCompany.OutputFile + _Extention);
+            }
         }
         #endregion
 
@@ -242,7 +272,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
             var _Filter = $"Sheet_No='{_SheetNo}'";
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter), "");
-            
+
             #endregion
 
             var ExpenseSheet = new ReportClass
@@ -269,25 +299,27 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 new ReportParameter("Footer", AppGlobals.ReportFooter)
             };
 
-            var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
-
-            ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
-
-            LocalReport report = new();
-            
-            var _ReportStream = new StreamReader(_ReportFile);
-            //using var rs = Assembly.GetExecutingAssembly().GetManifestResourceStream(_ReportFile);
-            report.LoadReportDefinition(_ReportStream);
-            report.DataSources.Add(_DataSource);
-            report.SetParameters(_Parameters);
-
-            //var _ReportType = ExportReport.ReportType.PDF;
-            var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
-            var _mimeType = ExportReport.GetReportMime(_ReportType);
-            var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
-
-            var pdf = report.Render(_RenderFormat);
-            return File(pdf, _mimeType, ExpenseSheet.OutputFile +_Extention);
+            if (_ReportType == ReportType.PDF)
+            {
+                ReportLink = ExpenseSheet.GetReportLink();                     // Create a report and provide link of pdf file location.
+                IsShowPdf = !ExpenseSheet.IsError;                                   // Show PDF id no error found.
+                return Page();
+            }
+            else
+            {
+                var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
+                ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
+                LocalReport report = new();
+                var _ReportStream = new StreamReader(_ReportFile);
+                report.LoadReportDefinition(_ReportStream);
+                report.DataSources.Add(_DataSource);
+                report.SetParameters(_Parameters);
+                var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
+                var _mimeType = ExportReport.GetReportMime(_ReportType);
+                var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+                var pdf = report.Render(_RenderFormat);
+                return File(pdf, _mimeType, ExpenseSheet.OutputFile + _Extention);
+            }
         }
         #endregion
 
