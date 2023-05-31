@@ -145,14 +145,6 @@ namespace Applied_WebApplication.Data
             return "";
         }
 
-        // Get Data Rows from DataTable by filter conditions.
-        public static DataTable GetRecords(string UserName, Tables _TableName, string _Filter)
-        {
-            DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = _Filter;
-            return _Table.MyDataView.ToTable();
-        }
-
         public static DataRow GetRecord(string UserName, Tables _TableName, int id)
         {
             DataTableClass _Table = new(UserName, _TableName);

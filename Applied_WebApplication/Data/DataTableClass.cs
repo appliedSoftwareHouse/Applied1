@@ -1,4 +1,5 @@
 ﻿using NPOI.OpenXmlFormats;
+using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using NPOI.OpenXmlFormats.Wordprocessing;
 using System.Data;
@@ -144,6 +145,10 @@ namespace Applied_WebApplication.Data
             else { datatable = new DataTable(); }
             return datatable;
         }
+        public static DataTable GetTable(string UserName, string SQLQuery)
+        {
+            return GetTable(UserName, SQLQuery, "");
+        }
         public static DataTable GetTable(string UserName, string _Text, string? _Sort)                      // Load Database 
         {
             DataTable _Table = new DataTable();
@@ -173,7 +178,6 @@ namespace Applied_WebApplication.Data
             }
             return _Table;
         }
-
         public static DataTable GetTable(string UserName, string _Text, SQLiteParameter _ID)                      // Load Database with ID Parameter
         {
             DataTable _Table = new DataTable();
@@ -240,12 +244,12 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = filter;
             return MyDataView.ToTable();
         }
-        internal DataTable GetTable(string filter, string Sort)
-        {
-            MyDataView.Sort = Sort;
-            MyDataView.RowFilter = filter;
-            return MyDataView.ToTable();
-        }
+        //internal DataTable GetTable(string filter, string Sort)
+        //{
+        //    MyDataView.Sort = Sort;
+        //    MyDataView.RowFilter = filter;
+        //    return MyDataView.ToTable();
+        //}
         #endregion
 
         #region New Row / Refresh

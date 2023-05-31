@@ -36,7 +36,6 @@ namespace Applied_WebApplication.Data
                 IsPosted = IsPosted
             };
 
-
             if (TableName.ToString() == "CashBook") { return LedgerCashBook(_Parameters); }                                // Get Ledger Record from CashBook
             return GetEmptyLedger();
         }
@@ -109,14 +108,12 @@ namespace Applied_WebApplication.Data
         {
             DataTableClass _Table = new(Param.UserName, Tables.view_Ledger);
             DataTable _Ledger = _Table.MyDataTable.Clone();
-            _Table = new(Param.UserName, Tables.CashBook);
+            _Table = new(Param.UserName, Tables.CashBook, Param.Filter);
             _Table.MyDataView.Sort = Param.Sort;
-            _Table.MyDataView.RowFilter = Param.Filter;
+            //_Table.MyDataView.RowFilter = Param.Filter;
             decimal Balance = 0M;
             bool IsBalance = false;
             bool IsFirstOBal = false;
-            //decimal DR = 0.00M;
-            //decimal CR = 0.00M;
             DataRow _NewRow;
 
             foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)

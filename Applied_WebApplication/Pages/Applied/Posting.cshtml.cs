@@ -49,7 +49,7 @@ namespace Applied_WebApplication.Pages.Applied
 
                 case 4:                                                                                                                                 // 
                     Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND Status='{Submitted}'";
-                    PostTable = AppFunctions.GetRecords(UserName, Tables.PostBillPayable, Filter);
+                    PostTable = DataTableClass.GetTable(UserName, Tables.PostBillPayable, Filter);
                     break;
 
                 case 5:                                                                                                                                 // Bill Receivable - Sales Invoice

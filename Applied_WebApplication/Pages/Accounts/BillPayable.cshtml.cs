@@ -318,7 +318,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Variables.Tax_Rate = AppFunctions.GetTaxRate(UserName, Variables.Tax);
             // ------------------------------------------------------------------------------------------------------- Get Bill Records.
 
-            BillRecords = AppFunctions.GetRecords(UserName, Tables.BillPayable2, "TranID=" + Variables.ID);
+            BillRecords = DataTableClass.GetTable(UserName, Tables.BillPayable2, "TranID=" + Variables.ID);
         }
         private int MaxSrNo()
         {

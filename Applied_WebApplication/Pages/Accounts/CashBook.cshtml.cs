@@ -36,7 +36,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
                     MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
                     MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-                    IsPosted = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
+                    IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
                 };
             }
             else
@@ -47,7 +47,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     CashBookID = (int)id,
                     MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
                     MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-                    IsPosted = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
+                    IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
                 };
             }
 
@@ -59,16 +59,16 @@ namespace Applied_WebApplication.Pages.Accounts
             LedgerClass.Date_From = DateTime.Parse(Date1);
             LedgerClass.Date_To = DateTime.Parse(Date2);
             LedgerClass.Sort = "Vou_Date";
-            LedgerClass.Filter = string.Concat("BookID=", (int)id);
+            LedgerClass.Filter = $"BookID={id} AND Vou_Date<='{Date2}'";
             Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
-            if (Variables.IsPosted==1)                        // Not posted.
+            if (Variables.IsPosted1==1)                        // Not posted.
             {
                 DataView BookView = Cashbook.AsDataView();
                 BookView.RowFilter = "Status='Posted'";
                 Cashbook = BookView.ToTable();
             }
 
-            if (Variables.IsPosted == 2)                        // Not posted.
+            if (Variables.IsPosted1 == 2)                        // Not posted.
             {
                 DataView BookView = Cashbook.AsDataView();
                 BookView.RowFilter = "Status<>'Posted'";
@@ -80,7 +80,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 ErrorMessages.Add(MessageClass.SetMessage("No record Found.....!"));
             }
 
-            FMTNumber = GetText(UserName, "MFT");
+            FMTNumber = GetText(UserName, "FMT");
             
 
         }
@@ -93,7 +93,7 @@ namespace Applied_WebApplication.Pages.Accounts
            
            SetKey(UserName, "CashBookFrom", Variables.MinDate, KeyType.Date);
            SetKey(UserName, "CashBookTo", Variables.MaxDate, KeyType.Date);
-           SetKey(UserName, "CashBookPost", Variables.IsPosted, KeyType.Number);
+           SetKey(UserName, "CashBookPost", Variables.IsPosted1, KeyType.Number);
            SetKey(UserName, "CashBookID", Variables.CashBookID, KeyType.Number);
 
 
@@ -105,10 +105,8 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostSave(int ID)
         {
-
-
             DataTableClass CashBook = new(UserName, Tables.CashBook);
-            CashBook.MyDataView.RowFilter = String.Concat("ID=", ID.ToString());
+            CashBook.MyDataView.RowFilter = $"ID={ID}";
             if (CashBook.MyDataView.Count == 0) { CashBook.NewRecord(); }                  // Create a new record.
             else { CashBook.SeekRecord(ID); }                                                                   // Select a existing record.
 
@@ -164,10 +162,21 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("CashBook");
         }
         
-        public DataTable Entries(int ID)
+        public IActionResult OnPostPrint(int ID)
         {
-            return GetRecords(UserName, Tables.Ledger, "ID=" + ID);
+            return Page();
         }
+
+        public IActionResult OnPostShow(int ID)
+        {
+            return Page();
+        }
+
+
+        //public DataTable Entries(int ID)
+        //{
+        //    return DataTableClass.GetTable(UserName, Tables.Ledger, $"ID={ID}");
+        //}
 
         [BindProperties]
         public class MyParameters
@@ -180,10 +189,10 @@ namespace Applied_WebApplication.Pages.Accounts
             public int CashBookID { get; set; }
             public DateTime MinDate { get; set; }
             public DateTime MaxDate { get; set; }
-            public int IsPosted { get; set; }
+            public int IsPosted1 { get; set; }
 
         }
-        [BindProperties]
+      
         public class BookRecord
         {
             public int ID { get; set; }

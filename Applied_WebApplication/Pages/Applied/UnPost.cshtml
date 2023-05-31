@@ -26,6 +26,7 @@
                     <option value="5">Bill Receivable</option>
                     <option value="6">Payment</option>
                     <option value="7">Receipt</option>
+                    <option value="8">Journal Voucher</option>
                 </select>
             </div>
             <div class="col-md-3 d-grid">
@@ -77,11 +78,11 @@
                             <td>@Row["Title"]</td>
                             <td class="text-danger align-right">@decimal.Parse(Row["DR"].ToString()).ToString(NumFormat)</td>
                             <td class="text-danger align-right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
-                            <td>@Row["Status"]</td>
+                            <td class="text-center">@Row["Status"]</td>
                             <td>
                                 <form method="post">
                                     <input type="submit"
-                                           class="btn btn-link"
+                                           class="btn btn-link text-center"
                                            value="UnPost"
                                    asp-page-handler="Unpost"
                                    asp-route-id=@Row["ID"]
@@ -98,11 +99,9 @@
 }
 else
 {
-
     @if (Model.IsError)
     {
         <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
     }
-
     <h5>No Record Found</h5>
 }

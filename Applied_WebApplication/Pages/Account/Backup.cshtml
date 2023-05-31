@@ -7,9 +7,11 @@
     <h4 class="TextCenter">BACKUP OF DATA FILE</h4>
 </div>
 <form method="post">
-    <input type="submit" class="btn btn-success" value="BACKUP DATA" />
+    <input type="submit" class="btn btn-success" value="BACKUP DATA" asp-page-handler="Backup" />
 </form>
 <br />
+
+
 
 @Model.Message <br />
 @Model.FileName

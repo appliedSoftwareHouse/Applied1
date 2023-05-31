@@ -17,13 +17,13 @@
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
 
+
 }
 
 <style>
-    .date-1{
-        width:100px
+    .date-1 {
+        width: 100px
     }
-
 
 </style>
 
@@ -34,47 +34,44 @@
     <!--Cash Book Heading Blue Bar-->
     <div class="container p-1 mt-1 mb-1 bg-info text-white rounded">
         <div class="row d-flex align-items-center text-black">
-            <div class="col-md-1 mb-1  TextCenter">
-                <label>CASH BOOK</label>
-            </div>
+            @*<div class="col-md-1 mb-1  TextCenter">
+            <label>CASH BOOK</label>
+            </div>*@
             <div class="col-md-2 mb-1">
-                <div class="date-1">
-                <label for="From">=></label>
-                <input type="date" id="MinDate" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
+                <div class="input-group mb-3 align-content-center">
+                    <span class="input-group-text" id="From">=></span>
+                    <input type="date" id="MinDate" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
                 </div>
             </div>
             <div class="col-md-2 mb-1">
-                <label for="To"><=</label>
-                <input type="date" id="MaxDate" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
+                <div class="input-group mb-3 align-content-center">
+                    <span class="input-group-text" id="To"><=</span>
+                    <input type="date" id="MaxDate" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
+                </div>
             </div>
             <div class="col-md-1 mb-1">
                 @if (Model.Variables.CashBookID > 0)
                 {
                     <button class="btn btn-primary float-end " type="Submit" id="btnAdd"
-                        asp-page-handler="Add">
+                            asp-page-handler="Add">
                         ADD
                     </button>
                 }
             </div>
             <div class="col-md-2 mb-1">
-                @if (Model.Variables.CashBookID > 0)
-                {
-                    <select class="form-select" aria-label="Filter Records" asp-for="@Model.Variables.IsPosted">
-                        <option selected>Open this select menu</option>
-                        <option value="0">All</option>
-                        <option value="1">Posted</option>
-                        <option value="2">Submitted</option>
-                    </select>
-                }
+                <select class="form-select" aria-label="Select a Posted ID" asp-for="@Model.Variables.IsPosted1">
+                    <option selected>@Model.Variables.IsPosted1</option>
+                    <option value="0">All</option>
+                    <option value="1">Posted</option>
+                    <option value="2">Submitted</option>
+                </select>
             </div>
             <div class="col-md-2 mb-1">
-
                 <select class="form-select" aria-label="Select a Cash Book" asp-for="@Model.Variables.CashBookID">
                     <option selected>@TitleBook</option>
                     @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.CashBookTitles))
                     {
                         <option value="@_Title.Key">@_Title.Value</option>
-
                     }
                 </select>
             </div>
@@ -109,16 +106,14 @@
                                     <!--CASH BOOK ADD BUTTON-->
                                     <th style="width:10%; text-align: right">
                                         <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                                            asp-page-handler="Add">
+                                                asp-page-handler="Add">
                                             <i class="bi bi-database-add"></i>
-                                            
+
                                         </button>
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-
-                                
                                 @foreach (DataRow Row in Model.Cashbook.Rows)
                                 {
 
@@ -146,44 +141,39 @@
                                         {
                                             <td>
                                                 <div class="text-center">
-                                                <a  asp-page="CashBookRecord" 
-                                                asp-route-id="@Row["ID"]" 
-                                                asp-page-handler="Edit">
-                                                <i class="bi bi-pencil-fill text-primary"></i></a>
-                                                <button class="btn btn-link" 
-                                                asp-page-handler="Delete"
-                                                asp-route-ID="@Row["ID"]">
-                                                    <i class="bi bi-trash-fill text-danger"></i>
-                                                </button>
+                                                    <a asp-page="CashBookRecord"
+                                                       asp-route-id="@Row["ID"]"
+                                                       asp-page-handler="Edit">
+                                                        <i class="bi bi-pencil-fill text-primary"></i>
+                                                    </a>
+                                                    <button class="btn btn-link"
+                                                            asp-page-handler="Delete"
+                                                            asp-route-ID="@Row["ID"]">
+                                                        <i class="bi bi-trash-fill text-danger"></i>
+                                                    </button>
                                                 </div>
-                                              
+                                                <button class="btn btn-link"
+                                                        asp-page-handler="Print"
+                                                        asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-printer text-success"></i>
+                                                </button>
+
                                             </td>
                                         }
                                         else
                                         {
                                             <td>
-                                                <button type="button" class="btn btn-link text-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                                    Posted
+                                                <button class="btn btn-link"
+                                                        asp-page-handler="Show"
+                                                        asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-printer text-success"></i>
                                                 </button>
 
-                                                <!-- Modal -->
-                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                                    <div class="modal-dialog">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h3 class="modal-title" id="exampleModalLabel">General Voucher Entry</h3>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body">
-
-                                                                Show General Voucher Transaction.
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                <button class="btn btn-link"
+                                                        asp-page-handler="Print"
+                                                        asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-printer text-success"></i>
+                                                </button>
                                             </td>
                                         }
                                     </tr>

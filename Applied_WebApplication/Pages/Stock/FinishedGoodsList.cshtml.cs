@@ -20,9 +20,9 @@ namespace Applied_WebApplication.Pages.Stock
                 DateTo = AppRegistry.GetDate(UserName, "FGoods_To")
             };
 
-            var _Filter = string.Format("MFDate >='{0}' AND MFDate <='{1}'", Variables.DateFrom, Variables.DateTo); 
-            DataTableClass _Table = new(UserName, Tables.FinishedGoods);
-            Goods = _Table.GetTable(_Filter, "MFDate");
+            var _Filter = $"MFDate >='{Variables.DateFrom}' AND MFDate <='{Variables.DateTo} SORT BY MFDate'"; 
+            DataTableClass _Table = new(UserName, Tables.FinishedGoods, _Filter);
+            Goods = _Table.MyDataTable;
         }
 
         public IActionResult OnPostEdit(int id)

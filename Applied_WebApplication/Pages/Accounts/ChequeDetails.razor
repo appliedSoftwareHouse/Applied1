@@ -17,7 +17,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (DataRow Row in GetRecords(UserName, Tables.WriteCheques, string.Concat("Code='", Code, "'")).Rows)
+        @foreach (DataRow Row in DataTableClass.GetTable(UserName, Tables.WriteCheques, $"Code='{Code}'").Rows)
         {
             string Company = @GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
             decimal Rate = (decimal)Row["TaxRate"] / 100;

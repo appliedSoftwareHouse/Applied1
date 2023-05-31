@@ -46,12 +46,18 @@ namespace Applied_WebApplication.Pages.Applied
                     UnpostTable = GetTable(UserName, Tables.PostWriteCheque);
                     break;
 
-                case 4:                                                                                                                                 // 
+                case 4:                                                                                                                                 // Bill Payable
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = string.Format("Vou_Date>='{0}' AND Vou_Date <='{1}' AND Status='{2}'", Date1, Date2, VoucherStatus.Posted.ToString());
-                    //Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Submitted.ToString(), "' ");
-                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.UnpostBillPayable, Filter);
+                    Filter = $"Vou_Date>='{Date1}' AND Vou_Date <='{Date2}' AND Status='{VoucherStatus.Posted}'";
+                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillPayable(Filter));
+                    break;
+
+                case 5:                                                                                                                                 // Bill Receivable (Sales Invoices) 
+                    Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
+                    Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
+                    Filter = $"Vou_Date>='{Date1}' AND Vou_Date <='{Date2}' AND [BillReceivable].[Status]='{VoucherStatus.Posted}'";
+                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillReceivable(Filter));
                     break;
 
                 default:
@@ -63,7 +69,8 @@ namespace Applied_WebApplication.Pages.Applied
         {
            
             if (PostingType == (int)PostType.CashBook) { IsError = UnpostClass.Unpost_CashBook(UserName, id); }
-            if (PostingType == (int)PostType.BillPayable) {  IsError = UnpostClass.UnpostBillPayable(UserName, id); }
+            if (PostingType == (int)PostType.BillPayable) { IsError = UnpostClass.UnpostBillPayable(UserName, id); }
+            if (PostingType == (int)PostType.BillReceivable) { IsError = UnpostClass.UnpostBillReceivable(UserName, id); }
             if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("UnPost", "Refresh");
         }
@@ -105,7 +112,7 @@ namespace Applied_WebApplication.Pages.Applied
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
                     Filter = string.Concat("(Vou_Date>='", Date1, "' AND Vou_Date<='", Date2, "') AND Status='", VoucherStatus.Posted.ToString(), "' ");
-                    UnpostTable = AppFunctions.GetRecords(UserName, Tables.UnpostBillPayable, Filter);
+                    UnpostTable = DataTableClass.GetTable(UserName, Tables.UnpostBillPayable, Filter);
                     break;
 
                 default:

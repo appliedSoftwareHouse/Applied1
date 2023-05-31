@@ -105,3 +105,6 @@ https://github.com/ClosedXML					Reporting tool data to xls file
 
 https://www.gemboxsoftware.com/spreadsheet/free-version					GemBox Excel Sheet
 https://www.codemag.com/article/0404072/COM-Interop-Making-.NET-and-VFP-Talk-to-Each-Other foxpro component
+
+
+https://www3.sqlite.org/src/mimetype_list   MIME TYPES

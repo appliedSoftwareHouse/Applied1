@@ -18,13 +18,13 @@ namespace Applied_WebApplication.Pages.Account
         public void OnPost()
         {
             UserProfile uprofile = new(User.Identity.Name);
-            string backupfilename = DateTime.Now.ToString("yyyymmddhhmmss_") + uprofile.DataBaseFile;
+            string BackupFileName = DateTime.Now.ToString("yyyymmddhhmmss_") + uprofile.DataBaseFile;
             if (System.IO.File.Exists(uprofile.DataBaseFile))
             {
                 Message = "Process is uder development.";
 
 
-                var BackupTargetPath = Path.Combine("./wwwroot/backup/", backupfilename);
+                //var BackupTargetPath = Path.Combine("./wwwroot/backup/", BackpFileName);
                 try
                 {
                     //System.IO.File.  Copy(uprofile.DBFilePath, BackupTargetPath);
@@ -40,6 +40,26 @@ namespace Applied_WebApplication.Pages.Account
         }
 
 
+        public IActionResult OnPostBackup() 
+        {
+            UserProfile uprofile = new(User.Identity.Name);
+            var _DBFile = uprofile.DataBaseFile;
+            var _DBBackup = _DBFile + ".Backup";   // ERROR File name sperate not assign, dot it by code to spereate the file name
+            System.IO.File.Copy(_DBFile, _DBFile+".Backup",true);
 
+
+            byte[] _FileBytes  = ReadFileToBytes(_DBBackup);
+            return File(_FileBytes, "aapplication/x-sqlite3",$"{uprofile.Name}.Backup");
+        }
+
+        static byte[] ReadFileToBytes(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                reader.BaseStream.CopyTo(memoryStream);
+                return memoryStream.ToArray();
+            }
+        }
     }
 }

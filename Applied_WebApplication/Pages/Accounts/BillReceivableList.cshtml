@@ -55,26 +55,34 @@
                         <td>@_Inv_Date.ToString(FMTDate)</td>
                         <td>@_Pay_Date.ToString(FMTDate)</td>
                         <td class="table-col-amount">@_Amount.ToString(FMTCurrency)</td>
-                        <td class="text-center">
-                            <button type="submit" class="listbutton-blue"
-                                asp-page-handler="Show"
-                                asp-route-ID="@Row["ID"]"
-                                >
-                                <i class="bi bi-pencil-fill" style="margin-right:5px"></i>
-                            </button>
+                        @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
+                        {
+                            <td class="text-center">
+                                <button type="submit" class="listbutton-blue"
+                                        asp-page-handler="Show"
+                                        asp-route-ID="@Row["ID"]">
+                                    <i class="bi bi-pencil-fill" style="margin-right:5px"></i>
+                                </button>
 
-                            <button type="submit" class="listbutton-red"
-                                asp-page-handler="Delete"
-                                asp-route-ID="@Row["ID"]">
-                                <i class="bi bi-trash-fill" style="margin-right:5px"></i>
-                            </button>
+                                <button type="submit" class="listbutton-red"
+                                        asp-page-handler="Delete"
+                                        asp-route-ID="@Row["ID"]">
+                                    <i class="bi bi-trash-fill" style="margin-right:5px"></i>
+                                </button>
 
-                            <button type="submit" class="listbutton-blue"
-                                    asp-page-handler="Print"
-                                    asp-route-ID="@Row["ID"]">
-                                <i class="bi bi-printer" style="margin-right:5px"></i>
-                            </button>
-                        </td>
+                                <button type="submit" class="listbutton-blue"
+                                        asp-page-handler="Print"
+                                        asp-route-ID="@Row["ID"]">
+                                    <i class="bi bi-printer" style="margin-right:5px"></i>
+                                </button>
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                            <label class="TextCenter">Posted</label>
+                            </td>
+                        }
                     </tr>
                 }
 
@@ -82,7 +90,7 @@
         </table>
     </div>
 
-    
+
 
 
 

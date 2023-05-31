@@ -120,6 +120,51 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
 
+        public static string UnpostBillPayable(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[BillPayable].[ID], ");
+            Text.Append("[BillPayable].[Vou_No], ");
+            Text.Append("[BillPayable].[Vou_Date], ");
+            Text.Append("[Customers].[TITLE], ");
+            Text.Append("0.00 AS[DR], ");
+            Text.Append("[BillPayable].[AMOUNT] AS[CR], ");
+            Text.Append("[BillPayable].[Status] ");
+            Text.Append("FROM [BillPayable] ");
+            Text.Append("LEFT JOIN[Customers] ON [BillPayable].[Company] = [Customers].[ID] ");
+            if(_Filter != null )
+            {
+                if(_Filter.Length > 0)
+                {
+                    Text.Append($"WHERE {_Filter}");
+                }
+            }
+            return Text.ToString();
+        }
+
+        public static string UnpostBillReceivable(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[BillReceivable].[ID], ");
+            Text.Append("[BillReceivable].[Vou_No], ");
+            Text.Append("[BillReceivable].[Vou_Date], ");
+            Text.Append("[Customers].[TITLE], ");
+            Text.Append("0.00 AS[DR], ");
+            Text.Append("[BillReceivable].[AMOUNT] AS[CR], ");
+            Text.Append("[BillReceivable].[Status] ");
+            Text.Append("FROM [BillReceivable] ");
+            Text.Append("LEFT JOIN[Customers] ON [BillReceivable].[Company] = [Customers].[ID] ");
+            if (_Filter != null)
+            {
+                if (_Filter.Length > 0)
+                {
+                    Text.Append($"WHERE {_Filter}");
+                }
+            }
+            return Text.ToString();
+        }
 
 
         //        SELECT
