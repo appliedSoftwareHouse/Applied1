@@ -44,7 +44,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             reports.AppUser = User;
             reports.ReportFilePath = AppGlobals.ReportPath;
-            reports.ReportFile = "COAList.rdlc";
+            reports.ReportFile = "COAList.rdl";
             reports.ReportDataSet = "DataSet1";
             reports.ReportSourceData = COA.MyDataTable;
             reports.RecordSort = "Title";
@@ -79,7 +79,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "Ledger.rdlc",
+                ReportFile = "Ledger.rdl",
                 ReportDataSet = "dsname_Ledger",
                 ReportSourceData = tb_Ledger,
                 RecordSort = "Vou_Date",
@@ -116,13 +116,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
 
+            var ReportFile = "CompanyGL.rdl";
+
             DataTable tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
+           
 
             ReportClass GLCompany = new ReportClass
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "CompanyGL.rdlc",
+                ReportFile = ReportFile,
                 ReportDataSet = "dsname_CompanyGL",
                 ReportSourceData = tb_Ledger,
                 RecordSort = "Vou_Date",
@@ -166,7 +169,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _ReportParamaters = new ReportParameters()
                 {
                     ReportPath = AppGlobals.ReportPath,
-                    ReportFile = "CompanyGL.rdlc",
+                    ReportFile = ReportFile,
                     OutputPath = AppGlobals.PrintedReportPath,
                     OutputFile = "CompanyGL",
                     DataSetName = "dsname_CompanyGL",
@@ -235,7 +238,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     AppUser = User,
                     ReportFilePath = AppGlobals.ReportPath,
-                    ReportFile = "SalesInvoiceST.rdlc",
+                    ReportFile = "SalesInvoiceST.rdl",
                     ReportDataSet = "ds_SaleInvoice",
                     ReportSourceData = _Table,
                     RecordSort = "Sr_No",
@@ -279,7 +282,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "ExpenseSheet2.rdlc",
+                ReportFile = "ExpenseSheet.rdl",
                 ReportDataSet = "ds_ExpenseSheet",
                 ReportSourceData = _Table,
                 RecordSort = "Vou_No",
@@ -314,10 +317,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 report.LoadReportDefinition(_ReportStream);
                 report.DataSources.Add(_DataSource);
                 report.SetParameters(_Parameters);
+                
                 var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
+                var pdf = report.Render(_RenderFormat);
                 var _mimeType = ExportReport.GetReportMime(_ReportType);
                 var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
-                var pdf = report.Render(_RenderFormat);
+                
                 return File(pdf, _mimeType, ExpenseSheet.OutputFile + _Extention);
             }
         }

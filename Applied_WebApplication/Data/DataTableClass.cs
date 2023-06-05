@@ -164,7 +164,7 @@ namespace Applied_WebApplication.Data
                     SQLiteCommand _Command = new(_Text, MyConnection);
                     SQLiteDataAdapter _Adapter = new(_Command);
                     DataSet _DataSet = new();
-                    _Adapter.Fill(_DataSet);
+                    _Adapter.Fill(_DataSet, "Table");
 
                     if (_DataSet.Tables.Count == 1)
                     {
@@ -212,7 +212,7 @@ namespace Applied_WebApplication.Data
 
             try
             {
-                var _CommandText = string.Format("SELECT * FROM [{0}]", MyTableName);
+                var _CommandText = $"SELECT * FROM [{MyTableName}]";
                 if (View_Filter.Length > 0) { _CommandText += " WHERE " + View_Filter; }
                 SQLiteCommand _Command = new(_CommandText, GetConnection());
                 SQLiteDataAdapter _Adapter = new(_Command);

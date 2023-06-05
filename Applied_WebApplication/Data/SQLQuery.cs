@@ -11,7 +11,6 @@ namespace Applied_WebApplication.Data
 {
     public class SQLQuery
     {
-
         public static string SalesInvoice()
         {
             var Text = new StringBuilder();
@@ -55,7 +54,6 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Inventory] [I] ON[I].[ID] = [B2].[Inventory] ");
             Text.Append("LEFT JOIN[Taxes] [T] ON[T].[ID] = [B2].[Tax] ");
             Text.Append("WHERE TranID=@ID");
-
             return Text.ToString();
 
         }
@@ -163,6 +161,26 @@ namespace Applied_WebApplication.Data
                     Text.Append($"WHERE {_Filter}");
                 }
             }
+            return Text.ToString();
+        }
+
+        public static string Ledger()
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT [L].*, ");
+            Text.Append("[A].[TITLE] AS [AccountTitle], ");
+            Text.Append("[C].[TITLE] AS [CompanyName], ");
+            Text.Append("[E].[TITLE] AS [EmployeeName], ");
+            Text.Append("[P].[TITLE] AS [ProjectTitle], ");
+            Text.Append("[I].[TITLE]  AS [StockTitle] ");
+            Text.Append("FROM [Ledger] [L] ");
+            Text.Append("LEFT JOIN [COA]           [A] ON [A].[ID] = [L].[COA] ");
+            Text.Append("LEFT JOIN [Customers] [C] ON [C].[ID] = [L].[CUSTOMER] ");
+            Text.Append("LEFT JOIN [Employees] [E] ON [E].[ID] = [L].[EMPLOYEE] ");
+            Text.Append("LEFT JOIN [Project]       [P] ON [P].[ID] = [L].[PROJECT] ");
+            Text.Append("LEFT JOIN [Inventory]   [I]  ON [I].[ID]  = [L].[INVENTORY]");
+            Text.Append("");
+
             return Text.ToString();
         }
 

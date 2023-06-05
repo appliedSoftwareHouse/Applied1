@@ -8,6 +8,7 @@ namespace Applied_WebApplication.Pages.Stock
     {
         [BindProperty]
         public MyParameters Variables { get; set; }
+        public List<Message> ErrorMessages = new();
         public string UserName => User.Identity.Name;
         public void OnGet()
         {
@@ -24,7 +25,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
             AppRegistry.SetKey(UserName, "OBStockDR", Variables.COA_DR, KeyType.Number);
             AppRegistry.SetKey(UserName, "OBStockCR", Variables.COA_CR, KeyType.Number);
-            PostingClass.PostOpeningBalanceStock(UserName);
+            ErrorMessages = PostingClass.PostOpeningBalanceStock(UserName);
             return Page();
         }
 

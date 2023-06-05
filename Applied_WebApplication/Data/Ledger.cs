@@ -1,5 +1,6 @@
 ﻿using AppReporting;
 using NPOI.OpenXmlFormats;
+using NPOI.OpenXmlFormats.Spreadsheet;
 using System.Data;
 
 namespace Applied_WebApplication.Data
@@ -73,37 +74,39 @@ namespace Applied_WebApplication.Data
             return _Ledger;
         }
 
-        internal static void UpdateLedger(string UserName, int COA)
-        {
-            DataTableClass tb_CashBook = new(UserName, Tables.CashBook);
-            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+
+        #region UpdateLedger
+        //internal static void UpdateLedger(string UserName, int COA)
+        //{
+        //    DataTableClass tb_CashBook = new(UserName, Tables.CashBook);
+        //    DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
 
 
-            foreach (DataRow Row in tb_CashBook.MyDataTable.Rows)
-            {
-                if ((int)Row["BookID"] != COA) { continue; }
+        //    foreach (DataRow Row in tb_CashBook.MyDataTable.Rows)
+        //    {
+        //        if ((int)Row["BookID"] != COA) { continue; }
 
-                tb_Ledger.CurrentRow = tb_Ledger.NewRecord();
-                tb_Ledger.CurrentRow["ID"] = Row["ID"];
-                tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
-                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
-                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
-                tb_Ledger.CurrentRow["SR_No"] = 0;
-                tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
-                tb_Ledger.CurrentRow["COA"] = Row["COA"];
-                tb_Ledger.CurrentRow["DR"] = Row["DR"];
-                tb_Ledger.CurrentRow["CR"] = Row["CR"];
-                tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
-                tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
-                tb_Ledger.CurrentRow["Inventory"] = 0;
-                tb_Ledger.CurrentRow["Project"] = Row["Project"];
-                tb_Ledger.CurrentRow["Description"] = Row["Description"];
-                tb_Ledger.CurrentRow["Comments"] = Row["Ref_No"];
-                tb_Ledger.Save();
+        //        tb_Ledger.CurrentRow = tb_Ledger.NewRecord();
+        //        tb_Ledger.CurrentRow["ID"] = Row["ID"];
+        //        tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
+        //        tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+        //        tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+        //        tb_Ledger.CurrentRow["SR_No"] = 0;
+        //        tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
+        //        tb_Ledger.CurrentRow["COA"] = Row["COA"];
+        //        tb_Ledger.CurrentRow["DR"] = Row["DR"];
+        //        tb_Ledger.CurrentRow["CR"] = Row["CR"];
+        //        tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
+        //        tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+        //        tb_Ledger.CurrentRow["Inventory"] = 0;
+        //        tb_Ledger.CurrentRow["Project"] = Row["Project"];
+        //        tb_Ledger.CurrentRow["Description"] = Row["Description"];
+        //        tb_Ledger.CurrentRow["Comments"] = Row["Ref_No"];
+        //        tb_Ledger.Save();
 
-            }
-        }
-
+        //    }
+        //}
+        #endregion
         private static DataTable LedgerCashBook(LedgerParamaters Param)
         {
             DataTableClass _Table = new(Param.UserName, Tables.view_Ledger);
@@ -186,92 +189,132 @@ namespace Applied_WebApplication.Data
 
         internal static DataTable GetGL(string userName, AppReportClass.ReportFilters paramaters)
         {
-            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
-            DataTable Result = tb_Ledger.MyDataTable.Clone();
+            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE COA={paramaters.N_COA} ORDER BY COA,Vou_Date ";
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, _SQLQuery);
+            //DataTable Result = tb_Ledger.MyDataTable.Clone();
 
-            tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
-            tb_Ledger.MyDataView.Sort = "Vou_Date,Vou_No";
+            //tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
+            //tb_Ledger.MyDataView.Sort = "Vou_Date,Vou_No";
 
 
-            return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
+            return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }
 
-        internal static DataTable GetGLCompany(string userName, AppReportClass.ReportFilters paramaters)
+        internal static DataTable GetGLCompany(string UserName, AppReportClass.ReportFilters paramaters)
         {
-            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
-            DataTable tb_Report = tb_Ledger.MyDataTable.Clone();
-            string _Filter = string.Concat("Customer=", paramaters.N_Customer.ToString());
+            
 
-            if (!paramaters.All_COA)
-            {
-                _Filter = string.Concat(_Filter, " AND COA=", paramaters.N_COA.ToString());
-            }
+            string _Filter;
+            if (paramaters.All_Customer)
+            { _Filter = $"Customer={paramaters.N_Customer}"; }
+            else
+            { _Filter = $"Customer={paramaters.N_Customer} AND COA={paramaters.N_COA}"; }
 
-            tb_Ledger.MyDataView.RowFilter = _Filter;
-            tb_Ledger.MyDataView.Sort = "Vou_Date";
+            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE {_Filter} ORDER BY Customer,COA,Vou_Date";  
 
-            return Generate_LedgerTable(userName, tb_Ledger.MyDataView.ToTable(), paramaters);
+            DataTable _Table = DataTableClass.GetTable(UserName, _SQLQuery);
+
+            return Generate_LedgerTable(UserName, _Table, paramaters);
         }
 
         internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, AppReportClass.ReportFilters paramaters)
         {
-            DataTableClass tb_Ledger = new(userName, Tables.Ledger);
-            DataTable Result = tb_Ledger.MyDataTable.Clone();
-            tb_Ledger.MyDataView.Sort = "Vou_Date";
+            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE [L].ID<0";
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, _SQLQuery);
+            DataTable Result = tb_Ledger.Clone();
+            Result.TableName = "Ledger";
             decimal Balance = 0.00M;
             bool IsOBalEntry = false;
             DataRow NewRow;
 
-            foreach (DataRow Row in _Table.Rows)
+            List<int> AccountList = GetAccountList(_Table);
+            foreach (int Account in AccountList)
             {
-                DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
-                decimal RowDR = decimal.Parse(Row["DR"].ToString());
-                decimal RowCR = decimal.Parse(Row["CR"].ToString());
+                var COAView = _Table.AsDataView();
+                COAView.RowFilter = $"COA={Account}";
 
-                if (RowDate < paramaters.Dt_From)
+                #region Each Account Records
+                var AccountTable = COAView.ToTable();
+
+                foreach (DataRow Row in AccountTable.Rows)
                 {
-                    Balance += RowDR - RowCR;
-                    continue;
-                }      // Skip if date is less from [From]
-                else
-                {
-                    if (RowDate > paramaters.Dt_To) { continue; }                      // Skip if date if more than [To]
-                    if (!IsOBalEntry)
+                    DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
+                    decimal RowDR = decimal.Parse(Row["DR"].ToString());
+                    decimal RowCR = decimal.Parse(Row["CR"].ToString());
+
+                    if (RowDate < paramaters.Dt_From)
                     {
-                        NewRow = Result.NewRow();
-                        NewRow["Vou_Date"] = paramaters.Dt_From.AddDays(-1);
-                        NewRow["Vou_No"] = "OBAL";
-                        NewRow["Description"] = "Opening Balance as on " + paramaters.Dt_From.AddDays(-1).ToShortDateString();
-                        if (Balance >= 0) { NewRow["DR"] = Balance; NewRow["CR"] = 0; } else { NewRow["DR"] = 0; NewRow["CR"] = Balance * (-1); }
-                        Result.Rows.Add(NewRow);
-                        IsOBalEntry = true;
-                        //continue;
-                    }
+                        Balance += RowDR - RowCR;                                                 // Generate Opening Balances and continue untill Date From reach.
+                        continue;
+                    }      // Skip if date is less from [From]
+                    else
+                    {
+                        if (RowDate > paramaters.Dt_To) { continue; }                      // Skip if date if more than [To]
+                        if (!IsOBalEntry)
+                        {
+                            NewRow = Result.NewRow();
+                            NewRow["Vou_Date"] = paramaters.Dt_From.AddDays(-1);
+                            NewRow["Vou_No"] = "OBAL";
+                            NewRow["COA"] = Account;
+                            NewRow["Customer"] = AccountTable.Rows[0]["Customer"];
+                            NewRow["Employee"] = AccountTable.Rows[0]["Employee"];
+                            NewRow["Project"] = AccountTable.Rows[0]["Project"];
+                            NewRow["Inventory"] = AccountTable.Rows[0]["Inventory"];
+                            NewRow["AccountTitle"] = AccountTable.Rows[0]["AccountTitle"];
+                            NewRow["CompanyName"] = AccountTable.Rows[0]["CompanyName"];
+                            NewRow["EmployeeName"] = AccountTable.Rows[0]["EmployeeName"];
+                            NewRow["ProjectTitle"] = AccountTable.Rows[0]["ProjectTitle"];
+                            NewRow["StockTitle"] = AccountTable.Rows[0]["StockTitle"];
+                            NewRow["Description"] = "Opening Balance as on " + paramaters.Dt_From.AddDays(-1).ToShortDateString();
+                            if (Balance >= 0) { NewRow["DR"] = Balance; NewRow["CR"] = 0; } else { NewRow["DR"] = 0; NewRow["CR"] = Balance * (-1); }
+                            Result.Rows.Add(NewRow);
+                            IsOBalEntry = true;
+                            //continue;
+                        }
 
-                    NewRow = Result.NewRow();
-                    NewRow["ID"] = Row["ID"];
-                    NewRow["TranID"] = Row["TranID"];
-                    NewRow["Vou_Date"] = Row["Vou_Date"];
-                    NewRow["Vou_No"] = Row["Vou_No"];
-                    NewRow["Vou_Type"] = Row["Vou_Type"];
-                    NewRow["SR_No"] = Row["SR_No"];
-                    NewRow["Ref_No"] = Row["Ref_No"];
-                    NewRow["BookID"] = Row["BookID"];
-                    NewRow["COA"] = Row["COA"];
-                    NewRow["DR"] = Row["DR"];
-                    NewRow["CR"] = Row["CR"];
-                    NewRow["Description"] = Row["Description"];
-                    NewRow["Comments"] = Row["Comments"];
-                    NewRow["Customer"] = Row["Customer"];
-                    NewRow["Project"] = Row["Project"];
-                    NewRow["Employee"] = Row["Employee"];
-                    NewRow["Inventory"] = Row["Inventory"];
-                    Result.Rows.Add(NewRow);
+                        NewRow = Result.NewRow();
+                        NewRow["ID"] = Row["ID"];
+                        NewRow["TranID"] = Row["TranID"];
+                        NewRow["Vou_Date"] = Row["Vou_Date"];
+                        NewRow["Vou_No"] = Row["Vou_No"];
+                        NewRow["Vou_Type"] = Row["Vou_Type"];
+                        NewRow["SR_No"] = Row["SR_No"];
+                        NewRow["Ref_No"] = Row["Ref_No"];
+                        NewRow["BookID"] = Row["BookID"];
+                        NewRow["COA"] = Row["COA"];
+                        NewRow["DR"] = Row["DR"];
+                        NewRow["CR"] = Row["CR"];
+                        NewRow["Description"] = Row["Description"];
+                        NewRow["Comments"] = Row["Comments"];
+                        NewRow["Customer"] = Row["Customer"];
+                        NewRow["Project"] = Row["Project"];
+                        NewRow["Employee"] = Row["Employee"];
+                        NewRow["Inventory"] = Row["Inventory"];
+                        NewRow["AccountTitle"] = Row["AccountTitle"];
+                        NewRow["CompanyName"] = Row["CompanyName"];
+                        NewRow["EmployeeName"] = Row["EmployeeName"];
+                        NewRow["ProjectTitle"] = Row["ProjectTitle"];
+                        NewRow["StockTitle"] = Row["StockTitle"];
+                        Result.Rows.Add(NewRow);
+                    }
+                    #endregion
+
                 }
             }
             return Result;
 
 
+        }
+
+        private static List<int> GetAccountList(DataTable _Table)
+        {
+            List<int> _List = new List<int>();
+            foreach (DataRow Row in _Table.Rows)
+            {
+                if (_List.Contains((int)Row["COA"])) { continue; };
+                _List.Add((int)Row["COA"]);
+            }
+            return _List;
         }
 
         internal static DataTable GetTB(string UserName, AppReportClass.ReportFilters filters)

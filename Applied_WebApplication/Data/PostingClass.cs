@@ -589,6 +589,11 @@ namespace Applied_WebApplication.Data
                 {
                     Voucher.Add(tb_Ledger.MyDataView[0].Row);
                     Voucher.Add(tb_Ledger.MyDataView[1].Row);
+
+                    Voucher[0]["COA"] = OBStock_DR;
+                    Voucher[1]["COA"] = OBStock_CR;
+
+
                 }
                 else
                 {
@@ -638,8 +643,23 @@ namespace Applied_WebApplication.Data
 
                 if (IsValidated1 && IsValidated2)
                 {
-                    tb_Ledger.CurrentRow = Voucher[0]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
-                    tb_Ledger.CurrentRow = Voucher[1]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
+                    List<Message> _messages = new List<Message>();
+                    tb_Ledger.CurrentRow = Voucher[0]; tb_Ledger.Save(); _messages.AddRange(tb_Ledger.ErrorMessages);
+                    tb_Ledger.CurrentRow = Voucher[1]; tb_Ledger.Save(); _messages.AddRange(tb_Ledger.ErrorMessages);
+                    var StockTitle = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Voucher[0]["Inventory"]);
+                    if (_messages.Count == 0)
+                    {
+                        
+                        MyMessages.Add(MessageClass.SetMessage($"{StockTitle}: Opening Balance saved sucessfully.", Color.Green));
+                    }
+                    else
+                    {
+                        MyMessages.Add(MessageClass.SetMessage($"{StockTitle}: Opening Balance NOT saved.", Color.Red));
+                    }
+                }
+                else
+                {
+                    MyMessages.Add(MessageClass.SetMessage($"Stock Opening Transaction {Voucher[0]["ID"]} not saved."));
                 }
             }
             return MyMessages;

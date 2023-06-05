@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Data
             {
                 AppUser = UserPrincipal,
                 ReportFilePath = ReportPath,
-                ReportFile = "TB.rdlc",
+                ReportFile = "TB.rdl",
                 ReportDataSet = "dset_TB",
                 ReportSourceData = MyDataTable,
                 RecordSort = "Code",
