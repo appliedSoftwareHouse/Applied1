@@ -1,0 +1,59 @@
+﻿@using System.Data;
+@code {
+    [Parameter] public object[] ParaList { get; set; }
+    [Parameter] public string UserName { get; set; }
+}
+
+<style>
+    .input-group mb-3 {
+        width: 80%
+    }
+
+    .form-control {
+        width: 20%
+    }
+
+</style>
+
+<div class="container">
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="date1">Start</span>
+                <input type="date" class="form-control" name="Date1" value="@ParaList[1]" placeholder="Date From">
+            </div>
+        </div>
+
+        <div class="col-md-2">
+            <div class="input-group mb-3">
+                <input type="date" class="form-control" name="Date2" value="@ParaList[2]" placeholder="Date To">
+                <span class="input-group-text" id="date1">End</span>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Select Company" name="CompanyID">
+                <option selected>Select All</option>
+                @foreach (DataRow Row in DataTableClass.GetTable(UserName, Tables.Customers).Rows)
+                {
+                    <option value="@Row["ID"]">@Row["Title"]</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3">
+            <select class="form-select" aria-label="Select Inventory" name="InventoryID">
+                <option selected>Select All</option>
+                @foreach (DataRow Row in DataTableClass.GetTable(UserName, Tables.Inventory).Rows)
+                {
+                    <option value="@Row["ID"]">@Row["Title"]</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-primary justify-content-end">REFRESH 6</button>
+        </div>
+    </div>
+</div>

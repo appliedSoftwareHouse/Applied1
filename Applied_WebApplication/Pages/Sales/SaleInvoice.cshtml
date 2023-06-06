@@ -52,6 +52,7 @@
         <input hidden asp-for="@Model.Variables.ID2" />
         <input hidden asp-for="@Model.Variables.Status" />
         <div class="row">
+
             <div class="col-md-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtVouNo">Vou. No.</span>
@@ -59,14 +60,15 @@
                            placeholder="Voucher No." aria-label="Voucher No" aria-describedby="txtVouNo">
                 </div>
             </div>
+
             <div class="col-md-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtVouDate">Vou. Date</span>
                     <input type="date" class="form-control" asp-for="@Model.Variables.Vou_Date"
                            placeholder="Voucher Date" aria-label="Voucher Date" aria-describedby="txtVouDate">
                 </div>
-
             </div>
+
             <div class="col-md-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtRefNo">Ref. No.</span>
@@ -168,14 +170,14 @@
             <div class="col-md-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtQty">Quantity</span>
-                    <input type="number" class="form-control" asp-for="@Model.Variables.Qty"
+                    <input type="number" step=".01" class="form-control" asp-for="@Model.Variables.Qty"
                            placeholder="Quantity" aria-label="Quantity" aria-describedby="txtQty">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtRate">Rate</span>
-                    <input type="number" class="form-control" asp-for="@Model.Variables.Rate"
+                    <input type="number" step=".01" class="form-control" asp-for="@Model.Variables.Rate"
                            placeholder="Rate" aria-label="Rate" aria-describedby="txtRate">
                 </div>
             </div>
@@ -198,7 +200,7 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtTaxRate">Tax Rate</span>
                     <input type="text" class="form-control" asp-for="@Model.Variables.TaxRate" readonly
-                           placeholder="Tax Rate" aria-label="Tax Rate" aria-describedby="txtTaxRate">
+                           placeholder="Tax Rate" step=".01" aria-label="Tax Rate" aria-describedby="txtTaxRate">
                     <input type="text" class="form-control" asp-for="@Model.Variables.TaxAmount" readonly
                            placeholder="Tax Amount" aria-label="Tax Amount" aria-describedby="txtTaxAmount">
                 </div>
@@ -246,7 +248,7 @@
             {
                 @if (Model.Invoice.Rows.Count > 0)
                 {
-                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Add</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-fill-add"></i> New</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print"><i class="bi bi-printer"></i> Print</button></div>
@@ -254,9 +256,9 @@
                 }
                 else
                 {
-                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Save</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Add"><i class="bi bi-database-fill-add"></i>Add</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="New" disabled><i class="bi bi-database-fill-add"></i> New</button></div>
-                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save" disabled><i class="bi bi-save"></i> SAVE</button></div>
+                    <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Save" disabled><i class="bi bi-save"></i> Save</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Print" disabled><i class="bi bi-printer"></i> Print</button></div>
                     <div class="col-2 btns"><button class="btn btn-primary btn-sm" asp-page-handler="Back"><i class="bi bi-arrow-left-square-fill"></i> Back</button></div>
                 }

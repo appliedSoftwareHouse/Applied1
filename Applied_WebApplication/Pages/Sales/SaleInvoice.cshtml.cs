@@ -493,8 +493,19 @@ namespace Applied_WebApplication.Pages.Sales
 
                     Variables.Vou_No = GetNewVouNo(Variables.Vou_Date, "SL");
                     TargetTable1.NewRecord();
-                    TargetTable1.CurrentRow["Vou_No"] = Variables.Vou_No;
                     TargetTable1.CurrentRow["ID"] = 0;
+                    TargetTable1.CurrentRow["Vou_No"] = Variables.Vou_No;
+                    TargetTable1.CurrentRow["Vou_Date"] = Variables.Vou_Date;
+                    TargetTable1.CurrentRow["Company"] = Variables.Company;
+                    TargetTable1.CurrentRow["Employee"] = Variables.Employee;
+                    TargetTable1.CurrentRow["Ref_No"] = Variables.Ref_No;
+                    TargetTable1.CurrentRow["Inv_No"] = Variables.Inv_No;
+                    TargetTable1.CurrentRow["Inv_Date"] = Variables.Inv_Date;
+                    TargetTable1.CurrentRow["Pay_Date"] = Variables.Pay_Date;
+                    TargetTable1.CurrentRow["Amount"] = Variables.Amount;
+                    TargetTable1.CurrentRow["Description"] = Variables.Description;
+                    TargetTable1.CurrentRow["Comments"] = Variables.Comments;
+                    TargetTable1.CurrentRow["Status"] = Variables.Status;
                     TargetTable1.Save(false);
                     ErrorMessages = TargetTable1.ErrorMessages;
                     if (ErrorMessages.Count > 0) { return false; }

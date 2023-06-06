@@ -7,6 +7,8 @@ using System.Data;
 using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
 using Microsoft.ReportingServices.Interfaces;
+using NPOI.SS.Formula.Functions;
+using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -67,7 +69,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetGL()
         {
 
-            ReportFilters Filters = new AppReportClass.ReportFilters()
+            ReportFilters Filters = new ReportFilters()
             {
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
@@ -119,7 +121,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var ReportFile = "CompanyGL.rdl";
 
             DataTable tb_Ledger = Ledger.GetGLCompany(UserName, Filters);
-           
+
 
             ReportClass GLCompany = new ReportClass
             {
@@ -176,7 +178,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     ReportData = tb_Ledger,
                     DataParameters = _Parameters,
                     ReportType = _ReportType
-                    
+
                 };
                 var reportData = ExportReport.Render(_ReportParamaters);
                 var _mimeType = ExportReport.GetReportMime(_ReportType);
@@ -267,6 +269,54 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
+
+        #region Sale Register
+
+        public IActionResult OnGetSaleRegister()
+        {
+            
+            SalesReportsModel model = new();
+            model.Variables = new()
+            {
+                StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
+                EndDate = AppRegistry.GetDate(UserName, "sRptDate2"),
+                AllCompany = AppRegistry.GetBool(UserName, "sRptComAll"),
+                AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
+                CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
+                InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
+            };
+
+            var _Filter = model.GetFilter(model.Variables);
+            var _SQLQuery = SQLQuery.SaleRegister(_Filter);
+            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
+            var SaleRegister = new ReportClass
+            {
+                AppUser = User,
+                ReportFilePath = AppGlobals.ReportPath,
+                ReportFile = "SaleRegister.rdl",
+                ReportDataSet = "ds_SalesRegister",
+                ReportSourceData = _SourceTable,
+                RecordSort = "Company, Vou_Date",
+
+                OutputFilePath = AppGlobals.PrintedReportPath,
+                OutputFile = "SaleRegister",
+                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+            };
+
+            var Heading1 = "Sales Invoice";
+            var Heading2 = "Commercial";
+
+            SaleRegister.RptParameters.Add("CompanyName", CompanyName);
+            SaleRegister.RptParameters.Add("Heading1", Heading1);
+            SaleRegister.RptParameters.Add("Heading2", Heading2);
+            SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+            ReportLink = SaleRegister.GetReportLink();
+            IsShowPdf = !SaleRegister.IsError;
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleRegister.MyMessage)); }
+            return Page();
+        }
+        #endregion
+
         #region ExpenseSheet
 
         public IActionResult OnGetExpenseSheet(ReportType _ReportType)
@@ -317,12 +367,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 report.LoadReportDefinition(_ReportStream);
                 report.DataSources.Add(_DataSource);
                 report.SetParameters(_Parameters);
-                
+
                 var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
                 var pdf = report.Render(_RenderFormat);
                 var _mimeType = ExportReport.GetReportMime(_ReportType);
                 var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
-                
+
                 return File(pdf, _mimeType, ExpenseSheet.OutputFile + _Extention);
             }
         }

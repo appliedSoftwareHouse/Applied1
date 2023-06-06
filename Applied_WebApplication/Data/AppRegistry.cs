@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.Win32;
+using System.Data;
 using System.Data.SQLite;
 
 namespace Applied_WebApplication.Data
@@ -77,9 +78,12 @@ namespace Applied_WebApplication.Data
         {
             var _Format = GetText(UserName, "FMTDate");
             return Date.ToString(_Format);
-
         }
 
+        public static string YMD(DateTime Date)
+        {
+            return Date.ToString(DateYMD);
+        }
 
 
         public static string GetCurrencySign(string UserName)
@@ -181,6 +185,21 @@ namespace Applied_WebApplication.Data
             }
         }
 
+        public static bool GetBool(string UserName, string Key)
+        {
+            DataTableClass tb_Registry = new(UserName, Tables.Registry);
+            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            if (tb_Registry.MyDataView.Count == 1)
+            {
+                var value = tb_Registry.MyDataView[0]["bValue"];
+                if (value == DBNull.Value) { return false; }
+                return (bool)value;
+            }
+            else
+            {
+                return false;
+            }
+        }
 
         public static DateTime[] GetDates(string UserName, string Key)
         {
@@ -194,7 +213,6 @@ namespace Applied_WebApplication.Data
             }
             return Dates;
         }
-
 
         public static bool SetKey(string UserName, string _Key, object KeyValue, KeyType _KeyType)
         {
