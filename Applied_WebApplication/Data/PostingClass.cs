@@ -256,7 +256,7 @@ namespace Applied_WebApplication.Data
             foreach (DataRow Row in SaleInvoice.Rows)
             {
                 Vou_No = Row["Vou_No"].ToString();
-
+                var _Description = (string)Row["Inventory"] + ": " + (string)Row["Description"];
                 #region Debit Entry
                 tb_Ledger.NewRecord();
                 tb_Ledger.CurrentRow["ID"] = 0;
@@ -273,7 +273,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                 tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
                 tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
-                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Description"] = _Description;
                 tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
                 tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
                 if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
