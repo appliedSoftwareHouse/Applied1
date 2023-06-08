@@ -42,21 +42,21 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
 
-        internal string  GetFilter(Parameters variables)
+        internal string GetFilter(Parameters variables)
         {
             var Date1 = AppRegistry.YMD(variables.StartDate);
             var Date2 = AppRegistry.YMD(variables.EndDate);
 
             var Text = new StringBuilder();
-            
-            if(variables.AllCompany == false)
+
+            if (variables.AllCompany == false)
             {
                 Text.Append($"Company={variables.CompanyID}");
             }
-            
-            if(variables.AllInventory == false)
+
+            if (variables.AllInventory == false)
             {
-                if(Text.ToString().Length > 0) { Text.Append(" AND "); }
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
                 Text.Append($"Inventory={variables.InventoryID}");
             }
 
@@ -68,22 +68,36 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnPostPrint()
         {
+            SetKeys();
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
 
         public IActionResult OnPost()
         {
-            if(Variables.CompanyID == 0) { Variables.AllCompany = true; } else { Variables.AllCompany = false; }
-            if(Variables.InventoryID == 0) { Variables.AllInventory = true; } else if(Variables.AllInventory = false)
+            SetKeys();
+            return RedirectToPage();
 
+        }
+
+        private void SetKeys()
+        {
+            if (Variables.CompanyID == 0) { Variables.AllCompany = true; } else { Variables.AllCompany = false; }
+            if (Variables.InventoryID == 0) { Variables.AllInventory = true; } else { Variables.AllInventory = false; }
+
+            var _Date1 = Variables.StartDate.ToString(AppRegistry.FormatDate);
+            var _Date2 = Variables.EndDate.ToString(AppRegistry.FormatDate);
+
+            var _Heading1 = $"Sale Register";
+            var _Heading2 = $"From {_Date1} to {_Date2}";
+            
             AppRegistry.SetKey(UserName, "sRptDate1", Variables.StartDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptDate2", Variables.EndDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptComAll", Variables.AllCompany, KeyType.Boolean);
             AppRegistry.SetKey(UserName, "sRptStockAll", Variables.AllInventory, KeyType.Boolean);
             AppRegistry.SetKey(UserName, "sRptCompany", Variables.CompanyID, KeyType.Number);
             AppRegistry.SetKey(UserName, "sRptInventory", Variables.InventoryID, KeyType.Number);
-
-            return RedirectToPage();
+            AppRegistry.SetKey(UserName, "sRptHeading1", _Heading1, KeyType.Text);
+            AppRegistry.SetKey(UserName, "sRptHeading2", _Heading2, KeyType.Text);
 
         }
 
@@ -96,6 +110,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public bool AllInventory { get; set; }
             public int CompanyID { get; set; }
             public int InventoryID { get; set; }
+            public string Heading1 { get; set; }
+            public string Heading2 { get; set; }
         }
     }
 }

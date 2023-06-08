@@ -284,6 +284,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
                 CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
                 InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
+                Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
+                Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
             };
 
             var _Filter = model.GetFilter(model.Variables);
@@ -303,12 +305,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 OutputFileLinkPath = AppGlobals.PrintedReportPathLink
             };
 
-            var Heading1 = "Sales Invoice";
-            var Heading2 = "Commercial";
-
             SaleRegister.RptParameters.Add("CompanyName", CompanyName);
-            SaleRegister.RptParameters.Add("Heading1", Heading1);
-            SaleRegister.RptParameters.Add("Heading2", Heading2);
+            SaleRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
+            SaleRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
             SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
             ReportLink = SaleRegister.GetReportLink();
             IsShowPdf = !SaleRegister.IsError;
