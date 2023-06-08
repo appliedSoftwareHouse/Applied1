@@ -69,11 +69,21 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnPostPrint()
         {
             SetKeys();
+            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
 
+        public IActionResult OnPostPrintList()
+        {
+            SetKeys();
+            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister2.rdl", KeyType.Text);
+            return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
+        }
+
+
         public IActionResult OnPost()
         {
+           
             SetKeys();
             return RedirectToPage();
 
@@ -112,6 +122,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public int InventoryID { get; set; }
             public string Heading1 { get; set; }
             public string Heading2 { get; set; }
+            public string ReportFile { get; set; }
         }
     }
 }

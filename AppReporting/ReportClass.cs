@@ -65,7 +65,7 @@ namespace AppReporting
         {
             try
             {
-                var _ReportFile = string.Concat(ReportFilePath, ReportFile);
+               var _ReportFile = string.Concat(ReportFilePath, ReportFile);
                 StreamReader ReportStream = new StreamReader(_ReportFile);
                 LocalReport RDLCreport = new LocalReport();
                 RDLCreport.LoadReportDefinition(ReportStream);

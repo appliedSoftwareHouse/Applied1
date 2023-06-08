@@ -14,12 +14,12 @@ namespace Applied_WebApplication.Pages.Applied
         public DataTable PostTable;
         public bool IsError { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
-        public  string UserName => User.Identity.Name;
+        public string UserName => User.Identity.Name;
         private readonly string Submitted = VoucherStatus.Submitted.ToString();
 
         public void OnGet()
         {
-            
+
             Variables = new()
             {
                 PostingType = (int)AppRegistry.GetKey(UserName, "Post_Type", KeyType.Number),
@@ -36,7 +36,6 @@ namespace Applied_WebApplication.Pages.Applied
                 case 1:                                                                                                                                 // Cash Book
                     Filter = $"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}'";
                     DataTableClass CashBook = new(UserName, Tables.PostCashBook, Filter);
-                    //CashBook.MyDataView.RowFilter = Filter;
                     PostTable = CashBook.MyDataTable;
 
                     break;
@@ -52,7 +51,7 @@ namespace Applied_WebApplication.Pages.Applied
                     PostTable = DataTableClass.GetTable(UserName, Tables.PostBillPayable, Filter);
                     break;
 
-                case 5:                                                                                                                                 // Bill Receivable - Sales Invoice
+                case 5:                                                                                                           // Bill Receivable - Sales Invoice
                     Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND [B1].[Status]='{VoucherStatus.Submitted}'";
                     PostTable = GetTable(UserName, SQLQuery.PostBillReceivable(Filter), "Vou_Date");
 
@@ -81,11 +80,11 @@ namespace Applied_WebApplication.Pages.Applied
                 Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
             };
 
-            if (PostingType == (int)PostType.CashBook) { PostingClass.PostCashBook(UserName, id); }
+            if (PostingType == (int)PostType.CashBook) { ErrorMessages = PostingClass.PostCashBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
-            
-            if(ErrorMessages.Count>0)
+
+            if (ErrorMessages.Count > 0)
             {
                 return Page();
             }

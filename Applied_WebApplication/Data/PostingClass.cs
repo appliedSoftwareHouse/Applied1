@@ -9,14 +9,14 @@ namespace Applied_WebApplication.Data
     {
         #region Cash Book
 
-        public static bool PostCashBook(string UserName, int id)
+        public static List<Message> PostCashBook(string UserName, int id)
         {
-            bool Result;
+            
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
 
-            tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND Vou_Type='", VoucherType.Cash.ToString(), "'");
+            tb_Ledger.MyDataView.RowFilter = $"TranID='{id}' AND Vou_Type='{VoucherType.Cash.ToString()}'";
             if (tb_Ledger.MyDataView.Count == 0)
             {
                 DataRow Row = AppFunctions.GetDataRow(UserName, Tables.CashBook, id);
@@ -45,7 +45,6 @@ namespace Applied_WebApplication.Data
                 {
                     ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
                 }
-
 
                 tb_Ledger.NewRecord();                                                                                                  // Cash Book CR Entry
                 tb_Ledger.CurrentRow["ID"] = 0;
@@ -81,18 +80,15 @@ namespace Applied_WebApplication.Data
 
             if (ErrorMessages.Count == 0)
             {
-                Result = true;
+                
                 tb_Ledger.CurrentRow = VoucherRows[0];                  // DR Transaction
                 tb_Ledger.Save();
                 tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
                 tb_Ledger.Save();
                 DataTableClass.Replace(UserName, Tables.CashBook, id, "Status", VoucherStatus.Posted.ToString());
             }
-            else
-            {
-                Result = false;
-            }
-            return Result;
+           
+            return ErrorMessages;
         }
         #endregion
 

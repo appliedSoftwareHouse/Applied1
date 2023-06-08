@@ -246,7 +246,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     RecordSort = "Sr_No",
 
                     OutputFilePath = AppGlobals.PrintedReportPath,
-                    OutputFile = "SaleInvoice",
+                    OutputFile = "SaleInvoiceST",
                     OutputFileLinkPath = AppGlobals.PrintedReportPathLink
                 };
 
@@ -274,7 +274,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetSaleRegister()
         {
-            
+
             SalesReportsModel model = new();
             model.Variables = new()
             {
@@ -286,6 +286,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
                 Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
                 Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
+                ReportFile = AppRegistry.GetText(UserName, "sRptName"),
             };
 
             var _Filter = model.GetFilter(model.Variables);
@@ -295,7 +296,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 AppUser = User,
                 ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "SaleRegister.rdl",
+                ReportFile = model.Variables.ReportFile,
                 ReportDataSet = "ds_SalesRegister",
                 ReportSourceData = _SourceTable,
                 RecordSort = "Company, Vou_Date",
@@ -351,30 +352,34 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 new ReportParameter("Footer", AppGlobals.ReportFooter)
             };
 
+
+            var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
+            ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
+            LocalReport report = new();
+            var _ReportStream = new StreamReader(_ReportFile);
+            report.LoadReportDefinition(_ReportStream);
+            report.DataSources.Add(_DataSource);
+            report.SetParameters(_Parameters);
+
+            var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
+            var _RenderedReport = report.Render(_RenderFormat);
+            var _mimeType = ExportReport.GetReportMime(_ReportType);
+            var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+
             if (_ReportType == ReportType.PDF)
             {
                 ReportLink = ExpenseSheet.GetReportLink();                     // Create a report and provide link of pdf file location.
+                //ReportLink = File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
                 IsShowPdf = !ExpenseSheet.IsError;                                   // Show PDF id no error found.
                 return Page();
             }
             else
             {
-                var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
-                ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
-                LocalReport report = new();
-                var _ReportStream = new StreamReader(_ReportFile);
-                report.LoadReportDefinition(_ReportStream);
-                report.DataSources.Add(_DataSource);
-                report.SetParameters(_Parameters);
-
-                var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
-                var pdf = report.Render(_RenderFormat);
-                var _mimeType = ExportReport.GetReportMime(_ReportType);
-                var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
-
-                return File(pdf, _mimeType, ExpenseSheet.OutputFile + _Extention);
+                return File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
             }
+
         }
+
         #endregion
 
     }

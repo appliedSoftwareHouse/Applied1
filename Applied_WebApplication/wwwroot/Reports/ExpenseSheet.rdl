@@ -1839,10 +1839,10 @@ FROM   [CashBook] AS [CB]
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>2.02778in</Height>
+        <Height>1.77778in</Height>
         <Style />
       </Body>
-      <Width>8.2in</Width>
+      <Width>7.2in</Width>
       <Page>
         <PageHeader>
           <Height>0.77222in</Height>
@@ -1953,7 +1953,7 @@ FROM   [CashBook] AS [CB]
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>0.57292in</Height>
+          <Height>0.44792in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1976,7 +1976,8 @@ FROM   [CashBook] AS [CB]
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>ExecutionTime</rd:DefaultName>
-              <Top>0.32292in</Top>
+              <Top>0.19792in</Top>
+              <Left>0in</Left>
               <Height>0.25in</Height>
               <Width>2in</Width>
               <Style>
@@ -2008,15 +2009,48 @@ FROM   [CashBook] AS [CB]
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox4</rd:DefaultName>
-              <Top>0.32292in</Top>
-              <Left>3.7175in</Left>
+              <Top>0.19792in</Top>
+              <Left>4.54042in</Left>
               <Height>0.25in</Height>
-              <Width>3.4825in</Width>
+              <Width>2.65958in</Width>
               <ZIndex>1</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
                 </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox7">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>="Page: " &amp; Globals!PageNumber &amp; "/" &amp; Globals!TotalPages</Value>
+                      <Style>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox7</rd:DefaultName>
+              <Top>0.19792in</Top>
+              <Left>2.9675in</Left>
+              <Height>0.25in</Height>
+              <Width>1.38542in</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <VerticalAlign>Middle</VerticalAlign>
                 <PaddingLeft>2pt</PaddingLeft>
                 <PaddingRight>2pt</PaddingRight>
                 <PaddingTop>2pt</PaddingTop>
