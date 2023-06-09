@@ -6,9 +6,7 @@ using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppFunctions;
-using Microsoft.ReportingServices.Interfaces;
-using NPOI.SS.Formula.Functions;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
+using System.IO;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -365,12 +363,59 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _RenderedReport = report.Render(_RenderFormat);
             var _mimeType = ExportReport.GetReportMime(_ReportType);
             var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+
+            if(_ReportType == ReportType.PDF)
+            {
+                ReportLink = CreateFile(_RenderedReport, "");
+                IsShowPdf = !ExpenseSheet.IsError;
+                if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(ExpenseSheet.MyMessage)); }
+                return Page();
+            }
+
+
             return File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
 
 
         }
 
         #endregion
+
+
+        public string CreateFile(byte[] FileBtyes, string FileName)
+        {
+            if (FileBtyes.Length > 1)
+            {
+                FileStream MyFileStream;
+                string OutPutFile = $"{AppGlobals.PrintedReportPath}{FileName}";
+                string OutPutFileLink = $"{AppGlobals.PrintedReportPathLink}{FileName}";
+
+
+                try
+                {
+                    if (System.IO.File.Exists(OutPutFile)) { System.IO.File.Delete(OutPutFile); }
+
+                    using (FileStream fstream = new FileStream(OutPutFile, FileMode.Create))
+                    {
+                        fstream.Write(FileBtyes, 0, FileBtyes.Length);
+                        MyFileStream = fstream;
+                    }
+
+
+                    if (System.IO.File.Exists(OutPutFile))
+                    {
+                        IsError = false;
+                        MyMessage = "File has been created sucessfully.";
+                        return OutPutFileLink;
+                    }
+                  
+                }
+                catch (Exception e) { MyMessage = e.Message; IsError = true; }
+
+                
+            }
+            return "";
+
+        }
 
     }
 }

@@ -49,7 +49,6 @@ namespace AppReporting
                         MyFileStream = fstream;
                     }
 
-
                     if (File.Exists(FileName)) { IsError = false; } else { IsError = true; }
                     OutputFileLink = OutPutFile;                                                                                // Supply File link if file save sucessfully.
                     MyMessage = "File has been created sucessfully.";
