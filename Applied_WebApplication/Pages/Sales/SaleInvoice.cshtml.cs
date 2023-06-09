@@ -143,7 +143,7 @@ namespace Applied_WebApplication.Pages.Sales
                 }
                 else
                 {
-                    ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
+                    ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher 1 Not Found", Color.Yellow));
                     return;
                 }
 
@@ -171,7 +171,7 @@ namespace Applied_WebApplication.Pages.Sales
                     }
                     else
                     {
-                        ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher Not Found"));
+                        ErrorMessages.Add(MessageClass.SetMessage("Error.... Voucher 2 Not Found", Color.Green));
                         return;
                     }
                 }

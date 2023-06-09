@@ -100,8 +100,15 @@ namespace Applied_WebApplication.Data
             List<DataRow> VoucherRows = new();
             DataRow RowBill1 = AppFunctions.GetRecord(UserName, Tables.BillPayable, id);
 
-            int COA_Purchase = 7;                   // COA: Purchsase on Credit 
-            int COA_Payable = 32;                   // COA: Trade Payable.
+            int COA_Purchase = AppRegistry.GetNumber(UserName,"BPay_Stock");                   // COA: Purchsase on Credit 
+            int COA_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax");
+            int COA_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"); ;                   // COA: Trade Payable.
+
+            if(COA_Purchase==0 ||  COA_Tax==0 || COA_Payable == 0) 
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Posting Accounts are not define properly. Select (Assign) them in Setting."));
+                return ErrorMessages;
+            }
 
             tb_Ledger.MyDataView.RowFilter = string.Concat("TranID=", id.ToString(), " AND Vou_Type='", VoucherType.Payable.ToString(), "'");             // Filter Record for check? Already exist or not.
             if (tb_Ledger.MyDataView.Count == 0)
@@ -148,7 +155,7 @@ namespace Applied_WebApplication.Data
                         tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
                         tb_Ledger.CurrentRow["Ref_No"] = RowBill1["Ref_No"];
                         tb_Ledger.CurrentRow["BookID"] = 0;
-                        tb_Ledger.CurrentRow["COA"] = AppFunctions.GetTaxCOA(UserName, (int)Row["TaxID"]);
+                        tb_Ledger.CurrentRow["COA"] = COA_Tax;
                         tb_Ledger.CurrentRow["DR"] = 0;
                         tb_Ledger.CurrentRow["CR"] = Row["TaxAmount"];
                         tb_Ledger.CurrentRow["Customer"] = RowBill1["Company"];

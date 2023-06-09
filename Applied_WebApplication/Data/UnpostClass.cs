@@ -61,7 +61,7 @@ namespace Applied_WebApplication.Data
             {
                 if (BillPayable.Count == 1)
                 {
-                    if (tb_Ledger.Rows.Count == 2)
+                    if (tb_Ledger.Rows.Count >= 2)
                     {
                         foreach (DataRow Row in tb_Ledger.Rows)
                         {

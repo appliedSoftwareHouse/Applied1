@@ -1,5 +1,6 @@
 ﻿using Applied_WebApplication.Pages;
 using NPOI.HSSF.Record;
+using NPOI.OpenXmlFormats.Dml;
 using NPOI.OpenXmlFormats.Spreadsheet;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -32,13 +33,9 @@ namespace Applied_WebApplication.Data
 
         public int CountSource => SourceTable.Rows.Count;
         public int CountTemp => TempTable.Rows.Count;
-
         public string ViewFilter { get; set; }
-
-
         public string VoucherNo { get; set; }
         public int TranID { get; set; }
-
         public bool Refresh { get; set; }
         public bool IsNew { get; set; }
 
@@ -66,9 +63,10 @@ namespace Applied_WebApplication.Data
             MyConnection = ConnectionClass.AppConnection(UserName);
             MyTempConnection = ConnectionClass.AppTempConnection(UserName);
 
+            if(Refresh) {DeleteRecords(_Table);}
             SourceTable = GetTable(_Table, ViewFilter, MyConnection);
             CreateTempTable(SourceTable);           // Create a Temp Table if not exist;
-            TempTable = DataTableClass.GetTable(UserName, _Table, ViewFilter, MyTempConnection);
+            TempTable = GetTable(_Table, ViewFilter, MyTempConnection);
 
             SourceView = SourceTable.AsDataView();
             TempView = TempTable.AsDataView();
@@ -76,12 +74,12 @@ namespace Applied_WebApplication.Data
 
             if (Refresh)
             {
-                foreach (DataRow Row in TempTable.Rows)
-                {
-                    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
-                    var _Records = MyCommand.ExecuteNonQuery();
-                    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
-                }
+                //foreach (DataRow Row in TempTable.Rows)
+                //{
+                //    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
+                //    var _Records = MyCommand.ExecuteNonQuery();
+                //    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
+                //}
 
                 if (CountSource > 0)
                 {
@@ -90,14 +88,28 @@ namespace Applied_WebApplication.Data
                         CurrentRow = TempTable.NewRow();
                         CurrentRow.ItemArray = Row.ItemArray;
                         Save(MyTempConnection, false);
-                        TempTable = GetTable(MyTableName, ViewFilter, MyTempConnection);
                     }
+                    TempTable = GetTable(MyTableName, ViewFilter, MyTempConnection);                // Refresh Table 
                 }
             }
 
             if (CurrentRow == null)
             {
                 if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
+            }
+        }
+
+        private void DeleteRecords(Tables _Table)
+        {
+            var TempTable1 = GetTable(_Table, ViewFilter, MyTempConnection);
+            if(TempTable1.Rows.Count>0)
+            {
+                foreach (DataRow Row in TempTable1.Rows)
+                {
+                    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
+                    var _Records = MyCommand.ExecuteNonQuery();
+                    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
+                }
             }
         }
 
@@ -233,7 +245,6 @@ namespace Applied_WebApplication.Data
             return true;
         }
         #endregion
-
 
         #region Create a Temp Table if not exist
 

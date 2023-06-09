@@ -12,7 +12,9 @@
 
     var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);  // COA for opening balance of Comapny
     var TitleOBStock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBStock); // COA for opening balance of Stock
-
+    var TitleBPay_Stock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Stock);
+    var TitleBPay_Tax = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Tax);
+    var TitleBPay_Payable = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Payable);
 }
 
 <div class="AppHeading-2">
@@ -103,16 +105,54 @@
                     <label for="OBalance">Fiscal Year End</label>
                 </div>
             </div>
+            <!---  COA for Purchase Invoice (Accounts Payble) -->
+            <hr />
+            <div class="row">
+                <div class="col-4">
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="SelectStock" aria-label="Selection of Purchase Account" asp-for="@Model.Variables.BPay_Stock">
+                        <option selected>@TitleBPay_Stock</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="SelectStock">Purchase Account</label>
+                </div>
+                </div>
 
-        </div>
-        <div class="row mb-2">
-            <div class="col">
+                <div class="col-4">
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="SelectTax" aria-label="Selection of Sales Tax Account" asp-for="@Model.Variables.BPay_Tax">
+                        <option selected>@TitleBPay_Tax</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="SelectTax">Sales Tax Account</label>
+                </div>
+                </div>
 
-                <button type="submit" class="btn btn-primary" asp-page-handler="Save">
-                    <i class="bi bi-save"> Save</i>
-                </button>
+                <div class="col-4">
+                <div class="form-floating mb-1">
+                    <select class="form-select" id="SelectPayable" aria-label="Selection of Payable Account" asp-for="@Model.Variables.BPay_Payable">
+                        <option selected>@TitleBPay_Payable</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="SelectPayable">Payable Account</label>
+                </div>
+            </div>
             </div>
 
+            <hr />
+            <!---  SAVE BUTTON-->
+        </div>
+        <div class="row mb-2">
+            <div class="col"> <button type="submit" class="btn btn-primary" asp-page-handler="Save"> <i class="bi bi-save"> Save</i> </button> </div>
         </div>
     </div>
 </form>

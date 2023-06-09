@@ -365,18 +365,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _RenderedReport = report.Render(_RenderFormat);
             var _mimeType = ExportReport.GetReportMime(_ReportType);
             var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+            return File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
 
-            if (_ReportType == ReportType.PDF)
-            {
-                ReportLink = ExpenseSheet.GetReportLink();                     // Create a report and provide link of pdf file location.
-                //ReportLink = File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
-                IsShowPdf = !ExpenseSheet.IsError;                                   // Show PDF id no error found.
-                return Page();
-            }
-            else
-            {
-                return File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
-            }
 
         }
 

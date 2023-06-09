@@ -34,9 +34,13 @@ namespace Applied_WebApplication.Pages.Account
                 CurrencySign = AppRegistry.GetText(UserName, "CurrencySign"),
                 OBDate = AppRegistry.GetDate(UserName, "OBDate"),
                 CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
-                DateFormat = AppRegistry.GetText(UserName, "FMTDate")
-                
-        };
+                DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
+
+                BPay_Stock = AppRegistry.GetNumber(UserName, "BPay_Stock"),
+                BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax"),
+                BPay_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"),
+
+            };
         }
 
         public IActionResult OnPostSave()
@@ -52,6 +56,9 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "FMTDate", Variables.DateFormat, KeyType.Text);
             AppRegistry.SetKey(UserName, "FMTCurrency", Variables.CurrencyFormat, KeyType.Text);
 
+            AppRegistry.SetKey(UserName, "BPay_Stock", Variables.BPay_Stock, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BPay_Tax", Variables.BPay_Tax, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BPay_Payable", Variables.BPay_Payable, KeyType.Number);
             return RedirectToPage();
         }
 
@@ -66,6 +73,11 @@ namespace Applied_WebApplication.Pages.Account
             public string CurrencyFormat { get; set; }
             public string DateFormat { get; set; }
             public DateTime OBDate { get; set; }
+
+            public int BPay_Stock { get; set; }
+            public int BPay_Tax { get; set; }
+            public int BPay_Payable { get; set; }
+
           
         }
 
