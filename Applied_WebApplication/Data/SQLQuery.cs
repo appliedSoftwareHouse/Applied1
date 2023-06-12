@@ -38,8 +38,12 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[Qty] * [B2].[Rate] AS [Amount], ");
             Text.Append("[T].[Title] AS [Tax], ");
             Text.Append("[T].[Rate] AS [Tax_Rate], ");
-            Text.Append("([B2].[Qty] * [B2].[Rate]) * [T].[Rate] AS [Tax_Amount], ");
-            Text.Append("([B2].[Qty] * [B2].[Rate]) + (([B2].[Qty] * [B2].[Rate]) * [T].[Rate]) AS [Net_Amount], ");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [Tax_Amount],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [Net_Amount],");
             Text.Append("[B2].[Description] AS [Remarks], ");
             Text.Append("[C].[Address1], ");
             Text.Append("[C].[Address2], ");
@@ -55,6 +59,9 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Taxes] [T] ON[T].[ID] = [B2].[Tax] ");
             Text.Append("WHERE TranID=@ID");
             return Text.ToString();
+
+
+
 
         }
 
@@ -131,9 +138,9 @@ namespace Applied_WebApplication.Data
             Text.Append("[BillPayable].[Status] ");
             Text.Append("FROM [BillPayable] ");
             Text.Append("LEFT JOIN[Customers] ON [BillPayable].[Company] = [Customers].[ID] ");
-            if(_Filter != null )
+            if (_Filter != null)
             {
-                if(_Filter.Length > 0)
+                if (_Filter.Length > 0)
                 {
                     Text.Append($"WHERE {_Filter}");
                 }
@@ -201,9 +208,12 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[Batch],");
             Text.Append("[B2].[Qty],");
             Text.Append("[B2].[Rate],");
-            Text.Append("[B2].[Qty] * [B2].[Rate] AS [Amount],");
-            Text.Append("([B2].[Qty] * [B2].[Rate]) * [T].[Rate] As [TaxAmount],");
-            Text.Append("[B2].[Qty] * [B2].[Rate] + (([B2].[Qty] * [B2].[Rate]) * [T].[Rate]) AS [NetAmount],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],");
             Text.Append("[B2].[ID] AS [ID2], ");
             Text.Append("[I].[Title] AS [StockTitle],");
             Text.Append("[C].[Title] AS [CompanyName],");
@@ -217,9 +227,9 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
             Text.Append("LEFT JOIN[Project]            [P]   ON [P].[ID] = [B2].[Project]");
             Text.Append("LEFT JOIN[Taxes]              [T]   ON [T].[ID] = [B2].[Tax]");
-            if(_Filter != null)
+            if (_Filter != null)
             {
-                if(_Filter.Length >0)
+                if (_Filter.Length > 0)
                 {
                     Text.Append($" WHERE {_Filter}");
 
@@ -228,6 +238,55 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
+
+        public static string PurchaseRegister(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("");
+
+            Text.Append("SELECT ");
+            Text.Append("[B1].[ID] AS[ID1], ");
+            Text.Append("[B2].[ID] AS[ID2], ");
+            Text.Append("[B1].[Vou_No],  ");
+            Text.Append("[B1].[Vou_Date], ");
+            Text.Append("[B1].[Company],");
+            Text.Append("[B1].[Employee],");
+            Text.Append("[B1].[Ref_No],");
+            Text.Append("[B1].[Inv_No],");
+            Text.Append("[B1].[Inv_Date],");
+            Text.Append("[B1].[Pay_Date],");
+            Text.Append("[B1].[Description],");
+            Text.Append("[B1].[Status],");
+            Text.Append("[B2].[Sr_No],");
+            Text.Append("[B2].[TranID],");
+            Text.Append("[B2].[Inventory],");
+            Text.Append("[B2].[Batch],");
+            Text.Append("[B2].[Qty],");
+            Text.Append("[B2].[Rate],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],");
+            Text.Append("[B2].[Description] AS[Description2],");
+            Text.Append("[C].[Title] AS[CompanyName],");
+            Text.Append("[E].[Title] AS[EmployeeName],");
+            Text.Append("[P].[Title] AS[ProjectTitle],");
+            Text.Append("[I].[Title] AS[StockTitle],");
+            Text.Append("[T].[Code]  AS[TaxTitle],");
+            Text.Append("[T].[Rate]  AS[TaxRate]");
+            Text.Append("FROM [BillPayable2][B2]");
+            Text.Append("LEFT JOIN[BillPayable]  [B1] ON[B1].[ID] = [B2].[TranID]");
+            Text.Append("LEFT JOIN[Customers]   [C] ON[C].[ID] = [B1].[Company]");
+            Text.Append("LEFT JOIN[Employees]   [E] ON[E].[ID] = [B1].[Employee]");
+            Text.Append("LEFT JOIN[Project]         [P] ON[P].[ID] = [B2].[Project]");
+            Text.Append("LEFT JOIN[Inventory]     [I] ON[I].[ID] = [B2].[Inventory]");
+            Text.Append("LEFT JOIN[Taxes]           [T] ON[T].[ID] = [B2].[Tax]");
+
+            return Text.ToString();
+        }
+
 
         #region Create DataTable into Source Data
 
