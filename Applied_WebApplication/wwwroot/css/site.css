@@ -118,10 +118,37 @@ AppHeading-2:hover {
         background-color: #ffff99;
     }
 
-.table1, th {
-    background: lightblue;
-    text-align: center;
-    font-weight: bold;
+.table-list, th {
+    font-size: small
+}
+
+.table-lis, thead{
+    background-color:blanchedalmond
+}
+
+.table-list, tr {
+    font-size:small
+}
+
+
+
+.amount {
+    text-align: right
+}
+
+.amount-red {
+    text-align: right;
+    color: darkred
+}
+
+.amount-blue {
+    text-align: right;
+    color: darkblue
+}
+
+.amount-green {
+    text-align: right;
+    color: darkgreen
 }
 
 

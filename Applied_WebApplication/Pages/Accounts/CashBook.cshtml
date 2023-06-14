@@ -16,8 +16,6 @@
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
-
-
 }
 
 <style>
@@ -37,16 +35,16 @@
             @*<div class="col-md-1 mb-1  TextCenter">
             <label>CASH BOOK</label>
             </div>*@
-            <div class="col-md-2 mb-1">
+            <div class="col mb-1" style="width:130px">
                 <div class="input-group mb-3 align-content-center">
-                    <span class="input-group-text" id="From">=></span>
-                    <input type="date" id="MinDate" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" id="MinDate" style="width:70%" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
                 </div>
             </div>
-            <div class="col-md-2 mb-1">
+            <div class="col mb-1 align-content-mide" style="width:300px">
                 <div class="input-group mb-3 align-content-center">
-                    <span class="input-group-text" id="To"><=</span>
                     <input type="date" id="MaxDate" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
+                    <span class="input-group-text" id="To">End</span>
                 </div>
             </div>
             <div class="col-md-1 mb-1">
@@ -116,7 +114,6 @@
                             <tbody>
                                 @foreach (DataRow Row in Model.Cashbook.Rows)
                                 {
-
                                     decimal _DR = (decimal)Row["DR"];
                                     decimal _CR = (decimal)Row["CR"];
                                     _BAL += (_CR - _DR);
@@ -126,8 +123,8 @@
                                         <td>@_Date.ToString(FMTDate)</td>
                                         <td>@Row["Vou_No"].ToString()</td>
                                         <td>@Row["Description"].ToString()</td>
-                                        <td class="table-col-amount">@_DR.ToString(FMTAmount)</td>
-                                        <td class="table-col-amount">@_CR.ToString(FMTAmount)</td>
+                                        <td class="amount">@_DR.ToString(FMTAmount)</td>
+                                        <td class="amount">@_CR.ToString(FMTAmount)</td>
                                         @if (decimal.Parse(_BAL.ToString()) > 0)
                                         {
                                             <td class="table-col-amount">@_BAL.ToString(FMTAmount)</td>
@@ -162,13 +159,7 @@
                                         }
                                         else
                                         {
-                                            <td>
-                                                <button class="btn btn-link"
-                                                        asp-page-handler="Show"
-                                                        asp-route-ID="@Row["ID"]">
-                                                    <i class="bi bi-printer text-success"></i>
-                                                </button>
-
+                                            <td class="text-center">
                                                 <button class="btn btn-link"
                                                         asp-page-handler="Print"
                                                         asp-route-ID="@Row["ID"]">

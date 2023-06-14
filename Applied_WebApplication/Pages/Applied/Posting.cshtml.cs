@@ -43,7 +43,12 @@ namespace Applied_WebApplication.Pages.Applied
 
                     break;
                 case 3:                                                                                                                                 // Write Cheques
-                    PostTable = GetTable(UserName, Tables.PostWriteCheque);
+                    Filter = $"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}' AND Status='Submitted'";
+                    var Query = SQLQuery.WriteCheque(Filter);
+                    
+                    DataTableClass WriteCheque = new(UserName, Query);
+                    PostTable = WriteCheque.MyDataTable;
+
                     break;
 
                 case 4:                                                                                                                                 // 

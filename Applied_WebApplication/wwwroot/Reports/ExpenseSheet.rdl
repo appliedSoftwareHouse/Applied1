@@ -5,7 +5,7 @@
     <DataSource Name="ds_ExpenseSheet">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=HFS</ConnectString>
+        <ConnectString>Dsn=Amcorp</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>
@@ -19,6 +19,7 @@
         <CommandText>SELECT [CB].[Sheet_No],
        [CB].[Vou_No], 
        [CB].[Vou_Date], 
+       [CB].[Ref_No], 
        [CB].[COA], 
        [A].[Title] AS [AccountTitle], 
        [CB].[Customer], 
@@ -49,6 +50,10 @@ FROM   [CashBook] AS [CB]
         <Field Name="Vou_Date">
           <DataField>Vou_Date</DataField>
           <rd:TypeName>System.DateTime</rd:TypeName>
+        </Field>
+        <Field Name="Ref_No">
+          <DataField>Ref_No</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="COA">
           <DataField>COA</DataField>
@@ -1418,7 +1423,7 @@ FROM   [CashBook] AS [CB]
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!Description.Value</Value>
+                                  <Value>=Fields!Ref_No.Value &amp; ": " &amp; Fields!Description.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -1977,7 +1982,6 @@ FROM   [CashBook] AS [CB]
               </Paragraphs>
               <rd:DefaultName>ExecutionTime</rd:DefaultName>
               <Top>0.19792in</Top>
-              <Left>0in</Left>
               <Height>0.25in</Height>
               <Width>2in</Width>
               <Style>

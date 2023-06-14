@@ -2,14 +2,13 @@
 using System.Data.SQLite;
 using System.Text;
 using AppReporting;
+using NPOI.SS.Formula.Functions;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
 {
     public class AppFunctions
     {
-
-
         #region New Voucher
         public static string GetNewCashVoucher(string UserName)
         {
@@ -27,8 +26,7 @@ namespace Applied_WebApplication.Data
             string NewCode = string.Concat("BP-", MaxNum.ToString("000000"));
             return NewCode;
         }
-
-        internal static string GetBillReceivableVoucher(string UserName)
+        public static string GetBillReceivableVoucher(string UserName)
         {
             DataTableClass Table = new(UserName, Tables.BillReceivable);
             if (Table.MyDataTable.Rows.Count == 0) { return "BR-000001"; }
@@ -45,7 +43,7 @@ namespace Applied_WebApplication.Data
         {
             string TaxCode = string.Empty;
             DataTableClass tb_Tax = new(UserName, Tables.Taxes);
-            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            tb_Tax.MyDataView.RowFilter = $"ID={TaxID}";
             if (tb_Tax.MyDataView.Count > 0)
             {
                 TaxCode = tb_Tax.MyDataView[0]["Code"].ToString();
@@ -57,7 +55,7 @@ namespace Applied_WebApplication.Data
         {
             decimal TaxRate = 0.00M;
             DataTableClass tb_Tax = new(UserName, Tables.Taxes);
-            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            tb_Tax.MyDataView.RowFilter = $"ID={TaxID}";
             if (tb_Tax.MyDataView.Count > 0)
             {
                 TaxRate = (decimal)tb_Tax.MyDataView[0]["Rate"];
@@ -69,7 +67,7 @@ namespace Applied_WebApplication.Data
         {
             int TaxCOA = 0;
             DataTableClass tb_Tax = new(UserName, Tables.Taxes);
-            tb_Tax.MyDataView.RowFilter = "ID=" + TaxID.ToString();
+            tb_Tax.MyDataView.RowFilter = $"ID={TaxID}";
             if (tb_Tax.MyDataView.Count > 0)
             {
                 TaxCOA = (int)tb_Tax.MyDataView[0]["COA"];
@@ -301,32 +299,13 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-
-        #region Temporary Local Database
-        public static SQLiteConnection GetTempConnection(string UserName)
+        public static string AddCommas(string UserName, object _Value)
         {
-            //StringBuilder TempConnectionString = new();
-            //TempConnectionString.Append(AppGlobals.LocalDB);
-            //TempConnectionString.Append(UserName);
-            //string _Directory = TempConnectionString.ToString();                            // Get Temp Full Path;
-            //TempConnectionString.Append("\\" + UserName + "DB.temp");                     // Get Full Path and File Name;
-            //string _FileName = TempConnectionString.ToString();
-
-            //if (!Directory.Exists(_Directory)) { Directory.CreateDirectory(_Directory); }
-            //if (!File.Exists(_FileName)) { SQLiteConnection.CreateFile(_FileName); }
-
-            //SQLiteConnection _TempConnection = new($"Data Source={_FileName}");
-            //_TempConnection.Open();
-
-            return ConnectionClass.AppTempConnection(UserName);
+            var _Number = Decimal.Round(Conversion.ToDecimal(_Value), 2);
+            var _Format = AppRegistry.GetFormatCurrency(UserName);
+            var _result = _Number.ToString(_Format);
+            return _result;
         }
-
-
-
-        #endregion
-
-
-
 
     }
 }

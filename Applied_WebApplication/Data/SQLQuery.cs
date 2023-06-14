@@ -86,6 +86,18 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
 
+        public static string WriteCheque(string? _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM WriteCheques");
+            if (_Filter != null)
+            {
+                Text.Append($"WHERE {_Filter} ");
+            }
+            return Text.ToString();
+        }
+
+
         public static string ExpenseSheetList()
         {
             var Text = "SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [CashBook] ";
@@ -242,8 +254,7 @@ namespace Applied_WebApplication.Data
         public static string PurchaseRegister(string _Filter)
         {
             var Text = new StringBuilder();
-            Text.Append("");
-
+            
             Text.Append("SELECT ");
             Text.Append("[B1].[ID] AS[ID1], ");
             Text.Append("[B2].[ID] AS[ID2], ");

@@ -34,7 +34,6 @@ namespace Applied_WebApplication.Pages.Accounts
             catch (Exception e)
             {
                 ErrorMessages.Add(MessageClass.SetMessage(e.Message));
-                
             }
 
             
@@ -68,25 +67,25 @@ namespace Applied_WebApplication.Pages.Accounts
             AppRegistry.SetKey(UserName, "Vou_DtFrom", Variables.DateFrom, KeyType.Date);
             AppRegistry.SetKey(UserName, "Vou_DtTo", Variables.DateTo, KeyType.Date);
 
-            return RedirectToPage("VoucherList");
+            return Page();
         }
 
         public IActionResult OnPostEdit(int id)
         {
-            DataTableClass _Table = new DataTableClass(UserName, Tables.Ledger);
-            DataRow Row = _Table.SeekRecord(id);
-
-            if (Row != null)
+            var _Filter = $"ID={id}";
+            DataTableClass _Table = new DataTableClass(UserName, Tables.Ledger, _Filter);
+            if(_Table !=null)
             {
-                int RecNo = (int)Row["ID"];
-                int TranID = (int)Row["TranID"];
-                string VouType = (string)Row["Vou_Type"];
-
-                return RedirectToPage("./Voucher1", routeValues: new { TranID, VouType, RecNo });
+                if(_Table.Rows.Count>0)
+                {
+                    var Row = _Table.Rows[0];
+                    int RecNo = (int)Row["ID"];
+                    int TranID = (int)Row["TranID"];
+                    string VouType = (string)Row["Vou_Type"];
+                    return RedirectToPage("./Voucher", routeValues: new { id });
+                }
             }
-
             return Page();
-
         }
 
 

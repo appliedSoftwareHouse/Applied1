@@ -271,6 +271,8 @@ namespace Applied_WebApplication.Data
         }
         private void CheckError()
         {
+            MyTableName ??= "MyTable";
+
             if (MyConnection == null) { IsError = true; }
             if (MyTableName == null) { IsError = true; }
             if (MyTableName.Length == 0) { IsError = true; }

@@ -7,6 +7,7 @@ namespace Applied_WebApplication.Data
     public interface IAppRegistry
     {
         public static readonly string DateYMD;
+        public static readonly string FormatCurrency;
         public static readonly string FormatCurrency1;
         public static readonly string FormatCurrency2;
         public static readonly string FormatDate;
@@ -41,8 +42,7 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDateM2 = "dd-MM-yy";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
 
-
-        public static DateTime GetFiscalFrom()
+                public static DateTime GetFiscalFrom()
         { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
         public static DateTime GetFiscalTo() 
         { return new DateTime(2023, 06, 30); }

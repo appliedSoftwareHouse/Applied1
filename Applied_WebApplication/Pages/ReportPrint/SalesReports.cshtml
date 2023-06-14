@@ -6,6 +6,8 @@
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
+    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+
 
 }
 
@@ -94,15 +96,16 @@
             </div>
             
 
-            <table>
+            <table class="table-list">
                 <thead>
                     <tr>
-                        <th style="width:5%">SNo.</th>
-                        <th style="width:10%">Vou. No</th>
-                        <th style="width:10%">Vou. Date</th>
-                        <th style="width:25%">Stock Title</th>
-                        <th style="width:10%">Quantity</th>
-                        <th style="width:10%">Rate</th>
+                        <th style="width:4%">SNo.</th>
+                        <th style="width:7%">Vou. No</th>
+                        <th style="width:8%">Vou. Date</th>
+                        <th style="width:20%">Company Name</th>
+                        <th style="width:15%">Stock Title</th>
+                        <th style="width:8%">Quantity</th>
+                        <th style="width:8%">Rate</th>
                         <th style="width:10%">Amount</th>
                         <th style="width:10%">Tax Amount</th>
                         <th style="width:10%">Net Amount</th>
@@ -112,18 +115,24 @@
                     @foreach (DataRow Row in Model.SourceTable.Rows)
                     {
                         var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                        
+                        var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                        var _Rate = Conversion.ToDecimal(Row["Rate"]);
+                        var _Amount = Conversion.ToDecimal(Row["Amount"]);
+                        var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                        var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
 
-
-                        <tr>
+                        <tr style="font-size:small">
                             <td>@Row["Sr_No"]</td>
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
+                            <td>@Row["CompanyName"]</td>
                             <td>@Row["StockTitle"]</td>
-                            <td>@Row["Qty"]</td>
-                            <td>@Row["Rate"]</td>
-                            <td>@Row["Amount"]</td>
-                            <td>@Row["TaxAmount"]</td>
-                            <td>@Row["NetAmount"]</td>
+                            <td class="amount">@_Qty.ToString(AmountFormat)</td>
+                            <td class="amount">@_Rate.ToString(AmountFormat)</td>
+                            <td class="amount">@_Amount.ToString(AmountFormat)</td>
+                            <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
+                            <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
                         </tr>
                     }
                     

@@ -74,13 +74,6 @@ namespace Applied_WebApplication.Data
 
             if (Refresh)
             {
-                //foreach (DataRow Row in TempTable.Rows)
-                //{
-                //    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
-                //    var _Records = MyCommand.ExecuteNonQuery();
-                //    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
-                //}
-
                 if (CountSource > 0)
                 {
                     foreach (DataRow Row in SourceTable.Rows)

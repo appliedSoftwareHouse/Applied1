@@ -12,8 +12,8 @@ namespace Applied_WebApplication.Data
             var _Result = false;
             DataTableClass Ledger = new(UserName, Tables.Ledger);
             DataTableClass CashBook = new(UserName, Tables.CashBook);
-            CashBook.MyDataView.RowFilter = "ID=" + ID.ToString();
-            string Filter = string.Format("TranID={0} AND Vou_Type='{1}'", ID, VoucherType.Cash.ToString()); ;
+            CashBook.MyDataView.RowFilter = $"ID={ID}";
+            string Filter = $"TranID={ID} AND Vou_Type='{VoucherType.Cash}'";
             DataTable tb_Ledger = DataTableClass.GetTable(UserName, Tables.Ledger, Filter);
 
             try

@@ -1,4 +1,5 @@
 ﻿using System.Data.Entity.ModelConfiguration.Conventions;
+using System.Numerics;
 
 namespace Applied_WebApplication.Data
 {
@@ -14,7 +15,6 @@ namespace Applied_WebApplication.Data
             {
                 var Amount = (decimal)_Value;
                 _Result = Amount.ToString(AppRegistry.FormatCurrency1);
-
             }
             catch (Exception e)
             {
@@ -32,6 +32,8 @@ namespace Applied_WebApplication.Data
                 if (type == typeof(string)) { return int.Parse((string)_Value); }
                 if (type == typeof(decimal)) { return int.Parse(_Value.ToString()); }
                 if (type == typeof(long)) { return int.Parse(_Value.ToString()); }
+                if (type == typeof(float)) { return int.Parse(_Value.ToString()); }
+                if (type == typeof(double)) { return int.Parse(_Value.ToString()); }
                 if (type == typeof(int)) { return (int)_Value; }
                 return 0;
             }
@@ -50,6 +52,8 @@ namespace Applied_WebApplication.Data
                 if (type == typeof(string)) { return decimal.Parse((string)_Value); }
                 if (type == typeof(int)) { return decimal.Parse(_Value.ToString()); }
                 if (type == typeof(long)) { return decimal.Parse(_Value.ToString()); }
+                if (type == typeof(float)) { return decimal.Parse(_Value.ToString()); }
+                if (type == typeof(double)) { return decimal.Parse(_Value.ToString()); }
                 if (type == typeof(decimal)) { return (decimal)_Value; }
                 return 0.00M;
             }

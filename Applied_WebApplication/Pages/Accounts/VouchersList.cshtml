@@ -45,6 +45,7 @@
                             <th>Vou Date</th>
                             <th>Vou No</th>
                             <th>Vou Type</th>
+                            <th>Description</th>
                             <th>Debit</th>
                             <th>Credit</th>
                             <th>Add | Edit</th>
@@ -58,18 +59,12 @@
                                 <td>@_Date</td>
                                 <td>@Row["Vou_No"]</td>
                                 <td>@Row["Vou_Type"]</td>
+                                <td>@Row["Description"]</td>
                                 <td>@Row["DR"]</td>
                                 <td>@Row["CR"]</td>
                                 <td>
-                                    <a class="btn btn-link"
-                                        asp-page="Voucher1"
-                                        asp-route-ID="@Row["ID"]">
-                                        <i class="bi bi-pencil-fill text-primary" style="margin-right:5px"></i>
-                                    </a>
-                                    <button class="btn btn-link" type="submit"
-                                        asp-page-handler="Delete"
-                                        asp-route-id="@Row["ID"]">
-                                        <i class="bi bi-trash-fill text-danger" style="margin-right:5px"></i>
+                                    <button type="submit" class="btn btn-link" asp-page-handler="Edit" asp-route-id="@Row["ID"]"> <i class="bi bi-pencil-fill text-primary"></i> </button>
+                                    <button type="submit" class="btn btn-link" asp-page-handler="Delete" asp-route-id="@Row["ID"]">  <i class="bi bi-trash-fill text-danger" style="margin-right:5px"></i>
                                     </button>
                                 </td>
                             </tr>
