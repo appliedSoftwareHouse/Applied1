@@ -237,12 +237,11 @@ namespace Applied_WebApplication.Data
             {
                 ErrorMessages.Add(MessageClass.SetMessage("Error: Sale Invocie is already posted. Contact to Administrator"));
                 return ErrorMessages;
-
             }
 
-            int COA_DR = 4;
-            int COA_CR = 43;
-            int COA_Tax = 33;
+            int COA_DR = AppRegistry.GetNumber(UserName, "BRec_Receivable");
+            int COA_CR = AppRegistry.GetNumber(UserName, "BRec_Stock");
+            int COA_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax");
             bool IsValidated = true;
             int SRNO = 1;
             string Vou_No = SaleInvoice.Rows[0]["Vou_No"].ToString();

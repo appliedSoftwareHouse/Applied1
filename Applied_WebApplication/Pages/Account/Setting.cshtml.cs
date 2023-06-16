@@ -40,6 +40,10 @@ namespace Applied_WebApplication.Pages.Account
                 BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax"),
                 BPay_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"),
 
+                BRec_Stock = AppRegistry.GetNumber(UserName, "BRec_Stock"),
+                BRec_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax"),
+                BRec_Receivable = AppRegistry.GetNumber(UserName, "BRec_Receivable"),
+
             };
         }
 
@@ -59,6 +63,12 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BPay_Stock", Variables.BPay_Stock, KeyType.Number);
             AppRegistry.SetKey(UserName, "BPay_Tax", Variables.BPay_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BPay_Payable", Variables.BPay_Payable, KeyType.Number);
+
+            AppRegistry.SetKey(UserName, "BRec_Stock", Variables.BPay_Stock, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BPay_Tax, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BPay_Payable, KeyType.Number);
+
+
             return RedirectToPage();
         }
 
@@ -78,7 +88,10 @@ namespace Applied_WebApplication.Pages.Account
             public int BPay_Tax { get; set; }
             public int BPay_Payable { get; set; }
 
-          
+            public int BRec_Stock { get; set; }
+            public int BRec_Tax { get; set; }
+            public int BRec_Receivable { get; set; }
+
         }
 
     }
