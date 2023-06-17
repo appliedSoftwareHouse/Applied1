@@ -58,7 +58,10 @@ namespace Applied_WebApplication.Data
         {
             return GetText(UserName, "FMTCurrency");
         }
-
+        public static string GetFormatDate(string UserName)
+        {
+            return GetText(UserName, "FMTDate");
+        }
 
         public static string Currency(string UserName, object Amount)
         {

@@ -85,6 +85,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\accounts.jahangir.com.pubxml" />
+    <_WebToolingArtifacts Remove="Properties\PublishProfiles\jahangir.com.pubxml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AppReporting\AppReportClass.csproj" />
     <ProjectReference Include="..\ExcelClass\ExcelClass.csproj" />
   </ItemGroup>

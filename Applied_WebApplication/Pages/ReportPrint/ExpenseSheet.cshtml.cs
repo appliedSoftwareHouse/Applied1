@@ -21,6 +21,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             Variables = new();
             MyTable = GetExpenseSheetList();
         }
+
+        #region Buttons
         public IActionResult OnPostPrint()
         {
             AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
@@ -44,7 +46,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
             return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = ReportType.HTML });
         }
+        #endregion
 
+        public IActionResult OnPostReLoad()
+        {
+            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
+            return RedirectToPage();
+        }
 
         private DataTable GetExpenseSheetList() 
         {

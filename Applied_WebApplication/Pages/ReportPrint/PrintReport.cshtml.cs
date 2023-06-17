@@ -267,7 +267,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-
         #region Sale Register
 
         public IActionResult OnGetSaleRegister()
@@ -366,7 +365,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             if(_ReportType == ReportType.PDF)
             {
-                ReportLink = CreateFile(_RenderedReport, "");
+                ReportLink = CreateFile(_RenderedReport, ExpenseSheet.OutputFile + ".pdf" );
                 IsShowPdf = !ExpenseSheet.IsError;
                 if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(ExpenseSheet.MyMessage)); }
                 return Page();

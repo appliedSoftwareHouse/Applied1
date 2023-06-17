@@ -1699,6 +1699,7 @@ FROM   [CashBook] AS [CB]
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
+                                    <Format>#,0.00;(#,0.00);'-'</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1715,12 +1716,10 @@ FROM   [CashBook] AS [CB]
                             </Border>
                             <TopBorder>
                               <Color>Black</Color>
-                              <Style>Solid</Style>
                               <Width>1pt</Width>
                             </TopBorder>
                             <BottomBorder>
                               <Color>Black</Color>
-                              <Style>Solid</Style>
                               <Width>1pt</Width>
                             </BottomBorder>
                             <BackgroundColor>WhiteSmoke</BackgroundColor>
@@ -1776,6 +1775,7 @@ FROM   [CashBook] AS [CB]
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>

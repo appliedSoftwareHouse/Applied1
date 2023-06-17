@@ -4,7 +4,19 @@
 @{
     var UserName = User.Identity.Name;
     var _ExpenseSheet = AppRegistry.GetText(UserName, "Sheet_No");
+    var _Filter = $"Sheet_No='{_ExpenseSheet}'";
+    var ExpenseSheet = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter));
+    var _DateFormat = AppRegistry.GetFormatDate(UserName);
+    var _AmountFormat = AppRegistry.GetFormatCurrency(UserName);
+
 }
+
+<style>
+    .col-w-50 {
+        width: 120px;
+    }
+
+</style>
 
 <div class="AppHeading-2">
     <h5 class="text-center">EXPENSE SHEET - PRINT</h5>
@@ -25,40 +37,81 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-3"></div>
+            <div class="col-md-3">
+                <button class="btn btn-success"
+                        asp-page-handler="Reload">
+                    Reload
+                </button>
+            </div>
             <div class="col-md-3"></div>
         </div>
 
         <div class="row mt-3">
-            <div class="col-3">
-            <button class="btn btn-primary" asp-page-handler="Print">
-                PRINT
-                <i class="bi bi-printer"></i>
-            </button>
+            <div class="col-3 col-w-50">
+                <button class="btn btn-primary btn-sm" asp-page-handler="Print">
+                    PRINT
+                    <i class="bi bi-printer"></i>
+                </button>
             </div>
-            <div class="col-3">
-                <button class="btn btn-primary" asp-page-handler="Excel">
+            <div class="col-3 col-w-50">
+                <button class="btn btn-primary btn-sm" asp-page-handler="Excel">
                     Excel
                     <i class="bi bi-filetype-xls"></i>
                 </button>
             </div>
 
-            <div class="col-3">
-                <button class="btn btn-primary" asp-page-handler="Word">
+            <div class="col-3 col-w-50">
+                <button class="btn btn-primary btn-sm" asp-page-handler="Word">
                     Word
                     <i class="bi bi-filetype-doc"></i>
                 </button>
             </div>
 
-            <div class="col-3">
-                <button class="btn btn-primary" asp-page-handler="HTML">
+            <div class="col-3 col-w-50">
+                <button class="btn btn-primary btn-sm" asp-page-handler="HTML">
                     HTML
                     <i class="bi bi-filetype-html"></i>
                 </button>
             </div>
         </div>
     </div>
-
-
-
 </form>
+
+<div class="container mt-2">
+    <table class="table-list">
+        <thead>
+            <tr class="text-center">
+                <th style="width:8%">Date</th>
+                <th style ="width:8%">Vou. No</th>
+                <th style="width:9%">Ref. No</th>
+                <th style="width:15%">Account Title</th>
+                <th style="width:15%">Company Name</th>
+                <th style="width:10%">Debit</th>
+                <th style="width:10%">Credit</th>
+                <th style="width:25%">Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow Row in ExpenseSheet.Rows)
+            {
+                var _Date = ((DateTime)Row["Vou_Date"]).ToString(_DateFormat);
+                var _Debit = ((decimal)Row["DR"]).ToString(_AmountFormat);
+                var _Credit = ((decimal)Row["CR"]).ToString(_AmountFormat);
+
+                <tr>
+                    <td class="text-center">@_Date</td>
+                    <td>@Row["Vou_no"]</td>
+                    <td>@Row["Ref_No"]</td>
+                    <td>@Row["AccountTitle"]</td>
+                    <td>@Row["CompanyName"]</td>
+                    <td class="TextRight">@_Debit</td>
+                    <td class="TextRight">@_Credit</td>
+                    <td>@Row["Description"]</td>
+                </tr>
+            }
+        </tbody>
+
+
+    </table>
+
+</div>

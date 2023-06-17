@@ -26,288 +26,197 @@
 
 
 <form method="post">
-    <div class="container">
-
-        <div class="row mb-2">
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <select class="form-select" id="SelectCOA" aria-label="Selection of Account" asp-for="@Model.Variables.OBCompany">
-                        <option selected>@TitleOBCompany</option>
-                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                        {
-                            <option value="@Item.Key">@Item.Value</option>
-                        }
-                    </select>
-                    <label for="SelectCOA">Account Title</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <select class="form-select" id="SelectStock" aria-label="Selection of Stock" asp-for="@Model.Variables.OBStock">
-                        <option selected>@TitleOBStock</option>
-                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                        {
-                            <option value="@Item.Key">@Item.Value</option>
-                        }
-                    </select>
-                    <label for="SelectStock">Account Title</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <input type="Date" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.OBDate">
-                    <label for="OBDate">Opening Balance Date</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.DateFormat">
-                        <option selected>@Model.Variables.DateFormat</option>
-                        @foreach (string Item in Model.DateFormats)
-                        {
-                            <option value="@Item">@Item</option>
-                        }
-                    </select>
-                    <label for="floatingSelect">Date Format</label>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-2">
-            <div class="col-md-3">
-                <div class="form-floating">
-                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.CurrencyFormat">
-                        <option selected>@Model.Variables.CurrencyFormat</option>
-                        @foreach (string Item in Model.CurrencyFormats)
-                        {
-                            <option value="@Item">@Item</option>
-                        }
-                    </select>
-                    <label for="floatingSelect">Currency Format</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <input type="text" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.CurrencySign">
-                    <label for="OBDate">Currency Sign</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
-                    <label for="OBalance">Fiscal Year Start</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-1">
-                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
-                    <label for="OBalance">Fiscal Year End</label>
-                </div>
-            </div>
-        </div>
-        <div class="row mb-2">
-
-            <!---  COA for Purchase Invoice (Accounts Payble) -->
-            <hr />
-
-            <div class="accordion" id="accordionExample">
-                
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="collapseGeneral">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                            General Setup
-                        </button>
-                    </h2>
-                    <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="hdGeneral" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <div class="row mb-2">
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="SelectCOA" aria-label="Selection of Account" asp-for="@Model.Variables.OBCompany">
-                                            <option selected>@TitleOBCompany</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectCOA">Account Title</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="SelectStock" aria-label="Selection of Stock" asp-for="@Model.Variables.OBStock">
-                                            <option selected>@TitleOBStock</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectStock">Account Title</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <input type="Date" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.OBDate">
-                                        <label for="OBDate">Opening Balance Date</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.DateFormat">
-                                            <option selected>@Model.Variables.DateFormat</option>
-                                            @foreach (string Item in Model.DateFormats)
-                                            {
-                                                <option value="@Item">@Item</option>
-                                            }
-                                        </select>
-                                        <label for="floatingSelect">Date Format</label>
-                                    </div>
+    <div class="container padding-0">
+        <div class="accordion" id="accordionExample">
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="collapseGeneral">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        General Setup
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse" aria-labelledby="hdGeneral" data-bs-parent="#accordionExample" style="">
+                    <div class="accordion-body">
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectCOA" aria-label="Selection of Account" asp-for="@Model.Variables.OBCompany">
+                                        <option selected>@TitleOBCompany</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectCOA">Companies Opening Balance</label>
                                 </div>
                             </div>
-                            <div class="row mb-2">
-                                <div class="col-md-3">
-                                    <div class="form-floating">
-                                        <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.CurrencyFormat">
-                                            <option selected>@Model.Variables.CurrencyFormat</option>
-                                            @foreach (string Item in Model.CurrencyFormats)
-                                            {
-                                                <option value="@Item">@Item</option>
-                                            }
-                                        </select>
-                                        <label for="floatingSelect">Currency Format</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <input type="text" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.CurrencySign">
-                                        <label for="OBDate">Currency Sign</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
-                                        <label for="OBalance">Fiscal Year Start</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-floating mb-1">
-                                        <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
-                                        <label for="OBalance">Fiscal Year End</label>
-                                    </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectStock" aria-label="Selection of Stock" asp-for="@Model.Variables.OBStock">
+                                        <option selected>@TitleOBStock</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectStock">Stock Opening Balance Account</label>
                                 </div>
                             </div>
-
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="Date" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.OBDate">
+                                    <label for="OBDate">Opening Balance Date</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.DateFormat">
+                                        <option selected>@Model.Variables.DateFormat</option>
+                                        @foreach (string Item in Model.DateFormats)
+                                        {
+                                            <option value="@Item">@Item</option>
+                                        }
+                                    </select>
+                                    <label for="floatingSelect">Date Format</label>
+                                </div>
+                            </div>
                         </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="floatingSelect" aria-label="Floating label select example" asp-for="@Model.Variables.CurrencyFormat">
+                                        <option selected>@Model.Variables.CurrencyFormat</option>
+                                        @foreach (string Item in Model.CurrencyFormats)
+                                        {
+                                            <option value="@Item">@Item</option>
+                                        }
+                                    </select>
+                                    <label for="floatingSelect">Currency Format</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.CurrencySign">
+                                    <label for="OBDate">Currency Sign</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
+                                    <label for="OBalance">Fiscal Year Start</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
+                                    <label for="OBalance">Fiscal Year End</label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="hdPayable">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                            ACCOUNT PAYBLE (Supplier / Vendors Bill)
-                        </button>
-                    </h2>
-                    <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="hdPayable" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select form-select-sm" id="SelectStock" aria-label="Selection of Purchase Account" asp-for="@Model.Variables.BPay_Stock">
-                                            <option selected>@TitleBPay_Stock</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectStock">Purchase Account</label>
-                                    </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="hdPayable">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        Accounts Payable (Supplier / Vendors Bill)
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="hdPayable" data-bs-parent="#accordionExample" style="">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select form-select-sm" id="SelectStock" aria-label="Selection of Purchase Account" asp-for="@Model.Variables.BPay_Stock">
+                                        <option selected>@TitleBPay_Stock</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectStock">Purchase Account</label>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select form-select-sm" id="SelectTax" aria-label="Selection of Sales Tax Account" asp-for="@Model.Variables.BPay_Tax">
-                                            <option selected>@TitleBPay_Tax</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectTax">Sales Tax Account</label>
-                                    </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select form-select-sm" id="SelectTax" aria-label="Selection of Sales Tax Account" asp-for="@Model.Variables.BPay_Tax">
+                                        <option selected>@TitleBPay_Tax</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectTax">Sales Tax Account</label>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select form-select-sm" id="SelectPayable" aria-label="Selection of Payable Account" asp-for="@Model.Variables.BPay_Payable">
-                                            <option selected>@TitleBPay_Payable</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectPayable">Payable Account</label>
-                                    </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select form-select-sm" id="SelectPayable" aria-label="Selection of Payable Account" asp-for="@Model.Variables.BPay_Payable">
+                                        <option selected>@TitleBPay_Payable</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectPayable">Payable Account</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="hdReceivable">
-                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                            ACCOUNT RECEIVBALE (Sales Invoice)
-                        </button>
-                    </h2>
-                    <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="hdReceivable" data-bs-parent="#accordionExample" style="">
-                        <div class="accordion-body">
-                            <div class="row">
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="SelectStock" aria-label="Selection of Purchase Account" asp-for="@Model.Variables.BRec_Stock">
-                                            <option selected>@TitleBPay_Stock</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectStock">Purchase Account</label>
-                                    </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="hdReceivable">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Accounts Receivable (Sales Invoice)
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="hdReceivable" data-bs-parent="#accordionExample" style="">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectStock" aria-label="Selection of Purchase Account" asp-for="@Model.Variables.BRec_Stock">
+                                        <option selected>@TitleBPay_Stock</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectStock">Purchase Account</label>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="SelectTax" aria-label="Selection of Sales Tax Account" asp-for="@Model.Variables.BRec_Tax">
-                                            <option selected>@TitleBPay_Tax</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectTax">Sales Tax Account</label>
-                                    </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectTax" aria-label="Selection of Sales Tax Account" asp-for="@Model.Variables.BRec_Tax">
+                                        <option selected>@TitleBPay_Tax</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectTax">Sales Tax Account</label>
                                 </div>
-                                <div class="col-4">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="SelectPayable" aria-label="Selection of Payable Account" asp-for="@Model.Variables.BRec_Receivable">
-                                            <option selected>@TitleBPay_Payable</option>
-                                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                            {
-                                                <option value="@Item.Key">@Item.Value</option>
-                                            }
-                                        </select>
-                                        <label for="SelectPayable">Payable Account</label>
-                                    </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectPayable" aria-label="Selection of Payable Account" asp-for="@Model.Variables.BRec_Receivable">
+                                        <option selected>@TitleBPay_Payable</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectPayable">Payable Account</label>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-
             </div>
-
-            <!-- End Example Code -->
-
-
-            <hr />
-            <!---  SAVE BUTTON-->
         </div>
+        <!---  SAVE BUTTON-->
+        <hr />
         <div class="row mb-2">
             <div class="col"> <button type="submit" class="btn btn-primary" asp-page-handler="Save"> <i class="bi bi-save"> Save</i> </button> </div>
         </div>

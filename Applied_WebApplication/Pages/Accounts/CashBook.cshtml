@@ -136,20 +136,20 @@
 
                                         @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
-                                            <td>
-                                                <div class="text-center">
-                                                    <a asp-page="CashBookRecord"
-                                                       asp-route-id="@Row["ID"]"
-                                                       asp-page-handler="Edit">
-                                                        <i class="bi bi-pencil-fill text-primary"></i>
-                                                    </a>
-                                                    <button class="btn btn-link"
-                                                            asp-page-handler="Delete"
-                                                            asp-route-ID="@Row["ID"]">
-                                                        <i class="bi bi-trash-fill text-danger"></i>
-                                                    </button>
-                                                </div>
-                                                <button class="btn btn-link"
+                                            <td class="text-center">
+                                                <button class="btn btn-link btn-sm p-0"
+                                                        asp-page-handler="Edit"
+                                                        asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-pencil-fill text-primary"></i>
+                                                </button>
+
+                                                <button class="btn btn-link btn-sm p-0"
+                                                        asp-page-handler="Delete"
+                                                        asp-route-ID="@Row["ID"]">
+                                                    <i class="bi bi-trash-fill text-danger"></i>
+                                                </button>
+
+                                                <button class="btn btn-link btn-sm p-0"
                                                         asp-page-handler="Print"
                                                         asp-route-ID="@Row["ID"]">
                                                     <i class="bi bi-printer text-success"></i>

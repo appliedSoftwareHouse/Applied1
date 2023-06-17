@@ -68,48 +68,47 @@ namespace Applied_WebApplication.Data
         {
             DataTable _Table;
             DateTime OBalDate = AppRegistry.GetDate(UserName, "OBDate");
-            StringBuilder Text = new StringBuilder();
-            Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            Text.Append("SUM([Ledger].[DR]) AS[DR], ");
-            Text.Append("SUM([Ledger].[CR]) AS[CR], ");
-            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
-            Text.Append("FROM [Ledger] ");
-            Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            Text.Append("WHERE Date([Ledger].[Vou_Date]) = Date('");
-            Text.Append(OBalDate.ToString(AppRegistry.DateYMD));
-            Text.Append("') GROUP BY[COA] ");
-
-            _Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
-
+            var _Date = OBalDate.ToString(AppRegistry.DateYMD);
+            var _Filter = $"Date([Ledger].[Vou_Date]) = Date({_Date})";
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
             SetParameters();
             MyReportClass.ReportSourceData = _Table;
-            
             return _Table;
         }
 
         public DataTable TB_Dates(DateTime Date1, DateTime Date2)
         {
-            //DataTable _TableOB = TBOB_Data();
             DataTable _Table;
             
-            StringBuilder Text = new StringBuilder();
-            Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            Text.Append("SUM([Ledger].[DR]) AS[DR], ");
-            Text.Append("SUM([Ledger].[CR]) AS[CR], ");
-            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
-            Text.Append("FROM [Ledger] ");
-            Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            Text.Append("WHERE Date([Ledger].[Vou_Date]) >= Date('");
-            Text.Append(Date1.ToString(AppRegistry.DateYMD));
-            Text.Append("') AND Date([Ledger].[Vou_Date]) <= Date('");
-            Text.Append(Date2.ToString(AppRegistry.DateYMD));
-            Text.Append("') GROUP BY[COA] ");
-
+            var _Start = Date1.ToString(AppRegistry.DateYMD);
+            var _End = Date2.ToString(AppRegistry.DateYMD);
+            var _Filter = $"Date([Ledger].[Vou_Date]) >= Date({_Start}) AND Date([Ledger].[Vou_Date]) <= Date({_End}} ";
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
             SetParameters();
-            _Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
+            MyReportClass.ReportSourceData = _Table;
+            return _Table;
+
+            ////DataTable _TableOB = TBOB_Data();
+            //DataTable _Table;
+            
+            //StringBuilder Text = new StringBuilder();
+            //Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
+            //Text.Append("SUM([Ledger].[DR]) AS[DR], ");
+            //Text.Append("SUM([Ledger].[CR]) AS[CR], ");
+            //Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
+            //Text.Append("FROM [Ledger] ");
+            //Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
+            //Text.Append("WHERE Date([Ledger].[Vou_Date]) >= Date('");
+            //Text.Append(Date1.ToString(AppRegistry.DateYMD));
+            //Text.Append("') AND Date([Ledger].[Vou_Date]) <= Date('");
+            //Text.Append(Date2.ToString(AppRegistry.DateYMD));
+            //Text.Append("') GROUP BY[COA] ");
+
+            //SetParameters();
+            //_Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
 
           
-            return _Table;
+            //return _Table;
         }
 
         public DataTable TB_All()

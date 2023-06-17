@@ -11,6 +11,8 @@ namespace Applied_WebApplication.Data
 {
     public class SQLQuery
     {
+
+        #region Sales Invoice
         public static string SalesInvoice()
         {
             var Text = new StringBuilder();
@@ -64,7 +66,9 @@ namespace Applied_WebApplication.Data
 
 
         }
+        #endregion
 
+        #region Posting Vouchers
         public static string PostBillReceivable(string? _Filter)
         {
             StringBuilder Text = new StringBuilder();
@@ -85,7 +89,9 @@ namespace Applied_WebApplication.Data
             }
             return Text.ToString();
         }
+        #endregion
 
+        #region Write Cheque
         public static string WriteCheque(string? _Filter)
         {
             var Text = new StringBuilder();
@@ -96,8 +102,9 @@ namespace Applied_WebApplication.Data
             }
             return Text.ToString();
         }
+        #endregion
 
-
+        #region Expense Sheet
         public static string ExpenseSheetList()
         {
             var Text = "SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [CashBook] ";
@@ -113,6 +120,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[CB].[Sheet_No], ");
             Text.Append("[CB].[Vou_No], ");
             Text.Append("[CB].[Vou_Date], ");
+            Text.Append("[CB].[Ref_No], ");
             Text.Append("[CB].[COA], ");
             Text.Append("[A].[Title] AS [AccountTitle], ");
             Text.Append("[CB].[Customer], ");
@@ -136,7 +144,9 @@ namespace Applied_WebApplication.Data
             }
             return Text.ToString();
         }
+        #endregion
 
+        #region Unpost Vouchers
         public static string UnpostBillPayable(string _Filter)
         {
             var Text = new StringBuilder();
@@ -182,7 +192,9 @@ namespace Applied_WebApplication.Data
             }
             return Text.ToString();
         }
+        #endregion
 
+        #region Ledger
         public static string Ledger()
         {
             var Text = new StringBuilder();
@@ -202,6 +214,9 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
+        #endregion
+
+        #region Sales and Purchase Register
 
         public static string SaleRegister(string _Filter)
         {
@@ -297,6 +312,29 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
+        #endregion
+
+        #region Trial Balance
+
+        public static string TrialBalance(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
+            Text.Append("SUM([Ledger].[DR]) AS[DR], ");
+            Text.Append("SUM([Ledger].[CR]) AS[CR], ");
+            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
+            Text.Append("FROM [Ledger] ");
+            Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
+            Text.Append($"WHERE {_Filter} ");
+            Text.Append("') GROUP BY[COA] ");
+
+
+            return Text.ToString();
+        }
+
+        #endregion
+
+
 
 
         #region Create DataTable into Source Data

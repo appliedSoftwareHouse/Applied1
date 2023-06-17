@@ -16,11 +16,11 @@ namespace Applied_WebApplication.Pages.Accounts
         public MyParameters Variables { get; set; }
         public BookRecord MyRecord { get; set; }
         public DataTable Cashbook = new DataTable();
- 
+
         public List<Message> ErrorMessages = new();
         public string FMTNumber { get; set; }
         public string FMTCurrency { get; set; }
-        public string FMTDate { get; set;}
+        public string FMTDate { get; set; }
         public string UserName => User.Identity.Name;
 
         #region Get / POST
@@ -30,7 +30,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             if (id == null)
             {
-                Variables = new() 
+                Variables = new()
                 {
                     IsSelected = false,
                     CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
@@ -61,7 +61,7 @@ namespace Applied_WebApplication.Pages.Accounts
             LedgerClass.Sort = "Vou_Date";
             LedgerClass.Filter = $"BookID={id} AND Vou_Date<='{Date2}'";
             Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
-            if (Variables.IsPosted1==1)                        // Not posted.
+            if (Variables.IsPosted1 == 1)                        // Not posted.
             {
                 DataView BookView = Cashbook.AsDataView();
                 BookView.RowFilter = "Status='Posted'";
@@ -75,26 +75,30 @@ namespace Applied_WebApplication.Pages.Accounts
                 Cashbook = BookView.ToTable();
             }
 
-            if (Cashbook.Rows.Count==0)
+            if (Cashbook.Rows.Count == 0)
             {
                 ErrorMessages.Add(MessageClass.SetMessage("No record Found.....!"));
             }
 
             FMTNumber = GetText(UserName, "FMT");
-            
+
 
         }
-       
+
         #endregion
 
-        
+        public IActionResult OnPostEdit(int ID)
+        {
+            return RedirectToPage("CashBookRecord", "Edit", routeValues: new { id=ID });
+        }
+
         public IActionResult OnPostRefresh(int id)
         {
-           
-           SetKey(UserName, "CashBookFrom", Variables.MinDate, KeyType.Date);
-           SetKey(UserName, "CashBookTo", Variables.MaxDate, KeyType.Date);
-           SetKey(UserName, "CashBookPost", Variables.IsPosted1, KeyType.Number);
-           SetKey(UserName, "CashBookID", Variables.CashBookID, KeyType.Number);
+
+            SetKey(UserName, "CashBookFrom", Variables.MinDate, KeyType.Date);
+            SetKey(UserName, "CashBookTo", Variables.MaxDate, KeyType.Date);
+            SetKey(UserName, "CashBookPost", Variables.IsPosted1, KeyType.Number);
+            SetKey(UserName, "CashBookID", Variables.CashBookID, KeyType.Number);
 
 
             return RedirectToPage("CashBook", routeValues: new { id = Variables.CashBookID });
@@ -146,7 +150,7 @@ namespace Applied_WebApplication.Pages.Accounts
             ErrorMessages = new();
             DataTableClass _Table = new(UserName, Tables.CashBook);
             _Table.MyDataView.RowFilter = string.Format("ID={0}", ID);
-            if(_Table.Count==1)
+            if (_Table.Count == 1)
             {
                 try
                 {
@@ -161,12 +165,10 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return RedirectToPage("CashBook");
         }
-        
         public IActionResult OnPostPrint(int ID)
         {
             return Page();
         }
-
         public IActionResult OnPostShow(int ID)
         {
             return Page();
@@ -192,7 +194,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public int IsPosted1 { get; set; }
 
         }
-      
+
         public class BookRecord
         {
             public int ID { get; set; }
