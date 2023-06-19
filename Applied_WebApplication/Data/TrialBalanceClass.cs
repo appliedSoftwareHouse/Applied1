@@ -1,11 +1,14 @@
-﻿using AppReporting;
+﻿using AppReportClass;
+using AppReporting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Security.Claims;
 using System.Text;
 
 namespace Applied_WebApplication.Data
 {
-    public class TrialBalance
+    public class TrialBalanceClass
     {
         #region Setup
         public DataTable MyDataTable { get; set; }
@@ -24,7 +27,7 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        public TrialBalance(ClaimsPrincipal _UserClaims)
+        public TrialBalanceClass(ClaimsPrincipal _UserClaims)
         {
             UserPrincipal = _UserClaims;
             UserName = UserPrincipal.Identity.Name;
@@ -56,20 +59,22 @@ namespace Applied_WebApplication.Data
 
             };
 
-            MyReportClass.RptParameters.Add("CompanyName", CompanyName);
-            MyReportClass.RptParameters.Add("Heading1", Heading1);
-            MyReportClass.RptParameters.Add("Heading2", Heading2);
-            MyReportClass.RptParameters.Add("Footer", AppFunctions.AppGlobals.ReportFooter);
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppFunctions.AppGlobals.ReportFooter)
+            };
 
         }
-
 
         public DataTable TBOB_Data()
         {
             DataTable _Table;
             DateTime OBalDate = AppRegistry.GetDate(UserName, "OBDate");
             var _Date = OBalDate.ToString(AppRegistry.DateYMD);
-            var _Filter = $"Date([Ledger].[Vou_Date]) = Date({_Date})";
+            var _Filter = $"Date([Ledger].[Vou_Date]) = Date('{_Date}')";
             _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
             SetParameters();
             MyReportClass.ReportSourceData = _Table;
@@ -82,56 +87,48 @@ namespace Applied_WebApplication.Data
             
             var _Start = Date1.ToString(AppRegistry.DateYMD);
             var _End = Date2.ToString(AppRegistry.DateYMD);
-            var _Filter = $"Date([Ledger].[Vou_Date]) >= Date({_Start}) AND Date([Ledger].[Vou_Date]) <= Date({_End}} ";
+            var _Filter = $"Date([Ledger].[Vou_Date]) >= Date('{_Start}') AND Date([Ledger].[Vou_Date]) <= Date('{_End}') ";
             _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
             SetParameters();
             MyReportClass.ReportSourceData = _Table;
             return _Table;
-
-            ////DataTable _TableOB = TBOB_Data();
-            //DataTable _Table;
-            
-            //StringBuilder Text = new StringBuilder();
-            //Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            //Text.Append("SUM([Ledger].[DR]) AS[DR], ");
-            //Text.Append("SUM([Ledger].[CR]) AS[CR], ");
-            //Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
-            //Text.Append("FROM [Ledger] ");
-            //Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            //Text.Append("WHERE Date([Ledger].[Vou_Date]) >= Date('");
-            //Text.Append(Date1.ToString(AppRegistry.DateYMD));
-            //Text.Append("') AND Date([Ledger].[Vou_Date]) <= Date('");
-            //Text.Append(Date2.ToString(AppRegistry.DateYMD));
-            //Text.Append("') GROUP BY[COA] ");
-
-            //SetParameters();
-            //_Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
-
-          
-            //return _Table;
         }
 
         public DataTable TB_All()
         {
             DataTable _Table;
-
-            StringBuilder Text = new StringBuilder();
-            Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            Text.Append("SUM([Ledger].[DR]) AS[DR], ");
-            Text.Append("SUM([Ledger].[CR]) AS[CR], ");
-            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
-            Text.Append("FROM [Ledger] ");
-            Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            Text.Append("GROUP BY[COA] ");
-
             SetParameters();
-            _Table = DataTableClass.GetTable(UserName, Text.ToString(), "[COA].[Code]");
-
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(""));
             return _Table;
         }
 
+        public  void Download(ReportType _ReportType)
+        {
+            SetParameters();
 
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppFunctions.AppGlobals.ReportFooter)
+            };
 
+            var _ReportFile = string.Concat(MyReportClass.ReportFilePath, MyReportClass.ReportFile);
+            ReportDataSource _DataSource = new(MyReportClass.ReportDataSet, MyReportClass.ReportSourceData);
+            LocalReport report = new();
+            var _ReportStream = new StreamReader(_ReportFile);
+            report.LoadReportDefinition(_ReportStream);
+            report.DataSources.Add(_DataSource);
+            report.SetParameters(_Parameters);
+
+            var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
+            var _RenderedReport = report.Render(_RenderFormat);
+            var _mimeType = ExportReport.GetReportMime(_ReportType);
+            var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
+
+            //return File(_RenderedReport, _mimeType, MyReportClass.OutputFile + _Extention);
+        }
 
     }
 }

@@ -195,7 +195,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Ledger
-        public static string Ledger()
+        public static string Ledger(string _Filter)
         {
             var Text = new StringBuilder();
             Text.Append("SELECT [L].*, ");
@@ -210,7 +210,10 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [Employees] [E] ON [E].[ID] = [L].[EMPLOYEE] ");
             Text.Append("LEFT JOIN [Project]       [P] ON [P].[ID] = [L].[PROJECT] ");
             Text.Append("LEFT JOIN [Inventory]   [I]  ON [I].[ID]  = [L].[INVENTORY]");
-            Text.Append("");
+            if(_Filter.Length > 0)
+            {
+                Text.Append($" WHERE {_Filter}");
+            }
 
             return Text.ToString();
         }
@@ -269,7 +272,7 @@ namespace Applied_WebApplication.Data
         public static string PurchaseRegister(string _Filter)
         {
             var Text = new StringBuilder();
-            
+
             Text.Append("SELECT ");
             Text.Append("[B1].[ID] AS[ID1], ");
             Text.Append("[B2].[ID] AS[ID2], ");
@@ -325,17 +328,16 @@ namespace Applied_WebApplication.Data
             Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
             Text.Append("FROM [Ledger] ");
             Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            Text.Append($"WHERE {_Filter} ");
-            Text.Append("') GROUP BY[COA] ");
-
+            if (_Filter.Length > 0)
+            {
+                Text.Append($"WHERE {_Filter} ");
+            }
+            Text.Append("GROUP BY[COA] ");
 
             return Text.ToString();
         }
 
         #endregion
-
-
-
 
         #region Create DataTable into Source Data
 
@@ -472,10 +474,6 @@ namespace Applied_WebApplication.Data
             }
         }
         #endregion
-
-
-
-
     }
 }
 

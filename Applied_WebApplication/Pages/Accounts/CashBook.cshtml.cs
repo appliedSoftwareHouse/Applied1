@@ -5,8 +5,7 @@ using System.Data.Entity;
 using System.Drawing;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.AppRegistry;
-
-
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {

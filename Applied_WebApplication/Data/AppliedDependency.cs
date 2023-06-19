@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Data;
+using System.Globalization;
 using System.Security.Claims;
 
 namespace Applied_WebApplication.Data
@@ -40,6 +41,8 @@ namespace Applied_WebApplication.Data
         public string DateFormat { get; set; }
         public string CurrencyFormat { get; set; }
         public string ReportFooter { get; set; }
+        
+
         public ClaimsPrincipal AppUser { get; set; }
 
         public AppliedDependency()
@@ -57,9 +60,10 @@ namespace Applied_WebApplication.Data
             CultureString = "en-US";
             AppCurture = new CultureInfo(CultureString, false);
             InputDatesFormat = "yyyy-MM-dd";
-            DateFormat = "dd-MM-yyyy";
-            CurrencyFormat = "#0.00";
+            //DateFormat = "dd-MM-yyyy";
+            //CurrencyFormat = "#0.00";
             ReportFooter = "Powered by Applied Software House, +92 336 2454 230";
+            
 
             // If User is existing in class.
             if (AppUser != null)

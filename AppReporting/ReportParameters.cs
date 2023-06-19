@@ -1,10 +1,6 @@
 ﻿using Microsoft.Reporting.NETCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace AppReportClass
 {
@@ -13,14 +9,28 @@ namespace AppReportClass
         public string ReportPath { get; set; }
         public string ReportFile { get; set; }
         public string OutputPath { get; set; }
+        public string OutputPathLink { get; set; }
         public string OutputFile { get; set; }
+        public string OutputFileName { get; set; }
+        public string OutputFileFullName { get; set; }
         public string OutputFileExtention { get; set; }
-        public DataTable ReportData { get; set; }
         public string DataSetName { get; set; }
-        public List<ReportParameter>  DataParameters { get; set; }
-        public ReportType ReportType { get; set; }
         public string MimeType { get; set; }
-        public string RenderFormat { get; set; }
-        
+        public string MyMessage { get; set; }
+        public string CompanyName { get; set; }
+        public string Heading1 { get; set; }
+        public string Heading2 { get; set; }
+        public string Footer { get; set; }
+        public byte[] FileBytes { get; set; }
+
+        public DataTable ReportData { get; set; }
+        public ReportType ReportType { get; set; }
+        public List<ReportParameter> DataParameters { get; set; }
+
+        public string GetFileLink()
+        {
+            return $"{OutputPathLink}{OutputFileName}";
+        }
+
     }
 }

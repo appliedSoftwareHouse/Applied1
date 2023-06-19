@@ -26,7 +26,7 @@ namespace AppReporting
         public byte[] MyBytes { get; set; }                                               // Rendered file bytes for view or print report
 
         public bool IsError { get; set; }
-        
+
 
 
         #region Get Reports
@@ -64,7 +64,7 @@ namespace AppReporting
         {
             try
             {
-               var _ReportFile = string.Concat(ReportFilePath, ReportFile);
+                var _ReportFile = string.Concat(ReportFilePath, ReportFile);
                 StreamReader ReportStream = new StreamReader(_ReportFile);
                 LocalReport RDLCreport = new LocalReport();
                 RDLCreport.LoadReportDefinition(ReportStream);
@@ -159,7 +159,7 @@ namespace AppReporting
             return string.Concat(_SQL.ToString(), Where);
         }
 
-        
+
         public class ReportData
         {
             public string ReportFile { get; set; }

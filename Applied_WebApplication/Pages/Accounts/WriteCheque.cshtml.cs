@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {

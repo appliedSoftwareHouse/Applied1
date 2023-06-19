@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Stock
 {

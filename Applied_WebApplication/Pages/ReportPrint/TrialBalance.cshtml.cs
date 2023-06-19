@@ -1,10 +1,13 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Reporting.NETCore;
 using NPOI.SS.Formula.Functions;
 using System.Data;
 using System.Data.Entity.Core.Metadata.Edm;
 using System.Text;
 using System.Text.RegularExpressions;
+using static Applied_WebApplication.Data.MessageClass;
 using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace Applied_WebApplication.Pages.ReportPrint
@@ -40,7 +43,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     };
                 }
 
-                TrialBalance TBal = new(User);
+                TrialBalanceClass TBal = new(User);
                 TB = TBal.TB_Dates(Variables.DateFrom, Variables.DateTo);
 
                 foreach (DataRow Row in TB.Rows)
@@ -59,17 +62,59 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
         }
 
+        public IActionResult OnGetPrint(string Option)
+        {
+            var Date1 = AppRegistry.GetDate(UserName, "TBDate1");
+            var Date2 = AppRegistry.GetDate(UserName, "TBDate2");
 
-        public IActionResult OnPostOBTBAsync()
+            if (Option==PrintOption.Preview.ToString())
+            {
+                return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new { Date1, Date2 });                  // PrintReport Folder is not include in Project.
+            }
+
+            if(Option==PrintOption.PDF.ToString())
+            {
+                var Variables = new ReportParameters()
+                {
+                    OutputFile = "TB",
+                    OutputFileExtention = "pdf",
+                    OutputPath = AppFunctions.AppGlobals.PrintedReportPath,
+                    ReportType = ReportType.PDF,
+                    ReportPath = AppFunctions.AppGlobals.ReportPath,
+                    ReportFile = "TB.rdlc",
+                    CompanyName = UserProfile.GetCompanyName(User),
+                    Heading1 = "Trial Balance",
+                    Heading2 = $"As on {Date2}",
+                    Footer = AppFunctions.AppGlobals.ReportFooter
+                };
+
+                List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", Variables.CompanyName),
+                new ReportParameter("Heading1", Variables.Heading1),
+                new ReportParameter("Heading2", Variables.Heading2),
+                new ReportParameter("Footer", Variables.Footer)
+            };
+                
+            Variables.DataParameters = _Parameters;
+                
+                var ReportClass = new ExportReport(Variables);
+
+
+
+            }
+
+
+            return RedirectToPage();
+        }
+
+        public IActionResult OnPostTBOpeningAsync()
         {
             var OBDate = AppRegistry.GetDate(UserName, "OBDate");
             AppRegistry.SetKey(UserName, "TBDate1", OBDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "TBDate2", OBDate, KeyType.Date);
             return RedirectToPage();
-
-            //return RedirectToPage("./PrintReport", pageHandler: "OBTB");
         }
-
         public IActionResult OnPostTBALLAsync()
         {
             DataTableClass Ledger = new(UserName, Tables.Ledger);
@@ -79,18 +124,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "TBDate1", MinDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "TBDate2", MaxDate, KeyType.Date);
             return RedirectToPage();
-
-            //return RedirectToPage("./PrintReport", pageHandler: "OBTB");
         }
-        public IActionResult OnPostTBPrint()
-        {
-            var Date1 = Variables.DateFrom;
-            var Date2 = Variables.DateTo;
-            return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new { Date1, Date2 });                  // PrintReport Folder is not include in Project.
-        }
-
-
-        public IActionResult OnPostRefresh()
+        
+        public IActionResult OnPostReload()
         {
             AppRegistry.SetKey(UserName, "TBDate1", Variables.DateFrom, KeyType.Date);
             AppRegistry.SetKey(UserName, "TBDate2", Variables.DateTo, KeyType.Date);

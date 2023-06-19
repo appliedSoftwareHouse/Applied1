@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {

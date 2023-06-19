@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using NPOI.OpenXmlFormats;
 using System.Data;
 using System.Drawing;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Stock
 {

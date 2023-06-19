@@ -22,5 +22,54 @@ namespace AppReportClass
             public int N_InvSubCategory { get; set; }
             public bool All_COA { get; set; }
             public bool All_Customer { get; set; }
+
+        public string FilterText()
+        {
+            var Text = new StringBuilder();
+            
+            if( N_COA > 0 )
+            { 
+                if(Text.ToString().Length>0) { Text.Append(" AND "); }
+                Text.Append($"COA={N_COA} ");
+            }
+
+            if (N_Customer > 0)
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Customer={N_Customer} ");
+            }
+
+            if (N_Employee > 0)
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Employee={N_Employee} ");
+            }
+
+            if (N_Project > 0)
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Project={N_Project} ");
+            }
+
+            if (N_Inventory > 0)
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Inventory={N_Inventory} ");
+            }
+
+            if (Dt_From > new DateTime(2022,1,1))
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Vou_Date>='{Dt_From.ToString("yyyy-MM-dd")}'");
+            }
+
+            if (Dt_To > new DateTime(2022, 1, 1))
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Vou_Date<='{Dt_To.ToString("yyyy-MM-dd")}'");
+            }
+            return Text.ToString();
+        }
+
     }
 }

@@ -3,14 +3,34 @@
 @model Applied_WebApplication.Pages.ReportPrint.TrialBalanceModel
 @{
     var UserName = User.Identity.Name;
+    var _Difference = Conversion.ToDecimal(Model.Tot_DR - Model.Tot_CR).ToString(AppRegistry.FormatCurrency2);
+    var _Total1 = "TOTAL";
+    var _Total2 = $"Difference {_Difference}";
+
 }
+
+<style>
+    .col-width {
+        width: 120px;
+    }
+
+    .btn-width {
+        width: 100px
+    }
+
+    .table-list, td {
+        color:darkblue;
+        font-size: medium;
+    }
+
+</style>
 
 
 <div class="container AppHeading-2">
     <h5 class="TextCenter">TRIAL BALANCE</h5>
 </div>
 
-@if (Model.ErrorMessages.Count>0)
+@if (Model.ErrorMessages.Count > 0)
 {
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
 }
@@ -30,26 +50,31 @@
                     <input type="date" class="form-control" placeholder="Date To" asp-for="@Model.Variables.DateTo" aria-label="Date2" aria-describedby="basic-addon2">
                 </div>
             </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="OBTB">Opening</button>
+            <div class="col-1 col-width">
+                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="Reload">Reload</button>
             </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="TBALL">All</button>
+            <div class="col-1 col-width">
+                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="TBOpening">Opening</button>
             </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Refresh">Refresh</button>
-            </div>
-            <div class="col-1">
-                <button type="submit"
-                        class="btn btn-primary btn-sm float-end"
-                        asp-page-handler="TBPrint">
-                    PRINT
-                </button>
+            <div class="col-1 col-width">
+                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="TBALL">All</button>
             </div>
 
-
+            <div class="col-1 col-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="Preview">Preview</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="PDF">PDF</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print"  asp-route-Option="Excel">Excel</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="Word">Word</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="HTML">HTML</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-
     </div>
 </form>
 <div class="container">
@@ -80,7 +105,17 @@
         <tfoot class="TableFooter">
             <tr>
                 <td></td>
-                <td>TOTAL</td>
+
+                @if (Model.Tot_DR == Model.Tot_CR)
+                {
+                    <td class="text-primary">@_Total1</td>
+                }
+                else
+                {
+                    <td class="text-danger">@_Total2</td>
+                }
+
+
                 <td class="align-right">@Model.Tot_DR.ToString(AppRegistry.FormatCurrency2)</td>
                 <td class="align-right">@Model.Tot_CR.ToString(AppRegistry.FormatCurrency2)</td>
             </tr>

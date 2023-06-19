@@ -1,11 +1,7 @@
-﻿using NPOI.OpenXmlFormats;
-using NPOI.OpenXmlFormats.Dml;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using NPOI.OpenXmlFormats.Wordprocessing;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 using System.Text;
-
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
 {

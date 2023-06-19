@@ -189,14 +189,8 @@ namespace Applied_WebApplication.Data
 
         internal static DataTable GetGL(string userName, AppReportClass.ReportFilters paramaters)
         {
-            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE COA={paramaters.N_COA} ORDER BY COA,Vou_Date ";
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, _SQLQuery);
-            //DataTable Result = tb_Ledger.MyDataTable.Clone();
-
-            //tb_Ledger.MyDataView.RowFilter = string.Concat("COA=", paramaters.N_COA);
-            //tb_Ledger.MyDataView.Sort = "Vou_Date,Vou_No";
-
-
+            var _Filter = $"WHERE COA={paramaters.N_COA} ORDER BY COA,Vou_Date";
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
             return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }
 
@@ -210,17 +204,16 @@ namespace Applied_WebApplication.Data
             else
             { _Filter = $"Customer={paramaters.N_Customer} AND COA={paramaters.N_COA}"; }
 
-            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE {_Filter} ORDER BY Customer,COA,Vou_Date";  
-
-            DataTable _Table = DataTableClass.GetTable(UserName, _SQLQuery);
-
+            _Filter += " ORDER BY Customer,COA,Vou_Date";
+            DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(_Filter));
             return Generate_LedgerTable(UserName, _Table, paramaters);
         }
 
         internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, AppReportClass.ReportFilters paramaters)
         {
-            var _SQLQuery = $"{SQLQuery.Ledger()} WHERE [L].ID<0";
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, _SQLQuery);
+            
+            var _Filter = $" [L].ID<0";
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
             DataTable Result = tb_Ledger.Clone();
             Result.TableName = "Ledger";
             decimal Balance = 0.00M;

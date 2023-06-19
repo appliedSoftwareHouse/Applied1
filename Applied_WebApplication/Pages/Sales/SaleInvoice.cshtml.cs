@@ -6,6 +6,7 @@ using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Sales
 {

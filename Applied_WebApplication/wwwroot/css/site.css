@@ -95,7 +95,7 @@ AppHeading-2:hover {
 }
 
 .Text-Heading2 {
-    display:container;
+    display: container;
     text-align: center;
     padding: 0px;
     color: #7e02ff;
@@ -114,12 +114,19 @@ AppHeading-2:hover {
     padding-right: 2px
 }
 
+.table-lis, thead {
+    background-color: blanchedalmond
+}
+
+.table-list, tr {
+}
+
     .table-list tr:hover {
         background-color: #ffff99;
     }
 
 .table-list, th {
-    /*font-size:small*/
+       font-display:block;
 }
 
 .table-list, td {
@@ -134,13 +141,7 @@ AppHeading-2:hover {
 }
 
 
-.table-lis, thead{
-    background-color:blanchedalmond
-}
 
-.table-list, tr {
-    /*font-size:small*/
-}
 
 
 
@@ -180,6 +181,7 @@ AppHeading-2:hover {
     text-transform: uppercase;
     color: red;
 }
+
 .TableFooter {
     background: #F9DBDB
 }

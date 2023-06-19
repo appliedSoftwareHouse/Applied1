@@ -118,3 +118,13 @@ public enum VoucherType
     JV = 11
 
 }
+
+
+public enum PrintOption
+{
+    Preview = 0,
+    PDF = 1,
+    Excel=2,
+    Word=3,
+    HTML=4
+}

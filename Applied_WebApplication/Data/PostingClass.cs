@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
 {
@@ -270,8 +271,8 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
                 tb_Ledger.CurrentRow["BookID"] = 0;
                 tb_Ledger.CurrentRow["COA"] = COA_DR;
-                tb_Ledger.CurrentRow["DR"] = 0;
-                tb_Ledger.CurrentRow["CR"] = Row["Amount"];
+                tb_Ledger.CurrentRow["DR"] = Row["Amount"];
+                tb_Ledger.CurrentRow["CR"] = 0;
                 tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                 tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
                 tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
