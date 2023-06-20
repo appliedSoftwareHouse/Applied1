@@ -74,8 +74,12 @@ namespace AppReportClass
         {
             Variables ??= _ReportParameter;
             Variables.DataParameters ??= GetDataParameters();
+            var _ReportType = _ReportParameter.ReportType;
 
-            if (_ReportParameter.ReportType == ReportType.Preview) { _ReportParameter.ReportType = ReportType.PDF; }
+            if (_ReportParameter.ReportType == ReportType.Preview)
+            {
+                _ReportType = ReportType.PDF;
+            }
 
             var _ReportFile = string.Concat(Variables.ReportPath, Variables.ReportFile);
             ReportDataSource _DataSource = new(Variables.DataSetName, Variables.ReportData);
@@ -84,15 +88,19 @@ namespace AppReportClass
             report.LoadReportDefinition(_ReportStream);
             report.DataSources.Add(_DataSource);
             report.SetParameters(Variables.DataParameters);
-            var _RenderFormat = GetRenderFormat(Variables.ReportType);
+            var _RenderFormat = GetRenderFormat(_ReportType);
             Variables.FileBytes = report.Render(_RenderFormat);
 
-            Variables.MimeType = GetReportMime(Variables.ReportType);
-            Variables.OutputFileExtention = GetReportExtention(Variables.ReportType);
+            Variables.MimeType = GetReportMime(_ReportType);
+            Variables.OutputFileExtention = GetReportExtention(_ReportType);
             Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
             Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
 
             Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
+            if (Variables.ReportType == ReportType.Preview)
+            {
+                SaveReport();
+            }
             return Variables.FileBytes;
         }
 
@@ -110,7 +118,7 @@ namespace AppReportClass
 
         public bool SaveReport()
         {
-            if(Variables.FileBytes.Length==0)
+            if (Variables.FileBytes.Length == 0)
             {
                 return false;
             }

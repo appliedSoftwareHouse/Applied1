@@ -165,12 +165,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
                 if (_ReportType == ReportType.Preview)
                 {
-                    if (ReportClass.SaveReport())
-                    {
                         ReportLink = ReportClass.Variables.GetFileLink();
                         IsShowPdf = true;
                         return Page();
-                    }
                 }
                 else
                 {
