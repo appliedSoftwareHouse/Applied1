@@ -64,9 +64,9 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BPay_Tax", Variables.BPay_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BPay_Payable", Variables.BPay_Payable, KeyType.Number);
 
-            AppRegistry.SetKey(UserName, "BRec_Stock", Variables.BPay_Stock, KeyType.Number);
-            AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BPay_Tax, KeyType.Number);
-            AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BPay_Payable, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BRec_Stock", Variables.BRec_Stock, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
 
 
             return RedirectToPage();

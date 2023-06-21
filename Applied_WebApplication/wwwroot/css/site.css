@@ -114,8 +114,10 @@ AppHeading-2:hover {
     padding-right: 2px
 }
 
-.table-lis, thead {
-    background-color: blanchedalmond
+.table-list, thead {
+    background-color:aliceblue;
+    height:10px;
+        
 }
 
 .table-list, tr {
@@ -137,7 +139,9 @@ AppHeading-2:hover {
     border-bottom: dotted;
     border-bottom-color: dimgrey;
     border-bottom-width: thin;
-    font-size: small
+    font-size: small;
+    color:rebeccapurple
+
 }
 
 

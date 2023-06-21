@@ -4,6 +4,7 @@ using NPOI.SS.Formula.Functions;
 using System.Data;
 using System.Data.SQLite;
 using System.Text;
+using System.Text.RegularExpressions;
 using static Applied_WebApplication.Pages.Stock.InventoryModel;
 using static NPOI.HSSF.Util.HSSFColor;
 
@@ -144,6 +145,24 @@ namespace Applied_WebApplication.Data
             }
             return Text.ToString();
         }
+
+        public static string ExpenseSheetGroup(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[COA], ");
+            Text.Append("[C].[Code][Code], ");
+            Text.Append("[C].[title][Title], ");
+            Text.Append("[Sheet_No], ");
+            Text.Append("SUM([DR]) AS[DR], ");
+            Text.Append("SUM([CR]) AS[CR] ");
+            Text.Append("FROM[Cashbook][CB] ");
+            Text.Append("LEFT JOIN[COA] [C] ON[C].[ID] = [CB].[COA] ");
+            if (_Filter.Length > 0) {Text.Append($"WHERE {_Filter}"); }
+            Text.Append("GROUP BY[COA], [Sheet_No]");
+            return Text.ToString();
+        }
+
         #endregion
 
         #region Unpost Vouchers

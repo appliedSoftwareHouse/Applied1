@@ -1,0 +1,92 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.Directory.ProjectsModel
+@{
+    var UserName = User.Identity.Name;
+}
+
+<style>
+    .col-md-2 {
+        width: 220px;
+        margin-left: 50%;
+        margin-right: 50%;
+        background-color: darkgray
+    }
+</style>
+
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">PROJECTS</h5>
+</div>
+
+@if(Model.MyMessages.Count>0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.MyMessages"></component>
+}
+
+<form method="post">
+    <input type="text" asp-for="@Model.Variables.ID" hidden />
+    <div class="container">
+        <div class="row md-2">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Code" id="Vou_No" placeholder="Enter code">
+                    <label for="Vou_No">Code</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Title" id="Vou_No" placeholder="Enter title of project">
+                    <label for="Vou_No">Title</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Comments" id="Vou_No" placeholder="Enter comments">
+                    <label for="Vou_No">Comments</label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row md-2 mb-2">
+            <div class="col-dm-2">
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Save"><i class="bi bi-save"></i>  Save</button>
+                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="New"><i class="bi bi-database-add">New</i></button>
+                <button type="submit" class="btn btn-primary btn-sm " asp-page-handler="Back"><i class="bi bi-caret-left-square"></i>  Back</button>
+            </div>
+            <div class="col-dm-2">
+            </div>
+        </div>
+    </div>
+
+    <div class="contaner">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th style="width:20%">Code</th>
+                    <th style="width:20%">Title of Project</th>
+                    <th style="width:40%">Comments</th>
+                    <th style="width:20%">.
+                        
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Project != null)
+                {
+                    @foreach (DataRow Row in Model.Project.Rows)
+                    {
+                        <tr>
+                            <td>@Row["Code"]</td>
+                            <td>@Row["Title"]</td>
+                            <td>@Row["Comments"]</td>
+                            <td class="text-center">
+                                <button type="submit" asp-route-ID="@Row["ID"]" asp-page-handler="Edit" class="btn listbutton-blue"><i class="bi bi-pencil-fill"></i></button>
+                                <button type="submit" asp-route-ID="@Row["ID"]" asp-page-handler="Delete" class="btn listbutton-red"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+        </table>
+    </div>
+</form>
