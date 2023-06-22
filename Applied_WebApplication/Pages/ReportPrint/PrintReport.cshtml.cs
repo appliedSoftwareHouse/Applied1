@@ -165,9 +165,73 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
                 if (_ReportType == ReportType.Preview)
                 {
-                        ReportLink = ReportClass.Variables.GetFileLink();
-                        IsShowPdf = true;
-                        return Page();
+                    ReportLink = ReportClass.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                else
+                {
+                    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
+                }
+            }
+
+            ErrorMessages.Add(MessageClass.SetMessage("No Record / File found to generate Report........", ConsoleColor.Yellow));
+            return Page();
+        }
+
+        public IActionResult OnGetGLEmployee(ReportType _ReportType)
+        {
+            #region Report Filter Variables
+            ReportFilters Filters = new()
+            {
+                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                N_Employee = (int)AppRegistry.GetKey(UserName, "GL_Employee", KeyType.Number),
+                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+            };
+            #endregion
+
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText()));
+
+            if (_Table.Rows.Count > 0)
+            {
+                var _Title = GetTitle(UserName, Tables.Employees, Filters.N_Employee);
+                var _Heading1 = string.Concat(_Title);
+                var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
+
+                List<ReportParameter> _Parameters = new List<ReportParameter>
+                {
+                    new ReportParameter("CompanyName", CompanyName),
+                    new ReportParameter("Heading1", _Heading1),
+                    new ReportParameter("Heading2", _Heading2),
+                    new ReportParameter("Footer", AppGlobals.ReportFooter)
+                };
+
+                var Variables = new ReportParameters()
+                {
+                    ReportPath = AppGlobals.ReportPath,
+                    ReportFile = "EmployeeGL.rdl",
+                    OutputPath = AppGlobals.PrintedReportPath,
+                    OutputPathLink = AppGlobals.PrintedReportPathLink,
+                    OutputFile = "EmployeeGL",
+                    CompanyName = UserProfile.GetCompanyName(User),
+                    Heading1 = "General Ledger",
+                    Heading2 = "Vender / Supplier / Customer",
+                    Footer = AppGlobals.ReportFooter,
+                    ReportType = _ReportType,
+                    DataSetName = "ds_EmployeeGL",
+                    ReportData = _Table,
+                    DataParameters = _Parameters
+                };
+
+                var ReportClass = new ExportReport(Variables);
+                ReportClass.Render();
+
+                if (_ReportType == ReportType.Preview)
+                {
+                    ReportLink = ReportClass.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
                 }
                 else
                 {
@@ -313,28 +377,30 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetExpenseSheet(ReportType _ReportType)
         {
+            if (_ReportType.ToString().Length == 0)
+            {
+                ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
+            }
+
             #region Get Data Table
             var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
+
+            if (_SheetNo.Length == 0)
+            {
+                ErrorMessages.Add(SetMessage("Expense sheet is not defined.", ConsoleColor.Red));
+                return Page();
+            }
+
             var _Filter = $"Sheet_No='{_SheetNo}'";
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter), "");
 
             #endregion
 
-            var ExpenseSheet = new ReportClass
-            {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "ExpenseSheet.rdl",
-                ReportDataSet = "ds_ExpenseSheet",
-                ReportSourceData = _Table,
-                RecordSort = "Vou_No",
+            #region Report's Data Parameters
 
-                OutputFilePath = AppGlobals.PrintedReportPath,
-                OutputFile = "ExpenseSheet",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
-            };
             var Heading1 = "PROJECT EXPENSES SHEET";
             var Heading2 = $"Project Sheet # {_SheetNo}";
+
 
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {
@@ -343,34 +409,127 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 new ReportParameter("Heading2", Heading2),
                 new ReportParameter("Footer", AppGlobals.ReportFooter)
             };
+            #endregion
 
+            #region Report Setup
 
-            var _ReportFile = string.Concat(ExpenseSheet.ReportFilePath, ExpenseSheet.ReportFile);
-            ReportDataSource _DataSource = new("ds_ExpenseSheet", _Table);
-            LocalReport report = new();
-            var _ReportStream = new StreamReader(_ReportFile);
-            report.LoadReportDefinition(_ReportStream);
-            report.DataSources.Add(_DataSource);
-            report.SetParameters(_Parameters);
-
-            var _RenderFormat = ExportReport.GetRenderFormat(_ReportType);
-            var _RenderedReport = report.Render(_RenderFormat);
-            var _mimeType = ExportReport.GetReportMime(_ReportType);
-            var _Extention = "." + ExportReport.GetReportExtention(_ReportType);
-
-            if (_ReportType == ReportType.PDF)
+            var ReportParameters = new ReportParameters()
             {
-                ReportLink = CreateFile(_RenderedReport, ExpenseSheet.OutputFile + ".pdf");
-                IsShowPdf = !ExpenseSheet.IsError;
-                if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(ExpenseSheet.MyMessage)); }
+                ReportPath = AppGlobals.ReportPath,
+                ReportFile = "ExpenseSheet.rdl",
+                ReportType = _ReportType,
+                ReportData = _Table,
+                DataParameters = _Parameters,
+
+                OutputPath = AppGlobals.PrintedReportPath,
+                OutputPathLink = AppGlobals.PrintedReportPathLink,
+                OutputFile = "ExpenseSheet",
+
+                DataSetName = "ds_ExpenseSheet",
+                Footer = AppGlobals.ReportFooter,
+                Heading1 = Heading1,
+                Heading2 = Heading2,
+            };
+
+            #endregion
+
+            try
+            {
+                var _Download = new ExportReport(ReportParameters);
+                _Download.Render();
+                if (_Download.Variables.IsSaved)
+                {
+                    ReportLink = _Download.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileFullName);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+            }
+            return Page();
+
+        }
+
+
+        public IActionResult OnGetExpenseGroup(ReportType _ReportType)
+        {
+            #region Get Data Table
+            var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
+
+            if (_SheetNo.Length == 0)
+            {
+                ErrorMessages.Add(SetMessage("Expense sheet is not defined.", ConsoleColor.Red));
                 return Page();
             }
 
+            var _Filter = $"Sheet_No='{_SheetNo}'";
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheetGroup(_Filter), "");
 
-            return File(_RenderedReport, _mimeType, ExpenseSheet.OutputFile + _Extention);
+            #endregion
+
+            #region Report's Data Parameters
+
+            var Heading1 = "PROJECT SUMMARY EXPENSES SHEET";
+            var Heading2 = $"Project Sheet # {_SheetNo}";
+
+
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+            #endregion
+
+            #region Report Setup
+
+            var ReportParameters = new ReportParameters()
+            {
+                ReportPath = AppGlobals.ReportPath,
+                ReportFile = "ExpenseSheetGroup.rdl",
+                ReportType = _ReportType,
+                ReportData = _Table,
+                DataParameters = _Parameters,
+
+                OutputPath = AppGlobals.PrintedReportPath,
+                OutputPathLink = AppGlobals.PrintedReportPathLink,
+                OutputFile = "ExpenseGroup",
+
+                DataSetName = "ds_ExpenseGroup",
+                Footer = AppGlobals.ReportFooter,
+                Heading1 = Heading1,
+                Heading2 = Heading2,
+            };
+
+            #endregion
+
+            try
+            {
+                var _Download = new ExportReport(ReportParameters);
+                _Download.Render();
+                if (_Download.Variables.IsSaved)
+                {
+                    ReportLink = _Download.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileFullName);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+            }
+            return Page();
+
 
 
         }
+
+
 
         #endregion
 

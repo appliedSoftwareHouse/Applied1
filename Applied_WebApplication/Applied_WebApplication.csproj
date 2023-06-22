@@ -53,7 +53,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Remove="Pages\ReportPrint\CompanyGL.cshtml" />
     <Content Remove="wwwroot\Reports\SalesInvoice.rdl" />
   </ItemGroup>
 
@@ -72,16 +71,7 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
-    <None Include="Pages\ReportPrint\CompanyGL.cshtml" />
     <None Include="wwwroot\Reports\SalesInvoice.rdl" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <UpToDateCheckInput Remove="Pages\ReportPrint\CompanyGL.cshtml" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="Pages\ReportPrint\CompanyGL.cshtml" />
   </ItemGroup>
 
   <ItemGroup>

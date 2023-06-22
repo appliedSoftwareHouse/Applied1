@@ -8,6 +8,7 @@
     var ExpenseSheet = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheet(_Filter));
     var _DateFormat = AppRegistry.GetFormatDate(UserName);
     var _AmountFormat = AppRegistry.GetFormatCurrency(UserName);
+    
 
 }
 
@@ -37,69 +38,43 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-3">
-                <button class="btn btn-success"
+            <div class="col-md-1">
+                <button class="btn btn-success btn-sm"
                         asp-page-handler="Reload">
                     Reload
                 </button>
             </div>
-            <div class="col-md-3"></div>
-        </div>
+ 
 
-        <div class="row mt-3">
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Print">
-                    PRINT
-                    <i class="bi bi-printer"></i>
-                </button>
-            </div>
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Excel">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-            </div>
-
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Word">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
+            <div class="col-1 col-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Preview">Preview</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="PDF">PDF</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Excel">Excel</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Word">Word</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="HTML">HTML</a></li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="HTML">
-                    HTML
-                    <i class="bi bi-filetype-html"></i>
-                </button>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Print">
-                    GROUP
-                    <i class="bi bi-printer"></i>
-                </button>
-            </div>
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Excel">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-            </div>
 
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="Word">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
-            </div>
-
-            <div class="col-3 col-w-50">
-                <button class="btn btn-primary btn-sm" asp-page-handler="HTML">
-                    HTML
-                    <i class="bi bi-filetype-html"></i>
-                </button>
+            <div class="col-1 col-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Summary <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Preview">Preview</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="PDF">PDF</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Excel">Excel</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Word">Word</a></li>
+                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="HTML">HTML</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>

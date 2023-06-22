@@ -54,6 +54,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return RedirectToPage();
         }
 
+        public IActionResult OnPortPrintGroup(string Option)
+        {
+
+            return RedirectToPage("PrintReport", "ExpenseGroupSheet", new { Option });
+        }
+
         private DataTable GetExpenseSheetList() 
         {
             DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheetList(), "Sheet_No");

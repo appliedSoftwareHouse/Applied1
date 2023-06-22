@@ -92,33 +92,20 @@
                     Select All
                 </label>
             </div>
-            <div class="col-1">
-                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="GL">
-                    Print
-                    <i class="bi bi-printer"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyExcel">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print" 
-                        asp-page-handler="CompanyWord">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyHTML">
-                    Excel
-                    <i class="bi bi-filetype-html"></i>
-                </button>
+
+            <div class="col-1 col-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        General Ledger <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GL" asp-route-Option="@AppReportClass.ReportType.Preview">Preview</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GL" asp-route-Option="@AppReportClass.ReportType.PDF">PDF</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GL" asp-route-Option="@AppReportClass.ReportType.Excel">Excel</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GL" asp-route-Option="@AppReportClass.ReportType.Word">Word</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GL" asp-route-Option="@AppReportClass.ReportType.HTML">HTML</button></li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -142,55 +129,21 @@
                     Select All A/c
                 </label>
             </div>
-
-
-            <!--COMPANY-->
             <div class="col-1 col-width">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
-                        Print <i class="bi bi-printer"></i>
+                        Company GL <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="GLCompany" asp-route-Option="Preview">Preview</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="GLCompany" asp-route-Option="PDF">PDF</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="GLCompany" asp-route-Option="Excel">Excel</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="GLCompany" asp-route-Option="Word">Word</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="GLCompany" asp-route-Option="HTML">HTML</a></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLCompany" asp-route-Option="@AppReportClass.ReportType.Preview">Preview</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLCompany" asp-route-Option="@AppReportClass.ReportType.PDF">PDF</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLCompany" asp-route-Option="@AppReportClass.ReportType.Excel">Excel</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLCompany" asp-route-Option="@AppReportClass.ReportType.Word">Word</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLCompany" asp-route-Option="@AppReportClass.ReportType.HTML">HTML</button></li>
                     </ul>
                 </div>
             </div>
-
-            
-            @*<div class="col-1">
-                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="Company">
-                    Print
-                    <i class="bi bi-printer"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyExcel">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyWord">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyHTML">
-                    Excel
-                    <i class="bi bi-filetype-html"></i>
-                </button>
-            </div>
-        </div>*@
-
+        </div>
 
         <!--EMPLOYEES-->
         <div class="row mt-2">
@@ -213,36 +166,20 @@
                 </label>
             </div>
 
-            <div class="col-1">
-                <button type="submit" id="GLPdf" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="GL">
-                    Print
-                    <i class="bi bi-printer"></i>
-                </button>
+            <div class="col-1 col-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Employee GL <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLEmployee" asp-route-Option="@AppReportClass.ReportType.Preview">Preview</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLEmployee" asp-route-Option="@AppReportClass.ReportType.PDF">PDF</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLEmployee" asp-route-Option="@AppReportClass.ReportType.Excel">Excel</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLEmployee" asp-route-Option="@AppReportClass.ReportType.Word">Word</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="GLEmployee" asp-route-Option="@AppReportClass.ReportType.HTML">HTML</button></li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-1">
-                <button type="submit" id="ComExcel" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyExcel">
-                    Excel
-                    <i class="bi bi-filetype-xls"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComWord" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyWord">
-                    Word
-                    <i class="bi bi-filetype-doc"></i>
-                </button>
-            </div>
-            <div class="col-1">
-                <button type="submit" id="ComHTML" class="btn-sm btn-primary btn-print"
-                        asp-page-handler="CompanyHTML">
-                    Excel
-                    <i class="bi bi-filetype-html"></i>
-                </button>
-            </div>
-
-
         </div>
     </div>
 </form>

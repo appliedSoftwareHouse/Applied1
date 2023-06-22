@@ -1,14 +1,4 @@
 ﻿using Microsoft.Reporting.NETCore;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.IO;
-using System.IO.Enumeration;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AppReportClass
 {
@@ -33,6 +23,7 @@ namespace AppReportClass
 
         public static string GetRenderFormat(ReportType _ReportType)
         {
+            if (_ReportType == ReportType.Preview) { return "PDF"; }
             if (_ReportType == ReportType.PDF) { return "PDF"; }
             if (_ReportType == ReportType.HTML) { return "HTML5"; }
             if (_ReportType == ReportType.Word) { return "WORDOPENXML"; }
@@ -99,13 +90,14 @@ namespace AppReportClass
             Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
             if (Variables.ReportType == ReportType.Preview)
             {
-                SaveReport();
+                Variables.IsSaved = SaveReport();
             }
             return Variables.FileBytes;
         }
 
         private static List<ReportParameter> GetDataParameters()
         {
+            // Default Parameters of each report, The following parametes will be assigned, if value is null in the report.
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {
                 new ReportParameter("CompanyName", "Applied Software House"),

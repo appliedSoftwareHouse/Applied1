@@ -22,6 +22,7 @@ namespace AppReportClass
         public string Heading2 { get; set; }
         public string Footer { get; set; }
         public byte[] FileBytes { get; set; }
+        public bool IsSaved { get; set; } = false;
 
         public DataTable ReportData { get; set; }
         public ReportType ReportType { get; set; }
