@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Data;
+@using AppReportClass;
 @model Applied_WebApplication.Pages.ReportPrint.ExpenseSheetModel
 @{
     var UserName = User.Identity.Name;
@@ -52,12 +53,13 @@
                         Print <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Preview">Preview</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="PDF">PDF</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Excel">Excel</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="Word">Word</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseSheet" asp-route-Option="HTML">HTML</a></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
                     </ul>
+
                 </div>
             </div>
 
@@ -68,11 +70,11 @@
                         Summary <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Preview">Preview</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="PDF">PDF</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Excel">Excel</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="Word">Word</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/PrintReport" asp-page-handler="ExpenseGroup" asp-route-Option="HTML">HTML</a></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="ExpenseGroup" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="ExpenseGroup" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="ExpenseGroup" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="ExpenseGroup" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="ExpenseGroup" asp-route-Option="@ReportType.HTML">HTML</button></li>
                     </ul>
                 </div>
             </div>

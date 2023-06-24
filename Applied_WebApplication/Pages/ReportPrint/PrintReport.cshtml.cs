@@ -377,10 +377,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetExpenseSheet(ReportType _ReportType)
         {
+            #region Check Error
             if (_ReportType.ToString().Length == 0)
             {
                 ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
             }
+            #endregion
 
             #region Get Data Table
             var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
@@ -400,7 +402,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var Heading1 = "PROJECT EXPENSES SHEET";
             var Heading2 = $"Project Sheet # {_SheetNo}";
-
 
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {
@@ -433,6 +434,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #endregion
 
+            #region Generae Report
             try
             {
                 var _Download = new ExportReport(ReportParameters);
@@ -443,12 +445,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     IsShowPdf = true;
                     return Page();
                 }
-                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileFullName);
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileName);
             }
             catch (Exception e)
             {
                 ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
             }
+            #endregion
+
             return Page();
 
         }
@@ -517,7 +521,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     IsShowPdf = true;
                     return Page();
                 }
-                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileFullName);
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileName);
             }
             catch (Exception e)
             {

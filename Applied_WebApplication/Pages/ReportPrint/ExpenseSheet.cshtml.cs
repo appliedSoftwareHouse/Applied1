@@ -23,30 +23,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #region Buttons
-        public IActionResult OnPostPrint()
-        {
-            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
-            return RedirectToPage("PrintReport", "ExpenseSheet", new { ReportType.PDF});
-        }
-
-        public IActionResult OnPostExcel()
-        {
-            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
-            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType=ReportType.Excel});
-        }
-
-        public IActionResult OnPostWord()
-        {
-            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
-            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = ReportType.Word });
-        }
-
-        public IActionResult OnPostHTML()
-        {
-            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
-            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = ReportType.HTML });
-        }
-        #endregion
 
         public IActionResult OnPostReLoad()
         {
@@ -54,10 +30,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return RedirectToPage();
         }
 
-        public IActionResult OnPortPrintGroup(string Option)
+        public IActionResult OnPostPrint(ReportType Option)
         {
+            AppRegistry.SetKey(UserName, "Sheet_No", Variables.ExpenseSheetNo, KeyType.Text);
+            return RedirectToPage("PrintReport", "ExpenseSheet", new { _ReportType = Option });
+        }
 
-            return RedirectToPage("PrintReport", "ExpenseGroupSheet", new { Option });
+        public IActionResult OnPostExpenseGroup(ReportType Option)
+        {
+            return RedirectToPage("PrintReport", "ExpenseGroup", new { _ReportType=Option });
         }
 
         private DataTable GetExpenseSheetList() 
@@ -65,7 +46,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.ExpenseSheetList(), "Sheet_No");
             return _Table;
         }
-
+        #endregion
 
         public class Parameters
         {
