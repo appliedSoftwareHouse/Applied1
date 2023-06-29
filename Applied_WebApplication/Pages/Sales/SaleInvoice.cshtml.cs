@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Pages.Sales
 {
     public class SaleInvoiceModel : PageModel
     {
-     
+
         #region Setup
         [BindProperty]
         public MyParameters Variables { get; set; }
@@ -269,7 +269,7 @@ namespace Applied_WebApplication.Pages.Sales
             _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
             TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
             TempInvoice22.TempView.RowFilter = $"Sr_No={Variables.Sr_No}";
-            if (TempInvoice22.TempView.Count == 0) { TempInvoice22.NewRecord(); } 
+            if (TempInvoice22.TempView.Count == 0) { TempInvoice22.NewRecord(); }
             else { TempInvoice22.CurrentRow = TempInvoice22.TempView[0].Row; }
 
             Row1 = TempInvoice11.CurrentRow;
@@ -317,6 +317,28 @@ namespace Applied_WebApplication.Pages.Sales
         {
             var Vou_No = Variables.Vou_No;
             var Refresh = false;
+
+            if (Sr_No == 0) { return Page(); }                    // return page 
+
+            var _Receivable1 = new DataTableClass(UserName, Tables.BillReceivable);
+            var _Receivable2 = new DataTableClass(UserName, Tables.BillReceivable2);
+            var _ValidforDelete1 = false;
+            var _ValidforDelete2 = false;
+
+            _Receivable1.MyDataView.RowFilter = $"ID={Variables.ID1}";
+            _Receivable2.MyDataView.RowFilter = $"ID={Variables.ID2}";
+
+
+            if(_Receivable1.CountView == 1) { _ValidforDelete1 = true; }
+            if(_Receivable2.CountView > 0) { _ValidforDelete2 = true; }
+            
+            if(_ValidforDelete1 && _ValidforDelete2)
+            {
+
+
+            }
+
+
             // Write code here for delete the record.
 
             return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });

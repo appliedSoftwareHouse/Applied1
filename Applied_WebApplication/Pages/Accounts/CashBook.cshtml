@@ -16,6 +16,8 @@
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
+    //var _SelectPosted = Applied_WebApplication.Pages.Accounts.CashBookModel.GetSelectPosted(Model.Variables.IsPosted1);
+    var _SelectPosted = "SELECT...";
 }
 
 <style>
@@ -28,42 +30,11 @@
 
 <form method="post">
 
-
+    <input class="text" asp-for="@Model.Variables.ID" hidden />
     <!--Cash Book Heading Blue Bar-->
-    <div class="container p-1 mt-1 mb-1 bg-info text-white rounded">
+    <div class="container p-2 bg-info text-white rounded justify-content-between">
         <div class="row d-flex align-items-center text-black">
-            @*<div class="col-md-1 mb-1  TextCenter">
-            <label>CASH BOOK</label>
-            </div>*@
-            <div class="col mb-1" style="width:130px">
-                <div class="input-group mb-3 align-content-center">
-                    <span class="input-group-text" style="width:30%" id="From">Start</span>
-                    <input type="date" id="MinDate" style="width:70%" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
-                </div>
-            </div>
-            <div class="col mb-1 align-content-mide" style="width:300px">
-                <div class="input-group mb-3 align-content-center">
-                    <input type="date" id="MaxDate" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
-                    <span class="input-group-text" id="To">End</span>
-                </div>
-            </div>
-            <div class="col-md-1 mb-1">
-                @if (Model.Variables.CashBookID > 0)
-                {
-                    <button class="btn btn-primary float-end " type="Submit" id="btnAdd"
-                            asp-page-handler="Add">
-                        ADD
-                    </button>
-                }
-            </div>
-            <div class="col-md-2 mb-1">
-                <select class="form-select" aria-label="Select a Posted ID" asp-for="@Model.Variables.IsPosted1">
-                    <option selected>@Model.Variables.IsPosted1</option>
-                    <option value="0">All</option>
-                    <option value="1">Posted</option>
-                    <option value="2">Submitted</option>
-                </select>
-            </div>
+
             <div class="col-md-2 mb-1">
                 <select class="form-select" aria-label="Select a Cash Book" asp-for="@Model.Variables.CashBookID">
                     <option selected>@TitleBook</option>
@@ -73,11 +44,39 @@
                     }
                 </select>
             </div>
+            <div class="col mb-1" style="width:130px">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" class="text-center" id="MinDate" style="width:70%" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
+                </div>
+            </div>
+            <div class="col mb-1 " style="width:300px">
+                <div class="input-group">
+                    <input type="date" class="text-center" id="MaxDate" style="width:70%" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
+                    <span class="input-group-text" style="width:30%" id="To">End</span>
+                </div>
+            </div>
             <div class="col-md-2 mb-1">
-                <button class=" btn btn-primary " type="submit" name="Refresh"
-                        asp-page-handler="Refresh">
-                    REFRESH
+                <select class="form-select" aria-label="Select a Posted ID" asp-for="@Model.Variables.IsPosted1">
+                    <option selected>@_SelectPosted</option>
+                    <option value="0">All</option>
+                    <option value="1">Posted</option>
+                    <option value="2">Submitted</option>
+                </select>
+            </div>
+            <div class="col-md-2 mb-1">
+                <button class=" btn btn-primary " type="submit" name="Refresh" asp-page-handler="Refresh">
+                    REFRESH 
                 </button>
+            </div>
+            <div class="col-md-1 mb-1">
+                @if (Model.Variables.CashBookID > 0)
+                {
+                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+                            asp-page-handler="Add">
+                        ADD
+                    </button>
+                }
             </div>
         </div>
     </div>
@@ -151,7 +150,7 @@
 
                                                 <button class="btn btn-link btn-sm p-0"
                                                         asp-page-handler="Print"
-                                                        asp-route-ID="@Row["ID"]">
+                                                        asp-route-Vou_No="@Row["Vou_No"]">
                                                     <i class="bi bi-printer text-success"></i>
                                                 </button>
 
@@ -162,7 +161,7 @@
                                             <td class="text-center">
                                                 <button class="btn btn-link"
                                                         asp-page-handler="Print"
-                                                        asp-route-ID="@Row["ID"]">
+                                                        asp-route-Vou_No="@Row["Vou_No"]">
                                                     <i class="bi bi-printer text-success"></i>
                                                 </button>
                                             </td>

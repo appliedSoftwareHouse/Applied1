@@ -57,14 +57,14 @@ namespace Applied_WebApplication.Data
 
             if (ViewFilter.Length == 0)
             {
-                MyMessages.Add(MessageClass.SetMessage("No Voucher Number assigned to proceed."));
+                MyMessages.Add(SetMessage("No Voucher Number assigned to proceed."));
                 return;
             }
 
             MyConnection = ConnectionClass.AppConnection(UserName);
             MyTempConnection = ConnectionClass.AppTempConnection(UserName);
 
-            if(Refresh) {DeleteRecords(_Table);}
+            if (Refresh) { DeleteRecords(_Table); }
             SourceTable = GetTable(_Table, ViewFilter, MyConnection);
             CreateTempTable(SourceTable);           // Create a Temp Table if not exist;
             TempTable = GetTable(_Table, ViewFilter, MyTempConnection);
@@ -95,14 +95,22 @@ namespace Applied_WebApplication.Data
 
         private void DeleteRecords(Tables _Table)
         {
-            var TempTable1 = GetTable(_Table, ViewFilter, MyTempConnection);
-            if(TempTable1.Rows.Count>0)
+            var _TableName = _Table.ToString();
+            var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{_TableName}'";
+            var _Command = new SQLiteCommand(_CommandText, MyTempConnection);
+
+            long TableExist = (long)_Command.ExecuteScalar();
+            if (TableExist > 0)                                                                                     // Execute Delete of Record Process is table is exist in temp DB.
             {
-                foreach (DataRow Row in TempTable1.Rows)
+                var TempTable1 = GetTable(_Table, ViewFilter, MyTempConnection);
+                if (TempTable1.Rows.Count > 0)
                 {
-                    MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
-                    var _Records = MyCommand.ExecuteNonQuery();
-                    MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
+                    foreach (DataRow Row in TempTable1.Rows)
+                    {
+                        MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
+                        var _Records = MyCommand.ExecuteNonQuery();
+                        MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
+                    }
                 }
             }
         }
@@ -115,26 +123,32 @@ namespace Applied_WebApplication.Data
         public static DataTable GetTable(Tables _Table, string _Filter, SQLiteConnection _Connection)
         {
             var _TableName = _Table.ToString();
-            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-            _Adapter.Fill(_DataSet, _TableName);
-            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            if (_TableName != null)
+            {
+                if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+                var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+                var _Command = new SQLiteCommand(_CommandText, _Connection);
+                var _Adapter = new SQLiteDataAdapter(_Command);
+                var _DataSet = new DataSet();
+                _Adapter.Fill(_DataSet, _TableName);
+                if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            }
             return new DataTable();
         }
 
         public static DataTable GetTable(string _Table, string _Filter, SQLiteConnection _Connection)
         {
             var _TableName = _Table.ToString();
-            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-            _Adapter.Fill(_DataSet, _TableName);
-            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            if (_TableName != null)
+            {
+                if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+                var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+                var _Command = new SQLiteCommand(_CommandText, _Connection);
+                var _Adapter = new SQLiteDataAdapter(_Command);
+                var _DataSet = new DataSet();
+                _Adapter.Fill(_DataSet, _TableName);
+                if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+            }
             return new DataTable();
         }
 
@@ -242,10 +256,12 @@ namespace Applied_WebApplication.Data
 
         #region Create a Temp Table if not exist
 
+
+
+
         private void CreateTempTable(DataTable _Table)
         {
             var _TableName = _Table.TableName;
-
             var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{_TableName}'";
             var _Command = new SQLiteCommand(_CommandText, MyTempConnection);
 

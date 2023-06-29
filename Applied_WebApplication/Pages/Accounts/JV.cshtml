@@ -178,7 +178,7 @@
         </div>
     </div>
     <div class="container">
-        <Table class="table-list">
+        <table class="table-list">
             <thead>
                 <tr>
                     <th style="width:7%">SR. No</th>
@@ -188,10 +188,10 @@
                     <th style="width:10%">Credit</th>
                     <th style="width:20%">Description</th>
                     <th style="width:10%">
-                        <button type="submit" id="ListbuttonGreen"
+                        <button type="submit" class="listbutton-green text-center"
                                 asp-page-handler="Add"
                                 asp-route-Vou_No="@Model.Variables.Vou_No"
-                                asp-route-Sr_No="-1">
+                                asp-route-Sr_No="-1">Add 
                             <i class="bi bi-database-add"></i>
                         </button>
                     </th>
@@ -208,17 +208,17 @@
                             <td>@Row["Sr_No"]</td>
                             <td>@Row["Ref_No"]</td>
                             <td>@_TitleCOA</td>
-                            <td>@Row["DR"]</td>
-                            <td>@Row["CR"]</td>
+                            <td class="amount">@Row["DR"]</td>
+                            <td class="amount">@Row["CR"]</td>
                             <td>@Row["Description"]</td>
-                            <td>
-                                <button id="Listbutton"
+                            <td class="text-center">
+                                <button class="listbutton-blue"
                                 asp-page-handler="Edit"
                                 asp-route-Vou_No="@Row["Vou_No"]"
                                 asp-route-Sr_No="@Row["Sr_No"]">
                                     <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button id="ListbuttonRed"
+                                <button class="listbutton-red"
                                 asp-page-handler="Delete"
                                 asp-route-ID="@Row["ID"]">
                                     <i class="bi bi-trash-fill"></i>
@@ -229,6 +229,6 @@
                 }
 
             </tbody>
-        </Table>
+        </table>
     </div>
 </form>

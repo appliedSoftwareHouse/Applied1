@@ -132,15 +132,6 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
-      <Filters>
-        <Filter>
-          <FilterExpression>=Fields!Vou_No.Value</FilterExpression>
-          <Operator>Equal</Operator>
-          <FilterValues>
-            <FilterValue>CB-000002</FilterValue>
-          </FilterValues>
-        </Filter>
-      </Filters>
     </DataSet>
   </DataSets>
   <ReportSections>
@@ -183,6 +174,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -225,6 +217,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -266,6 +259,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Value EvaluationMode="Constant">Account Title / Descriptions</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -306,6 +300,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Value>Debit</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -348,6 +343,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1606,6 +1602,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1650,6 +1647,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1694,6 +1692,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -1738,6 +1737,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -1783,6 +1783,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                                   <Style>
                                     <FontFamily>Arial</FontFamily>
                                     <FontSize>8pt</FontSize>
+                                    <FontWeight>Bold</FontWeight>
                                     <Format>#,0.00;(#,0.00);'-'</Format>
                                   </Style>
                                 </TextRun>
@@ -2165,7 +2166,9 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox54</rd:DefaultName>
@@ -2199,7 +2202,9 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox55</rd:DefaultName>
@@ -2234,7 +2239,9 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                       <Style />
                     </TextRun>
                   </TextRuns>
-                  <Style />
+                  <Style>
+                    <TextAlign>Center</TextAlign>
+                  </Style>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox56</rd:DefaultName>

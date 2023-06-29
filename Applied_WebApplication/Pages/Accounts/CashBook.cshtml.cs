@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -26,12 +27,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet(int? id)
         {
-
             if (id == null)
             {
                 Variables = new()
                 {
                     IsSelected = false,
+                    ID = 0,
                     CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
                     MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
                     MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
@@ -76,7 +77,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             if (Cashbook.Rows.Count == 0)
             {
-                ErrorMessages.Add(MessageClass.SetMessage("No record Found.....!"));
+                ErrorMessages.Add(SetMessage("No record Found.....!"));
             }
 
             FMTNumber = GetText(UserName, "FMT");
@@ -164,25 +165,28 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return RedirectToPage("CashBook");
         }
-        public IActionResult OnPostPrint(int ID)
+        public IActionResult OnPostPrint(string Vou_No)
         {
-            return Page();
+            SetKey(UserName, "cbVouNo", Vou_No, KeyType.Text);
+            return RedirectToPage("../ReportPrint/PrintReport", "Voucher", new { _ReportType = ReportType.Preview });
         }
         public IActionResult OnPostShow(int ID)
         {
             return Page();
         }
 
-
-        //public DataTable Entries(int ID)
-        //{
-        //    return DataTableClass.GetTable(UserName, Tables.Ledger, $"ID={ID}");
-        //}
+        public static string GetSelectPosted(int _Posted)
+        {
+            if(_Posted == 1) { return "All"; }
+            if(_Posted == 2) { return "Posted"; }
+            if(_Posted == 3) { return "Submitted"; }
+            return "";
+        }
 
         [BindProperties]
         public class MyParameters
         {
-            public int RecordID { get; set; }
+            public int ID { get; set; }
             public bool IsSelected { get; set; }
             public bool IsAdd { get; set; }
             public bool IsError { get; set; }

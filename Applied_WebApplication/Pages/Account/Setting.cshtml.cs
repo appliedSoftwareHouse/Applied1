@@ -67,6 +67,7 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BRec_Stock", Variables.BRec_Stock, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
+            AppRegistry.SetKey(UserName, "SalesReportRDL", Variables.SalesReportRDL, KeyType.Text);
 
 
             return RedirectToPage();
@@ -91,6 +92,7 @@ namespace Applied_WebApplication.Pages.Account
             public int BRec_Stock { get; set; }
             public int BRec_Tax { get; set; }
             public int BRec_Receivable { get; set; }
+            public string SalesReportRDL { get; set; }
 
         }
 

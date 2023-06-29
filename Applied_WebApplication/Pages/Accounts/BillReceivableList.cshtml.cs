@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -9,6 +9,7 @@ namespace Applied_WebApplication.Pages.Accounts
     {
         public string UserName => User.Identity.Name;
         public DataTable BillReceivable { get; set; } = new();
+        public List<Message> MyMessages = new();
 
         public void OnGet()
         {
@@ -39,12 +40,40 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostDelete(int ID)
         {
-            DataTableClass _Table = new(UserName, Tables.BillReceivable, $"ID={ID}");
-            if (_Table.Count > 0)
+
+            var _Filter1 = $"ID={ID}";
+            DataTableClass _Receivable1 = new(UserName, Tables.BillReceivable, _Filter1);
+            if (_Receivable1.Count > 0)
             {
-                // Code for delete a sales invoices 
+                var _Filter2 = $"TranID={_Receivable1.Rows[0]["ID"]}";
+                var _Receivable2 = new DataTableClass(UserName, Tables.BillReceivable2, _Filter2);
+
+                if (_Receivable2.Rows.Count > 0)
+                {
+                    _Receivable1.SeekRecord(ID); var Vou_No = _Receivable1.CurrentRow["Vou_No"];
+                    if (_Receivable1.Delete())
+                    {
+                        MyMessages.Add(SetMessage($"Sales Invoice Voucher No {Vou_No} has been deleted."));
+
+                        foreach (DataRow Row in _Receivable2.Rows)
+                        {
+                            var ID2 = (int)Row["ID"];
+                            _Receivable2.SeekRecord(ID2);
+                            if (_Receivable2.Delete())
+                            {
+                                MyMessages.Add(SetMessage($"Record ID {}"));
+
+
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MyMessages.Add(SetMessage($"Sales Invoice Voucher No {Vou_No} has NOT been deleted. Contact to Administrator."));
+                    }
+                }
             }
-                return Page();
+            return Page();
         }
 
         public IActionResult OnPostPrint(int ID)

@@ -287,6 +287,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Adapter = new SQLiteDataAdapter(_Command);
             var _DataSet = new DataSet();
+            var _SalesReportName = AppRegistry.GetText(UserName, "SalesReportRDL");
+
+            if(_SalesReportName.Length==0) { _SalesReportName = "SalesInvoiceST"; }
 
             _Command.Parameters.AddWithValue("@ID", TranID);
             _Adapter.Fill(_DataSet, "SalesInvoice");
@@ -297,13 +300,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     AppUser = User,
                     ReportFilePath = AppGlobals.ReportPath,
-                    ReportFile = "SalesInvoiceST.rdl",
+                    ReportFile = _SalesReportName + ".rdl",
                     ReportDataSet = "ds_SaleInvoice",
                     ReportSourceData = _Table,
                     RecordSort = "Sr_No",
 
                     OutputFilePath = AppGlobals.PrintedReportPath,
-                    OutputFile = "SaleInvoiceST",
+                    OutputFile = _SalesReportName,
                     OutputFileLinkPath = AppGlobals.PrintedReportPathLink
                 };
 
@@ -537,42 +540,129 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #endregion
 
-
-        public string CreateFile(byte[] FileBtyes, string FileName)
+        #region Voucher
+        public IActionResult OnGetVoucher(ReportType _ReportType)
         {
-            if (FileBtyes.Length > 1)
+
+            #region Get Data Table
+            var _VoucherNo = AppRegistry.GetText(UserName, "cbVouNo");
+            var _Filter = $"Vou_No='{_VoucherNo}'";
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Voucher(_Filter));
+            if (_Table.Rows.Count == 0)
             {
-                FileStream MyFileStream;
-                string OutPutFile = $"{AppGlobals.PrintedReportPath}{FileName}";
-                string OutPutFileLink = $"{AppGlobals.PrintedReportPathLink}{FileName}";
-
-
-                try
-                {
-                    if (System.IO.File.Exists(OutPutFile)) { System.IO.File.Delete(OutPutFile); }
-
-                    using (FileStream fstream = new FileStream(OutPutFile, FileMode.Create))
-                    {
-                        fstream.Write(FileBtyes, 0, FileBtyes.Length);
-                        MyFileStream = fstream;
-                    }
-
-
-                    if (System.IO.File.Exists(OutPutFile))
-                    {
-                        IsError = false;
-                        MyMessage = "File has been created sucessfully.";
-                        return OutPutFileLink;
-                    }
-
-                }
-                catch (Exception e) { MyMessage = e.Message; IsError = true; }
-
-
+                ErrorMessages.Add(SetMessage($"Vouche No {_VoucherNo} not Found.", ConsoleColor.Red));
+                return Page();
             }
-            return "";
+            #endregion
+
+            #region Report's Data Parameters
+
+            var _VoucherType = _Table.Rows[0]["Vou_Type"];
+            string Heading1 = _VoucherType switch
+            {
+                VoucherType.Cash => "Cash Voucher",
+                VoucherType.Bank => "Bank Voucher",
+                VoucherType.Payment => "Payment Voucher",
+                VoucherType.Receivable => "Sales Invoices Voucher",
+                VoucherType.OBalance => "Opening Balance Voucher",
+                VoucherType.Cheque => "Bank Payment Voucher",
+                VoucherType.JV => "Journal Voucher",
+                VoucherType.OBalCom => "Opening Balance Voucher",
+                VoucherType.OBalStock => "Stock Opening Balance Voucher",
+                VoucherType.Receipt => "Receipt Voucher",
+                _ => "Journal Voucher"
+            };
+
+            var Heading2 = $"Voucher # {_VoucherNo}";
+
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+            #endregion
+
+            #region Report Setup
+
+            var ReportParameters = new ReportParameters()
+            {
+                ReportPath = AppGlobals.ReportPath,
+                ReportFile = "Voucher.rdl",
+                ReportType = _ReportType,
+                ReportData = _Table,
+                DataParameters = _Parameters,
+
+                OutputPath = AppGlobals.PrintedReportPath,
+                OutputPathLink = AppGlobals.PrintedReportPathLink,
+                OutputFile = "Voucher",
+
+                DataSetName = "ds_Voucher",
+                Footer = AppGlobals.ReportFooter,
+                Heading1 = Heading1,
+                Heading2 = Heading2,
+            };
+
+            #endregion
+
+            try
+            {
+                var _Download = new ExportReport(ReportParameters);
+                _Download.Render();
+                if (_Download.Variables.IsSaved)
+                {
+                    ReportLink = _Download.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileName);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+            }
+            return Page();
 
         }
+
+        #endregion
+
+        //public string CreateFile(byte[] FileBtyes, string FileName)
+        //{
+        //    if (FileBtyes.Length > 1)
+        //    {
+        //        FileStream MyFileStream;
+        //        string OutPutFile = $"{AppGlobals.PrintedReportPath}{FileName}";
+        //        string OutPutFileLink = $"{AppGlobals.PrintedReportPathLink}{FileName}";
+
+
+        //        try
+        //        {
+        //            if (System.IO.File.Exists(OutPutFile)) { System.IO.File.Delete(OutPutFile); }
+
+        //            using (FileStream fstream = new FileStream(OutPutFile, FileMode.Create))
+        //            {
+        //                fstream.Write(FileBtyes, 0, FileBtyes.Length);
+        //                MyFileStream = fstream;
+        //            }
+
+
+        //            if (System.IO.File.Exists(OutPutFile))
+        //            {
+        //                IsError = false;
+        //                MyMessage = "File has been created sucessfully.";
+        //                return OutPutFileLink;
+        //            }
+
+        //        }
+        //        catch (Exception e) { MyMessage = e.Message; IsError = true; }
+
+
+        //    }
+        //    return "";
+
+        //}
 
     }
 }

@@ -22,6 +22,9 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No], ");
             Text.Append("[B1].[Vou_Date], ");
             Text.Append("[B1].[Company] AS [CompanyID], ");
+            Text.Append("[C].[Code] AS [Code], ");
+            Text.Append("[C].[NTN] AS [NTN], ");
+            Text.Append("[C].[Title] AS [Company], ");
             Text.Append("[C].[Title] AS [Company], ");
             Text.Append("[B1].[Employee] AS [EmployeeID], ");
             Text.Append("[E].[Title] AS [Employee], ");
@@ -41,6 +44,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[Qty] * [B2].[Rate] AS [Amount], ");
             Text.Append("[T].[Title] AS [Tax], ");
             Text.Append("[T].[Rate] AS [Tax_Rate], ");
+            Text.Append("([T].[Rate] / 100) AS [Tax_Rate2], ");
             Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
             Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
             Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [Tax_Amount],");
@@ -358,6 +362,33 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Voucher
+        public static string Voucher(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[L].*, ");
+            Text.Append("[A].[Code], ");
+            Text.Append("[A].[Title] AS[AccountTitle], ");
+            Text.Append("[C].[Title] AS[CompanyName], ");
+            Text.Append("[E].[Title] AS[EmployeeName], ");
+            Text.Append("[P].[Title] AS[ProjectTitle], ");
+            Text.Append("[I].[Title] As[StockTitle] ");
+            Text.Append("FROM[Ledger][L] ");
+            Text.Append("LEFT JOIN[COA]           [A] ON[A].[ID] = [L].[COA]");
+            Text.Append("LEFT JOIN[Customers] [C] ON[C].[ID] = [L].[Customer] ");
+            Text.Append("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[Employee] ");
+            Text.Append("LEFT JOIN[Inventory]   [I]   ON[I].[ID] = [L].[Inventory] ");
+            Text.Append("LEFT JOIN[Project]       [P] ON[P].[ID] = [L].[Project] ");
+            if(_Filter.Length>0)
+            {
+                Text.Append($"WHERE {_Filter} ");
+            }
+            Text.Append("ORDER BY Vou_No, Sr_No");
+            return Text.ToString();
+        }
+        #endregion
+
         #region Create DataTable into Source Data
 
         public static void CreateTable(string UserName, Tables _Table)
@@ -492,6 +523,8 @@ namespace Applied_WebApplication.Data
                     break;
             }
         }
+
+        
         #endregion
     }
 }

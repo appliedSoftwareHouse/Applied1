@@ -95,17 +95,23 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
-                                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
-                                    <label for="OBalance">Fiscal Year Start</label>
+                                    <input type="Date" class="form-control" id="YearStart" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalStart">
+                                    <label for="YearStart">Fiscal Year Start</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
-                                    <input type="Date" class="form-control" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
-                                    <label for="OBalance">Fiscal Year End</label>
+                                    <input type="Date" class="form-control" id="YearEnd" placeholder="Opening Balance Amount" asp-for="@Model.Variables.FiscalEnd">
+                                    <label for="YearEnd">Fiscal Year End</label>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-3">
+                            <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.SalesReportRDL">
+                            <label for="SalesReport">Fiscal Year End</label>
+                        </div>
+
 
                     </div>
                 </div>

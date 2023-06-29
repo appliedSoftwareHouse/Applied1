@@ -175,7 +175,7 @@ namespace Applied_WebApplication.Data
         public static string GetText(string UserName, string Key)
         {
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
-            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            tb_Registry.MyDataView.RowFilter = $"Code='{Key}'";
             if (tb_Registry.MyDataView.Count == 1)
             {
                 var value = tb_Registry.MyDataView[0]["cValue"];

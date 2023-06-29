@@ -31,45 +31,60 @@
 
                 @if (User.Identity.IsAuthenticated)
                 {
-                    <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                        <ul class="navbar-nav flex-grow-1">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Accounts">Accounts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Sales">Sales</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/Stock">Stock</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/HumanResources">HR & Admin</a>
-                            </li>
-                        </ul>
-
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
-                                @MyCompany
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" asp-page="/Account/Profile">Profile</a></li>
-                                <li><a class="dropdown-item" asp-page="/Account/Setting">Setting</a></li>
-                                <li><a class="dropdown-item" asp-page="/Account/Logout">Logout</a></li>
-                                <li><a class="dropdown-item" asp-page="/Account/Backup">Backup</a></li>
-                                <li><a class="dropdown-item" asp-page="/Account/Restore">Restore</a></li>
+                    var DBFile = UserProfile.GetUserClaim(User, "DataBaseFile");
+                    if (File.Exists(DBFile))
+                    {
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Accounts">Accounts</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Sales">Sales</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Stock">Stock</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/HumanResources">HR & Admin</a>
+                                </li>
                             </ul>
+
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                                    @MyCompany
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" asp-page="/Account/Profile">Profile</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Setting">Setting</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Logout">Logout</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Backup">Backup</a></li>
+                                    <li><a class="dropdown-item" asp-page="/Account/Restore">Restore</a></li>
+                                </ul>
+                            </div>
                         </div>
-                    </div>
+                    }
+                    else
+                    {
+                        <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                            <ul class="navbar-nav flex-grow-1">
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/Index">DB File not Found.....!</a>
+                                </li>
+                            </ul>
+
+                        </div>
+                    }
                 }
             </div>
         </nav>
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-                @RenderBody()
+            @RenderBody()
         </main>
     </div>
 
