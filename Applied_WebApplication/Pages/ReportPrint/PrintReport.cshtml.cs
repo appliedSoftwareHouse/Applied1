@@ -34,7 +34,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region Chart of Accpounts
+        #region Chart of Accounts
         public IActionResult OnGetCOAList()
         {
             //OnPostCOAExcel();
@@ -107,7 +107,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region Supplier / Vendore Ledger
+        #region Supplier / Vendor Ledger
 
         public IActionResult OnGetGLCompany(ReportType _ReportType)
         {
@@ -121,7 +121,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
             #endregion
 
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText()));
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText() + " ORDER BY Customer, COA, Vou_Date"));
 
             if (_Table.Rows.Count > 0)
             {
@@ -179,6 +179,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
         }
 
+        #endregion
+
+        #region Employees Ledger
+
         public IActionResult OnGetGLEmployee(ReportType _ReportType)
         {
             #region Report Filter Variables
@@ -191,7 +195,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
             #endregion
 
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText()));
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText()+" ORDER BY Customer, COA, Vou_Date"));
 
             if (_Table.Rows.Count > 0)
             {

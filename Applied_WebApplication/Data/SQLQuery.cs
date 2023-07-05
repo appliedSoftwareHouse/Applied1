@@ -261,6 +261,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[Batch],");
             Text.Append("[B2].[Qty],");
             Text.Append("[B2].[Rate],");
+            Text.Append("[T].[Rate] AS [Tax], ");
             Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
             Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
             Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");

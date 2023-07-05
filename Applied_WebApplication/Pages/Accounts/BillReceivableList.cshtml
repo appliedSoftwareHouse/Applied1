@@ -11,6 +11,11 @@
     <h5 class="TextCenter">BILL RECEIVABLE (LIST)</h5>
 </div>
 
+@if (Model.MyMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.MyMessages></component>
+}
+
 <form method="post">
 
     <div class="container">
@@ -89,9 +94,5 @@
             </tbody>
         </table>
     </div>
-
-
-
-
 
 </form>

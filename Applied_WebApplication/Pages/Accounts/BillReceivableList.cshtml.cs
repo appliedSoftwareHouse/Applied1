@@ -53,17 +53,18 @@ namespace Applied_WebApplication.Pages.Accounts
                     _Receivable1.SeekRecord(ID); var Vou_No = _Receivable1.CurrentRow["Vou_No"];
                     if (_Receivable1.Delete())
                     {
-                        MyMessages.Add(SetMessage($"Sales Invoice Voucher No {Vou_No} has been deleted."));
-
+                        MyMessages.Add(SetMessage($"Sales Invoice Voucher No {Vou_No} has been deleted sucessfully."));
                         foreach (DataRow Row in _Receivable2.Rows)
                         {
                             var ID2 = (int)Row["ID"];
                             _Receivable2.SeekRecord(ID2);
                             if (_Receivable2.Delete())
                             {
-                                MyMessages.Add(SetMessage($"Record ID {}"));
-
-
+                                MyMessages.Add(SetMessage($"Record ID {ID2} has been deleted sucessfully"));
+                            }
+                            else
+                            {
+                                MyMessages.Add(SetMessage($"Record ID {ID2} has NOT been deleted sucessfully. Contact to Administrator.", ConsoleColor.Red));
                             }
                         }
                     }
