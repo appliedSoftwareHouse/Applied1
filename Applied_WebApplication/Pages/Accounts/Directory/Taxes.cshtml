@@ -1,0 +1,110 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Accounts.Directory.TaxesModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleTaxType = AppFunctions.GetTitle(UserName, Tables.ChequeTranType, Model.Variables.TaxType);
+    var TitleAccount = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA);
+
+}
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">List of Taxes</h5>
+</div>
+
+@if (Model.MyMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.MyMessages"></component>
+}
+
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="txtCode" placeholder="Code" asp-for="@Model.Variables.Code">
+                    <label for="txtCode">Code </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="txtTitle" placeholder="Title" asp-for="@Model.Variables.Title">
+                    <label for="txtTitle">Title of Tax </label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="txtRate" step=".01" placeholder="Tax Rate" asp-for="@Model.Variables.Rate">
+                    <label for="txtTitle">Tax Rate </label>
+                </div>
+            </div>
+        </div>
+            <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtTaxType">Tax Type</label>
+                    <select class="form-select" id="txtTaxType" asp-for="@Model.Variables.TaxType">
+                        <option selected>@TitleTaxType</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.ChequeTranType))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtCOA">Linked Account</label>
+                    <select class="form-select" id="txtCOA" asp-for="@Model.Variables.COA">
+                        <option selected>@TitleAccount</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <input type="text"   asp-for="@Model.Variables.ID" hidden/>
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save" asp-route-ID="@Model.Variables.ID"><i class="bi bi-save"></i> Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Title of Tax</th>
+                    <th>Tax Rate %</th>
+                    <th>Tax Type</th>
+                    <th>Linked Account</th>
+                    <th>
+                        <button type="submit" class="listbutton-green"><i class="bi bi-database-add"></i></button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow Row in Model.tb_Taxes.Rows)
+                {
+                    <tr>
+                        <td>@Row["Code"]</td>
+                        <td>@Row["Title"]</td>
+                        <td>@Row["Rate"]</td>
+                        <td>@Row["TaxType"]</td>
+                        <td>@Row["COA"]</td>
+                        <td>
+                            <button type="submit" class="listbutton-blue" asp-page-handler="Edit" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill"></i></button>
+                            <button type="submit" class="listbutton-red" asp-page-handler="Delete" asp-route-ID="@Row["ID"]"><i class="bi bi-trash-fill"></i></button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</form>

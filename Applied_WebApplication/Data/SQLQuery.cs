@@ -1,4 +1,6 @@
 ﻿using Applied_WebApplication.Pages.Sales;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Reporting.Map.WebForms.BingMaps;
 using NPOI.OpenXmlFormats.Dml.Chart;
 using NPOI.SS.Formula.Functions;
 using System.Data;
@@ -339,6 +341,58 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
+
+        public static string SaleReturn(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[B2].[ID],");
+            Text.Append("[B2].[TranID],");
+            Text.Append("[B2].[SR_No],");
+            Text.Append("[B1].[Vou_No],");
+            Text.Append("[B1].[Vou_Date],");
+            Text.Append("[B1].[Company],");
+            Text.Append("[B1].[Inv_No],");
+            Text.Append("[B1].[Inv_Date],");
+            Text.Append("[B1].[Pay_Date],");
+            Text.Append("[B2].[Inventory],");
+            Text.Append("[B2].[Batch],");
+            Text.Append("[B2].[Qty],");
+            Text.Append("[R].[Qty] AS [RQty],");
+            Text.Append("[B2].[Rate],");
+            Text.Append("[T].[Rate] AS [Tax], ");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");
+            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
+            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],");
+            Text.Append("[B2].[ID] AS [ID2], ");
+            Text.Append("[I].[Title] AS [StockTitle],");
+            Text.Append("[C].[Title] AS [CompanyName],");
+            Text.Append("[E].[Title] AS [EmployeeName],");
+            Text.Append("[P].[title] AS [ProjectTitle],");
+            Text.Append("[T].[Code]  As [TaxTitle] ");
+            Text.Append("FROM[BillReceivable2] [B2] ");
+            Text.Append("LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] ");
+            Text.Append("LEFT JOIN[Inventory]         [I]    ON [I].[ID] = [B2].[Inventory] ");
+            Text.Append("LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] ");
+            Text.Append("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
+            Text.Append("LEFT JOIN[Project]            [P]   ON [P].[ID] = [B2].[Project]");
+            Text.Append("LEFT JOIN[Taxes]              [T]   ON [T].[ID] = [B2].[Tax]");
+            Text.Append("LEFT JOIN[SaleReturn]     [R]   ON [R].[TranID] = [B2].[ID]");
+            if (_Filter != null)
+            {
+                if (_Filter.Length > 0)
+                {
+                    Text.Append($" WHERE {_Filter}");
+
+                }
+            }
+
+            return Text.ToString();
+        }
+
         #endregion
 
         #region Trial Balance
@@ -402,6 +456,7 @@ namespace Applied_WebApplication.Data
             if (TableExist > 0) { return; }
             #endregion
 
+           
             switch (_Table)
             {
                 case Tables.Registry:
@@ -436,6 +491,9 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.BillReceivable2:
                     break;
+                case Tables.SaleReturn:
+                    CreateTablesClass.SaleReturn(UserName);
+                    break;
                 case Tables.view_BillReceivable:
                     break;
                 case Tables.OBALCompany:
@@ -443,16 +501,7 @@ namespace Applied_WebApplication.Data
                 case Tables.JVList:
                     break;
                 case Tables.ExpenseSheet:
-                    var Text = new StringBuilder();
-
-                    Text.Append("CREATE [ExpenceSheet] (");
-                    Text.Append("[ID] INT NOT NULL UNIQUE,");
-                    Text.Append("[Sheet_No] NVARCHAR(12), ");
-                    Text.Append("[Vou_No] NVARCHAR(12), ");
-                    Text.Append("[Status] NVARCHAR(10) NOT NULL DEFAULT Submitted);");
-
-                    var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-                    Command.ExecuteNonQuery();
+                        
                     break;
                 case Tables.Customers:
                     break;

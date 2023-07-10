@@ -20,26 +20,25 @@
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.MyMessages"></component>
 }
 
-
 <form method="post">
     <div class="container">
         <div class="row">
             <div class="col-md-3">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <span class="input-group-text" id="basic-addon1">Start</span>
                     <input type="date" class="form-control" placeholder="From" aria-label="StartDate" aria-describedby="basic-addon1"
                            asp-for="@Model.Variables.Start">
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="input-group mb-3">
+                <div class="input-group">
                     <input type="date" class="form-control" placeholder="From" aria-label="EndDate" aria-describedby="basic-addon2"
                            asp-for="@Model.Variables.End">
                     <span class="input-group-text" id="basic-addon2">End</span>
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="input-group mb-1">
+                <div class="input-group">
                     <label class="input-group-text" for="inputCompany">Company</label>
                     <select class="form-select" id="txtCustomer"
                             asp-for="@Model.Variables.Company">
@@ -55,88 +54,107 @@
                 <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Reload</button>
             </div>
         </div>
+        <hr style="margin:3px" />
         <div class="row">
             <input type="text" asp-for="@Model.Variables.ID" hidden />
             <input type="text" asp-for="@Model.Variables.TranID" hidden />
+
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="StockTitle" asp-for="@Model.Variables.Inventory">
+                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No">
+                    <label for="floatingInput">Voucher No</label>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="dtVou_Date" asp-for="@Model.Variables.Vou_Date">
+                    <label for="floatingInput">Voucher Date</label>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="row justify-content-between">
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="txtStockTitle" placeholder="StockTitle" asp-for="@Model.Variables.StockTitle">
                     <label for="floatingInput">Stock Title</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Batch" asp-for="@Model.Variables.Batch">
+                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch">
                     <label for="floatingInput">Batch</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingInput" placeholder="Quantity" asp-for="@Model.Variables.Qty">
-                    <label for="floatingInput">Quantity</label>
+                    <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.RQty">
+                    <label for="floatingInput">Return Quantity</label>
                 </div>
             </div>
-            <div class="col-md-3  justify-content-between">
-                <button type="submit" class="btn btn-primary" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button>
+            <div class="col-md-3">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save" asp-route-TranID="@Model.Variables.TranID"><i class="bi bi-save"></i> Save</button>
             </div>
         </div>
     </div>
 
     <div class="container">
-        @if (Model.Receivable1.Rows.Count > 0)
+        @if (Model.Receivable1 != null)
         {
-            <table class="table-list">
-                <thead>
-                    <tr>
-                        <th>Vou_No</th>
-                        <th>Vou_Date</th>
-                        <th>Stock Title</th>
-                        <th>Batch</th>
-                        <th>Qty</th>
-                        <th>Rate</th>
-                        <th>Amount</th>
-                        <th>Tax Rate</th>
-                        <th>Tax Amount</th>
-                        <th>Net Amount</th>
-                        <th>..</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.Receivable1.Rows)
-                    {
-                        var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
-                        var _Qty = (decimal)Row["Qty"];
-                        var _Rate = (decimal)Row["Rate"];
-                        var _Amount = _Qty * _Rate;
-                        var _TaxRate = ((decimal)Row["Tax"]) / 100;
-                        var _TaxAmount = _Amount * (_TaxRate);
-                        var _NetAmount = _Amount + _TaxAmount;
-
-
+            @if (Model.Receivable1.Rows.Count > 0)
+            {
+                <table class="table-list">
+                    <thead>
                         <tr>
-                            <td>@Row["Vou_No"]</td>
-                            <td>@_Date</td>
-                            <td>@Row["StockTitle"]</td>
-                            <td>@Row["Batch"]</td>
-                            <td class="table-col-amount">@_Qty.ToString(FMTCurrency1)</td>
-                            <td class="table-col-amount">@_Rate.ToString(FMTCurrency2)</td>
-                            <td class="table-col-amount">@_Amount.ToString(FMTCurrency1)</td>
-                            <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2+"%")</td>
-                            <td class="table-col-amount">@_TaxAmount.ToString(FMTCurrency1)</td>
-                            <td class="table-col-amount">@_NetAmount.ToString(FMTCurrency1)</td>
-                            <td>
-                                <button class="listbutton-red" asp-page-handler="StockReturn" asp-route-id="@Row["ID"]">
-                                    <i class="bi bi-cart-dash-fill"></i>
-                                </button>
-                            </td>
+                            <th>Vou_No</th>
+                            <th>Vou_Date</th>
+                            <th>Stock Title</th>
+                            <th>Batch</th>
+                            <th>Qty</th>
+                            <th>Return Qty</th>
+                            <th>Rate</th>
+                            <th>Amount</th>
+                            <th>Tax Rate</th>
+                            <th>Tax Amount</th>
+                            <th>Net Amount</th>
+                            <th>..</th>
                         </tr>
-                    }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow Row in Model.Receivable1.Rows)
+                        {
+                            var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                            var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                            var _RQty = Conversion.ToDecimal(Row["RQty"]);
+                            var _Rate = Conversion.ToDecimal(Row["Rate"]);
+                            var _Amount = _Qty * _Rate;
+                            var _TaxRate = ((decimal)Row["Tax"]) / 100;
+                            var _TaxAmount = _Amount * (_TaxRate);
+                            var _NetAmount = _Amount + _TaxAmount;
 
-
+                            <tr>
+                                <td>@Row["Vou_No"]</td>
+                                <td>@_Date</td>
+                                <td>@Row["StockTitle"]</td>
+                                <td>@Row["Batch"]</td>
+                                <td class="table-col-amount">@_Qty.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_RQty.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_Rate.ToString(FMTCurrency2)</td>
+                                <td class="table-col-amount">@_Amount.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2+"%")</td>
+                                <td class="table-col-amount">@_TaxAmount.ToString(FMTCurrency1)</td>
+                                <td class="table-col-amount">@_NetAmount.ToString(FMTCurrency1)</td>
+                                <td>
+                                    <button class="listbutton-red" asp-page-handler="StockReturn" asp-route-id="@Row["ID"]">
+                                        <i class="bi bi-cart-dash-fill"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
         }
     </div>
-
-
 </form>

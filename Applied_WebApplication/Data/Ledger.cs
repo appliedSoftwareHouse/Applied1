@@ -189,7 +189,7 @@ namespace Applied_WebApplication.Data
 
         internal static DataTable GetGL(string userName, AppReportClass.ReportFilters paramaters)
         {
-            var _Filter = $"WHERE COA={paramaters.N_COA} ORDER BY COA,Vou_Date";
+            var _Filter = $"COA={paramaters.N_COA} ORDER BY COA,Vou_Date";
             DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
             return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }

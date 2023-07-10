@@ -52,6 +52,15 @@ namespace Applied_WebApplication.Data
                 SetTableClass(_UserName, _Text, "");
             }
         }
+
+        public DataTableClass(string _UserName, string _Text, Tables _TableName)
+        {
+            MyTableName = _TableName.ToString();
+            if (_Text.Length > 0 || _Text != null)
+            {
+                SetTableClass(_UserName, _Text, "");
+            }
+        }
         public DataTableClass(string _UserName, string _Text, string _Filter)
         {
             if (_Text.Length > 0 || _Text != null)
@@ -110,7 +119,7 @@ namespace Applied_WebApplication.Data
                 UserName = _UserName;
                 MyConnection = GetConnection();
                 View_Filter = _Filter;
-                GetDataTable();
+                GetDataTable(_Text);
                 MyDataView ??= new DataView();
                 TableValidation = new(MyDataTable);
                 if (_Filter.Length > 0) { View_Filter = _Filter; }
@@ -231,6 +240,47 @@ namespace Applied_WebApplication.Data
             }
             catch (Exception e)
             {
+                if(e.Message.Contains("no such table"))
+                {
+                    CreateTablesClass CreateTable = new(UserName, MyTableName);
+                }
+                MyMessage = e.Message;
+            }
+            return;
+        }
+
+        private void GetDataTable(string _Text)
+        {
+            MyTableName ??= "MyTable";                           // Exit here if table name is not specified.
+
+            try
+            {
+                var _CommandText = _Text;
+                SQLiteCommand _Command = new(_CommandText, GetConnection());
+                SQLiteDataAdapter _Adapter = new(_Command);
+                DataSet _DataSet = new();
+                _Adapter.Fill(_DataSet, MyTableName);
+
+                if (_DataSet.Tables.Count == 1)
+                {
+
+                    MyDataTable = _DataSet.Tables[0];
+                    MyTableName = MyDataTable.TableName;
+                    MyDataView = MyDataTable.AsDataView();
+                    if (MyDataTable.Rows.Count > 0)
+                    {
+                        CurrentRow ??= MyDataTable.Rows[0];
+                    }
+                }
+                else { MyDataTable = new DataTable(); MyConnection.Close(); }
+
+            }
+            catch (Exception e)
+            {
+                if (e.Message.Contains("no such table"))
+                {
+                    CreateTablesClass CreateTable = new(UserName, MyTableName);
+                }
                 MyMessage = e.Message;
             }
             return;
@@ -240,12 +290,7 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = filter;
             return MyDataView.ToTable();
         }
-        //internal DataTable GetTable(string filter, string Sort)
-        //{
-        //    MyDataView.Sort = Sort;
-        //    MyDataView.RowFilter = filter;
-        //    return MyDataView.ToTable();
-        //}
+        
         #endregion
 
         #region New Row / Refresh

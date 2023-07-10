@@ -23,6 +23,7 @@ public enum Tables
     OBALCompany = 117,
     JVList = 118,
     ExpenseSheet = 119,
+    SaleReturn,
    
 
     Customers = 201,

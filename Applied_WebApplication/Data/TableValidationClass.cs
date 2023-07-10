@@ -18,8 +18,8 @@ namespace Applied_WebApplication.Data
 
 
 
-        private static DateTime FiscalFrom => AppRegistry.GetFiscalFrom();
-        private static DateTime FiscalTo => AppRegistry.GetFiscalTo();
+        //private static DateTime FiscalFrom => AppRegistry.GetFiscalFrom(UserName);
+        //private static DateTime FiscalTo => AppRegistry.GetFiscalTo(UserName);
 
 
         public TableValidationClass()
@@ -401,6 +401,7 @@ namespace Applied_WebApplication.Data
         private void ValidateTable_BillReceivable(DataRow Row)
         {
             MyMessages = new List<Message>();
+            
             if (SQLAction == CommandAction.Insert.ToString())
             {
                 if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
@@ -410,8 +411,8 @@ namespace Applied_WebApplication.Data
             if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Company ID is Zero, not allowed." }); }
             if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Description is Zero, not allowed." }); }
             if (string.IsNullOrEmpty(Row["Status"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Status is not defined, must be a valid value." }); }
-            if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the fiscal year date" }); }
-            if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is above the fiscal year date" }); }
+            //if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the fiscal year date" }); }
+            //if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is above the fiscal year date" }); }
             if ((DateTime)Row["Vou_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the invoice Date, not allowed" }); }
             if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Payment Date is below the invoice Date, not allowed" }); }
         }
@@ -533,8 +534,8 @@ namespace Applied_WebApplication.Data
             if ((decimal)Row["DR"] + (decimal)Row["CR"] == 0) { MyMessages.Add(SetMessage("Voucher Amount is zero. select some amount.")); }
             if ((decimal)Row["DR"] != 0 && (decimal)Row["CR"] != 0) { MyMessages.Add(SetMessage("Voucher Amount Debit or Credit must be one zero. select one with ZERO value.")); }
             if (((string)Row["Description"]).Length == 0) { MyMessages.Add(SetMessage("Description of the transaction must be some value.")); }
-            if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
-            if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
+            if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom()) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
+            if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
         }
 
         private void ValidateTable_Employees(DataRow Row)
