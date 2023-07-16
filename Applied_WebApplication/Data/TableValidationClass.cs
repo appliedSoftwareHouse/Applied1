@@ -1,4 +1,5 @@
 ﻿using Applied_WebApplication.Pages;
+using Microsoft.Win32.SafeHandles;
 using System.Data;
 using System.Drawing;
 using static Applied_WebApplication.Data.MessageClass;
@@ -45,7 +46,7 @@ namespace Applied_WebApplication.Data
         public bool Validation(DataRow Row, CommandAction _SQLAction)
         {
             SQLAction = _SQLAction.ToString();
-            if(MyDataView==null) { MyDataView = Row.Table.AsDataView(); }
+            if (MyDataView == null) { MyDataView = Row.Table.AsDataView(); }
             return Validation(Row);
         }
 
@@ -75,7 +76,7 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(SetMessage("DataTable is null. define Datatable to validate the record."));
                 return false;
             }
-           
+
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
             if (Row.Table.TableName == Tables.Inventory.ToString()) { ValidateTable_Inventory(Row); }
@@ -94,10 +95,10 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
-            if (MyMessages.Count > 0) { return false; } else { return true; }
+            if (MyMessages.Count > 0) { return false; } else { return true ; }
         }
 
-     
+
 
         #region Methods => Seek / Sucess
         private bool Seek(string _Column, string _Value)
@@ -221,42 +222,41 @@ namespace Applied_WebApplication.Data
 
             if (SQLAction == CommandAction.Insert.ToString())
             {
-                if (Seek("ID", Row["ID"].ToString()))
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10501, Msg = "Duplicate of ID found." });
-                }
-
-                if (Row["Vou_No"].ToString().Length == 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10507, Msg = "Enter Valid Voucher Number." });
-                }
-
-                if (Seek("Vou_No", Row["Vou_No"].ToString()))
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10502, Msg = "Duplicate of Voucher No found." });
-                }
-
-                if ((int)Row["COA"] == 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10505, Msg = "Accounts Head must be selected." });
-                }
-
-                if ((decimal)Row["DR"] > 0 && (decimal)Row["CR"] > 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10503, Msg = "Only Debit or Credit must be more more than Zero." });
-                }
-
-                if ((decimal)Row["DR"] == 0 && (decimal)Row["CR"] == 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10504, Msg = "Must be enter Debit or Credit Amount" });
-                }
-
-
-                if (Row["Description"].ToString().Length == 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 10506, Msg = "Description must be some charactors." });
-                }
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("Duplicate of ID found.", ConsoleColor.Red)); }
+                if (Seek("Vou_No", Row["Vou_No"].ToString())) { MyMessages.Add(SetMessage("Duplicate of Voucher No found.", ConsoleColor.Red)); }
             }
+
+            if (Row["Vou_No"].ToString().Length == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10507, Msg = "Enter Valid Voucher Number." });
+            }
+
+            
+            if ((int)Row["BookID"] == 0) { MyMessages.Add(SetMessage("Cash Bood ID is Zero.", ConsoleColor.Red)); }
+
+
+
+            if ((int)Row["COA"] == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10505, Msg = "Accounts Head must be selected." });
+            }
+
+            if ((decimal)Row["DR"] > 0 && (decimal)Row["CR"] > 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10503, Msg = "Only Debit or Credit must be more more than Zero." });
+            }
+
+            if ((decimal)Row["DR"] == 0 && (decimal)Row["CR"] == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10504, Msg = "Must be enter Debit or Credit Amount" });
+            }
+
+
+            if (Row["Description"].ToString().Length == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10506, Msg = "Description must be some charactors." });
+            }
+
         }
         private void ValidateTable_WriteChq(DataRow Row)
         {
@@ -282,23 +282,19 @@ namespace Applied_WebApplication.Data
         private void ValidateTable_Ledger(DataRow Row)
         {
             MyMessages = new List<Message>();
-            int VoucherID = (int)Row["TranID"];
 
-            if ((string)Row["Vou_Type"] == PostType.CashBook.ToString())
+            if ((string)Row["Vou_Type"] == VoucherType.Cash.ToString())
             {
-                MyDataView.RowFilter = string.Concat("[Vou_Type]='Cash' AND [TranID]=", VoucherID.ToString());
-                if (MyDataView.Count > 0)
-                {
-                    MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher and post again." });
-                }
+                MyDataView.RowFilter = $"[Vou_Type]='{VoucherType.Cash}' AND [TranID]={Row["TranID"]}";
+                if (MyDataView.Count > 0) { MyMessages.Add(SetMessage("Voucher is already posted. Unpost voucher and post again.", ConsoleColor.Red)); }
+                if ((int)Row["BookID"]==0) { MyMessages.Add(SetMessage("Cash Book ID define Zero.", ConsoleColor.Red)); }
             }
-
             if ((string)Row["Vou_Type"] == PostType.JV.ToString())
             {
-                
+
                 MyDataView.RowFilter = string.Concat("[Vou_Type]='JV' AND [TranID]=", Row["TranID"].ToString());
-                if (MyDataView.Count > 0 )
-                    {
+                if (MyDataView.Count > 0)
+                {
                     if ((string)MyDataView[0]["Status"] == VoucherStatus.Posted.ToString())
                         MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher for editing." });
                     return;
@@ -308,6 +304,11 @@ namespace Applied_WebApplication.Data
                     ValidateTable_LedgerVoucher(Row);
                 }
             }
+
+
+            //------------------- Ledgers Validation
+            if ((decimal)Row["DR"] + (decimal)Row["CR"]==0) { MyMessages.Add(SetMessage("Voucher Amount is zero", ConsoleColor.Red)); }
+            if (Row["Description"].ToString().Length==0) { MyMessages.Add(SetMessage("Voucher Amount is zero", ConsoleColor.Red)); }
 
         }
         private void ValidateTable_BillPayable(DataRow Row)
@@ -401,7 +402,7 @@ namespace Applied_WebApplication.Data
         private void ValidateTable_BillReceivable(DataRow Row)
         {
             MyMessages = new List<Message>();
-            
+
             if (SQLAction == CommandAction.Insert.ToString())
             {
                 if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
@@ -554,7 +555,7 @@ namespace Applied_WebApplication.Data
             if (Row["CNIC"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee national identity number is not defined.")); }
             if ((DateTime)Row["JOIN"] == new DateTime()) { MyMessages.Add(SetMessage("Joining Date is not defined.")); }
             if ((DateTime)Row["DOB"] == new DateTime()) { MyMessages.Add(SetMessage("Employee's date of birth is not defined.")); }
-            
+
         }
 
         #endregion

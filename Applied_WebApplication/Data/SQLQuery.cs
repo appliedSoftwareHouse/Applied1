@@ -164,7 +164,7 @@ namespace Applied_WebApplication.Data
             Text.Append("SUM([CR]) AS[CR] ");
             Text.Append("FROM[Cashbook][CB] ");
             Text.Append("LEFT JOIN[COA] [C] ON[C].[ID] = [CB].[COA] ");
-            if (_Filter.Length > 0) {Text.Append($"WHERE {_Filter}"); }
+            if (_Filter.Length > 0) { Text.Append($"WHERE {_Filter}"); }
             Text.Append("GROUP BY[COA], [Sheet_No]");
             return Text.ToString();
         }
@@ -235,7 +235,7 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [Employees] [E] ON [E].[ID] = [L].[EMPLOYEE] ");
             Text.Append("LEFT JOIN [Project]       [P] ON [P].[ID] = [L].[PROJECT] ");
             Text.Append("LEFT JOIN [Inventory]   [I]  ON [I].[ID]  = [L].[INVENTORY]");
-            if(_Filter.Length > 0)
+            if (_Filter.Length > 0)
             {
                 Text.Append($" WHERE {_Filter}");
             }
@@ -435,7 +435,7 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[Employee] ");
             Text.Append("LEFT JOIN[Inventory]   [I]   ON[I].[ID] = [L].[Inventory] ");
             Text.Append("LEFT JOIN[Project]       [P] ON[P].[ID] = [L].[Project] ");
-            if(_Filter.Length>0)
+            if (_Filter.Length > 0)
             {
                 Text.Append($"WHERE {_Filter} ");
             }
@@ -443,6 +443,45 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
         #endregion
+
+        #region Cash & Bank Book
+        public static string vwBook(int? BookCode)
+        {
+            if (BookCode == null) { return "No Book Code defined."; }
+
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[Vou_Type], ");
+            Text.Append("[Vou_Date], ");
+            Text.Append("[Vou_No], ");
+            Text.Append("[Description], ");
+            Text.Append("[DR], ");
+            Text.Append("[CR], ");
+            Text.Append("0.00 AS[BAL], ");
+            Text.Append(" [Customer], ");
+            Text.Append("[Customers].[Title] AS [CustomerTitle], ");
+            Text.Append(" '' AS [Status] ");
+            Text.Append("FROM[Ledger]");
+            Text.Append("LEFT JOIN[Customers] ON[Ledger].[Customer] = [Customers].[ID]; ");
+            Text.Append($"WHERE COA={BookCode}");
+            return Text.ToString();
+
+
+        }
+        public static string BookTitles(int? NatureID)
+        {
+            var Text = new StringBuilder();
+            Text.Append($"SELECT [ID],[Title] from [COA] Where Nature={NatureID};");
+
+            return Text.ToString();
+        }
+
+        #endregion
+
+
+
+
+        //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 
         #region Create DataTable into Source Data
 
@@ -456,7 +495,7 @@ namespace Applied_WebApplication.Data
             if (TableExist > 0) { return; }
             #endregion
 
-           
+
             switch (_Table)
             {
                 case Tables.Registry:
@@ -470,6 +509,9 @@ namespace Applied_WebApplication.Data
                 case Tables.COA_Notes:
                     break;
                 case Tables.CashBook:
+                    break;
+                case Tables.BankBook:
+                    CreateTablesClass.BankBook(UserName);
                     break;
                 case Tables.WriteCheques:
                     break;
@@ -501,7 +543,7 @@ namespace Applied_WebApplication.Data
                 case Tables.JVList:
                     break;
                 case Tables.ExpenseSheet:
-                        
+
                     break;
                 case Tables.Customers:
                     break;
@@ -574,7 +616,7 @@ namespace Applied_WebApplication.Data
             }
         }
 
-        
+
         #endregion
     }
 }

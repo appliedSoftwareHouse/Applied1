@@ -16,7 +16,7 @@
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
-    //var _SelectPosted = Applied_WebApplication.Pages.Accounts.CashBookModel.GetSelectPosted(Model.Variables.IsPosted1);
+   
     var _SelectPosted = "SELECT...";
 }
 
@@ -24,9 +24,7 @@
     .date-1 {
         width: 100px
     }
-
 </style>
-
 
 <form method="post">
 
@@ -47,12 +45,12 @@
             <div class="col mb-1" style="width:130px">
                 <div class="input-group">
                     <span class="input-group-text" style="width:30%" id="From">Start</span>
-                    <input type="date" class="text-center" id="MinDate" style="width:70%" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
+                    <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" value=@Date1 asp-for=@Model.Variables.MinDate />
                 </div>
             </div>
             <div class="col mb-1 " style="width:300px">
                 <div class="input-group">
-                    <input type="date" class="text-center" id="MaxDate" style="width:70%" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
+                    <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" value=@Date2 asp-for=@Model.Variables.MaxDate />
                     <span class="input-group-text" style="width:30%" id="To">End</span>
                 </div>
             </div>

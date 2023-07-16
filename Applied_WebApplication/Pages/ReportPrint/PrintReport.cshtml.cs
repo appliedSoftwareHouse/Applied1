@@ -15,8 +15,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 {
     public class COAListModel : PageModel
     {
-        //private HtmlToPdf converter;
 
+        #region Setup
         [BindProperty]
         public string ReportLink { get; set; }
         public bool IsError { get; set; }
@@ -26,6 +26,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public bool IsShowPdf { get; set; } = false;
         public string UserName => User.Identity.Name;
         public string CompanyName => UserProfile.GetUserClaim(User, "Company");
+        #endregion
 
         #region Get Reports.
 
@@ -114,14 +115,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
             #region Report Filter Variables
             ReportFilters Filters = new()
             {
-                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                //N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             #endregion
-
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText() + " ORDER BY Customer, COA, Vou_Date"));
+            var _COAs = AppRegistry.GetText(UserName, "CompanyGLs");
+            var _Filter = $"COA IN({_COAs}) AND {Filters.FilterText()} ORDER BY Customer, Vou_Date, COA";
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(_Filter));
 
             if (_Table.Rows.Count > 0)
             {
@@ -146,10 +148,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var Variables = new ReportParameters()
                 {
                     ReportPath = AppGlobals.ReportPath,
-                    ReportFile = "CompanyGL.rdl",
+                    ReportFile = "CompanyGL2.rdl",
                     OutputPath = AppGlobals.PrintedReportPath,
                     OutputPathLink = AppGlobals.PrintedReportPathLink,
-                    OutputFile = "CompanyGL",
+                    OutputFile = "CompanyGL2",
                     CompanyName = UserProfile.GetCompanyName(User),
                     Heading1 = "General Ledger",
                     Heading2 = "Vender / Supplier / Customer",
@@ -631,42 +633,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #endregion
-
-        //public string CreateFile(byte[] FileBtyes, string FileName)
-        //{
-        //    if (FileBtyes.Length > 1)
-        //    {
-        //        FileStream MyFileStream;
-        //        string OutPutFile = $"{AppGlobals.PrintedReportPath}{FileName}";
-        //        string OutPutFileLink = $"{AppGlobals.PrintedReportPathLink}{FileName}";
-
-
-        //        try
-        //        {
-        //            if (System.IO.File.Exists(OutPutFile)) { System.IO.File.Delete(OutPutFile); }
-
-        //            using (FileStream fstream = new FileStream(OutPutFile, FileMode.Create))
-        //            {
-        //                fstream.Write(FileBtyes, 0, FileBtyes.Length);
-        //                MyFileStream = fstream;
-        //            }
-
-
-        //            if (System.IO.File.Exists(OutPutFile))
-        //            {
-        //                IsError = false;
-        //                MyMessage = "File has been created sucessfully.";
-        //                return OutPutFileLink;
-        //            }
-
-        //        }
-        //        catch (Exception e) { MyMessage = e.Message; IsError = true; }
-
-
-        //    }
-        //    return "";
-
-        //}
 
     }
 }

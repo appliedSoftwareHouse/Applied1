@@ -17,14 +17,15 @@ namespace Applied_WebApplication.Data
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
 
-            tb_Ledger.MyDataView.RowFilter = $"TranID='{id}' AND Vou_Type='{VoucherType.Cash.ToString()}'";
+            tb_Ledger.MyDataView.RowFilter = $"TranID='{id}' AND Vou_Type='{VoucherType.Cash}'";
             if (tb_Ledger.MyDataView.Count == 0)
             {
+                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();
                 DataRow Row = AppFunctions.GetDataRow(UserName, Tables.CashBook, id);
                 tb_Ledger.NewRecord();                                                                                                 // Cash Book DR Entry
                 tb_Ledger.CurrentRow["ID"] = 0;
                 tb_Ledger.CurrentRow["TranID"] = id;
-                tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Cash.ToString();
                 tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
                 tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
                 tb_Ledger.CurrentRow["SR_No"] = 1;
@@ -50,7 +51,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.NewRecord();                                                                                                  // Cash Book CR Entry
                 tb_Ledger.CurrentRow["ID"] = 0;
                 tb_Ledger.CurrentRow["TranID"] = id;
-                tb_Ledger.CurrentRow["Vou_Type"] = "Cash";
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Cash.ToString();
                 tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
                 tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
                 tb_Ledger.CurrentRow["SR_No"] = 2;
@@ -81,11 +82,11 @@ namespace Applied_WebApplication.Data
 
             if (ErrorMessages.Count == 0)
             {
-                
-                tb_Ledger.CurrentRow = VoucherRows[0];                  // DR Transaction
-                tb_Ledger.Save();
+                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();   
+                tb_Ledger.CurrentRow = VoucherRows[0];                  // Debit Transaction
+                tb_Ledger.Save(false);
                 tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
-                tb_Ledger.Save();
+                tb_Ledger.Save(false);
                 DataTableClass.Replace(UserName, Tables.CashBook, id, "Status", VoucherStatus.Posted.ToString());
             }
            

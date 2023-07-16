@@ -3,14 +3,15 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
-using static Applied_WebApplication.Pages.Accounts.CashBookModel;
+using static Applied_WebApplication.Pages.Accounts.BankBookModel;
+
 
 namespace Applied_WebApplication.Pages.Accounts
 {
-    public class CashBookRecordModel : PageModel
+    public class BankBookRecordModel : PageModel
     {
         [BindProperty]
-        
+
         public BookRecord BookRecord { get; set; }
         public bool IsAdd = true;
         public bool IsError = false;
@@ -20,7 +21,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public void OnGet(int ID, int _BookID)
         {
             BookID = _BookID;
-            DataTableClass _Table = new(UserName, Tables.CashBook);
+            DataTableClass _Table = new(UserName, Tables.BankBook);
             DataRow Row = _Table.NewRecord();
             BookRecord = new();
 
@@ -28,7 +29,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 Row = _Table.CurrentRow;
                 if (BookRecord == null) { BookRecord = new(); }
-                Row["Vou_No"] = GetNewCashVoucher(UserName);
+                Row["Vou_No"] = GetNewBankVoucher(UserName);
                 Row["Vou_Date"] = DateTime.Now;
                 Row["BookID"] = BookID;
             }
@@ -62,7 +63,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSave()
         {
-            DataTableClass Table = new(UserName, Tables.CashBook);
+            DataTableClass Table = new(UserName, Tables.BankBook);
             DataRow Row = Table.NewRecord();
 
             Row["ID"] = BookRecord.ID;
@@ -90,28 +91,27 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             else
             {
-                var _MaxDate = AppRegistry.GetDate(UserName, "CashBookTo");
+                var _MaxDate = AppRegistry.GetDate(UserName, "BankBookTo");
 
-                if(_MaxDate < BookRecord.Vou_Date)                      // Save the Voucher date for Cash Book List Page
+                if (_MaxDate < BookRecord.Vou_Date)                      // Save the Voucher date for Bank Book List Page
                 {
-                    AppRegistry.SetKey(UserName, "CashBookTo", BookRecord.Vou_Date, KeyType.Date);
+                    AppRegistry.SetKey(UserName, "BankBookTo", BookRecord.Vou_Date, KeyType.Date);
                 }
 
-                return RedirectToPage("CashBook", routeValues: new { id = BookID });
+                return RedirectToPage("BankBook", routeValues: new { id = BookID });
             }
         }
 
         public IActionResult OnPostBack()
         {
-            return RedirectToPage("CashBook", routeValues: new { id = BookID });
+            return RedirectToPage("BankBook", routeValues: new { id = BookID });
         }
 
         public IActionResult OnPostAutoVoucher()
         {
-            BookRecord.Vou_No = GetNewCashVoucher(UserName);
+            BookRecord.Vou_No = GetNewBankVoucher(UserName);
             return Page();
         }
-
 
     }
 }

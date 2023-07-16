@@ -43,6 +43,11 @@ namespace Applied_WebApplication.Pages.Account
                 BRec_Stock = AppRegistry.GetNumber(UserName, "BRec_Stock"),
                 BRec_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax"),
                 BRec_Receivable = AppRegistry.GetNumber(UserName, "BRec_Receivable"),
+                
+                CompanyGLs = AppRegistry.GetText(UserName, "CompanyGLs"),
+
+                CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"),
+                BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature")
 
             };
         }
@@ -68,7 +73,10 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
             AppRegistry.SetKey(UserName, "SalesReportRDL", Variables.SalesReportRDL, KeyType.Text);
+            AppRegistry.SetKey(UserName, "CompanyGLs", Variables.CompanyGLs, KeyType.Text);
 
+            AppRegistry.SetKey(UserName, "CashBkNature", Variables.CashBookNature, KeyType.Number);
+            AppRegistry.SetKey(UserName, "BankBkNature", Variables.BankBookNature, KeyType.Number);
 
             return RedirectToPage();
         }
@@ -93,6 +101,9 @@ namespace Applied_WebApplication.Pages.Account
             public int BRec_Tax { get; set; }
             public int BRec_Receivable { get; set; }
             public string SalesReportRDL { get; set; }
+            public string CompanyGLs { get; set; }
+            public int CashBookNature { get; set; }
+            public int BankBookNature { get; set; }
 
         }
 

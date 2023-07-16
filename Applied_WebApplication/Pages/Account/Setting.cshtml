@@ -7,11 +7,15 @@
     var MyUserProfile = new UserProfile(ProfileDB.UserRecord(UserName));
     var DateStockExpiry = Model.Variables.StockExpiry.ToString("yyyy-MM-dd");
 
-    var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);  
-    var TitleOBStock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBStock); 
+    var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);
+    var TitleOBStock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBStock);
     var TitleBPay_Stock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Stock);
     var TitleBPay_Tax = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Tax);
     var TitleBPay_Payable = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Payable);
+
+    var TitleCashBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.CashBookNature);
+    var TitleBankBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.BankBookNature);
+    
 }
 
 <div class="AppHeading-2">
@@ -21,7 +25,7 @@
 
 <form method="post">
     <div class="container padding-0">
-        <div class="accordion" id="accordionExample">
+        <div class="accordion" id="AppSetting">
             <div class="accordion-item">
                 <h2 class="accordion-header" id="collapseGeneral">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
@@ -106,13 +110,45 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.SalesReportRDL">
+                                    <label for="SalesReport">Sales Report Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.CompanyGLs">
+                                    <label for="SalesReport">Coampnay GL Accounts</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="CashNatureID" aria-label="Selection of Cash Book Nature ID" asp-for="@Model.Variables.CashBookNature">
+                                        <option selected>@TitleCashBookNature</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA_Nature))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="CashNatureID">Cash Book Nature</label>
+                                </div>
+                            </div>
 
-                        <div class="col-md-3">
-                            <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.SalesReportRDL">
-                            <label for="SalesReport">Fiscal Year End</label>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="BankNatureID" aria-label="Selection of Cash Book Nature ID" asp-for="@Model.Variables.BankBookNature">
+                                        <option selected>@TitleBankBookNature</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA_Nature))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="BankNatureID">Bank Book Nature</label>
+                                </div>
+                            </div>
                         </div>
-
-
                     </div>
                 </div>
             </div>

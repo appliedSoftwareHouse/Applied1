@@ -108,3 +108,42 @@ https://www.codemag.com/article/0404072/COM-Interop-Making-.NET-and-VFP-Talk-to-
 
 
 https://www3.sqlite.org/src/mimetype_list   MIME TYPES
+
+
+
+SELECT * FROM 
+(
+SELECT 
+"PURCHASED" AS [TRAN],
+[B1].[Vou_No],
+[B1].[Vou_Date],
+[B2].[Inventory],
+[B2].[Qty],
+[B2].[Rate],
+[B2].[Qty] * [B2].[Rate] AS [Amount],
+[T].[Rate] AS [TaxRate],
+([B2].[Qty] * [B2].[Rate]) * [T].[Rate] AS [TaxAmount],
+([B2].[Qty] * [B2].[Rate])+(([B2].[Qty] * [B2].[Rate]) * [T].[Rate]) AS [NetAmount]
+FROM [BillPayable] [B1]
+LEFT JOIN [BillPayable2] [B2] on [B1].[ID] = [B2].[TranID]
+LEFT JOIN Taxes [T] On [T].[ID] = [B2].[Tax]
+) AS [Purchased]
+
+UNION
+
+SELECT * FROM 
+(SELECT 
+"SOLD" AS [TRAN],
+[B1].[Vou_No],
+[B1].[Vou_Date],
+[B2].[Inventory],
+[B2].[Qty],
+[B2].[Rate],
+[B2].[Qty] * [B2].[Rate] AS [Amount],
+[T].[Rate] AS [TaxRate],
+([B2].[Qty] * [B2].[Rate]) * [T].[Rate] AS [TaxAmount],
+([B2].[Qty] * [B2].[Rate])+(([B2].[Qty] * [B2].[Rate]) * [T].[Rate]) AS [NetAmount]
+FROM BillReceivable2 [B2]
+LEFT JOIN BillReceivable [B1] ON [B1].[ID] = [B2].[TranID]
+LEFT JOIN Taxes [T] On [T].[ID] = [B2].[Tax]
+) AS [Sold]

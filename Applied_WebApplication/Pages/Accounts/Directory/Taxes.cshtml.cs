@@ -9,7 +9,7 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
     {
         [BindProperty]
         public Parameters Variables { get; set; }
-        public DataTable tb_Taxes { get; set; }
+        public DataTable TB_Taxes { get; set; }
         public string UserName => User.Identity.Name;
         public List<Message> MyMessages { get; set; }
 
@@ -18,14 +18,14 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
             Variables = new();
             MyMessages = new();
             var TaxesClass = new DataTableClass(UserName, Tables.Taxes);
-            tb_Taxes = TaxesClass.MyDataTable;
+            TB_Taxes = TaxesClass.MyDataTable;
         }
 
         public void OnGetEdit(int ID)
         {
             MyMessages = new();
             var TaxesClass = new DataTableClass(UserName, Tables.Taxes);
-            tb_Taxes = TaxesClass.MyDataTable;
+            TB_Taxes = TaxesClass.MyDataTable;
             TaxesClass.SeekRecord(ID);
             Variables = new()
             {
@@ -48,7 +48,7 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
         {
             MyMessages = new();
             var TaxesClass = new DataTableClass(UserName, Tables.Taxes);
-            tb_Taxes = TaxesClass.MyDataTable;
+            TB_Taxes = TaxesClass.MyDataTable;
             TaxesClass.SeekRecord(ID);
             TaxesClass.CurrentRow["ID"] = Variables.ID;
             TaxesClass.CurrentRow["Code"] = Variables.Code;
@@ -66,7 +66,7 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
             {
                 MyMessages.Add(SetMessage($"Record has been saved: {Variables.Title}", ConsoleColor.Green));
                 TaxesClass = new DataTableClass(UserName, Tables.Taxes);
-                tb_Taxes = TaxesClass.MyDataTable;
+                TB_Taxes = TaxesClass.MyDataTable;
             }
             return Page();
         }

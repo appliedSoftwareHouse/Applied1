@@ -7,25 +7,55 @@ namespace Applied_WebApplication.Pages.Accounts
 {
     public class BillReceivableListModel : PageModel
     {
+        [BindProperty]
+        public Parameters Variables { get; set; }
         public string UserName => User.Identity.Name;
         public DataTable BillReceivable { get; set; } = new();
         public List<Message> MyMessages = new();
 
+
+        #region GET
         public void OnGet()
         {
-            DataTableClass _Table = new(UserName, Tables.BillReceivable);
-            //_Table.MyDataView.RowFilter = "";
-            BillReceivable = _Table.MyDataView.ToTable();
+            MyMessages = new();
+            Variables = new()
+            {
+                MinDate = AppRegistry.GetDate(UserName, "Brec_Start"),
+                MaxDate = AppRegistry.GetDate(UserName, "Brec_End"),
+                Company = AppRegistry.GetNumber(UserName, "Brec_Company")
+            };
+            var Date1 = Variables.MinDate.ToString(AppRegistry.DateYMD);
+            var Date2 = Variables.MaxDate.ToString(AppRegistry.DateYMD);
+            var _Filter = $"Vou_Date >= '{Date1}' AND Vou_Date <= '{Date2}'"; 
+                if(Variables.Company > 0)
+            {
+                _Filter += $" AND Company={Variables.Company}";
+            }
+            var _Table = new DataTableClass(UserName, Tables.BillReceivable, _Filter);
+            BillReceivable = _Table.MyDataTable;
         }
 
-        public void OnGetEdit()
+        
+
+        public IActionResult OnPostRefresh()
         {
+            AppRegistry.SetKey(UserName, "Brec_Start", Variables.MinDate, KeyType.Date);
+            AppRegistry.SetKey(UserName, "Brec_End", Variables.MaxDate, KeyType.Date);
+            AppRegistry.SetKey(UserName, "Brec_Company", Variables.Company, KeyType.Number);
+
+            return RedirectToPage();
         }
+        
+        #endregion
+
+        #region Add Record
         public IActionResult OnPostAdd()
         {
             return RedirectToPage("../Sales/SaleInvoice");
         }
+        #endregion
 
+        #region Show Record
         public IActionResult OnPostShow(int ID)
         {
             DataTableClass _Table = new(UserName, Tables.BillReceivable, $"ID={ID}");
@@ -37,7 +67,9 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return RedirectToPage("../Sales/SaleInvoice");
         }
+        #endregion
 
+        #region Delete
         public IActionResult OnPostDelete(int ID)
         {
 
@@ -76,11 +108,24 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return Page();
         }
+        #endregion
+
+        #region Print
 
         public IActionResult OnPostPrint(int ID)
         {
             var TranID = ID;
             return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
         }
+        #endregion
+
+        #region Variables
+        public class Parameters
+        {
+            public DateTime MinDate { get; set; } 
+            public DateTime MaxDate { get; set; } 
+            public int Company { get; set; } 
+        }
+        #endregion
     }
 }

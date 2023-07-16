@@ -8,30 +8,25 @@ namespace Applied_WebApplication.Pages
     [Authorize]
     public class IndexModel : PageModel
     {
-        private readonly ILogger<IndexModel> _logger;
-        public string MyMessage = string.Empty; 
+        public string MyMessage = string.Empty;
+        public string UserName => User.Identity.Name;
 
-        public IndexModel(ILogger<IndexModel> logger)
-        {
-            _logger = logger;
-
-        }
-
+        
         public IActionResult OnPostTest()
         {
-            //asp - page = ".\ReportPrint\PrintReport"
-            //asp - page - handler = "COAList" > Chart of Accounts(List)</ a >
             return RedirectToPage("/ReportPrint/PrintReport", "Ledger", routeValues: new { COAID = 2 });
         }
 
         public IActionResult OnPostCashBook()
         {
-            return RedirectToPage("/Accounts/Cashbook", routeValues: new { ChqCode = "" });
+            var id = AppRegistry.GetNumber(UserName, "CashBookID");
+            return RedirectToPage("/Accounts/Cashbook", routeValues: new { id });
         }
 
         public IActionResult OnPostBankBook()
         {
-            return RedirectToPage("/Accounts/Bankbook", routeValues: new { ChqCode = "" });
+            var id = AppRegistry.GetNumber(UserName, "BankBookID");
+            return RedirectToPage("/Accounts/Bankbook", routeValues: new { id });
         }
 
 

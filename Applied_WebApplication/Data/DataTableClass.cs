@@ -240,7 +240,7 @@ namespace Applied_WebApplication.Data
             }
             catch (Exception e)
             {
-                if(e.Message.Contains("no such table"))
+                if (e.Message.Contains("no such table"))
                 {
                     CreateTablesClass CreateTable = new(UserName, MyTableName);
                 }
@@ -290,7 +290,7 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = filter;
             return MyDataView.ToTable();
         }
-        
+
         #endregion
 
         #region New Row / Refresh
@@ -549,19 +549,27 @@ namespace Applied_WebApplication.Data
             Validate ??= true;
             IsError = false;
 
+
+
+
             if (CurrentRow != null)
             {
                 TableValidation = new TableValidationClass(CurrentRow.Table);
 
+                if (TableValidation.SQLAction.Length == 0)
+                {
+                    TableValidation.SQLAction = CommandAction.Insert.ToString();
+                    MyDataView.RowFilter = $"ID={CurrentRow["ID"]}";
+                    if (MyDataView.Count > 0) { TableValidation.SQLAction = CommandAction.Update.ToString(); }
+                }
+
                 if ((bool)Validate)
                 {
-                    if (TableValidation.Validation(CurrentRow))
+                    var IsValidated = TableValidation.Validation(CurrentRow);
+                    if(!IsValidated)
                     {
-                        if (TableValidation.MyMessages.Count > 0)
-                        {
-                            IsError = true;
-                            return;
-                        }
+                        IsError = true;
+                        return;
                     }
                 }
 

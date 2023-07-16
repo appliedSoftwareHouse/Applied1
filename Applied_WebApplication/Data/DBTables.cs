@@ -23,7 +23,8 @@ public enum Tables
     OBALCompany = 117,
     JVList = 118,
     ExpenseSheet = 119,
-    SaleReturn,
+    SaleReturn = 120,
+    BankBook = 121,
    
 
     Customers = 201,
@@ -94,7 +95,8 @@ public enum PostType
     Payment = 6,
     Receipt = 7,
     JV = 8,
-    BOM=9
+    BOM=9,
+    
 }
 public enum VoucherStatus
 {

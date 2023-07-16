@@ -2,9 +2,7 @@ using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.Data.Entity;
 using System.Drawing;
-using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.MessageClass;
 
@@ -53,13 +51,13 @@ namespace Applied_WebApplication.Pages.Accounts
 
             id ??= Variables.CashBookID;
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
-            var Date1 = Variables.MinDate.ToString("yyyy-MM-dd");
-            var Date2 = Variables.MaxDate.ToString("yyyy-MM-dd");
+            var Date1 = Variables.MinDate.AddDays(-1).ToString("yyyy-MM-dd");
+            var Date2 = Variables.MaxDate.AddDays(1).ToString("yyyy-MM-dd");
             LedgerClass.TableName = Tables.CashBook;
             LedgerClass.Date_From = DateTime.Parse(Date1);
             LedgerClass.Date_To = DateTime.Parse(Date2);
             LedgerClass.Sort = "Vou_Date";
-            LedgerClass.Filter = $"BookID={id} AND Vou_Date<='{Date2}'";
+            LedgerClass.Filter = $"BookID={id} AND Vou_Date >'{Date1}' AND Vou_Date<'{Date2}'";
             Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {
@@ -89,7 +87,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostEdit(int ID)
         {
-            return RedirectToPage("CashBookRecord", "Edit", routeValues: new { id=ID });
+            return RedirectToPage("CashBookRecord", routeValues: new { ID, BookID=Variables.CashBookID });
         }
 
         public IActionResult OnPostRefresh(int id)
@@ -105,7 +103,7 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostAdd()
         {
-            return RedirectToPage("CashBookRecord", new { id = Variables.CashBookID });
+            return RedirectToPage("CashBookRecord", new { ID = 0, _BookID = Variables.CashBookID });
         }
         public IActionResult OnPostSave(int ID)
         {
@@ -134,7 +132,7 @@ namespace Applied_WebApplication.Pages.Accounts
             if (ErrorMessages.Count == 0)
             {
                 Variables.IsSelected = true;
-                return Page();
+                return RedirectToPage();
             }
             else
             {
@@ -174,7 +172,6 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             return Page();
         }
-
         public static string GetSelectPosted(int _Posted)
         {
             if(_Posted == 1) { return "All"; }

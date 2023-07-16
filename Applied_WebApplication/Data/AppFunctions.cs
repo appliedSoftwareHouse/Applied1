@@ -18,6 +18,16 @@ namespace Applied_WebApplication.Data
             string NewCode = string.Concat("CB-", MaxNum.ToString("000000"));
             return NewCode;
         }
+
+        public static string GetNewBankVoucher(string UserName)
+        {
+            DataTableClass Table = new(UserName, Tables.BankBook);
+            if (Table.MyDataTable.Rows.Count == 0) { return "BB-000001"; }
+            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+            string NewCode = string.Concat("CB-", MaxNum.ToString("000000"));
+            return NewCode;
+        }
+
         public static string GetNewBillPayableVoucher(string UserName)
         {
             DataTableClass Table = new(UserName, Tables.BillPayable);
@@ -203,6 +213,17 @@ namespace Applied_WebApplication.Data
             Dictionary<int, string> Titles = new Dictionary<int, string>();
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = _Filter;
+            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
+            {
+                Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
+            }
+            return Titles;
+        }
+
+        public static Dictionary<int, string> Titles(string UserName, string _Command)
+        {
+            Dictionary<int, string> Titles = new Dictionary<int, string>();
+            DataTableClass _Table = new(UserName, _Command);
             foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
             {
                 Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
