@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
+using System.Text;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using static Applied_WebApplication.Pages.Accounts.BankBookModel;
@@ -18,6 +20,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public List<Message> ErrorMessages = new();
         public string UserName => User.Identity.Name;
         public int BookID { get; set; }
+        public string MyVouTag = "BB";
         public void OnGet(int ID, int _BookID)
         {
             BookID = _BookID;
@@ -29,7 +32,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 Row = _Table.CurrentRow;
                 if (BookRecord == null) { BookRecord = new(); }
-                Row["Vou_No"] = GetNewBankVoucher(UserName);
+                Row["Vou_No"] = GetNewVouNo(DateTime.Now);
                 Row["Vou_Date"] = DateTime.Now;
                 Row["BookID"] = BookID;
             }
@@ -58,8 +61,6 @@ namespace Applied_WebApplication.Pages.Accounts
             BookRecord.Project = (int)Row["Project"];
             BookRecord.Employee = (int)Row["Employee"];
         }
-
-
 
         public IActionResult OnPostSave()
         {
@@ -93,7 +94,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 var _MaxDate = AppRegistry.GetDate(UserName, "BankBookTo");
 
-                if (_MaxDate < BookRecord.Vou_Date)                      // Save the Voucher date for Bank Book List Page
+                if (_MaxDate < BookRecord.Vou_Date)            // Save the Voucher date for Bank Book List Page
                 {
                     AppRegistry.SetKey(UserName, "BankBookTo", BookRecord.Vou_Date, KeyType.Date);
                 }
@@ -109,9 +110,36 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostAutoVoucher()
         {
-            BookRecord.Vou_No = GetNewBankVoucher(UserName);
+            BookRecord.Vou_No = GetNewVouNo(DateTime.Now);
             return Page();
         }
+
+        private string GetNewVouNo(DateTime _Date)
+        {
+            string NewNum;
+
+            var _Text = SQLQuery.NewVouNo(Tables.BankBook);
+            
+            DataTable _Table = DataTableClass.GetTable(UserName, _Text.ToString());
+            DataView _View = _Table.AsDataView();
+
+            var _Year = _Date.ToString("yy");
+            var _Month = _Date.ToString("MM");
+            _View.RowFilter = string.Concat("Vou_No like '", MyVouTag, _Year, _Month, "%'");
+            DataTable _VouList = _View.ToTable();
+            var MaxNum = _VouList.Compute("Max(num)", "");
+            if (MaxNum == DBNull.Value)
+            {
+                NewNum = string.Concat(MyVouTag, _Year, _Month, "-", "0001");
+            }
+            else
+            {
+                var _MaxNum = int.Parse(MaxNum.ToString()) + 1;
+                NewNum = string.Concat(MyVouTag, _Year, _Month, "-", _MaxNum.ToString("0000"));
+            }
+            return NewNum;
+        }
+
 
     }
 }

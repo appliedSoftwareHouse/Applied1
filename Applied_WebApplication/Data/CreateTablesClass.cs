@@ -23,6 +23,7 @@ namespace Applied_WebApplication.Data
             MyMessages = new();
 
             if (TableName == Tables.SaleReturn.ToString()) { SaleReturn(UserName); }
+            if(TableName == Tables.BankBook.ToString()) { BankBook(UserName); }
 
         }
 
@@ -48,7 +49,7 @@ namespace Applied_WebApplication.Data
 
         }
 
-        public static string BankBook(string userName)
+        public static void BankBook(string UserName)
         {
             try
             {
@@ -70,7 +71,9 @@ namespace Applied_WebApplication.Data
                 Text.Append("[Comments] NVARCHAR(500), ");
                 Text.Append("[Status] NVARCHAR(10) NOT NULL DEFAULT Submitted);");
 
-                return Text.ToString();
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+                
             }
             catch (Exception)
             {

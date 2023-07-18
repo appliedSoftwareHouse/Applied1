@@ -88,7 +88,7 @@ public enum KeyType
 public enum PostType
 {
     CashBook = 1,
-    Bankbook = 2,
+    BankBook = 2,
     WriteCheque = 3,
     BillPayable = 4,
     BillReceivable = 5,

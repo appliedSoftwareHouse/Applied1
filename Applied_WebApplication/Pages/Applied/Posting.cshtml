@@ -25,25 +25,26 @@
             <div class="col-md-4">
                 <select class="form-select" asp-for="@Model.Variables.PostingType" id="SelectPosting">
                     <option selected>@TitlePosting</option>
-                    <option value="1">Cash Book</option>
-                    <option value="2">Bankbook</option>
-                    <option value="3">Write Cheque</option>
+                    <option value="1">Cash Books</option>
+                    <option value="2">Bank Books</option>
+                    <option value="3">Write Cheques</option>
                     <option value="4">Bill Payable</option>
                     <option value="5">Bill Receivable</option>
                     <option value="6">Payment</option>
                     <option value="7">Receipt</option>
+                    <option value="8">Journal Voucher</option>
                 </select>
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
                     <label class="input-group-text" style="width: 30%">From </label>
-                    <input class="TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_From" />
+                    <input class="form-control TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_From" />
                 </div>
             </div>
             <div class="col-md-3 d-grid">
                 <div class="input-group">
                     <label class="input-group-text" style="width: 30%">To </label>
-                    <input class="TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_To" />
+                    <input class="form-control TextCenter" style="width: 70%" type="date" asp-for="@Model.Variables.Dt_To" />
                 </div>
             </div>
             <div class="col-md-2 d-grid">

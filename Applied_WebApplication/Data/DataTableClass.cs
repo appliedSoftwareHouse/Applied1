@@ -296,6 +296,7 @@ namespace Applied_WebApplication.Data
         #region New Row / Refresh
         public DataRow NewRecord()
         {
+            if(MyDataTable == null) { return null; }
             CurrentRow = MyDataTable.NewRow();
 
             foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
@@ -548,9 +549,6 @@ namespace Applied_WebApplication.Data
         {
             Validate ??= true;
             IsError = false;
-
-
-
 
             if (CurrentRow != null)
             {

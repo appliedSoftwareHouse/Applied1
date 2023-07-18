@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Data
 
         public static List<Message> PostCashBook(string UserName, int id)
         {
-            
+
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
             List<Message> ErrorMessages = new List<Message>();
             List<DataRow> VoucherRows = new();
@@ -82,17 +82,104 @@ namespace Applied_WebApplication.Data
 
             if (ErrorMessages.Count == 0)
             {
-                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();   
+                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();
                 tb_Ledger.CurrentRow = VoucherRows[0];                  // Debit Transaction
                 tb_Ledger.Save(false);
                 tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
                 tb_Ledger.Save(false);
                 DataTableClass.Replace(UserName, Tables.CashBook, id, "Status", VoucherStatus.Posted.ToString());
             }
-           
+
             return ErrorMessages;
         }
         #endregion
+
+        #region Bank Book
+
+        public static List<Message> PostBankBook(string UserName, int id)
+        {
+
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
+            List<Message> ErrorMessages = new List<Message>();
+            List<DataRow> VoucherRows = new();
+
+            tb_Ledger.MyDataView.RowFilter = $"TranID='{id}' AND Vou_Type='{VoucherType.Bank}'";
+            if (tb_Ledger.MyDataView.Count == 0)
+            {
+                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();
+                DataRow Row = AppFunctions.GetDataRow(UserName, Tables.BankBook, id);
+                tb_Ledger.NewRecord();                                                                                                 // Bank Book DR Entry
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = id;
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Bank.ToString();
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = 1;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
+                tb_Ledger.CurrentRow["COA"] = Row["COA"];
+                tb_Ledger.CurrentRow["DR"] = Row["DR"];
+                tb_Ledger.CurrentRow["CR"] = Row["CR"];
+                tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
+                tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                if (tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.BankBook))
+                {
+                    VoucherRows.Add(tb_Ledger.CurrentRow);
+                }
+                else
+                {
+                    ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
+                }
+
+                tb_Ledger.NewRecord();                                                                                                  // Bank Book CR Entry
+                tb_Ledger.CurrentRow["ID"] = 0;
+                tb_Ledger.CurrentRow["TranID"] = id;
+                tb_Ledger.CurrentRow["Vou_Type"] = VoucherType.Bank.ToString();
+                tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                tb_Ledger.CurrentRow["SR_No"] = 2;
+                tb_Ledger.CurrentRow["Ref_No"] = Row["Ref_No"];
+                tb_Ledger.CurrentRow["BookID"] = Row["BookID"];
+                tb_Ledger.CurrentRow["COA"] = Row["BookID"];                                                           // COA => Book ID
+                tb_Ledger.CurrentRow["DR"] = Row["CR"];                                                                    // DR => CR
+                tb_Ledger.CurrentRow["CR"] = Row["DR"];                                                                    // CR => DR
+                tb_Ledger.CurrentRow["Customer"] = Row["Customer"];
+                tb_Ledger.CurrentRow["Project"] = Row["Project"];
+                tb_Ledger.CurrentRow["Employee"] = Row["Employee"];
+                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                if (tb_Ledger.IsRowValid(tb_Ledger.CurrentRow, CommandAction.Insert, PostType.BankBook))
+                {
+                    VoucherRows.Add(tb_Ledger.CurrentRow);
+                }
+                else
+                {
+                    ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages);                          // Collect Error Messages id occure.
+                }
+
+            }
+            else
+            {
+                ErrorMessages.Add(new Message() { Success = false, ErrorID = 105, Msg = string.Concat(tb_Ledger.MyDataView[0]["Vou_No"], " is already posted") });
+            }
+
+            if (ErrorMessages.Count == 0)
+            {
+                tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();
+                tb_Ledger.CurrentRow = VoucherRows[0];                  // Debit Transaction
+                tb_Ledger.Save(false);
+                tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
+                tb_Ledger.Save(false);
+                DataTableClass.Replace(UserName, Tables.BankBook, id, "Status", VoucherStatus.Posted.ToString());
+            }
+
+            return ErrorMessages;
+        }
+        #endregion
+
 
         #region Bill Payable
         public static List<Message> PostBillPayable(string UserName, int id)
@@ -102,11 +189,11 @@ namespace Applied_WebApplication.Data
             List<DataRow> VoucherRows = new();
             DataRow RowBill1 = AppFunctions.GetRecord(UserName, Tables.BillPayable, id);
 
-            int COA_Purchase = AppRegistry.GetNumber(UserName,"BPay_Stock");                   // COA: Purchsase on Credit 
+            int COA_Purchase = AppRegistry.GetNumber(UserName, "BPay_Stock");                   // COA: Purchsase on Credit 
             int COA_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax");
             int COA_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"); ;                   // COA: Trade Payable.
 
-            if(COA_Purchase==0 ||  COA_Tax==0 || COA_Payable == 0) 
+            if (COA_Purchase == 0 || COA_Tax == 0 || COA_Payable == 0)
             {
                 ErrorMessages.Add(MessageClass.SetMessage("Posting Accounts are not define properly. Select (Assign) them in Setting."));
                 return ErrorMessages;
@@ -346,7 +433,7 @@ namespace Applied_WebApplication.Data
                 }
                 DataTableClass.Replace(UserName, Tables.BillReceivable, id, "Status", VoucherStatus.Posted);
                 ErrorMessages.Add(MessageClass.SetMessage($"Voucher No {Vou_No}  has been posted sucessfully.", Color.Green));
-                
+
             }
             else
             {
@@ -653,7 +740,7 @@ namespace Applied_WebApplication.Data
                     var StockTitle = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Voucher[0]["Inventory"]);
                     if (_messages.Count == 0)
                     {
-                        
+
                         MyMessages.Add(MessageClass.SetMessage($"{StockTitle}: Opening Balance saved sucessfully.", Color.Green));
                     }
                     else

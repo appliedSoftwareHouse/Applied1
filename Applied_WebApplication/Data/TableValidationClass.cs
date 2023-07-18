@@ -95,7 +95,7 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
-            if (MyMessages.Count > 0) { return false; } else { return true ; }
+            if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
 
@@ -231,7 +231,7 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(new Message() { Success = false, ErrorID = 10507, Msg = "Enter Valid Voucher Number." });
             }
 
-            
+
             if ((int)Row["BookID"] == 0) { MyMessages.Add(SetMessage("Cash Bood ID is Zero.", ConsoleColor.Red)); }
 
 
@@ -281,34 +281,52 @@ namespace Applied_WebApplication.Data
         }
         private void ValidateTable_Ledger(DataRow Row)
         {
-            MyMessages = new List<Message>();
-
-            if ((string)Row["Vou_Type"] == VoucherType.Cash.ToString())
+            try
             {
-                MyDataView.RowFilter = $"[Vou_Type]='{VoucherType.Cash}' AND [TranID]={Row["TranID"]}";
-                if (MyDataView.Count > 0) { MyMessages.Add(SetMessage("Voucher is already posted. Unpost voucher and post again.", ConsoleColor.Red)); }
-                if ((int)Row["BookID"]==0) { MyMessages.Add(SetMessage("Cash Book ID define Zero.", ConsoleColor.Red)); }
+                MyMessages = new List<Message>();
+
+                if ((string)Row["Vou_Type"] == VoucherType.Cash.ToString())
+                {
+                    MyDataView.RowFilter = $"[Vou_Type]='{VoucherType.Cash}' AND [TranID]={Row["TranID"]}";
+                    if (MyDataView.Count > 0) { MyMessages.Add(SetMessage("Voucher is already posted. Unpost voucher and post again.", ConsoleColor.Red)); }
+                    if ((int)Row["BookID"] == 0) { MyMessages.Add(SetMessage("Cash Book ID define Zero.", ConsoleColor.Red)); }
+                }
+                if ((string)Row["Vou_Type"] == PostType.JV.ToString())
+                {
+                    MyDataView.RowFilter = string.Concat("[Vou_Type]='JV' AND [TranID]=", Row["TranID"].ToString());
+                    if (MyDataView.Count > 0)
+                    {
+                        if ((string)MyDataView[0]["Status"] == VoucherStatus.Posted.ToString())
+                            MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher for editing." });
+                        return;
+                    }
+                    else
+                    {
+                        ValidateTable_LedgerVoucher(Row);
+                    }
+                }
+                if ((string)Row["Vou_Type"] == "Receivable")
+                {
+                    MyDataView.RowFilter = $"[Vou_Type]='Receivable' AND [TranID]={Row["TranID"]}";
+                    if (MyDataView.Count > 0)
+                    {
+                        if ((string)MyDataView[0]["Status"] == VoucherStatus.Posted.ToString())
+                            MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher for editing." });
+                        return;
+                    }
+                    else
+                    {
+                        //ValidateTable_LedgerVoucher(Row);   It is exclusive for JV.
+                    }
+
+                }
+                
             }
-            if ((string)Row["Vou_Type"] == PostType.JV.ToString())
+            catch (Exception e)
             {
-
-                MyDataView.RowFilter = string.Concat("[Vou_Type]='JV' AND [TranID]=", Row["TranID"].ToString());
-                if (MyDataView.Count > 0)
-                {
-                    if ((string)MyDataView[0]["Status"] == VoucherStatus.Posted.ToString())
-                        MyMessages.Add(new Message() { Success = false, ErrorID = 101, Msg = "Voucher is already posted. Unpost voucher for editing." });
-                    return;
-                }
-                else
-                {
-                    ValidateTable_LedgerVoucher(Row);
-                }
+                MyMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+                throw;
             }
-
-
-            //------------------- Ledgers Validation
-            if ((decimal)Row["DR"] + (decimal)Row["CR"]==0) { MyMessages.Add(SetMessage("Voucher Amount is zero", ConsoleColor.Red)); }
-            if (Row["Description"].ToString().Length==0) { MyMessages.Add(SetMessage("Voucher Amount is zero", ConsoleColor.Red)); }
 
         }
         private void ValidateTable_BillPayable(DataRow Row)

@@ -29,6 +29,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet(int? id)
         {
+
             BookNature = GetNumber(UserName, "BankBkNature");
             BookTitles = AppFunctions.Titles(UserName, SQLQuery.BookTitles(BookNature));
 
@@ -56,7 +57,6 @@ namespace Applied_WebApplication.Pages.Accounts
                 };
             }
 
-            
             id ??= Variables.BankBookID;
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
             var BankCode = AppRegistry.GetNumber(UserName, "BankBkNature");
@@ -89,7 +89,6 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
             FMTNumber = GetText(UserName, "FMT");
-
         }
 
         #endregion

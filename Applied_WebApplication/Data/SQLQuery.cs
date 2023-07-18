@@ -478,7 +478,46 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Get New Voucher
+        public static string NewVouNo(Tables _Table)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT [Vou_No], ");
+            Text.Append("substr([Vou_No],1,2) AS Tag, ");
+            Text.Append("SubStr([Vou_No],3,2) AS Year, ");
+            Text.Append("SubStr([Vou_No],5,2) AS Month, ");
+            Text.Append("Cast((SubStr([Vou_No],8,4)) as integer) AS num ");
+            Text.Append($"FROM [{_Table}]");
+            return Text.ToString();
 
+        }
+        #endregion
+
+        #region Posting Cash Book Ledger
+        
+        public static string PostBook(Tables _Table, string _Filter, string _Status)
+        {
+            // Table Name,   it is Cash Book or Bank Book
+            // Filter of Records from Cash / Bank Book
+            // Transaction Status, it is Submitted and Posted. for Post and Unpost option.
+
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[Book].[ID], ");
+            Text.Append("[Book].[Vou_No], ");
+            Text.Append("[Book].[Vou_Date], ");
+            Text.Append("[COA].[TITLE], ");
+            Text.Append("[Book].[DR], ");
+            Text.Append("[Book].[CR], ");
+            Text.Append("[Book].[Status] ");
+            Text.Append($"FROM [{_Table}] [Book] ");
+            Text.Append($"LEFT JOIN [COA] ON [Book].[COA] = [COA].[ID] ");
+            Text.Append($"WHERE [Book].[Status] = '{_Status}' AND {_Filter};");
+
+            return Text.ToString();
+        }
+        
+        #endregion
 
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS

@@ -38,6 +38,7 @@ namespace Applied_WebApplication.Data
             };
 
             if (TableName.ToString() == Tables.CashBook.ToString()) { return LedgerCashBook(_Parameters); }                                // Get Ledger Record from CashBook
+            if (TableName.ToString() == Tables.BankBook.ToString()) { return LedgerBankBook(_Parameters); }                                // Get Ledger Record from CashBook
             return GetEmptyLedger();
         }
         public static DataTable ConvertLedger(string UserName, DataTable _Table)
@@ -107,6 +108,7 @@ namespace Applied_WebApplication.Data
         //    }
         //}
         #endregion
+
         private static DataTable LedgerCashBook(LedgerParamaters Param)
         {
 
@@ -179,6 +181,80 @@ namespace Applied_WebApplication.Data
             }
             return _Ledger;
         }
+
+        private static DataTable LedgerBankBook(LedgerParamaters Param)
+        {
+
+            DataTableClass _Table = new(Param.UserName, Tables.view_Ledger);
+            DataTable _Ledger = _Table.MyDataTable.Clone();
+            _Table = new(Param.UserName, Tables.BankBook, Param.Filter);
+            _Table.MyDataView.Sort = Param.Sort;
+            decimal Balance = 0M;
+            bool IsBalance = false;
+            bool IsFirstOBal = false;
+            DataRow _NewRow;
+
+            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
+            {
+                if ((DateTime)_Row["Vou_Date"] < Param.Date_From)                                               // Skip vouchers if less than from From Date
+                {
+                    Balance += ((decimal)_Row["CR"] - (decimal)_Row["DR"]);
+                    IsFirstOBal = true;
+                }
+                else
+                {
+                    if ((DateTime)_Row["Vou_Date"] <= Param.Date_To)
+                    {
+                        if (!IsBalance)
+                        {
+                            if (IsFirstOBal)
+                            {
+                                _NewRow = _Ledger.NewRow();
+                                _NewRow["ID"] = 0;
+                                _NewRow["Vou_Type"] = "Bank";
+                                _NewRow["Vou_Date"] = _Row["Vou_Date"];
+                                _NewRow["Vou_No"] = "OBal";
+                                _NewRow["Description"] = "Opening Balance";
+                                _NewRow["Status"] = "Posted";
+                                if (Balance >= 0)                                                                       // Debit Amount of Voucher
+                                {
+                                    _NewRow["DR"] = 0.00M;
+                                    _NewRow["CR"] = Balance;
+                                    _NewRow["BAL"] = Balance;
+                                }
+                                // Credit Amout of voucher
+                                else
+                                {
+                                    _NewRow["DR"] = Balance;
+                                    _NewRow["CR"] = 0.00M;
+                                    _NewRow["BAL"] = Balance;
+                                }
+                                _Ledger.Rows.Add(_NewRow);
+                                IsBalance = true;
+                            }
+                        }
+
+                        var DR = decimal.Parse(_Row["DR"].ToString());
+                        var CR = decimal.Parse(_Row["CR"].ToString());
+                        Balance += (CR - DR);
+
+                        _NewRow = _Ledger.NewRow();
+                        _NewRow["ID"] = _Row["ID"];
+                        _NewRow["Vou_Type"] = "Bank";
+                        _NewRow["Vou_Date"] = _Row["Vou_Date"];
+                        _NewRow["Vou_No"] = _Row["Vou_No"];
+                        _NewRow["Description"] = _Row["Description"];
+                        _NewRow["DR"] = _Row["DR"];
+                        _NewRow["CR"] = _Row["CR"];
+                        _NewRow["BAL"] = Balance;
+                        _NewRow["Status"] = _Row["Status"];
+                        _Ledger.Rows.Add(_NewRow);
+                    }
+                }
+            }
+            return _Ledger;
+        }
+
 
         private DataTable GetEmptyLedger()
         {

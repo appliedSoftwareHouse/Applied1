@@ -2,6 +2,7 @@
 using System.Data.SQLite;
 using System.Text;
 using AppReporting;
+using Microsoft.AspNetCore.Mvc;
 using NPOI.SS.Formula.Functions;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
@@ -19,15 +20,6 @@ namespace Applied_WebApplication.Data
             return NewCode;
         }
 
-        public static string GetNewBankVoucher(string UserName)
-        {
-            DataTableClass Table = new(UserName, Tables.BankBook);
-            if (Table.MyDataTable.Rows.Count == 0) { return "BB-000001"; }
-            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
-            string NewCode = string.Concat("CB-", MaxNum.ToString("000000"));
-            return NewCode;
-        }
-
         public static string GetNewBillPayableVoucher(string UserName)
         {
             DataTableClass Table = new(UserName, Tables.BillPayable);
@@ -36,14 +28,14 @@ namespace Applied_WebApplication.Data
             string NewCode = string.Concat("BP-", MaxNum.ToString("000000"));
             return NewCode;
         }
-        public static string GetBillReceivableVoucher(string UserName)
-        {
-            DataTableClass Table = new(UserName, Tables.BillReceivable);
-            if (Table.MyDataTable.Rows.Count == 0) { return "BR-000001"; }
-            int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
-            string NewCode = string.Concat("BR-", MaxNum.ToString("000000"));
-            return NewCode;
-        }
+        //public static string GetBillReceivableVoucher(string UserName)
+        //{
+        //    DataTableClass Table = new(UserName, Tables.BillReceivable);
+        //    if (Table.MyDataTable.Rows.Count == 0) { return "BR-000001"; }
+        //    int MaxNum = int.Parse(Table.MyDataTable.Compute("Max(ID)", "").ToString()) + 1;
+        //    string NewCode = string.Concat("BR-", MaxNum.ToString("000000"));
+        //    return NewCode;
+        //}
 
         #endregion
 
@@ -88,7 +80,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Static Function
-      
+
         public static Chequeinfo GetChequeInfo(string UserName, string ChqCode)
         {
             Pages.Accounts.WriteChequeModel.Chequeinfo Cheque = new();
@@ -139,9 +131,9 @@ namespace Applied_WebApplication.Data
         {
             if (UserName.Length == 0) { return ""; }
             if (ID == 0) { return ""; }
-            
-            string _Text = $"SELECT [{_Column}] From [{ _Table}] where ID={ID}";
-            
+
+            string _Text = $"SELECT [{_Column}] From [{_Table}] where ID={ID}";
+
             SQLiteConnection _Connection = ConnectionClass.AppConnection(UserName);
             SQLiteDataAdapter _Adapter = new(_Text, _Connection);
             DataSet _DataSet = new DataSet();
@@ -164,11 +156,11 @@ namespace Applied_WebApplication.Data
             return _Table.NewRecord();
         }
 
-        public static DataTable GetVoucher(string UserName,  int TranID, VoucherType VouType)
+        public static DataTable GetVoucher(string UserName, int TranID, VoucherType VouType)
         {
             var Filter = $"TranID={TranID} AND Vou_Type = '{VouType}'";
             DataTableClass _Table = new(UserName, Tables.Ledger, Filter);
-            if (_Table.MyDataTable.Rows.Count >=2)
+            if (_Table.MyDataTable.Rows.Count >= 2)
             {
                 return _Table.MyDataTable;
             }
@@ -260,7 +252,7 @@ namespace Applied_WebApplication.Data
         // Get Singal Title from DataTable by ID=??
         public static string GetTitle(string UserName, Tables _TableName, int ID)
         {
-            if(ID.Equals(DBNull.Value)) { ID = 0; }
+            if (ID.Equals(DBNull.Value)) { ID = 0; }
             string _Title;  //= string.Empty;
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = $"ID={ID}";
@@ -274,18 +266,6 @@ namespace Applied_WebApplication.Data
             }
             return _Title;
         }
-
-
-        // Get New Voucher No for White Cheque List
-        public static string GetNewChqCode()
-        {
-            // Temporary codes. in future it has to be developed.
-            string _ChqCode = "<<New>>";
-            return _ChqCode;
-        }
-
-
-
 
         #endregion
 
@@ -328,5 +308,6 @@ namespace Applied_WebApplication.Data
             return _result;
         }
 
+       
     }
 }
