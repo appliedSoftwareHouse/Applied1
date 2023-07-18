@@ -329,10 +329,10 @@ namespace Applied_WebApplication.Pages.Sales
             _Receivable2.MyDataView.RowFilter = $"ID={Variables.ID2}";
 
 
-            if(_Receivable1.CountView == 1) { _ValidforDelete1 = true; }
-            if(_Receivable2.CountView > 0) { _ValidforDelete2 = true; }
-            
-            if(_ValidforDelete1 && _ValidforDelete2)
+            if (_Receivable1.CountView == 1) { _ValidforDelete1 = true; }
+            if (_Receivable2.CountView > 0) { _ValidforDelete2 = true; }
+
+            if (_ValidforDelete1 && _ValidforDelete2)
             {
 
 
@@ -421,11 +421,23 @@ namespace Applied_WebApplication.Pages.Sales
 
                     #region Save 1
 
-                    TargetTable1.Save();
+                    // Calcualte the total Amount of Invoice from Invocioe Table 2
+                    decimal TotalAmount = 0.00M;
+                    foreach (DataRow Row in TempInvoice22.TempTable.Rows)
+                    {
+                        var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+                        var _TaxRate = AppFunctions.GetTaxRate(UserName, (int)Row["Tax"]);
+                        var _TaxAmount = (decimal)_Amount * (decimal)_TaxRate;
+                        TotalAmount += (decimal)_Amount + (decimal)_TaxAmount;
+                    }
+
+                    // END
+
+                    TargetTable1.CurrentRow["Amount"] = TotalAmount;
+                    TargetTable1.Save();                                                                                                    // Insert / Update Record in DataBase Table.
                     Variables.TranID = (int)TargetTable1.CurrentRow["ID"];
                     ErrorMessages.AddRange(TargetTable1.TableValidation.MyMessages);
                     if (ErrorMessages.Count > 0) { return false; }
-                    //Variables.TranID = (int)TargetTable1.CurrentRow["ID"];
 
                     #endregion
 

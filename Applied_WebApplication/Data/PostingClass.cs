@@ -9,7 +9,6 @@ namespace Applied_WebApplication.Data
     public class PostingClass
     {
         #region Cash Book
-
         public static List<Message> PostCashBook(string UserName, int id)
         {
 
@@ -95,7 +94,6 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Bank Book
-
         public static List<Message> PostBankBook(string UserName, int id)
         {
 
@@ -179,7 +177,6 @@ namespace Applied_WebApplication.Data
             return ErrorMessages;
         }
         #endregion
-
 
         #region Bill Payable
         public static List<Message> PostBillPayable(string UserName, int id)
@@ -337,16 +334,19 @@ namespace Applied_WebApplication.Data
 
             #region Check the voher is already exist in the ledger ? or not exist.
             tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
-            if (tb_Ledger.Count > 0)
+            if (tb_Ledger.CountView > 0)
             {
-                ErrorMessages.Add(MessageClass.SetMessage("Voucher Numbre is already exist in the ledger. Contact to Administrator."));
+                ErrorMessages.Add(SetMessage("Voucher Numbre is already exist in the ledger. Contact to Administrator."));
                 return ErrorMessages;
             }
             #endregion
 
             foreach (DataRow Row in SaleInvoice.Rows)
             {
-                Vou_No = Row["Vou_No"].ToString();
+                if(Vou_No != Row["Vou_No"].ToString())
+                {
+
+                }
                 var _Description = (string)Row["Inventory"] + ": " + (string)Row["Description"];
                 #region Debit Entry
                 tb_Ledger.NewRecord();
@@ -426,9 +426,9 @@ namespace Applied_WebApplication.Data
             {
                 foreach (DataRow Row in VoucherRows)
                 {
-                    var NoValidteAgain = false;
+                    var NoValidateAgain = false;
                     tb_Ledger.CurrentRow = Row;
-                    tb_Ledger.Save(NoValidteAgain);
+                    tb_Ledger.Save(NoValidateAgain);
                     ErrorMessages.AddRange(tb_Ledger.ErrorMessages);
                 }
                 DataTableClass.Replace(UserName, Tables.BillReceivable, id, "Status", VoucherStatus.Posted);

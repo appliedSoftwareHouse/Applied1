@@ -33,12 +33,12 @@ namespace Applied_WebApplication.Pages.Applied
             switch (Variables.PostingType)
             {
                 case 1:                                                                                                                                 // Cash Book
-                    Filter = $"Vou_Date>'{Date1}' AND Vou_Date<'{Date2}'";
+                    Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.CashBook, Filter, VoucherStatus.Posted.ToString()));
 
                     break;
                 case 2:                                                                                                                                 // Bank Book
-                    Filter = $"Vou_Date>'{Date1}' AND Vou_Date<'{Date2}'";
+                    Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Posted.ToString()));
                     break;
                 case 3:                                                                                                                                 // Write Cheques
@@ -48,7 +48,7 @@ namespace Applied_WebApplication.Pages.Applied
                 case 4:                                                                                                                                 // Bill Payable
                     Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
                     Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = $"Vou_Date>'{Date1}' AND Vou_Date <'{Date2}' AND Status='{VoucherStatus.Posted}'";
+                    Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}') AND Status='{VoucherStatus.Posted}'";
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillPayable(Filter));
                     break;
 

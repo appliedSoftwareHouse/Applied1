@@ -147,7 +147,7 @@ namespace Applied_WebApplication.Data
 
             try
             {
-                if (BillReceivable.Count == 1)
+                if (BillReceivable.CountView == 1)
                 {
                     if (tb_Ledger.Rows.Count >= 2)
                     {

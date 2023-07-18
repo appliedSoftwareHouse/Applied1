@@ -24,9 +24,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 MaxDate = AppRegistry.GetDate(UserName, "Brec_End"),
                 Company = AppRegistry.GetNumber(UserName, "Brec_Company")
             };
-            var Date1 = Variables.MinDate.ToString(AppRegistry.DateYMD);
-            var Date2 = Variables.MaxDate.ToString(AppRegistry.DateYMD);
-            var _Filter = $"Vou_Date >= '{Date1}' AND Vou_Date <= '{Date2}'"; 
+            var Date1 = Variables.MinDate.AddDays(-1).ToString(AppRegistry.DateYMD);
+            var Date2 = Variables.MaxDate.AddDays(1).ToString(AppRegistry.DateYMD);
+            var _Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')"; 
                 if(Variables.Company > 0)
             {
                 _Filter += $" AND Company={Variables.Company}";
@@ -34,9 +34,9 @@ namespace Applied_WebApplication.Pages.Accounts
             var _Table = new DataTableClass(UserName, Tables.BillReceivable, _Filter);
             BillReceivable = _Table.MyDataTable;
         }
+        #endregion GET
 
-        
-
+        #region Refresh
         public IActionResult OnPostRefresh()
         {
             AppRegistry.SetKey(UserName, "Brec_Start", Variables.MinDate, KeyType.Date);
