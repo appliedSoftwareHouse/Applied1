@@ -450,17 +450,20 @@ namespace Applied_WebApplication.Data
             List<Message> MyMessages = new List<Message>();
             int SrNo_Msg = 1;
 
+            var _Filter = $"Vou_Type='{VoucherType.OBalance}'";
+
             DataTableClass tb_COA = new(UserName, Tables.COA);
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
 
             int SRNO = 0;
-            tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='" + VoucherType.OBalance.ToString(), "'");
+            tb_Ledger.MyDataView.RowFilter = _Filter;
+            //tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='" + VoucherType.OBalance.ToString(), "'");
             if (tb_Ledger.MyDataView.Count > 0)
             {
                 SRNO = (int)(tb_Ledger.MyDataView.ToTable()).Compute("MAX(SR_No)", "");
             }
 
-            DateTime Vou_Date = (DateTime)AppRegistry.GetKey(UserName, "OBal_Date", KeyType.Date);
+            DateTime Vou_Date = AppRegistry.GetDate(UserName, "OBDate");
             decimal _DR = 0.00M, _CR = 0.00M;
 
             tb_COA.MyDataView.RowFilter = "Opening_Balance <> 0";
@@ -473,10 +476,12 @@ namespace Applied_WebApplication.Data
                     _CR = ((decimal)Row["Opening_Balance"]) * -1;
                     _DR = 0.00M;
                 }
-                tb_Ledger.MyDataView.RowFilter = string.Concat("Vou_Type='", VoucherType.OBalance.ToString(), "' AND COA=", Row["ID"].ToString());
+                tb_Ledger.MyDataView.RowFilter = $"Vou_Type='{VoucherType.OBalance}' AND COA={Row["ID"]}";
                 if (tb_Ledger.MyDataView.Count == 1)
                 {
+                    
                     tb_Ledger.CurrentRow = tb_Ledger.MyDataView[0].Row;
+                    tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
                     tb_Ledger.CurrentRow["DR"] = _DR;
                     tb_Ledger.CurrentRow["CR"] = _CR;
                     tb_Ledger.Save();

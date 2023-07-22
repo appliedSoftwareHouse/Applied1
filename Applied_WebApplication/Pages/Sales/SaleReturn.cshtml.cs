@@ -20,10 +20,10 @@ namespace Applied_WebApplication.Pages.Sales
         {
             MyMessages = new();
             GetVariables();
-            var _Date1 = Variables.Start.ToString(AppRegistry.DateYMD);
-            var _Date2 = Variables.End.ToString(AppRegistry.DateYMD);
+            var Date1 = Variables.Start.AddDays(-1).ToString(AppRegistry.DateYMD);
+            var Date2 = Variables.End.AddDays(1).ToString(AppRegistry.DateYMD);
 
-            var _Filter = $"Vou_Date >= '{_Date1}' AND Vou_Date <= '{_Date2}' AND Company={Variables.Company}";
+            var _Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') AND Company={Variables.Company}";
             var _SQLSalesList = SQLQuery.SaleReturn(_Filter);
             var tb_SaleReturn = new DataTableClass(UserName, _SQLSalesList, Tables.SaleReturn);
             Receivable1 = tb_SaleReturn.MyDataTable;
@@ -33,10 +33,11 @@ namespace Applied_WebApplication.Pages.Sales
             MyMessages = new();
             GetVariables();
 
-            var _Date1 = Variables.Start.ToString(AppRegistry.DateYMD);
-            var _Date2 = Variables.End.ToString(AppRegistry.DateYMD);
+            var Date1 = Variables.Start.AddDays(-1).ToString(AppRegistry.DateYMD);
+            var Date2 = Variables.End.AddDays(1).ToString(AppRegistry.DateYMD);
 
-            var _Filter = $"Vou_Date >= '{_Date1}' AND Vou_Date <= '{_Date2}' AND Company={Variables.Company}";
+            var _Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') AND Company={Variables.Company}";
+            //var _Filter = $"Vou_Date >= '{_Date1}' AND Vou_Date <= '{_Date2}' AND Company={Variables.Company}";
             var _SQLSalesList = SQLQuery.SaleReturn(_Filter);
             var _Table = new DataTableClass(UserName, _SQLSalesList);
             Receivable1 = _Table.MyDataTable;
