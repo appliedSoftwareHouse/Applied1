@@ -34,11 +34,12 @@ namespace Applied_WebApplication.Data
                 var Text = new StringBuilder();
 
                 Text.Append("CREATE TABLE[SaleReturn] (");
-                Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
-                Text.Append("[Vou_No] TEXT(12) NOT NULL UNIQUE,");
-                Text.Append("[Vou_Date] DATETIME NOT NULL,");
-                Text.Append("[TranID] INT NOT NULL UNIQUE REFERENCES[BillReceivable2]([ID]),");
-                Text.Append("[QTY] DECIMAL NOT NULL DEFAULT 0);");
+                Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE, ");
+                Text.Append("[Vou_No] TEXT(12) NOT NULL UNIQUE, ");
+                Text.Append("[Vou_Date] DATETIME NOT NULL, ");
+                Text.Append("[TranID] INT NOT NULL UNIQUE REFERENCES[BillReceivable2]([ID]), ");
+                Text.Append("[QTY] DECIMAL NOT NULL DEFAULT 0, ");
+                Text.Append("[Status] TEXT(12) NOT NULL DEFAULT Submitted)");
                 var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
                 Command.ExecuteNonQuery();
             }

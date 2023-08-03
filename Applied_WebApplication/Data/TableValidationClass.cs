@@ -81,6 +81,7 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
             if (Row.Table.TableName == Tables.Inventory.ToString()) { ValidateTable_Inventory(Row); }
             if (Row.Table.TableName == Tables.CashBook.ToString()) { ValidateTable_CashBook(Row); }
+            if (Row.Table.TableName == Tables.BankBook.ToString()) { ValidateTable_BankBook(Row); }
             if (Row.Table.TableName == Tables.WriteCheques.ToString()) { ValidateTable_WriteChq(Row); }
             if (Row.Table.TableName == Tables.Ledger.ToString()) { ValidateTable_Ledger(Row); }
             if (Row.Table.TableName == Tables.BillPayable.ToString()) { ValidateTable_BillPayable(Row); }
@@ -217,6 +218,48 @@ namespace Applied_WebApplication.Data
             #endregion
         }
         private void ValidateTable_CashBook(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("Duplicate of ID found.", ConsoleColor.Red)); }
+                if (Seek("Vou_No", Row["Vou_No"].ToString())) { MyMessages.Add(SetMessage("Duplicate of Voucher No found.", ConsoleColor.Red)); }
+            }
+
+            if (Row["Vou_No"].ToString().Length == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10507, Msg = "Enter Valid Voucher Number." });
+            }
+
+
+            if ((int)Row["BookID"] == 0) { MyMessages.Add(SetMessage("Cash Bood ID is Zero.", ConsoleColor.Red)); }
+
+
+
+            if ((int)Row["COA"] == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10505, Msg = "Accounts Head must be selected." });
+            }
+
+            if ((decimal)Row["DR"] > 0 && (decimal)Row["CR"] > 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10503, Msg = "Only Debit or Credit must be more more than Zero." });
+            }
+
+            if ((decimal)Row["DR"] == 0 && (decimal)Row["CR"] == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10504, Msg = "Must be enter Debit or Credit Amount" });
+            }
+
+
+            if (Row["Description"].ToString().Length == 0)
+            {
+                MyMessages.Add(new Message() { Success = false, ErrorID = 10506, Msg = "Description must be some charactors." });
+            }
+
+        }
+        private void ValidateTable_BankBook(DataRow Row)
         {
             MyMessages = new List<Message>();
 

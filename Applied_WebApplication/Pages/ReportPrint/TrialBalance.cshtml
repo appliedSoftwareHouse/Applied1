@@ -7,6 +7,7 @@
     var _Total1 = "TOTAL";
     var _Total2 = $"Difference {_Difference}";
 
+
 }
 
 <style>
@@ -14,12 +15,16 @@
         width: 120px;
     }
 
+    .dt-width {
+        width: 210px;
+    }
+
     .btn-width {
         width: 100px
     }
 
     .table-list, td {
-        color:darkblue;
+        color: darkblue;
         font-size: medium;
     }
 
@@ -38,39 +43,51 @@
 <form method="post">
     <div class="conatianer">
         <div class="row mb-1">
-            <div class="col-3">
+            <div class="col-1  dt-width">
                 <div class="input-group mb-3">
-                    <span class="input-group-text input-group-sm" id="basic-addon1">From</span>
+                    <span class="input-group-text input-group-sm" id="basic-addon1">Start</span>
                     <input type="date" class="form-control" placeholder="Date From" asp-for="@Model.Variables.DateFrom" aria-label="Date1" aria-describedby="basic-addon1">
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-1  dt-width">
                 <div class="input-group mb-3">
-                    <span class="input-group-text input-group-sm" id="basic-addon1">To</span>
                     <input type="date" class="form-control" placeholder="Date To" asp-for="@Model.Variables.DateTo" aria-label="Date2" aria-describedby="basic-addon2">
+                    <span class="input-group-text input-group-sm" id="basic-addon1">End</span>
                 </div>
+            </div>
+            <div class="col-1  dt-width">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="rptOption">Options</label>
+                    <select class="form-select" id="rptOption" asp-for="@Model.Variables.ReportOption">
+                        <option selected>Choose...</option>
+                        <option value="0">All</option>
+                        <option value="1">Upto</option>
+                        <option value="2">Dates</option>
+                    </select>
+                </div>
+
             </div>
             <div class="col-1 col-width">
                 <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="Reload">Reload</button>
             </div>
             <div class="col-1 col-width">
-                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="TBOpening">Opening</button>
+                <button type="submit" class="btn btn-primary btn-sm btn-width" style="margin-right:1px" asp-page-handler="TBOpening">Opening</button>
             </div>
             <div class="col-1 col-width">
-                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="TBALL">All</button>
+                <button type="submit" class="btn btn-primary btn-sm btn-width" style="margin-left:1px" asp-page-handler="TBALL">All</button>
             </div>
-
-            <div class="col-1 col-width">
+            
+            <div class="col-1">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
                         Print <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="Preview">Preview</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="PDF">PDF</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print"  asp-route-Option="Excel">Excel</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="Word">Word</a></li>
-                        <li><a class="dropdown-item" asp-page="/ReportPrint/TrialBalance" asp-page-handler="Print" asp-route-Option="HTML">HTML</a></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Preview" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Preview</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="PDF" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">PDF</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Excel" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Excel</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Word" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Word</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="HTML" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">HTML</button></li>
                     </ul>
                 </div>
             </div>
@@ -97,8 +114,8 @@
                 <tr>
                     <td>@Row["Code"]</td>
                     <td>@Row["Title"]</td>
-                    <td class="align-right">@_Debit.ToString(AppRegistry.FormatCurrency2)</td>
-                    <td class="align-right">@_Credit.ToString(AppRegistry.FormatCurrency2)</td>
+                    <td class="align-right">@_Debit.ToString(AppRegistry.FormatCurrency1)</td>
+                    <td class="align-right">@_Credit.ToString(AppRegistry.FormatCurrency1)</td>
                 </tr>
             }
         </tbody>
@@ -116,8 +133,8 @@
                 }
 
 
-                <td class="align-right">@Model.Tot_DR.ToString(AppRegistry.FormatCurrency2)</td>
-                <td class="align-right">@Model.Tot_CR.ToString(AppRegistry.FormatCurrency2)</td>
+                <td class="align-right">@Model.Tot_DR.ToString(AppRegistry.FormatCurrency1)</td>
+                <td class="align-right">@Model.Tot_CR.ToString(AppRegistry.FormatCurrency1)</td>
             </tr>
         </tfoot>
 

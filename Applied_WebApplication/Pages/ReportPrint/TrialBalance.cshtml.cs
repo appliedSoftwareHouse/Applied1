@@ -2,13 +2,8 @@ using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Reporting.NETCore;
-using NPOI.SS.Formula.Functions;
 using System.Data;
-using System.Data.Entity.Core.Metadata.Edm;
-using System.Text;
-using System.Text.RegularExpressions;
 using static Applied_WebApplication.Data.MessageClass;
-using static System.Data.Entity.Infrastructure.Design.Executor;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -16,12 +11,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public MyParameters Variables { get; set; }
+        public string ReportLink { get; set; }
+        public bool IsShowPdf { get; set; } = false;
+
         public DataTable TB = new();                                                        // Trial Balance Code class
         public decimal Tot_DR { get; set; } = 0.00M;
         public decimal Tot_CR { get; set; } = 0.00M;
         public string UserName => User.Identity.Name;
         public List<Message> ErrorMessages { get; set; }
-
 
         public void OnGet()
         {
@@ -62,50 +59,81 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
         }
 
-        public IActionResult OnGetPrint(string Option)
+        public IActionResult OnPostPrint(ReportType _ReportType, TBOption _rptOption)
         {
-            var Date1 = AppRegistry.GetDate(UserName, "TBDate1");
-            var Date2 = AppRegistry.GetDate(UserName, "TBDate2");
+            ErrorMessages = new();
+            var _Date1 = AppRegistry.GetDate(UserName, "TBDate1");
+            var _Date2 = AppRegistry.GetDate(UserName, "TBDate2");
+            var __Date1 = _Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
+            var __Date2 = _Date1.AddDays(1).ToString(AppRegistry.DateYMD);
+            var _Filter = string.Empty;
+            var _OrderBy = "Code";
 
-            if (Option==PrintOption.Preview.ToString())
-            {
-                return RedirectToPage("./PrintReport", pageHandler: "TBPrint", routeValues: new { Date1, Date2 });                  // PrintReport Folder is not include in Project.
-            }
+            if(_rptOption==TBOption.All) { _Filter = string.Empty; }
+            if(_rptOption== TBOption.UptoDate) { _Filter = $"Date(Vou_Date) < '{__Date2}'"; }
+            if(_rptOption==TBOption.Monthly) { _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'"; }
 
-            if(Option==PrintOption.PDF.ToString())
+            //_Filter += " ORDER BY Vou_Date,Vou_No";
+
+            
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter, _OrderBy));
+
+            if (_Table.Rows.Count>0)
             {
-                var Variables = new ReportParameters()
-                {
-                    OutputFile = "TB",
-                    OutputFileExtention = "pdf",
-                    OutputPath = AppFunctions.AppGlobals.PrintedReportPath,
-                    ReportType = ReportType.PDF,
-                    ReportPath = AppFunctions.AppGlobals.ReportPath,
-                    ReportFile = "TB.rdlc",
-                    CompanyName = UserProfile.GetCompanyName(User),
-                    Heading1 = "Trial Balance",
-                    Heading2 = $"As on {Date2}",
-                    Footer = AppFunctions.AppGlobals.ReportFooter
-                };
+                var CompanyName = UserProfile.GetCompanyName(User);
+
+                var _Heading1 = "TRIAL BALANCE";
+                var _Heading2 = string.Empty;
+
+                if(_rptOption == TBOption.All) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
+                if(_rptOption == TBOption.UptoDate) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                if(_rptOption == TBOption.Monthly) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
-            {
-                new ReportParameter("CompanyName", Variables.CompanyName),
-                new ReportParameter("Heading1", Variables.Heading1),
-                new ReportParameter("Heading2", Variables.Heading2),
-                new ReportParameter("Footer", Variables.Footer)
-            };
-                
-            Variables.DataParameters = _Parameters;
-                
+                {
+                    new ReportParameter("CompanyName", CompanyName),
+                    new ReportParameter("Heading1", _Heading1),
+                    new ReportParameter("Heading2", _Heading2),
+                    new ReportParameter("Footer", AppFunctions.AppGlobals.ReportFooter)
+                };
+
+                var Variables = new ReportParameters()
+                {
+                    ReportPath = AppFunctions.AppGlobals.ReportPath,
+                    ReportFile = "TB.rdl",
+                    OutputPath = AppFunctions.AppGlobals.PrintedReportPath,
+                    OutputPathLink = AppFunctions.AppGlobals.PrintedReportPathLink,
+                    OutputFile = "TB",
+                    CompanyName = UserProfile.GetCompanyName(User),
+                    Heading1 = _Heading1,
+                    Heading2 = _Heading2,
+                    Footer = AppFunctions.AppGlobals.ReportFooter,
+                    ReportType = _ReportType,
+                    DataSetName = "dset_TB",
+                    ReportData = _Table,
+                    DataParameters = _Parameters
+                };
+
                 var ReportClass = new ExportReport(Variables);
+                ReportClass.Render();
 
-
-
+                if (_ReportType == ReportType.Preview)
+                {
+                    ReportLink = ReportClass.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return RedirectToPage("PrintReport", "TBPrint", routeValues: new { _ReportLink=ReportLink, _IsShowPdf=IsShowPdf });
+                }
+                else
+                {
+                    
+                    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
+                }
             }
-
-
-            return RedirectToPage();
+            else
+            {
+                ErrorMessages.Add(SetMessage("No Record found...", ConsoleColor.Yellow));
+                return Page();
+            }
         }
 
         public IActionResult OnPostTBOpeningAsync()
@@ -125,7 +153,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "TBDate2", MaxDate, KeyType.Date);
             return RedirectToPage();
         }
-        
         public IActionResult OnPostReload()
         {
             AppRegistry.SetKey(UserName, "TBDate1", Variables.DateFrom, KeyType.Date);
@@ -137,6 +164,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
             public string ReportType { get; set; }
+            public string ReportOption { get; set; }
             public decimal Tot_DR { get; set; }
             public decimal Tot_CR { get; set; }
 

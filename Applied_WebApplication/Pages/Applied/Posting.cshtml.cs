@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
+using NPOI.SS.Formula.Functions;
 using System.Data;
 using static Applied_WebApplication.Data.DataTableClass;
 using static Applied_WebApplication.Data.MessageClass;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Applied_WebApplication.Pages.Applied
 {
@@ -41,28 +43,44 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
                 case 2:                                                                                                                                 // Bank Book
                     Filter = $"Vou_Date>'{Date1}' AND Vou_Date<'{Date2}'";
-                    PostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Submitted.ToString()));
+                    PostTable = GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, Submitted));
                     break;
 
                 case 3:                                                                                                                                 // Write Cheques
                     Filter = $"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}' AND Status='Submitted'";
                     var Query = SQLQuery.WriteCheque(Filter);
-                    
+
                     DataTableClass WriteCheque = new(UserName, Query);
                     PostTable = WriteCheque.MyDataTable;
 
                     break;
 
-                case 4:                                                                                                                                 // 
-                    Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND Status='{Submitted}'";
-                    PostTable = DataTableClass.GetTable(UserName, Tables.PostBillPayable, Filter);
+                case 4:     //   Bill Payable - Payment of purchases.
+                    Filter = $"Date(Vou_Date) >=Date('{Date1}') AND Date(Vou_Date) <=Date('{Date2}') AND [Status]='{Submitted}'";
+                    PostTable = GetTable(UserName, Tables.PostBillPayable, Filter);
                     break;
 
-                case 5:                                                                                                           // Bill Receivable - Sales Invoice
-                    Filter = $"Vou_Date >='{Date1}' AND Vou_Date <='{Date2}' AND [B1].[Status]='{VoucherStatus.Submitted}'";
+                case 5:    // Bill Receivable - Sales Invoice
+                    Filter = $"Date(Vou_Date) >=Date('{Date1}') AND Date(Vou_Date) <=Date('{Date2}') AND [B1].[Status]='{Submitted}'";
                     PostTable = GetTable(UserName, SQLQuery.PostBillReceivable(Filter), "Vou_Date");
 
                     break;
+                case 6:
+                    break;
+
+                case 7:
+                    break;
+                case 8:
+                    break;
+                case 9:             // Sales Return Transactions.
+                    Filter = $"Date([BR].[Vou_Date]) > Date('{Date1}') AND Date([BR].[Vou_Date]) < Date('{Date2}') AND [ST].[Status]='{Submitted}'";
+                    PostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
+
+
+                    break;
+                case 10:
+                    break;
+
 
                 default:
                     break;
@@ -91,6 +109,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BankBook) { ErrorMessages = PostingClass.PostBankBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
+            if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
 
             if (ErrorMessages.Count > 0)
             {

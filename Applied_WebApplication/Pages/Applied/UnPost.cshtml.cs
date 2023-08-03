@@ -42,21 +42,37 @@ namespace Applied_WebApplication.Pages.Applied
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Posted.ToString()));
                     break;
                 case 3:                                                                                                                                 // Write Cheques
-                    UnpostTable = GetTable(UserName, Tables.PostWriteCheque);
+                    //UnpostTable = GetTable(UserName, Tables.PostWriteCheque);
+                    Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
+                    Filter += $"";
+                    UnpostTable = GetTable(UserName, SQLQuery.PostWriteCheques(Filter));
                     break;
 
                 case 4:                                                                                                                                 // Bill Payable
-                    Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
-                    Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}') AND Status='{VoucherStatus.Posted}'";
+                    Filter = $"Date([B].[Vou_Date])>Date('{Date1}') AND Date([B].[Vou_Date]) < Date('{Date2}') AND [B].[Status]='{VoucherStatus.Posted}'";
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillPayable(Filter));
                     break;
 
                 case 5:                                                                                                                                 // Bill Receivable (Sales Invoices) 
-                    Date1 = Variables.Dt_From.ToString(AppRegistry.DateYMD);
-                    Date2 = Variables.Dt_To.ToString(AppRegistry.DateYMD);
-                    Filter = $"Vou_Date>'{Date1}' AND Vou_Date <'{Date2}' AND [BillReceivable].[Status]='{VoucherStatus.Posted}'";
+                    Filter = $"Date([B].[Vou_Date])>Date('{Date1}') AND Date([B].[Vou_Date]) <Date('{Date2}') AND [B].[Status]='{VoucherStatus.Posted}'";
                     UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillReceivable(Filter));
+                    break;
+
+                case 6:             // Payment
+                    break;
+
+                case 7:             // Receipt
+                    break;
+
+                case 8:             // JV
+                    break;
+
+                case 9:             // Sale Return
+                    Filter = $"Date([SR].[Vou_Date])>Date('{Date1}') AND Date([SR].[Vou_Date]) <Date('{Date2}') AND [SR].[Status]='{VoucherStatus.Posted}'";
+                    UnpostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
+                    break;
+
+                case 10:            // BOM
                     break;
 
                 default:
@@ -104,7 +120,7 @@ namespace Applied_WebApplication.Pages.Applied
         //            Filter = $"Vou_Date>'{Date1}' AND Vou_Date<'{Date2}'";
         //            UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.CashBook, Filter, VoucherStatus.Posted.ToString()));
         //            break;
-                    
+
         //        case (int)PostType.BankBook:                                                                                                                         // Bank Book
         //            Filter = $"Vou_Date>'{Date1}' AND Vou_Date<'{Date2}'";
         //            UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Posted.ToString()));

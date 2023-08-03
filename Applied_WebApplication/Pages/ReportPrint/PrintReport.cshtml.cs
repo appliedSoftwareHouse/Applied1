@@ -115,7 +115,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             #region Report Filter Variables
             ReportFilters Filters = new()
             {
-                //N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
@@ -252,15 +251,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Trial Balance
-        public async Task<IActionResult> OnGetTBPrintAsync(DateTime Date1, DateTime Date2)
+        public IActionResult OnGetTBPrint(string _ReportLink, Boolean _IsShowPdf)
         {
-            TrialBalanceClass TB = new(User);
-            TB.MyDataTable = TB.TB_Dates(Date1, Date2);
-            TB.Heading2 = string.Format("From {0} to {1}", Date1.ToString(AppRegistry.FormatDate), Date2.ToString(AppRegistry.FormatDate));
-            TB.SetParameters();
-            await Task.Run(() => (ReportLink = TB.MyReportClass.GetReportLink()));
-            IsShowPdf = !TB.MyReportClass.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(TB.MyReportClass.MyMessage)); }
+            ReportLink = _ReportLink;
+            IsShowPdf = _IsShowPdf;
             return Page();
         }
 

@@ -25,31 +25,46 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet(int? id)
         {
-            if (id == null)
-            {
-                Variables = new()
-                {
-                    IsSelected = false,
-                    ID = 0,
-                    CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
-                    MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
-                    MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-                    IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
-                };
-            }
-            else
-            {
-                Variables = new()
-                {
-                    IsSelected = false,
-                    CashBookID = (int)id,
-                    MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
-                    MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-                    IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
-                };
-            }
 
+
+            #region Temp
+            //if (id == null)
+            //{
+
+            //    Variables = new()
+            //    {
+            //        IsSelected = false,
+            //        ID = 0,
+            //        CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
+            //        MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
+            //        MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
+            //        IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
+            //    };
+            //}
+            //else
+            //{
+            //    Variables = new()
+            //    {
+            //        IsSelected = false,
+            //        CashBookID = (int)id,
+            //        MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
+            //        MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
+            //        IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
+            //    };
+            //}
+            #endregion
             id ??= Variables.CashBookID;
+            if (id == 0) { id=GetNumber(UserName, "CashBookID"); }
+
+            Variables = new()
+            {
+                IsSelected = false,
+                CashBookID = (int)id,
+                MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
+                MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
+                IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
+            };
+
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
             var Date1 = Variables.MinDate.AddDays(-1).ToString("yyyy-MM-dd");
             var Date2 = Variables.MaxDate.AddDays(1).ToString("yyyy-MM-dd");
@@ -57,7 +72,7 @@ namespace Applied_WebApplication.Pages.Accounts
             LedgerClass.Date_From = DateTime.Parse(Date1);
             LedgerClass.Date_To = DateTime.Parse(Date2);
             LedgerClass.Sort = "Vou_Date";
-            LedgerClass.Filter = $"BookID={id} AND Vou_Date >'{Date1}' AND Vou_Date<'{Date2}'";
+            LedgerClass.Filter = $"BookID={id} AND Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
             Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {
@@ -82,12 +97,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
 
         }
-
+    
         #endregion
 
         public IActionResult OnPostEdit(int ID)
         {
-            return RedirectToPage("CashBookRecord", routeValues: new { ID, BookID=Variables.CashBookID });
+            return RedirectToPage("CashBookRecord", routeValues: new { ID, BookID = Variables.CashBookID });
         }
 
         public IActionResult OnPostRefresh(int id)
@@ -174,11 +189,13 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public static string GetSelectPosted(int _Posted)
         {
-            if(_Posted == 1) { return "All"; }
-            if(_Posted == 2) { return "Posted"; }
-            if(_Posted == 3) { return "Submitted"; }
+            if (_Posted == 1) { return "All"; }
+            if (_Posted == 2) { return "Posted"; }
+            if (_Posted == 3) { return "Submitted"; }
             return "";
         }
+
+        #region Variables
 
         [BindProperties]
         public class MyParameters
@@ -194,7 +211,6 @@ namespace Applied_WebApplication.Pages.Accounts
             public int IsPosted1 { get; set; }
 
         }
-
         public class BookRecord
         {
             public int ID { get; set; }
@@ -215,5 +231,6 @@ namespace Applied_WebApplication.Pages.Accounts
             public string Comments { get; set; }
 
         }
+        #endregion
     }
 }

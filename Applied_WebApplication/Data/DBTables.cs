@@ -95,7 +95,9 @@ public enum PostType
     Payment = 6,
     Receipt = 7,
     JV = 8,
-    BOM=9,
+    SaleReturn = 9,
+    BOM =10
+    
     
 }
 public enum VoucherStatus
@@ -118,10 +120,9 @@ public enum VoucherType
     OBalance = 8,
     OBalCom = 9,
     OBalStock = 10,
-    JV = 11
-
+    JV = 11,
+    SaleReturn = 12
 }
-
 
 public enum PrintOption
 {
@@ -130,4 +131,11 @@ public enum PrintOption
     Excel=2,
     Word=3,
     HTML=4
+}
+
+public enum TBOption
+{
+    All=0,
+    UptoDate=1,
+    Monthly=2,
 }

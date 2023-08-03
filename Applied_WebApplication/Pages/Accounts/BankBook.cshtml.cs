@@ -33,31 +33,20 @@ namespace Applied_WebApplication.Pages.Accounts
             BookNature = GetNumber(UserName, "BankBkNature");
             BookTitles = AppFunctions.Titles(UserName, SQLQuery.BookTitles(BookNature));
 
-            if (id == null)
+            id ??= 0;
+            if(id==0) { id = GetNumber(UserName, "BankBookID"); }
+            Variables = new()
             {
-                Variables = new()
-                {
-                    IsSelected = false,
-                    ID = 0,
-                    BankBookID = (int)GetKey(UserName, "BankBookID", KeyType.Number),
-                    MinDate = (DateTime)GetKey(UserName, "BankBookFrom", KeyType.Date),
-                    MaxDate = (DateTime)GetKey(UserName, "BankBookTo", KeyType.Date),
-                    IsPosted1 = (int)GetKey(UserName, "BankBookPost", KeyType.Number)
-                };
-            }
-            else
-            {
-                Variables = new()
-                {
-                    IsSelected = false,
-                    BankBookID = (int)id,
-                    MinDate = (DateTime)GetKey(UserName, "BankBookFrom", KeyType.Date),
-                    MaxDate = (DateTime)GetKey(UserName, "BankBookTo", KeyType.Date),
-                    IsPosted1 = (int)GetKey(UserName, "BankBookPost", KeyType.Number),
-                };
-            }
+                IsSelected = false,
+                BankBookID = (int)id,
+                MinDate = (DateTime)GetKey(UserName, "BankBookFrom", KeyType.Date),
+                MaxDate = (DateTime)GetKey(UserName, "BankBookTo", KeyType.Date),
+                IsPosted1 = (int)GetKey(UserName, "BankBookPost", KeyType.Number),
+            };
 
-            id ??= Variables.BankBookID;
+            
+
+
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
             var BankCode = AppRegistry.GetNumber(UserName, "BankBkNature");
             var BankBookTitle = DataTableClass.GetTable(UserName, Tables.COA, $"Nature={BankCode}");

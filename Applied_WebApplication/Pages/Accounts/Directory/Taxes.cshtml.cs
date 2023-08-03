@@ -74,7 +74,7 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
         public IActionResult OnPostDelete(int ID)
         {
             MyMessages = new();
-            var abc = 0;
+           
 
             MyMessages.Add(SetMessage("Record Deleted.", ConsoleColor.Red));
             return Page();

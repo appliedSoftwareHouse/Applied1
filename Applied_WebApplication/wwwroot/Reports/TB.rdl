@@ -614,6 +614,7 @@
                                   <Value>=Sum(IIF(Fields!BAL.Value&gt;0,Fields!BAL.Value,0))</Value>
                                   <Style>
                                     <FontSize>12pt</FontSize>
+                                    <Format>#,0.00;(#,0.00);'-'</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -625,22 +626,14 @@
                           <rd:DefaultName>Textbox4</rd:DefaultName>
                           <Style>
                             <Border>
-                              <Color>LightGrey</Color>
+                              <Color>Silver</Color>
                               <Style>Solid</Style>
                               <Width>0.5pt</Width>
                             </Border>
-                            <TopBorder>
-                              <Color>Silver</Color>
-                            </TopBorder>
-                            <BottomBorder>
-                              <Color>Silver</Color>
-                            </BottomBorder>
                             <LeftBorder>
-                              <Color>Silver</Color>
                               <Width>1pt</Width>
                             </LeftBorder>
                             <RightBorder>
-                              <Color>Silver</Color>
                               <Width>1pt</Width>
                             </RightBorder>
                             <BackgroundColor>Khaki</BackgroundColor>
@@ -650,7 +643,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -665,6 +657,7 @@
                                   <Value>=Sum(IIF(Fields!BAL.Value&lt;0,ABS(Fields!BAL.Value),0))</Value>
                                   <Style>
                                     <FontSize>12pt</FontSize>
+                                    <Format>#,0.00;(#,0.00);'-'</Format>
                                   </Style>
                                 </TextRun>
                               </TextRuns>
@@ -676,22 +669,14 @@
                           <rd:DefaultName>Textbox5</rd:DefaultName>
                           <Style>
                             <Border>
-                              <Color>LightGrey</Color>
+                              <Color>Silver</Color>
                               <Style>Solid</Style>
                               <Width>0.5pt</Width>
                             </Border>
-                            <TopBorder>
-                              <Color>Silver</Color>
-                            </TopBorder>
-                            <BottomBorder>
-                              <Color>Silver</Color>
-                            </BottomBorder>
                             <LeftBorder>
-                              <Color>Silver</Color>
                               <Width>1pt</Width>
                             </LeftBorder>
                             <RightBorder>
-                              <Color>Silver</Color>
                               <Width>1pt</Width>
                             </RightBorder>
                             <BackgroundColor>Khaki</BackgroundColor>
@@ -701,7 +686,6 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -849,6 +833,7 @@
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
+                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>

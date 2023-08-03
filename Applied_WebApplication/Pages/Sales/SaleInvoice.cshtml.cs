@@ -416,7 +416,7 @@ namespace Applied_WebApplication.Pages.Sales
                 if (Valid2)
                 {
                     DataTableClass TargetTable1 = new(UserName, Tables.BillReceivable);
-                    TargetTable1.NewRecord();
+                    DataRow dataRow = TargetTable1.NewRecord();
                     TargetTable1.CurrentRow.ItemArray = Row1.ItemArray;
 
                     #region Save 1

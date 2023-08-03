@@ -1,8 +1,4 @@
-﻿using Applied_WebApplication.Pages;
-using NPOI.HSSF.Model;
-using NPOI.OpenXmlFormats.Dml.Chart;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
@@ -111,7 +107,7 @@ namespace Applied_WebApplication.Data
             else
             {
                 View_Filter = $"TranID={TranID}";
-                SourceTable = DataTableClass.GetTable(UserName, _TableID, View_Filter );
+                SourceTable = DataTableClass.GetTable(UserName, _TableID, View_Filter);
                 TempTableIsExist(SourceTable);                                               // Create a duplicate table in Temporary Database of App, if not exist.
                 TempTable = CreateTempTable(UserName, SourceTable);
             }
@@ -137,16 +133,46 @@ namespace Applied_WebApplication.Data
             TableValidate = new(TempTable);
         }
 
+
+
+        public TempTableClass(string _UserName, Tables _TableID)
+        {
+            IsNew = true;
+            TranID = 0;
+            UserName = _UserName;
+            MyTableName = _TableID.ToString();
+            UProfile = new UserProfile(UserName);
+            SourceTable = new();
+            TempTable = new();
+
+            // Source Table
+            SourceTable = GetTable(UserName, _TableID, $"ID={TranID}");
+
+            // Tamp Table
+            CommandText = $"SELECT * FROM [{MyTableName}]";
+            Command = new(CommandText, GetTempConnection());
+            var _Adapter = new SQLiteDataAdapter(Command);
+            var _DataSet = new DataSet();
+            _Adapter.Fill(_DataSet, MyTableName);
+            if (_DataSet.Tables.Count > 0) { TempTable = _DataSet.Tables[0]; } else { TempTable = new DataTable(); }
+
+            // Source & Temp View
+            SourceView = SourceTable.AsDataView();
+            TempView = TempTable.AsDataView();
+
+            //Current Row
+            if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = TempTable.NewRow(); }
+        }
         #endregion
 
         #region Connection
-        private SQLiteConnection GetConnection()
-        {
-            if (UserName == null) { return null; }
-            MyConnection ??= ConnectionClass.AppConnection(UserName);
-            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-            return MyConnection;
-        }
+        //private SQLiteConnection GetConnection()
+        //{
+        //    if (UserName == null) { return null; }
+        //    MyConnection ??= ConnectionClass.AppConnection(UserName);
+        //    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+        //    return MyConnection;
+        //}
 
         private SQLiteConnection GetTempConnection()
         {
@@ -164,16 +190,25 @@ namespace Applied_WebApplication.Data
 
         public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
         {
-            var _Connection = ConnectionClass.AppTempConnection(UserName);
-            var _TableName = _Table.ToString();
-            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-            _Adapter.Fill(_DataSet, _TableName);
-            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
-            return new DataTable();
+            try
+            {
+
+                var _Connection = ConnectionClass.AppTempConnection(UserName);
+                var _TableName = _Table.ToString();
+                if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+                var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+                var _Command = new SQLiteCommand(_CommandText, _Connection);
+                var _Adapter = new SQLiteDataAdapter(_Command);
+                var _DataSet = new DataSet();
+                _Adapter.Fill(_DataSet, _TableName);
+                if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+                return new DataTable();
+            }
+            catch (Exception)
+            {
+                return new DataTable();
+            }
+
         }
         public DataTable CreateTempTable(string _UserName, DataTable _Table)
         {

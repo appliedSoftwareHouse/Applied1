@@ -1,5 +1,6 @@
 ﻿using Applied_WebApplication.Pages.Sales;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Reporting.Map.WebForms.BingMaps;
 using NPOI.OpenXmlFormats.Dml.Chart;
 using NPOI.SS.Formula.Functions;
@@ -98,6 +99,25 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Posting Cheque Book
+        public static string PostWriteCheques(string _Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[WC].[ChqNo] AS[Vou_No], ");
+            Text.Append("[WC].[ChqDate] AS[Vou_Date], ");
+            Text.Append("[WC].[Bank] AS[COA], ");
+            Text.Append("[C].[Title] As[Title], ");
+            Text.Append("0.00 AS[DR], ");
+            Text.Append("CAST([WC].[TaxableAmount] + [WC].[TaxAmount] AS Float) AS[CR], ");
+            Text.Append("[WC].[Status] ");
+            Text.Append("FROM WriteCheques [WC] ");
+            Text.Append("LEFT JOIN[COA] [C] ON[C].[ID] = [WC].[Bank] ");
+            if(_Filter.Length>0) { Text.Append($" WHERE {_Filter}"); }
+            return Text.ToString();
+        }
+        #endregion
+
         #region Write Cheque
         public static string WriteCheque(string? _Filter)
         {
@@ -114,8 +134,11 @@ namespace Applied_WebApplication.Data
         #region Expense Sheet
         public static string ExpenseSheetList()
         {
-            var Text = "SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [CashBook] ";
-            return Text;
+            var Text = new StringBuilder();
+            Text.Append("SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [CashBook] ");
+            Text.Append("UNION ");
+            Text.Append("SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [BankBook] ");
+            return Text.ToString();
 
         }
 
@@ -149,6 +172,38 @@ namespace Applied_WebApplication.Data
                 Text.Append(" WHERE ");
                 Text.Append(_Filter);
             }
+
+            Text.Append("UNION ");
+
+            Text.Append("SELECT ");
+            Text.Append("[CB].[Sheet_No], ");
+            Text.Append("[CB].[Vou_No], ");
+            Text.Append("[CB].[Vou_Date], ");
+            Text.Append("[CB].[Ref_No], ");
+            Text.Append("[CB].[COA], ");
+            Text.Append("[A].[Title] AS [AccountTitle], ");
+            Text.Append("[CB].[Customer], ");
+            Text.Append("[C].[Title] AS [CompanyName], ");
+            Text.Append("[CB].[Employee],");
+            Text.Append("[E].[Title] AS [EmployeeName], ");
+            Text.Append("[CB].[Project], ");
+            Text.Append("[P].[Title] AS [ProjectName], ");
+            Text.Append("[CB].[Description], ");
+            Text.Append("[CB].[DR], ");
+            Text.Append("[CB].[CR] ");
+            Text.Append("FROM[BankBook] AS [CB] ");
+            Text.Append("LEFT JOIN [COA]          [A] ON [A].[ID] = [CB].[COA] ");
+            Text.Append("LEFT JOIN[Customers] [C] ON [C].[ID] = [CB].[Customer] ");
+            Text.Append("LEFT JOIN[Employees] [E] ON [E].[ID] = [CB].[Employee] ");
+            Text.Append("LEFT JOIN[Project]       [P] ON [P].[ID] = [CB].[Project] ");
+            if (_Filter != null)
+            {
+                Text.Append(" WHERE ");
+                Text.Append(_Filter);
+            }
+
+
+
             return Text.ToString();
         }
 
@@ -176,15 +231,15 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
-            Text.Append("[BillPayable].[ID], ");
-            Text.Append("[BillPayable].[Vou_No], ");
-            Text.Append("[BillPayable].[Vou_Date], ");
-            Text.Append("[Customers].[TITLE], ");
+            Text.Append("[B].[ID], ");
+            Text.Append("[B].[Vou_No], ");
+            Text.Append("[B].[Vou_Date], ");
+            Text.Append("[C].[TITLE], ");
             Text.Append("0.00 AS[DR], ");
-            Text.Append("[BillPayable].[AMOUNT] AS[CR], ");
-            Text.Append("[BillPayable].[Status] ");
-            Text.Append("FROM [BillPayable] ");
-            Text.Append("LEFT JOIN[Customers] ON [BillPayable].[Company] = [Customers].[ID] ");
+            Text.Append("[B].[AMOUNT] AS[CR], ");
+            Text.Append("[B].[Status] ");
+            Text.Append("FROM [BillPayable] [B] ");
+            Text.Append("LEFT JOIN[Customers] [C] ON [B].[Company] = [C].[ID] ");
             if (_Filter != null)
             {
                 if (_Filter.Length > 0)
@@ -199,15 +254,15 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
-            Text.Append("[BillReceivable].[ID], ");
-            Text.Append("[BillReceivable].[Vou_No], ");
-            Text.Append("[BillReceivable].[Vou_Date], ");
-            Text.Append("[Customers].[TITLE], ");
+            Text.Append("[B].[ID], ");
+            Text.Append("[B].[Vou_No], ");
+            Text.Append("[B].[Vou_Date], ");
+            Text.Append("[C].[TITLE], ");
             Text.Append("0.00 AS[DR], ");
-            Text.Append("[BillReceivable].[AMOUNT] AS[CR], ");
-            Text.Append("[BillReceivable].[Status] ");
-            Text.Append("FROM [BillReceivable] ");
-            Text.Append("LEFT JOIN[Customers] ON [BillReceivable].[Company] = [Customers].[ID] ");
+            Text.Append("[B].[AMOUNT] AS[CR], ");
+            Text.Append("[B].[Status] ");
+            Text.Append("FROM [BillReceivable] [B] ");
+            Text.Append("LEFT JOIN[Customers] [C] ON [B].[Company] = [C].[ID] ");
             if (_Filter != null)
             {
                 if (_Filter.Length > 0)
@@ -349,7 +404,8 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[ID],");
             Text.Append("[B2].[TranID],");
             Text.Append("[B2].[SR_No],");
-            Text.Append("[B1].[Vou_No],");
+            Text.Append("[R].[Vou_No],");
+            Text.Append("[B1].[Vou_No] AS [SaleVou_No],");
             Text.Append("[B1].[Vou_Date],");
             Text.Append("[B1].[Company],");
             Text.Append("[B1].[Inv_No],");
@@ -360,7 +416,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B2].[Qty],");
             Text.Append("[R].[Qty] AS [RQty],");
             Text.Append("[B2].[Rate],");
-            Text.Append("[T].[Rate] AS [Tax], ");
+            Text.Append("CAST([T].[Rate] AS FLOAT) AS [Tax], ");
             Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
             Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
             Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");
@@ -397,20 +453,20 @@ namespace Applied_WebApplication.Data
 
         #region Trial Balance
 
-        public static string TrialBalance(string _Filter)
+        public static string TrialBalance(string _Filter, string _OrderBy)
         {
             var Text = new StringBuilder();
+            Text.Append("SELECT * FROM (");
             Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            Text.Append("SUM([Ledger].[DR]) AS[DR], ");
-            Text.Append("SUM([Ledger].[CR]) AS[CR], ");
-            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS[BAL] ");
+            Text.Append("SUM([Ledger].[DR]) AS [DR], ");
+            Text.Append("SUM([Ledger].[CR]) AS [CR], ");
+            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS [BAL] ");
             Text.Append("FROM [Ledger] ");
             Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            if (_Filter.Length > 0)
-            {
-                Text.Append($"WHERE {_Filter} ");
-            }
-            Text.Append("GROUP BY[COA] ");
+           if (_Filter.Length > 0)  { Text.Append($" WHERE {_Filter} "); }
+            Text.Append("GROUP BY [COA] ");
+            Text.Append(") WHERE BAL <> 0 ");
+            if(_OrderBy.Length > 0) { Text.Append($" ORDER BY {_OrderBy}"); }
 
             return Text.ToString();
         }
@@ -494,7 +550,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Posting Cash Book Ledger
-        
+
         public static string PostBook(Tables _Table, string _Filter, string _Status)
         {
             // Table Name,   it is Cash Book or Bank Book
@@ -516,10 +572,84 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
-        
+
         #endregion
 
+        #region Sale Return List
 
+        public static string PostSaleReturnList(string? _Filter)
+        {
+            _Filter ??= string.Empty;
+
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[ST].[ID], ");
+            Text.Append("[BR].[Vou_No], ");
+            Text.Append("[BR].[Vou_Date], ");
+            Text.Append("[CM].[TITLE], ");
+            Text.Append("[BR].[Amount] AS [DR], ");
+            Text.Append("00 AS [CR], ");
+            Text.Append("[ST].[Status] ");
+            Text.Append("FROM [SaleReturn] [ST] ");
+            Text.Append("LEFT JOIN [BillReceivable] [BR] ON [BR].[ID] = [ST].[TranID] ");
+            Text.Append("LEFT JOIN [Customers] [CM] ON [BR].[Company] = [CM].[ID] ");
+            if(_Filter.Length>0)
+            {
+                Text.Append($" WHERE {_Filter}");
+            }
+            return Text.ToString();
+        }
+        #endregion
+
+        #region Post & UnPost Sale Return
+        public static string PostSaleReturn(string? _Filter)
+        {
+            _Filter ??= string.Empty;
+            var Text = new StringBuilder();
+            Text.Append("SELECT *,");
+            Text.Append("CAST([SR].[Amount] + [SR].[TaxAmount] AS Float) AS[NetAmount],");
+            Text.Append("CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float) AS [RNetAmount],");
+            Text.Append("CAST(");
+            Text.Append("(CAST([SR].[Amount] + [SR].[TaxAmount] AS Float)) - ");
+            Text.Append("(CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float)) ");
+            Text.Append("AS Float) AS [Total] ");
+            Text.Append("FROM(");
+            Text.Append("SELECT");
+            Text.Append("[SR].[ID]             AS [SR_ID],");
+            Text.Append("[SR].[TranID]      AS [SR_TranID],");
+            Text.Append("[B1].[ID]             AS [B1_ID],");
+            Text.Append("[B2].[ID]             AS [B2_ID],");
+            Text.Append("[SR].[Vou_No]    AS [Vou_No],");
+            Text.Append("[SR].[Vou_Date] AS [Vou_Date],");
+            Text.Append("[B2].[TranID]      AS [B2_TranID],");
+            Text.Append("[B2].[Qty]           AS [Qty],");
+            Text.Append("[B2].[Rate]         AS [Rate],");
+            Text.Append("[TX].[Rate]         AS [TRate],");
+            Text.Append("[B1].[Company]  AS [CompanyID],");
+            Text.Append("[B1].[Employee] AS [EmployeeID],");
+            Text.Append("[B2].[Project]      AS [ProjectID],");
+            Text.Append("CAST( [B2].[Qty] * [B2].[Rate] AS Float) AS [Amount],");
+            Text.Append("CAST(([B2].[Qty] * [B2].[Rate]) * [TX].[Rate] AS Float) AS [TaxAmount],");
+            Text.Append("[SR].[Qty]     AS [QtyR],");
+            Text.Append("CAST([SR].[Qty] * [B2].[Rate] As Float) AS [RAmount],");
+            Text.Append("CAST(([SR].[Qty] * [B2].[Rate]) * [TX].[Rate] AS Float) AS [RTaxAmount],");
+            Text.Append("[B2].[Description],");
+            Text.Append("[B1].[Comments] AS [Remarks],");
+            Text.Append("[I].[Title] AS [Inventory],");
+            Text.Append("[SR].[Status]");
+            Text.Append("FROM SaleReturn [SR]");
+            Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[ID] = [SR].[TranID]");
+            Text.Append("LEFT JOIN [BillReceivable]   [B1] ON [B1].[ID] = [B2].[TranID]");
+            Text.Append("LEFT JOIN [Inventory]           [I] ON [I].[ID] = [B2].[Inventory]");
+            Text.Append("LEFT JOIN[Taxes]                 [TX] ON [TX].[ID] = [B2].[Tax]");
+            Text.Append(") AS [SR]");
+            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter}"); }
+
+            return Text.ToString();
+        }
+        #endregion
+
+        
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 
         #region Create DataTable into Source Data
@@ -654,6 +784,8 @@ namespace Applied_WebApplication.Data
                     break;
             }
         }
+
+       
 
 
         #endregion

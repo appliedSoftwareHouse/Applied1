@@ -61,6 +61,13 @@
 
             <div class="col-md-3">
                 <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.SaleVou_No">
+                    <label for="floatingInput">Sales Voucher No</label>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
                     <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No">
                     <label for="floatingInput">Voucher No</label>
                 </div>
@@ -118,6 +125,7 @@
                             <th>Tax Rate</th>
                             <th>Tax Amount</th>
                             <th>Net Amount</th>
+                            
                             <th>..</th>
                         </tr>
                     </thead>
@@ -128,13 +136,13 @@
                             var _Qty = Conversion.ToDecimal(Row["Qty"]);
                             var _RQty = Conversion.ToDecimal(Row["RQty"]);
                             var _Rate = Conversion.ToDecimal(Row["Rate"]);
-                            var _Amount = _Qty * _Rate;
-                            var _TaxRate = ((decimal)Row["Tax"]) / 100;
-                            var _TaxAmount = _Amount * (_TaxRate);
-                            var _NetAmount = _Amount + _TaxAmount;
+                            var _Amount = Conversion.ToDecimal(_Qty * _Rate);
+                            var _TaxRate = Conversion.ToDecimal(Row["Tax"]) / 100;
+                            var _TaxAmount = Conversion.ToDecimal(_Amount * (_TaxRate));
+                            var _NetAmount = Conversion.ToDecimal(_Amount + _TaxAmount);
 
                             <tr>
-                                <td>@Row["Vou_No"]</td>
+                                <td>@Row["SaleVou_No"]</td>
                                 <td>@_Date</td>
                                 <td>@Row["StockTitle"]</td>
                                 <td>@Row["Batch"]</td>
@@ -145,6 +153,7 @@
                                 <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2+"%")</td>
                                 <td class="table-col-amount">@_TaxAmount.ToString(FMTCurrency1)</td>
                                 <td class="table-col-amount">@_NetAmount.ToString(FMTCurrency1)</td>
+                                
                                 <td>
                                     <button class="listbutton-red" asp-page-handler="StockReturn" asp-route-id="@Row["ID"]">
                                         <i class="bi bi-cart-dash-fill"></i>

@@ -18,24 +18,43 @@ namespace Applied_WebApplication.Pages.Accounts
         public DataTable Voucher { get; set; }
         public Boolean IsBalance { get; set; }
 
+        public void OnGetNew()
+        {
+            ErrorMessages = new();
+            TempTableClass TempClass;
+            Variables = new();              // Setup of Variables
+
+            TempClass = new TempTableClass(UserName, Tables.Ledger);
+            if (TempClass.TempTable.Rows.Count == 0)
+            {
+                TempClass.CurrentRow = TempClass.NewRecord();
+                TempClass.CurrentRow["ID"] = 0;
+                TempClass.CurrentRow["TranID"] = 0;
+                TempClass.CurrentRow["Vou_No"] = "NEW";
+                TempClass.CurrentRow["Vou_Date"] = DateTime.Now;
+                TempClass.CurrentRow["Sr_No"] = 1;
+                TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
+                TempClass.CurrentRow["Vou_Type"] = VoucherType.JV;
+            }
+            Row2Variable(TempClass.CurrentRow);
+            Voucher = TempClass.TempTable;
+
+        }
+
 
         public void OnGet(string? Vou_No, int? Sr_No)
         {
-
+            ErrorMessages = new();
             try
             {
                 TempTableClass TempClass;
                 Variables = new();              // Setup of Variables
+
                 if (Vou_No == null || Vou_No == "New")
                 {
 
-                    TempClass = new TempTableClass(UserName, Tables.Ledger, "New", true);
-                    if (TempClass.TempTable.Rows.Count > 0)
-                    {
-                        TempClass.CurrentRow = TempClass.TempTable.Rows[0];
-                        Row2Variable(TempClass.CurrentRow);
-                    }
-                    else
+                    TempClass = new TempTableClass(UserName, Tables.Ledger);
+                    if (TempClass.TempTable.Rows.Count == 0)
                     {
                         TempClass.CurrentRow = TempClass.NewRecord();
                         TempClass.CurrentRow["ID"] = 0;
@@ -45,9 +64,8 @@ namespace Applied_WebApplication.Pages.Accounts
                         TempClass.CurrentRow["Sr_No"] = 1;
                         TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
                         TempClass.CurrentRow["Vou_Type"] = VoucherType.JV;
-
-                        Row2Variable(TempClass.CurrentRow);
                     }
+                    Row2Variable(TempClass.CurrentRow);
                 }
                 else
                 {
@@ -91,7 +109,6 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             catch (Exception e)
             {
-
                 ErrorMessages.Add(MessageClass.SetMessage(e.Message));
             }
 
@@ -301,14 +318,14 @@ namespace Applied_WebApplication.Pages.Accounts
             _TempTable.TempSeek(ID);
             _TempTable.Delete();
             ErrorMessages.AddRange(_TempTable.ErrorMessages);
-            if (ErrorMessages[0].ErrorID==0)
-            {  Sr_No = Variables.Sr_No; }
+            if (ErrorMessages[0].ErrorID == 0)
+            { Sr_No = Variables.Sr_No; }
             else
             { Sr_No = 1; }
 
             string Vou_No = Variables.Vou_No;
-            
-            return RedirectToPage("JV", new { Vou_No, Sr_No});
+
+            return RedirectToPage("JV", new { Vou_No, Sr_No });
         }
 
         #endregion

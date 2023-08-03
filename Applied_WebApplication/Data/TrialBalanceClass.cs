@@ -75,7 +75,8 @@ namespace Applied_WebApplication.Data
             DateTime OBalDate = AppRegistry.GetDate(UserName, "OBDate");
             var _Date = OBalDate.ToString(AppRegistry.DateYMD);
             var _Filter = $"Date([Ledger].[Vou_Date]) = Date('{_Date}')";
-            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
+            var _OrderBy = "Code";
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter, _OrderBy ));
             SetParameters();
             MyReportClass.ReportSourceData = _Table;
             return _Table;
@@ -88,7 +89,8 @@ namespace Applied_WebApplication.Data
             var _Start = Date1.ToString(AppRegistry.DateYMD);
             var _End = Date2.ToString(AppRegistry.DateYMD);
             var _Filter = $"Date([Ledger].[Vou_Date]) >= Date('{_Start}') AND Date([Ledger].[Vou_Date]) <= Date('{_End}') ";
-            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter), "[COA].[Code]");
+            var _OrderBy = "Code";
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter,_OrderBy));
             SetParameters();
             MyReportClass.ReportSourceData = _Table;
             return _Table;
@@ -98,7 +100,9 @@ namespace Applied_WebApplication.Data
         {
             DataTable _Table;
             SetParameters();
-            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(""));
+            var _Filter = String.Empty;
+            var _OrderBy = "Code";
+            _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter, _OrderBy));
             return _Table;
         }
 

@@ -57,16 +57,16 @@ namespace AppReportClass
                 Text.Append($"Inventory={N_Inventory} ");
             }
 
-            if (Dt_From > new DateTime(2022,1,1))
+            if (Dt_From > new DateTime(2022, 1, 1))
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-                Text.Append($"Vou_Date>='{Dt_From.ToString("yyyy-MM-dd")}'");
+                Text.Append($"Date(Vou_Date) > Date('{Dt_From.AddDays(-1)}')");
             }
 
             if (Dt_To > new DateTime(2022, 1, 1))
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-                Text.Append($"Vou_Date<='{Dt_To.ToString("yyyy-MM-dd")}'");
+                Text.Append($"Date(Vou_Date) < Date('{Dt_To.AddDays(1)}')");
             }
             return Text.ToString();
         }

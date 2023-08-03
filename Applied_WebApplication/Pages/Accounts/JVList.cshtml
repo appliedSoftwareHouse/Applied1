@@ -55,8 +55,8 @@
                     <th style="width:10%">Credit</th>
                     <th style="width:30%">Description</th>
                     <th>
-                        <button type="submit" id="ListbuttonGreen"
-                                asp-page-handler="JV">
+                        <button type="submit" class="listbutton-green"
+                                asp-page-handler="New">
                             <i class="bi bi-database-add"></i>
                         </button>
                     </th>
@@ -80,12 +80,12 @@
                             <td>@Row["Description"].ToString()</td>
                             
                             <td>
-                                <button type="submit" id="Listbutton"
+                                <button type="submit" class="listbutton-blue"
                                 asp-route-Vou_No="@Row["Vou_No"]"
                                 asp-page-handler="JV">
                                     <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button type="submit" id="ListbuttonRed"
+                                <button type="submit" class="listbutton-red"
                                 asp-route-Vou_No="@Row["Vou_No"]"
                                 asp-page-handler="Delete">
                                     <i class="bi bi-trash-fill"></i>
@@ -99,9 +99,9 @@
     </div>
     <!--Buttons Area-->
     <div>
-        <button type="submit" class="btn btn-primary btn-sm"
-                asp-page="JV">
-            <i class="bi bi-plus-lg"></i>
+        <button type="submit" class="listbutton-green"
+                asp-page-handler="New">
+            <i class="bi bi-database-add"></i>
         </button>
 
     </div>

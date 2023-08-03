@@ -162,7 +162,7 @@ namespace Applied_WebApplication.Data
                 try
                 {
                     _Sort ??= string.Empty;
-                    if (_Sort.Length > 0) { _Text = string.Concat(_Text, "ORDER BY ", _Sort); }
+                    if (_Sort.Length > 0) { _Text = string.Concat(_Text, " ORDER BY ", _Sort); }
                     SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
 
                     if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }

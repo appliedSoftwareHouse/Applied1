@@ -199,16 +199,25 @@ namespace Applied_WebApplication.Data
             return Titles;
         }
 
-        // Get ID and title from Datatable with Filter condition
+        // Get ID and title from Datatable with Filter condition.
         public static Dictionary<int, string> Titles(string UserName, Tables _TableName, string _Filter)
         {
             Dictionary<int, string> Titles = new Dictionary<int, string>();
-            DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = _Filter;
-            foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
+
+            var Query = $"SELECT ID,Title FROM {_TableName} WHERE {_Filter} Order by Title ";
+            var _Table = DataTableClass.GetTable(UserName, Query);
+            foreach(DataRow _Row in _Table.Rows)
             {
                 Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
             }
+
+
+            //DataTableClass _Table = new(UserName, _TableName);
+            //_Table.MyDataView.RowFilter = _Filter;
+            //foreach (DataRow _Row in _Table.MyDataView.ToTable().Rows)
+            //{
+            //    Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
+            //}
             return Titles;
         }
 
@@ -271,13 +280,13 @@ namespace Applied_WebApplication.Data
 
         #region Compute
 
-        public static int GetMax(string UserName, Tables _Table, string _Column, string _Filter)
-        {
-            DataTableClass Table = new(UserName, _Table);
-            Table.MyDataView.RowFilter = _Filter;
-            if (Table.MyDataView.Count == 0) { return 0; }
-            else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
-        }
+        //public static int GetMax(string UserName, Tables _Table, string _Column, string _Filter)
+        //{
+        //    DataTableClass Table = new(UserName, _Table);
+        //    Table.MyDataView.RowFilter = _Filter;
+        //    if (Table.MyDataView.Count == 0) { return 0; }
+        //    else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
+        //}
 
         public static object GetSum(string UserName, Tables _Table, string _Column, string _Filter)
         {
@@ -297,17 +306,28 @@ namespace Applied_WebApplication.Data
             return Table.NewRecord();
         }
 
+        public static DateTime MinDate(DateTime Date1, DateTime Date2)
+        {
+            DateTime[] Dates = new DateTime[] { Date1, Date2 };
+            return Dates.Min(Dates => Dates.Date);
+        }
+
+        public static DateTime MaxDate(DateTime Date1, DateTime Date2)
+        {
+            DateTime[] Dates = new DateTime[] { Date1, Date2 };
+            return Dates.Max(Dates => Dates.Date);
+        }
 
         #endregion
 
-        public static string AddCommas(string UserName, object _Value)
-        {
-            var _Number = Decimal.Round(Conversion.ToDecimal(_Value), 2);
-            var _Format = AppRegistry.GetFormatCurrency(UserName);
-            var _result = _Number.ToString(_Format);
-            return _result;
-        }
+        //public static string AddCommas(string UserName, object _Value)
+        //{
+        //    var _Number = Decimal.Round(Conversion.ToDecimal(_Value), 2);
+        //    var _Format = AppRegistry.GetFormatCurrency(UserName);
+        //    var _result = _Number.ToString(_Format);
+        //    return _result;
+        //}
 
-       
+
     }
 }

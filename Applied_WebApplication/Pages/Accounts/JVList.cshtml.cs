@@ -21,9 +21,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 DateTo = AppRegistry.GetDate(UserName, "JVList_To")
             };
 
-            var Date1 = Variables.DateFrom.ToString(AppRegistry.DateYMD);
-            var Date2 = Variables.DateTo.ToString(AppRegistry.DateYMD);
-            var Filter = string.Format("Vou_Date >='{0}' AND Vou_Date <='{1}'", Date1, Date2);
+            var Date1 = Variables.DateFrom.AddDays(-1).ToString(AppRegistry.DateYMD);
+            var Date2 = Variables.DateTo.AddDays(1).ToString(AppRegistry.DateYMD);
+            var Filter = $"Date(Vou_Date) >Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
 
             DataTableClass tb_Class = new(UserName, Tables.JVList, Filter);
             tb_Class.MyDataView.Sort = "Vou_Date, Vou_No";
@@ -41,6 +41,12 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             return RedirectToPage("JV", routeValues: new { Vou_No });
         }
+
+        public IActionResult OnPostNew()
+        {
+            return RedirectToPage("JV", "New");
+        }
+
 
         public class MyParameters
         {
