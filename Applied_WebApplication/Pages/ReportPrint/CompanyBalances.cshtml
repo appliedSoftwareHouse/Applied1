@@ -1,0 +1,94 @@
+﻿@page
+@using System.Data;
+@using AppReportClass;
+@model Applied_WebApplication.Pages.ReportPrint.CompanyBalancesModel
+@{
+    var UserName = User.Identity.Name;
+    var NumberFormat = AppRegistry.GetText(UserName, "FMTCurrency");
+}
+
+<style>
+    .btn-wh {
+        width: 100px
+    }
+
+    .col-wh {
+        width: 106px
+    }
+</style>
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Venders / Customers Receivable & Payable</h5>
+</div>
+
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="lblDate">Date</span>
+                    <input type="date" class="form-control" placeholder="Enter Report Date" aria-label="ReportDate" aria-describedby="lblDate" />
+                </div>
+            </div>
+            <div class="col-wh"><button class="btn btn-info btn-wh" asp-page-handler="Refresh">REFRESH</button></div>
+            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="All">All</button></div>
+            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Receivable">Receivable</button></div>
+            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Payable">Payable</button></div>
+            <div class="col-wh">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-success dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn  border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container mt-2">
+        @if (Model.MyTable != null)
+        {
+            <table class="table-list">
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Company</th>
+                        <th>Nature</th>
+                        <th>Receivable</th>
+                        <th>Payable</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow Row in Model.MyTable.Rows)
+                    {
+                        var _Amount = Conversion.ToDecimal(Row["BAL"]);
+                        var _Receivable = 0.00M;
+                        var _Payable = 0.00M;
+
+                        if (_Amount > 0) { _Receivable = _Amount; _Payable = 0; }
+                        if (_Amount < 0) { _Receivable = 0; _Payable = Math.Abs(_Amount); }
+
+                        var _Receivable1 = _Receivable.ToString(NumberFormat);
+                        var _Payable1 = _Payable.ToString(NumberFormat);
+
+                        <tr>
+                            <td>@Row["Code"]</td>
+                            <td>@Row["Title"]</td>
+                            <td>@Row["Nature"]</td>
+                            <td class="table-col-amount">@_Receivable1</td>
+                            <td class="table-col-amount">@_Payable1</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</form>

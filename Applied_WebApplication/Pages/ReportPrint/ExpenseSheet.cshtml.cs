@@ -1,11 +1,7 @@
-using AppReporting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using AppReportClass;
 using System.Data;
-using Microsoft.Reporting.NETCore;
-using static Applied_WebApplication.Data.AppFunctions;
-using Microsoft.ReportingServices.Interfaces;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {

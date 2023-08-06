@@ -73,7 +73,7 @@ namespace Applied_WebApplication.Pages.Applied
                 case 8:
                     break;
                 case 9:             // Sales Return Transactions.
-                    Filter = $"Date([BR].[Vou_Date]) > Date('{Date1}') AND Date([BR].[Vou_Date]) < Date('{Date2}') AND [ST].[Status]='{Submitted}'";
+                    Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') AND [SR].[Status]='{Submitted}'";
                     PostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
 
 

@@ -61,14 +61,14 @@
 
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.SaleVou_No">
+                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.SaleVou_No" readonly>
                     <label for="floatingInput">Sales Voucher No</label>
                 </div>
             </div>
 
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No">
+                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No" readonly>
                     <label for="floatingInput">Voucher No</label>
                 </div>
             </div>
@@ -84,16 +84,23 @@
         <div class="row justify-content-between">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtStockTitle" placeholder="StockTitle" asp-for="@Model.Variables.StockTitle">
+                    <input type="text" class="form-control" id="txtStockTitle" placeholder="StockTitle" asp-for="@Model.Variables.StockTitle" readonly>
                     <label for="floatingInput">Stock Title</label>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch">
+                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch" readonly>
                     <label for="floatingInput">Batch</label>
                 </div>
             </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.Qty" readonly>
+                    <label for="floatingInput">Sale Quantity</label>
+                </div>
+            </div>
+            
             <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.RQty">

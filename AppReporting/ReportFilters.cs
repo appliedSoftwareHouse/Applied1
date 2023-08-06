@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace AppReportClass
 {
@@ -22,10 +18,12 @@ namespace AppReportClass
             public int N_InvSubCategory { get; set; }
             public bool All_COA { get; set; }
             public bool All_Customer { get; set; }
+            public string DateFormat { get; set; }
 
         public string FilterText()
         {
             var Text = new StringBuilder();
+            DateFormat ??= "yyyy-MM-dd";
             
             if( N_COA > 0 )
             { 
@@ -60,13 +58,15 @@ namespace AppReportClass
             if (Dt_From > new DateTime(2022, 1, 1))
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-                Text.Append($"Date(Vou_Date) > Date('{Dt_From.AddDays(-1)}')");
+                var _Date = Dt_From.AddDays(-1).ToString(DateFormat);
+                Text.Append($"Date(Vou_Date) > Date('{_Date}')");
             }
 
             if (Dt_To > new DateTime(2022, 1, 1))
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-                Text.Append($"Date(Vou_Date) < Date('{Dt_To.AddDays(1)}')");
+                var _Date = Dt_To.AddDays(1).ToString(DateFormat);
+                Text.Append($"Date(Vou_Date) < Date('{_Date}')");
             }
             return Text.ToString();
         }
