@@ -1,10 +1,5 @@
-﻿using Microsoft.CodeAnalysis.VisualBasic.Syntax;
-using Microsoft.Reporting.Map.WebForms.BingMaps;
-using NPOI.HPSF;
-using NPOI.SS.Formula.Functions;
-using System;
-using System.Data.SQLite;
-using System.Net;
+﻿using System.Data.SQLite;
+using System.Security.Claims;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
 
@@ -14,8 +9,10 @@ namespace Applied_WebApplication.Data
     {
         private string TableName { get; set; }
         private string UserName { get; set; }
+        public Array TableList { get; set; }
         public List<Message> MyMessages { get; set; }
 
+        #region Constructor
         public CreateTablesClass(string _UserName, string _TableName)
         {
             TableName = _TableName;
@@ -23,16 +20,24 @@ namespace Applied_WebApplication.Data
             MyMessages = new();
 
             if (TableName == Tables.SaleReturn.ToString()) { SaleReturn(UserName); }
-            if(TableName == Tables.BankBook.ToString()) { BankBook(UserName); }
+            if (TableName == Tables.BankBook.ToString()) { BankBook(UserName); }
 
         }
 
+        public CreateTablesClass(ClaimsPrincipal _User)
+        {
+            UserName = _User.Identity.Name;
+            TableList = Enum.GetValues(typeof(Tables));
+        }
+
+        #endregion
+
+        #region Sale Return
         public static void SaleReturn(string UserName)
         {
             try
             {
                 var Text = new StringBuilder();
-
                 Text.Append("CREATE TABLE[SaleReturn] (");
                 Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE, ");
                 Text.Append("[Vou_No] TEXT(12) NOT NULL UNIQUE, ");
@@ -49,7 +54,8 @@ namespace Applied_WebApplication.Data
             }
 
         }
-
+        #endregion
+        #region Bank Book
         public static void BankBook(string UserName)
         {
             try
@@ -74,12 +80,73 @@ namespace Applied_WebApplication.Data
 
                 var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
                 Command.ExecuteNonQuery();
-                
+
             }
             catch (Exception)
             {
                 throw;
             }
         }
+        #endregion
+        #region Directories
+        public static void Directories(string UserName)
+        {
+            try
+            {
+                var Text = new StringBuilder();
+                Text.Append("CREATE TABLE[Directories](");
+                Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE, ");
+                Text.Append("[Directory] NVARCHAR NOT NULL,");
+                Text.Append("[Key] INT NOT NULL, ");
+                Text.Append("[Value] NVARCHAR NOT NULL); ");
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        public static void DirectoriesINSERT(string UserName)
+        {
+            DataTableClass _TableClass = new DataTableClass(UserName, Tables.Directories);
+            SQLiteCommand _Command = new(ConnectionClass.AppConnection(UserName));
+            string[] Queries = new string[4];
+
+            Queries[0] = "INSERT INTO [Directories] VALUES (1, 'CompanyStatus', 1, 'Customer')";
+            Queries[1] = "INSERT INTO [Directories] VALUES (2, 'CompanyStatus', 2, 'Supplier');";
+            Queries[2] = "INSERT INTO [Directories] VALUES (3, 'CompanyStatus', 3, 'Vendor');";
+            Queries[3] = "INSERT INTO [Directories] VALUES (4, 'CompanyStatus', 4, 'Customer / Vendor');";
+
+            foreach (string Query in Queries)
+            {
+                _Command.CommandText = Query;
+                _Command.ExecuteNonQuery();
+            }
+        }
+
+        #endregion
+
+
+        #region Create Tables
+
+
+        public void CreateTables()
+        {
+            foreach (object Table in TableList)
+            {
+                SQLQuery.CreateTable(UserName, (Tables)Table);
+            }
+        }
+
+
+        public void CreatTable(Tables _Table)
+        {
+            var _TableName = _Table.ToString();
+        }
+
+        #endregion
+
     }
 }

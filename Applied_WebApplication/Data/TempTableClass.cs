@@ -66,7 +66,6 @@ namespace Applied_WebApplication.Data
 
             TableValidate = new(TempTable);
         }
-
         public TempTableClass(string _UserName, Tables _TableID, int _TranID, bool? IsNew)
         {
             IsNew ??= false;
@@ -132,9 +131,6 @@ namespace Applied_WebApplication.Data
 
             TableValidate = new(TempTable);
         }
-
-
-
         public TempTableClass(string _UserName, Tables _TableID)
         {
             IsNew = true;
@@ -162,18 +158,12 @@ namespace Applied_WebApplication.Data
 
             //Current Row
             if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = TempTable.NewRow(); }
+            TableValidate = new(TempTable);
         }
         #endregion
 
         #region Connection
-        //private SQLiteConnection GetConnection()
-        //{
-        //    if (UserName == null) { return null; }
-        //    MyConnection ??= ConnectionClass.AppConnection(UserName);
-        //    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-        //    return MyConnection;
-        //}
-
+        
         private SQLiteConnection GetTempConnection()
         {
             if (UserName == null) { return null; }

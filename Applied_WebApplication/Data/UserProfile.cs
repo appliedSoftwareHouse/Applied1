@@ -92,9 +92,16 @@ namespace Applied_WebApplication.Data
         public static string GetUserClaim(ClaimsPrincipal _ClaimPrincipal, string Key)
         {
             // Get user claim value.
+
             string Result = string.Empty;
             foreach (Claim _Claim in _ClaimPrincipal.Claims)
             {
+
+                if(_Claim.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                {
+                    if (Key == "Role") { return _Claim.Value; }
+                }
+
                 if (_Claim.Type == Key)
                 {
                     Result = _Claim.Value;

@@ -679,9 +679,6 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-
-
-
         #region Static Methods
 
         public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
@@ -717,7 +714,6 @@ namespace Applied_WebApplication.Data
 
 
         #endregion
-
 
         #region Max
         public int GetMaxTranID(VoucherType _VouType)

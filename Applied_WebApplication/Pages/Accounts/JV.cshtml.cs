@@ -25,6 +25,18 @@ namespace Applied_WebApplication.Pages.Accounts
             Variables = new();              // Setup of Variables
 
             TempClass = new TempTableClass(UserName, Tables.Ledger);
+            if (TempClass.TempTable.Rows.Count > 0)
+            {
+                //TempClass.TableValidate = new();
+                foreach (DataRow Row in TempClass.TempTable.Rows)
+                {
+                    TempClass.CurrentRow = Row;
+                    TempClass.Delete();
+                }
+                TempClass = new TempTableClass(UserName, Tables.Ledger);
+            }
+
+
             if (TempClass.TempTable.Rows.Count == 0)
             {
                 TempClass.CurrentRow = TempClass.NewRecord();
@@ -36,6 +48,9 @@ namespace Applied_WebApplication.Pages.Accounts
                 TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
                 TempClass.CurrentRow["Vou_Type"] = VoucherType.JV;
             }
+
+
+
             Row2Variable(TempClass.CurrentRow);
             Voucher = TempClass.TempTable;
 
@@ -241,8 +256,8 @@ namespace Applied_WebApplication.Pages.Accounts
             ErrorMessages = new();
             if (Vou_No == null)
             {
-                ErrorMessages.Add(MessageClass.SetMessage("Voucher Number is not define. Value is null.", Color.Red));
-                ErrorMessages.Add(MessageClass.SetMessage("Voucher not saved,"));
+                ErrorMessages.Add(SetMessage("Voucher Number is not define. Value is null.", Color.Red));
+                ErrorMessages.Add(SetMessage("Voucher not saved,"));
             }
             #endregion
 

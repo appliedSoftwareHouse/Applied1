@@ -85,14 +85,19 @@
                             <td class="text-danger align-right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
                             <td class="text-center">@Row["Status"]</td>
                             <td>
-                                <form method="post">
-                                    <input type="submit"
-                                           class="btn btn-link text-center"
-                                           value="UnPost"
+                                @if (Model.UserRole == "Administrator")
+                                {
+
+                                    <form method="post">
+                                        <input type="submit"
+                                               class="btn btn-link text-center"
+                                               value="UnPost"
                                    asp-page-handler="Unpost"
                                    asp-route-id=@Row["ID"]
                                    asp-route-PostingType=@Model.Variables.PostingType>
-                                </form>
+                                    </form>
+                                }
+
                             </td>
                         </tr>
                     }

@@ -11,6 +11,13 @@ namespace Applied_WebApplication.Pages
         public string MyMessage = string.Empty;
         public string UserName => User.Identity.Name;
 
+        public void OnGet()
+        {
+            CreateTablesClass CreateDataTables = new(User);
+            CreateDataTables.CreateTables();
+        }
+
+
         
         public IActionResult OnPostTest()
         {
@@ -45,11 +52,14 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage("/Accounts/Vouchers");
         }
 
-        public void OnPostExcel()
-        {
-            ExcelClass.AppExcel excel = new();
 
-            MyMessage = excel.CreateExcel();
-        }
+        #region Excel Class
+        //public void OnPostExcel()
+        //{
+        //    ExcelClass.AppExcel excel = new();
+
+        //    MyMessage = excel.CreateExcel();
+        //}
+        #endregion
     }
 }

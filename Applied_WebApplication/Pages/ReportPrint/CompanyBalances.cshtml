@@ -5,6 +5,10 @@
 @{
     var UserName = User.Identity.Name;
     var NumberFormat = AppRegistry.GetText(UserName, "FMTCurrency");
+
+    var Tot_DR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([DR])",""));
+    var Tot_CR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([CR])", ""));
+    var Tot_Bal = Tot_DR - Tot_CR;
 }
 
 <style>
@@ -18,7 +22,7 @@
 </style>
 
 <div class="AppHeading-2">
-    <h5 class="TextCenter">Venders / Customers Receivable & Payable</h5>
+    <h5 class="TextCenter">Venders / Customers  Receivable & Payable</h5>
 </div>
 
 
@@ -28,16 +32,17 @@
             <div class="col-3">
                 <div class="input-group">
                     <span class="input-group-text" id="lblDate">Date</span>
-                    <input type="date" class="form-control" placeholder="Enter Report Date" aria-label="ReportDate" aria-describedby="lblDate" />
+                    <input type="date" class="form-control" placeholder="Enter Report Date" aria-label="ReportDate" aria-describedby="lblDate"
+                           asp-for="@Model.Variables.ReportDate" />
                 </div>
             </div>
             <div class="col-wh"><button class="btn btn-info btn-wh" asp-page-handler="Refresh">REFRESH</button></div>
-            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="All">All</button></div>
+            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Refresh">All</button></div>
             <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Receivable">Receivable</button></div>
             <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Payable">Payable</button></div>
             <div class="col-wh">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-success dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
                         Print <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
@@ -64,6 +69,7 @@
                         <th>Nature</th>
                         <th>Receivable</th>
                         <th>Payable</th>
+                        <th>Details</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -85,9 +91,27 @@
                             <td>@Row["Nature"]</td>
                             <td class="table-col-amount">@_Receivable1</td>
                             <td class="table-col-amount">@_Payable1</td>
+                            <td>
+                                <button class="btn btn-link"
+                                asp-page-handler="Ledger"
+                                asp-route-ID="@Row["Customer"]">
+                                    <i class="bi bi-chat-square-text"></i>
+                                </button>
+
+                            </td>
                         </tr>
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td>TOTAL</td>
+                        <td class="table-col-amount">@Tot_Bal.ToString(NumberFormat)</td>
+                        <td class="table-col-amount">@Tot_DR.ToString(NumberFormat)</td>
+                        <td class="table-col-amount">@Tot_CR.ToString(NumberFormat)</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         }
     </div>

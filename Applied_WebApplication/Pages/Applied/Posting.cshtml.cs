@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
@@ -9,6 +10,7 @@ using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Applied_WebApplication.Pages.Applied
 {
+    [Authorize]
     public class PostingModel : PageModel
     {
         [BindProperty]
@@ -17,6 +19,7 @@ namespace Applied_WebApplication.Pages.Applied
         public bool IsError { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserClaim(User, "Role");
         private readonly string Submitted = VoucherStatus.Submitted.ToString();
 
         public void OnGet()

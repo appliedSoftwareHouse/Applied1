@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -6,6 +7,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Applied
 {
+    [Authorize]
     public class UnPostModel : PageModel
     {
 
@@ -13,6 +15,7 @@ namespace Applied_WebApplication.Pages.Applied
         public MyParameters Variables { get; set; }
         public DataTable UnpostTable;
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserClaim(User, "Role");
         public bool IsError { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
 

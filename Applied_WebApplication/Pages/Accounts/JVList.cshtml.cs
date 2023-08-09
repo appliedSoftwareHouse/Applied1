@@ -23,7 +23,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             var Date1 = Variables.DateFrom.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.DateTo.AddDays(1).ToString(AppRegistry.DateYMD);
-            var Filter = $"Date(Vou_Date) >Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
+            var Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
 
             DataTableClass tb_Class = new(UserName, Tables.JVList, Filter);
             tb_Class.MyDataView.Sort = "Vou_Date, Vou_No";

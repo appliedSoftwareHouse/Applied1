@@ -132,6 +132,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 if (_Status.Length > 0)
                 {
                     _StatusTitle = DirectoryClass.GetDirectoryValue(UserName, "CompanyStatus", Convert.ToInt32(_Status));
+                    if(_StatusTitle.Length==0) { _StatusTitle = "Un-assigned"; }
                 }
                 var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
                 var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));

@@ -1,15 +1,5 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Reporting.Map.WebForms.BingMaps;
-using NPOI.OpenXmlFormats.Dml.Chart;
-using NPOI.SS.Formula.Functions;
-using System.Data;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.Text;
-using System.Text.RegularExpressions;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
-using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Applied_WebApplication.Data
 {
@@ -113,7 +103,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[WC].[Status] ");
             Text.Append("FROM WriteCheques [WC] ");
             Text.Append("LEFT JOIN[COA] [C] ON[C].[ID] = [WC].[Bank] ");
-            if(_Filter.Length>0) { Text.Append($" WHERE {_Filter}"); }
+            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter}"); }
             return Text.ToString();
         }
         #endregion
@@ -463,10 +453,10 @@ namespace Applied_WebApplication.Data
             Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS [BAL] ");
             Text.Append("FROM [Ledger] ");
             Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-           if (_Filter.Length > 0)  { Text.Append($" WHERE {_Filter} "); }
+            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter} "); }
             Text.Append("GROUP BY [COA] ");
             Text.Append(") WHERE BAL <> 0 ");
-            if(_OrderBy.Length > 0) { Text.Append($" ORDER BY {_OrderBy}"); }
+            if (_OrderBy.Length > 0) { Text.Append($" ORDER BY {_OrderBy}"); }
 
             return Text.ToString();
         }
@@ -610,7 +600,7 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[ID] = [SR].[TranID] ");
             Text.Append("LEFT JOIN [BillReceivable]   [B1] ON [B1].[ID] = [B2].[TranID] ");
             Text.Append("LEFT JOIN [Customers] [CM] ON [B1].[Company] = [CM].[ID] ");
-            if(_Filter.Length>0)
+            if (_Filter.Length > 0)
             {
                 Text.Append($" WHERE {_Filter}");
             }
@@ -683,7 +673,7 @@ namespace Applied_WebApplication.Data
             Text.Append($"LEFT JOIN ({GetDirectory("CompanyStatus")}) [N] ");
             Text.Append("ON [N].[ID] = [C].[Status]");
             Text.Append($"WHERE[COA] IN({COA_List})");
-            if(_Filter.Length > 0) { Text.Append($" AND {_Filter}"); }
+            if (_Filter.Length > 0) { Text.Append($" AND {_Filter} "); }
             Text.Append("GROUP BY[Customer]");
 
             return Text.ToString();
@@ -700,12 +690,7 @@ namespace Applied_WebApplication.Data
             Text.Append($"FROM[Directories] WHERE Directory = '{_DirectoryName}'");
             Text.Append("");
 
-
-           
-
-
             return Text.ToString();
-                
         }
         #endregion
 
@@ -784,6 +769,8 @@ namespace Applied_WebApplication.Data
                 case Tables.Employees:
                     break;
                 case Tables.Directories:
+                    CreateTablesClass.Directories(UserName);
+                    CreateTablesClass.DirectoriesINSERT(UserName);
                     break;
                 case Tables.Inventory:
                     break;
