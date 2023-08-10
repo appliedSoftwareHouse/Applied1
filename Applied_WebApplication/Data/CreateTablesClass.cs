@@ -1,4 +1,5 @@
-﻿using System.Data.SQLite;
+﻿using Applied_WebApplication.Pages.Stock;
+using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
@@ -11,6 +12,8 @@ namespace Applied_WebApplication.Data
         private string UserName { get; set; }
         public Array TableList { get; set; }
         public List<Message> MyMessages { get; set; }
+        public int Created { get; set; }
+
 
         #region Constructor
         public CreateTablesClass(string _UserName, string _TableName)
@@ -31,7 +34,6 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
-
         #region Sale Return
         public static void SaleReturn(string UserName)
         {
@@ -127,8 +129,6 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
-
-
         #region Create Tables
 
 
@@ -136,17 +136,170 @@ namespace Applied_WebApplication.Data
         {
             foreach (object Table in TableList)
             {
-                SQLQuery.CreateTable(UserName, (Tables)Table);
+                AppRegistry.SetKey(UserName, "Tbs_Created", 0, KeyType.Number);
+                CreateTable(UserName, (Tables)Table);
             }
         }
 
 
-        public void CreatTable(Tables _Table)
+        //public void CreatTable(Tables _Table)
+        //{
+        //    var _TableName = _Table.ToString();
+        //}
+
+        #endregion
+
+        #region Stock Position
+        public static void StockPosition(string UserName)
         {
-            var _TableName = _Table.ToString();
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [StockPosition] AS ");
+            Text.Append(SQLQuery.StockPosition(UserName));
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
         }
 
         #endregion
+
+        #region Create DataTable into Source Data
+
+        public static void CreateTable(string UserName, Tables _Table)
+        {
+            #region return if table exist
+            var _TableName = _Table.ToString();
+            var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{_TableName}'";
+            var _Command = new SQLiteCommand(_CommandText, ConnectionClass.AppConnection(UserName));
+            long TableExist = (long)_Command.ExecuteScalar();
+            if (TableExist > 0) { return ; }
+            #endregion
+
+            switch (_Table)
+            {
+                case Tables.Registry:
+                    break;
+                case Tables.COA:
+                    break;
+                case Tables.COA_Nature:
+                    break;
+                case Tables.COA_Class:
+                    break;
+                case Tables.COA_Notes:
+                    break;
+                case Tables.CashBook:
+                    break;
+                case Tables.BankBook:
+                    BankBook(UserName);
+                    break;
+                case Tables.WriteCheques:
+                    break;
+                case Tables.Taxes:
+                    break;
+                case Tables.ChequeTranType:
+                    break;
+                case Tables.ChequeStatus:
+                    break;
+                case Tables.TaxTypeTitle:
+                    break;
+                case Tables.BillPayable:
+                    break;
+                case Tables.BillPayable2:
+                    break;
+                case Tables.TB:
+                    break;
+                case Tables.BillReceivable:
+                    break;
+                case Tables.BillReceivable2:
+                    break;
+                case Tables.SaleReturn:
+                    SaleReturn(UserName);
+                    break;
+                case Tables.view_BillReceivable:
+                    break;
+                case Tables.OBALCompany:
+                    break;
+                case Tables.JVList:
+                    break;
+                case Tables.ExpenseSheet:
+
+                    break;
+                case Tables.Customers:
+                    break;
+                case Tables.City:
+                    break;
+                case Tables.Country:
+                    break;
+                case Tables.Project:
+                    break;
+                case Tables.Employees:
+                    break;
+                case Tables.Directories:
+                    Directories(UserName);
+                    DirectoriesINSERT(UserName);
+                    break;
+                case Tables.Inventory:
+                    break;
+                case Tables.Inv_Category:
+                    break;
+                case Tables.Inv_SubCategory:
+                    break;
+                case Tables.Inv_Packing:
+                    break;
+                case Tables.Inv_UOM:
+                    break;
+                case Tables.FinishedGoods:
+                    break;
+                case Tables.SamiFinished:
+                    break;
+                case Tables.OBALStock:
+                    break;
+                case Tables.BOMProfile:
+                    break;
+                case Tables.BOMProfile2:
+                    break;
+                case Tables.StockPosition:
+                    StockPosition(UserName);
+                    break;
+                case Tables.Ledger:
+                    break;
+                case Tables.view_Ledger:
+                    break;
+                case Tables.CashBookTitles:
+                    break;
+                case Tables.VouMax_JV:
+                    break;
+                case Tables.VouMax:
+                    break;
+                case Tables.PostCashBook:
+                    break;
+                case Tables.PostBankBook:
+                    break;
+                case Tables.PostWriteCheque:
+                    break;
+                case Tables.PostBillReceivable:
+                    break;
+                case Tables.PostBillPayable:
+                    break;
+                case Tables.PostPayments:
+                    break;
+                case Tables.PostReceipts:
+                    break;
+                case Tables.UnpostCashBook:
+                    break;
+                case Tables.UnpostBillPayable:
+                    break;
+                case Tables.fun_BillPayableAmounts:
+                    break;
+                case Tables.fun_BillPayableEntry:
+                    break;
+                case Tables.TempLedger:
+                    break;
+                default:
+                    break;
+            }
+        }
+        #endregion
+
+        
 
     }
 }

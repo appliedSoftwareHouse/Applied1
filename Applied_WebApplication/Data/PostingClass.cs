@@ -1,5 +1,6 @@
 ﻿using Applied_WebApplication.Pages;
 using NPOI.XSSF.UserModel.Charts;
+using NPOI.XWPF.UserModel;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
@@ -312,7 +313,6 @@ namespace Applied_WebApplication.Data
             if (SaleInvoice == null)
             {
                 ErrorMessages.Add(MessageClass.SetMessage("Error: Sale invocie object is null here. Contact to Administrator"));
-                return ErrorMessages;
             }
 
             if (SaleInvoice.Rows.Count == 0)
@@ -335,7 +335,7 @@ namespace Applied_WebApplication.Data
             int SRNO = 1;
             string Vou_No = SaleInvoice.Rows[0]["Vou_No"].ToString();
 
-            #region Check the voher is already exist in the ledger ? or not exist.
+            #region Check the vocher is already exist in the ledger ? or not exist.
             tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
             if (tb_Ledger.CountView > 0)
             {
@@ -348,7 +348,8 @@ namespace Applied_WebApplication.Data
             {
                 if(Vou_No != Row["Vou_No"].ToString())
                 {
-
+                    ErrorMessages.Add(SetMessage("Voucher Number not matched. Posting process suspended.", ConsoleColor.Red));
+                    break;
                 }
                 var _Description = (string)Row["Inventory"] + ": " + (string)Row["Description"];
                 #region Debit Entry
@@ -440,7 +441,7 @@ namespace Applied_WebApplication.Data
             }
             else
             {
-                ErrorMessages.Add(MessageClass.SetMessage($"Voucher No {Vou_No}  has not been posted sucessfully.", Color.Red));
+                ErrorMessages.Add(SetMessage($"Voucher No {Vou_No}  has not been posted sucessfully.", Color.Red));
             }
 
             return ErrorMessages;

@@ -18,6 +18,9 @@ namespace Applied_WebApplication.Data
         public string DataBaseTempFile { get; set; }
         public string Company { get; set; }
         public string Designation { get; set; }
+        public string RoleString = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
+
+
 
         public readonly AppliedDependency AppGlobal;
         
@@ -55,6 +58,7 @@ namespace Applied_WebApplication.Data
                 DataBaseFile = _Row["DataFile"].ToString();
                 DataBaseTempPath = $"{AppGlobal.AppDBTempPath}{UserID}\\";
                 DataBaseTempFile = $"{DataBaseTempPath}{UserID}Temp.db";
+                RoleString = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role";
             }
         }
 
@@ -87,6 +91,22 @@ namespace Applied_WebApplication.Data
                 }
             }
             return Result;
+        }
+
+        public static string GetUserRole(ClaimsPrincipal _ClaimPrincipal)
+        {
+            // Get a Company name to display at main page of the App.
+            string Result = "Client";
+            foreach (Claim _Claim in _ClaimPrincipal.Claims)
+            {
+                if (_Claim.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")
+                {
+                    Result = _Claim.Value;
+                    break;
+                }
+            }
+            return Result;
+
         }
 
         public static string GetUserClaim(ClaimsPrincipal _ClaimPrincipal, string Key)

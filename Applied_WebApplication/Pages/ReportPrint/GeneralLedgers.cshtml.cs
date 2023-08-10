@@ -1,4 +1,5 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class GeneralLedgersModel : PageModel
     {
 
