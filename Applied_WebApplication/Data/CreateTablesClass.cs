@@ -12,7 +12,7 @@ namespace Applied_WebApplication.Data
         private string UserName { get; set; }
         public Array TableList { get; set; }
         public List<Message> MyMessages { get; set; }
-        public int Created { get; set; }
+       
 
 
         #region Constructor
@@ -140,21 +140,32 @@ namespace Applied_WebApplication.Data
                 CreateTable(UserName, (Tables)Table);
             }
         }
-
-
-        //public void CreatTable(Tables _Table)
-        //{
-        //    var _TableName = _Table.ToString();
-        //}
-
         #endregion
 
-        #region Stock Position
+        #region Stock Position Data
+        public static void StockPositionData(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [StockPositionData] AS ");
+            Text.Append(SQLQuery.StockPositionData(""));
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
         public static void StockPosition(string UserName)
         {
             var Text = new StringBuilder();
             Text.Append("CREATE VIEW [StockPosition] AS ");
             Text.Append(SQLQuery.StockPosition(UserName));
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        public static void StockPositionSUM(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [StockPositionSUM] AS ");
+            Text.Append(SQLQuery.StockPositionSUM(UserName));
             var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
         }
@@ -167,10 +178,10 @@ namespace Applied_WebApplication.Data
         {
             #region return if table exist
             var _TableName = _Table.ToString();
-            var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type = 'table' AND name ='{_TableName}'";
+            var _CommandText = $"SELECT count(name) FROM sqlite_master WHERE type in('table', 'view') AND name ='{_TableName}'";
             var _Command = new SQLiteCommand(_CommandText, ConnectionClass.AppConnection(UserName));
             long TableExist = (long)_Command.ExecuteScalar();
-            if (TableExist > 0) { return ; }
+            if (TableExist > 0) { return; }
             #endregion
 
             switch (_Table)
@@ -256,8 +267,14 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.BOMProfile2:
                     break;
+                case Tables.StockPositionData:
+                    StockPositionData(UserName);
+                    break;
                 case Tables.StockPosition:
                     StockPosition(UserName);
+                    break;
+                case Tables.StockPositionSUM:
+                    StockPositionSUM(UserName);
                     break;
                 case Tables.Ledger:
                     break;
@@ -298,8 +315,5 @@ namespace Applied_WebApplication.Data
             }
         }
         #endregion
-
-        
-
     }
 }

@@ -44,8 +44,10 @@ public enum Tables
     OBALStock = 308,
     BOMProfile = 309,
     BOMProfile2 = 310,
-    StockPosition = 311,
-
+    StockPositionData = 311,
+    StockPosition = 312,
+    StockPositionSUM = 313,
+   
     Ledger = 401,
     view_Ledger = 402,
     CashBookTitles = 403,

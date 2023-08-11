@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.Stock.StockPositionModel
 @{
     var UserName = User.Identity.Name;
@@ -6,11 +7,10 @@
 }
 
 <style>
-    .col-wd{
-        width:100px;
-        padding:3px;
-        margin:3px
-       
+    .col-wd {
+        width: 100px;
+        padding: 3px;
+        margin: 3px
     }
 
     .col-wd-dt {
@@ -22,7 +22,7 @@
 
     .btn-wd {
         width: 100px;
-        height:30px
+        height: 30px
     }
 
     .dt-wd {
@@ -32,48 +32,86 @@
 </style>
 
 <form method="post">
-<div class="AppHeading-2">
-    <h5 class="TextCenter">STOCK IN HAND POSITION</h5>
-</div>
+    <div class="AppHeading-2">
+        <h5 class="TextCenter">STOCK IN HAND POSITION</h5>
+    </div>
 
-<div class=containeer>
-    <div class="row d-flex">
-        <div class="col-wd-dt">
+    <div class=containeer>
+        <div class="row d-flex">
+            <div class="col-wd-dt">
                 <div class="input-group">
                     <span class="input-group-text" id="date1">Start</span>
                     <input type="text" class="form-control" placeholder="Date from" aria-label="Date From" aria-describedby="date1" />
                 </div>
-        </div>
-        <div class="col-wd-dt">
+            </div>
+            <div class="col-wd-dt">
                 <div class="input-group">
                     <span class="input-group-text" id="date2">Start</span>
                     <input type="text" class="form-control" placeholder="Date to" aria-label="Date to" aria-describedby="date2" />
                 </div>
-        </div>
-        <div class="col-wd"><button class="btn btn-primary btn-wd" asp-page-handler="Refresh"></button>Refresh</div>
+            </div>
+            <div class="col-wd"><button class="btn btn-primary btn-wd" asp-page-handler="Refresh"></button>Refresh</div>
             <div class="col-wd"><button class="btn btn-primary btn-wd" asp-page-handler="Refresh"></button>All</div>
             <div class="col-wd"><button class="btn btn-primary btn-wd" asp-page-handler="Refresh"></button>Print</div>
-    </div>
-</div>
-<br />
-<div class="containeer">
-    <div class="row" >
-        <div class="col-md-3">
-            <div class="input-group">
-                <span class="input-group-text" id="date1">Start</span>
-                <input type="text" class="form-control" placeholder="Date from" aria-label="Date From" aria-describedby="date1" />
-            </div>
-           
         </div>
-        <div class="col-md-3">
-            <div class="input-group">
-                <span class="input-group-text" id="date2">End</span>
-                <input type="text" class="form-control" placeholder="Date to" aria-label="Date to" aria-describedby="date2" />
-            </div>
-        </div>
-        <div class="col-md-3">C</div>
-        <div class="col-md-3">D</div>
     </div>
-</div>
+    <br />
+    <div class="containeer">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="date1">Start</span>
+                    <input type="text" class="form-control" placeholder="Date from" aria-label="Date From" aria-describedby="date1" />
+                </div>
 
-                </form>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="date2">End</span>
+                    <input type="text" class="form-control" placeholder="Date to" aria-label="Date to" aria-describedby="date2" />
+                </div>
+            </div>
+            <div class="col-md-3">C</div>
+            <div class="col-md-3">D</div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <table class="table-list">
+            @if (Model.MyTable != null)
+            {
+                <thead>
+                    <tr>
+                        <th>Code</th>
+                        <th>Inventory Title</th>
+                        <th>Purchased</th>
+                        <th>Purchased</th>
+                        <th>Sold</th>
+                        <th>Sold</th>
+                        <th>Return</th>
+                        <th>Return</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow Row in Model.MyTable.Rows)
+                    {
+                        <tr>
+                            <td>@Row["Inventory"]</td>
+                            <td>@Row["Title"]</td>
+                            <td>@Row["PQty"]</td>
+                            <td>@Row["PNetAmount"]</td>
+                            <td>@Row["SQty"]</td>
+                            <td>@Row["SNetAmount"]</td>
+                            <td>@Row["SRQty"]</td>
+                            <td>@Row["SRNetAmount"]</td>
+                            <td><button class="btn btn-link">DTL</button></td>
+                        </tr>
+                    }
+                </tbody>
+
+            }
+        </table>
+    </div>
+</form>

@@ -694,12 +694,21 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-        #region Stock Position (In Hand)
+        #region Stock Position Data (In Hand)
         public static string StockPosition(string Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM ");
+            Text.Append($"({StockPositionData(Filter)})");
+            return Text.ToString();
+        }
+
+        public static string StockPositionData(string Filter)
         {
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM ( SELECT ");
             Text.Append("'PURCHASED' AS [TRAN],");
+            Text.Append("[B1].[Vou_No],");
             Text.Append("[B1].[Vou_Date],");
             Text.Append("[B2].[Inventory],");
             Text.Append("[B2].[Qty],");
@@ -747,9 +756,107 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN BillReceivable   [B1] ON [B1].[ID] = [B2].[TranID] ");
             Text.Append("LEFT JOIN Taxes                 [T]   ON [T].[ID]   = [B2].[Tax] ");
             Text.Append(") AS [SRETURN] ");
-
+            if (Filter.Length > 0) { Text.Append($" WHERE {Filter}"); }
             return Text.ToString();
 
+
+        }
+        public static string StockPositionSUM(string Filter)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM(");
+            Text.Append("SELECT ");
+            Text.Append("[Inventory],");
+            Text.Append("SUM(QTY) AS [PQty],");
+            Text.Append("SUM(Amount) AS [PAmount],");
+            Text.Append("SUM(TaxAmount) AS [PTaxAmount],");
+            Text.Append("SUM(TaxAmount) AS [PNetAmount],");
+            Text.Append("0.00 AS [SQty],");
+            Text.Append("0.00 AS [SAmount],");
+            Text.Append("0.00 AS [STaxAmount],");
+            Text.Append("0.00 AS [SNetAmount],");
+            Text.Append("0.00 AS [SRQty],");
+            Text.Append("0.00 AS [SRAmount],");
+            Text.Append("0.00 AS [SRTaxAmount],");
+            Text.Append("0.00 AS [SRNetAmount]");
+            Text.Append($"FROM ({StockPositionData(Filter)}) WHERE [Tran] = 'PURCHASED'");
+            Text.Append("GROUP BY [Inventory]");
+            Text.Append(") AS [P] ");
+            Text.Append("UNION ");
+            Text.Append("SELECT * FROM(");
+            Text.Append("SELECT ");
+            Text.Append("[Inventory],");
+            Text.Append("0.00 AS [PQty],");
+            Text.Append("0.00 AS [PAmount],");
+            Text.Append("0.00 AS [PTaxAmount],");
+            Text.Append("0.00 AS [PNetAmount],");
+            Text.Append("SUM(QTY) AS [SQty],");
+            Text.Append("SUM(Amount) AS [SAmount],");
+            Text.Append("SUM(TaxAmount) AS [STaxAmount],");
+            Text.Append("SUM(TaxAmount) AS [SNetAmount],");
+            Text.Append("0.00 AS [SRQty],");
+            Text.Append("0.00 AS [SRAmount],");
+            Text.Append("0.00 AS [SRTaxAmount],");
+            Text.Append("0.00 AS [SRNetAmount]");
+            Text.Append($"FROM ({StockPositionData(Filter)}) WHERE [Tran] = 'SOLD'");
+            Text.Append("GROUP BY [Inventory]");
+            Text.Append(") AS [S] ");
+            Text.Append("UNION ");
+            Text.Append("SELECT * FROM (");
+            Text.Append("SELECT ");
+            Text.Append("[Inventory],");
+            Text.Append("0.00 AS [PQty],");
+            Text.Append("0.00 AS [PAmount],");
+            Text.Append("0.00 AS [PTaxAmount],");
+            Text.Append("0.00 AS [PNetAmount],");
+            Text.Append("0.00 AS [SQty],");
+            Text.Append("0.00 AS [SAmount],");
+            Text.Append("0.00 AS [STaxAmount],");
+            Text.Append("0.00 AS [SNetAmount],");
+            Text.Append("SUM(QTY) AS [SRRQty],");
+            Text.Append("SUM(Amount) AS [SRAmount],");
+            Text.Append("SUM(TaxAmount) AS [SRTaxAmount],");
+            Text.Append("SUM(NetAmount) AS [SRNetAmount]");
+            Text.Append($"FROM ({StockPositionData(Filter)}) WHERE [Tran] = 'SRETURN'");
+            Text.Append("GROUP BY [Inventory]");
+            Text.Append(") AS [SR]");
+            return Text.ToString();
+            //ok
+
+        }
+        
+        #endregion
+
+        #region Stock in Hand
+        public static string StockInHand(string Filter)
+        {
+            var Text = new StringBuilder();
+            
+            Text.Append("SELECT ");
+            Text.Append("[S].[Inventory], ");
+            Text.Append("[I].[Title], ");
+            Text.Append("[I].[Subcategory], ");
+            Text.Append("[C].[Title] AS [Category], ");
+            Text.Append("[T].[Title] As [Sub - Category], ");
+            Text.Append("SUM([S].[PQty]) AS [PQty], ");
+            Text.Append("SUM([S].[PAmount]) As [PAmount], ");
+            Text.Append("SUM([S].[PTaxAmount]) As [PTaxAmount], ");
+            Text.Append("SUM([S].[PNetAmount]) As [PNetAmount], ");
+            Text.Append("SUM([S].[SQty]) AS [SQty], ");
+            Text.Append("SUM([S].[SAmount]) As [SAmount], ");
+            Text.Append("SUM([S].[STaxAmount]) As [STaxAmount], ");
+            Text.Append("SUM([S].[SNetAmount]) As [SNetAmount], ");
+            Text.Append("SUM([S].[SRQty]) AS [SRQty], ");
+            Text.Append("SUM([S].[SRAmount]) As [SRAmount], ");
+            Text.Append("SUM([S].[SRTaxAmount]) As [SRTaxAmount], ");
+            Text.Append("SUM([S].[SRNetAmount]) As [SRNetAmount] ");
+            Text.Append($"FROM ({StockPositionSUM(Filter)}) [S] ");
+            Text.Append("LEFT JOIN[Inventory] [I] ON[I].[ID] = [S].[Inventory] ");
+            Text.Append("LEFT JOIN[Inv_SubCategory] [T] ON[T].[ID] = [I].[SubCategory] ");
+            Text.Append("LEFT JOIN[Inv_Category] [C] ON[C].[ID] = [T].[Category] ");
+            Text.Append("GROUP BY[Inventory] ");
+
+            return Text.ToString();
 
         }
         #endregion
