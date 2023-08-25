@@ -121,8 +121,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
             #endregion
             var _COAs = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"COA IN({_COAs}) AND {Filters.FilterText()} ORDER BY Customer, Vou_Date, COA";
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(_Filter));
+            var _Filter = $"COA IN ({_COAs}) AND Customer = {Filters.N_Customer} ";
+            var _Dates = new string[] { Filters.Dt_From.ToString(AppRegistry.DateYMD), Filters.Dt_To.ToString(AppRegistry.DateYMD) };
+            var _OrderBy = "[Vou_Date], [Vou_No]";
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger2(_Filter, _Dates, _OrderBy));
 
             if (_Table.Rows.Count > 0)
             {

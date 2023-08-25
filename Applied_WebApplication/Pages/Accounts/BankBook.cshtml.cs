@@ -1,7 +1,7 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
 using System.Drawing;
 using static Applied_WebApplication.Data.AppRegistry;
@@ -9,6 +9,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class BankBookModel : PageModel
     {
 
@@ -48,7 +49,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
 
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
-            var BankCode = AppRegistry.GetNumber(UserName, "BankBkNature");
+            var BankCode = GetNumber(UserName, "BankBkNature");
             var BankBookTitle = DataTableClass.GetTable(UserName, Tables.COA, $"Nature={BankCode}");
             var Date1 = Variables.MinDate.AddDays(-1).ToString("yyyy-MM-dd");
             var Date2 = Variables.MaxDate.AddDays(1).ToString("yyyy-MM-dd");
@@ -56,7 +57,7 @@ namespace Applied_WebApplication.Pages.Accounts
             LedgerClass.Date_From = DateTime.Parse(Date1);
             LedgerClass.Date_To = DateTime.Parse(Date2);
             LedgerClass.Sort = "Vou_Date";
-            LedgerClass.Filter = $"BookID={id} AND Vou_Date >'{Date1}' AND Vou_Date<'{Date2}'";
+            LedgerClass.Filter = $"BookID={id} AND Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date)<Date('{Date2}')";
             Bankbook = LedgerClass.Records;               // Fill Bankbook as ledger style
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {

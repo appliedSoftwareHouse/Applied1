@@ -37,12 +37,12 @@ namespace Applied_WebApplication.Pages.Applied
             {
                 case 1:                                                                                                                                 // Cash Book
                     Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.CashBook, Filter, VoucherStatus.Posted.ToString()));
+                    UnpostTable = GetTable(UserName, SQLQuery.PostBook(Tables.CashBook, Filter, VoucherStatus.Posted.ToString()));
 
                     break;
                 case 2:                                                                                                                                 // Bank Book
                     Filter = $"Date(Vou_Date)>Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Posted.ToString()));
+                    UnpostTable = GetTable(UserName, SQLQuery.PostBook(Tables.BankBook, Filter, VoucherStatus.Posted.ToString()));
                     break;
                 case 3:                                                                                                                                 // Write Cheques
                     //UnpostTable = GetTable(UserName, Tables.PostWriteCheque);

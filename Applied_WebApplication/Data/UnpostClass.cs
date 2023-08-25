@@ -21,7 +21,7 @@ namespace Applied_WebApplication.Data
             {
                 if (CashBook.Count == 1)
                 {
-                    if (tb_Ledger.Rows.Count == 2)
+                    if (tb_Ledger.Rows.Count > 0)
                     {
                         foreach (DataRow Row in tb_Ledger.Rows)
                         {
@@ -64,7 +64,7 @@ namespace Applied_WebApplication.Data
             {
                 if (BankBook.Count == 1)
                 {
-                    if (tb_Ledger.Rows.Count == 2)
+                    if (tb_Ledger.Rows.Count > 0)
                     {
                         foreach (DataRow Row in tb_Ledger.Rows)
                         {
@@ -149,7 +149,7 @@ namespace Applied_WebApplication.Data
             {
                 if (BillReceivable.CountView == 1)
                 {
-                    if (tb_Ledger.Rows.Count >= 2)
+                    if (tb_Ledger.Rows.Count > 0 )
                     {
                         foreach (DataRow Row in tb_Ledger.Rows)
                         {

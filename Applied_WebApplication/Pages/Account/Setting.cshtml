@@ -15,7 +15,7 @@
 
     var TitleCashBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.CashBookNature);
     var TitleBankBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.BankBookNature);
-    
+
 }
 
 <div class="AppHeading-2">
@@ -257,7 +257,21 @@
             <div class="col"> <button type="submit" class="btn btn-primary" asp-page-handler="Save"> <i class="bi bi-save"> Save</i> </button> </div>
         </div>
     </div>
+
+
+    <hr />
+    <br />
+
+    @if (MyUserProfile.Designation == "Administrator")
+    {
+        <div class="container">
+            <div class="row">
+                <div>
+                    <button type="submit" class="btn btn-info" asp-page-handler="SQLQuery">
+                        SQL Query
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
 </form>
-
-
-

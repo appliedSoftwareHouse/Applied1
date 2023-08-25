@@ -1,9 +1,4 @@
-﻿using Applied_WebApplication.Pages;
-using NPOI.HSSF.Record;
-using NPOI.OpenXmlFormats.Dml;
-using NPOI.OpenXmlFormats.Spreadsheet;
-using System.ComponentModel.DataAnnotations;
-using System.Data;
+﻿using System.Data;
 using System.Data.SqlClient;
 using System.Data.SQLite;
 using System.Drawing;
@@ -75,6 +70,7 @@ namespace Applied_WebApplication.Data
 
             if (Refresh)
             {
+                TempTableFlash();
                 if (CountSource > 0)
                 {
                     foreach (DataRow Row in SourceTable.Rows)
@@ -85,6 +81,7 @@ namespace Applied_WebApplication.Data
                     }
                     TempTable = GetTable(MyTableName, ViewFilter, MyTempConnection);                // Refresh Table 
                 }
+                TempView = TempTable.AsDataView();
             }
 
             if (CurrentRow == null)
@@ -92,7 +89,9 @@ namespace Applied_WebApplication.Data
                 if (TempTable.Rows.Count > 0) { CurrentRow = TempTable.Rows[0]; } else { CurrentRow = NewRecord(); }
             }
         }
+        #endregion
 
+        #region Delete Record
         private void DeleteRecords(Tables _Table)
         {
             var _TableName = _Table.ToString();
@@ -102,36 +101,35 @@ namespace Applied_WebApplication.Data
             long TableExist = (long)_Command.ExecuteScalar();
             if (TableExist > 0)                                                                                     // Execute Delete of Record Process is table is exist in temp DB.
             {
-                var TempTable1 = GetTable(_Table, ViewFilter, MyTempConnection);
-                if (TempTable1.Rows.Count > 0)
-                {
-                    foreach (DataRow Row in TempTable1.Rows)
-                    {
-                        MyCommand = CommandDelete(MyTempConnection, Row.Table, Row);
-                        var _Records = MyCommand.ExecuteNonQuery();
-                        MyMessages.Add(MessageClass.SetMessage($"{_Records} effected.", -1, Color.Green));
-                    }
-                }
+                TempTable = GetTable(_Table, ViewFilter, MyTempConnection);
+                TempTableFlash();
             }
         }
-
         #endregion
+
 
         #region Get Table
 
 
         public static DataTable GetTable(Tables _Table, string _Filter, SQLiteConnection _Connection)
         {
-            var _TableName = _Table.ToString();
-            if (_TableName != null)
+            try
             {
-                if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-                var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-                var _Command = new SQLiteCommand(_CommandText, _Connection);
-                var _Adapter = new SQLiteDataAdapter(_Command);
-                var _DataSet = new DataSet();
-                _Adapter.Fill(_DataSet, _TableName);
-                if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+                var _TableName = _Table.ToString();
+                if (_TableName != null)
+                {
+                    if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+                    var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+                    var _Command = new SQLiteCommand(_CommandText, _Connection);
+                    var _Adapter = new SQLiteDataAdapter(_Command);
+                    var _DataSet = new DataSet();
+                    _Adapter.Fill(_DataSet, _TableName);
+                    if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+                }
+            }
+            catch (Exception)
+            {
+                return new DataTable();
             }
             return new DataTable();
         }
@@ -201,7 +199,8 @@ namespace Applied_WebApplication.Data
             {
                 SQLiteCommand _Command;
                 var _View = TempView;
-                _View.RowFilter = string.Format("ID={0}", CurrentRow["ID"]);
+                var _ID = (int)CurrentRow["ID"];
+                _View.RowFilter = $"ID={_ID}";
 
                 if (_View.Count == 1)
                 {
@@ -209,7 +208,7 @@ namespace Applied_WebApplication.Data
                 }
                 else
                 {
-                    if ((int)CurrentRow["ID"] == 0) { CurrentRow["ID"] = MaxID(); }
+                    if (_ID == 0) { CurrentRow["ID"] = MaxID(); }
                     _Command = CommandInsert(_Connection, TempTable, CurrentRow);
                 }
                 try
@@ -217,11 +216,6 @@ namespace Applied_WebApplication.Data
                     if (_Command.Connection.State != ConnectionState.Open) { _Command.Connection.Open(); }
                     var _Record = _Command.ExecuteNonQuery(); _Command.Connection.Close();
                     if (_Record == 0) { ErrorMessages.Add(MessageClass.SetMessage("No Record Saved", Color.Red)); }
-                    //else
-                    //{
-                    //    TempTable = TempRefresh(_Connection);
-                    //}
-
                 }
                 catch (Exception e)
                 {
@@ -237,6 +231,16 @@ namespace Applied_WebApplication.Data
             return GetTable(MyTableName, ViewFilter, _Connection);
         }
         #endregion
+
+        private void TempTableFlash()
+        {
+            if (TempTable != null)
+            {
+                var _Query = $"DELETE FROM [{MyTableName}]";
+                var _Command = new SQLiteCommand(_Query, MyTempConnection);
+                _Command.ExecuteNonQuery();
+            }
+        }
 
         #region Delete
         public bool Delete()

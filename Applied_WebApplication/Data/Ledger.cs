@@ -1,6 +1,4 @@
-﻿using AppReporting;
-using NPOI.OpenXmlFormats;
-using NPOI.OpenXmlFormats.Spreadsheet;
+﻿using AppReportClass;
 using System.Data;
 
 namespace Applied_WebApplication.Data
@@ -263,14 +261,14 @@ namespace Applied_WebApplication.Data
             return _Ledger;
         }
 
-        internal static DataTable GetGL(string userName, AppReportClass.ReportFilters paramaters)
+        internal static DataTable GetGL(string userName, ReportFilters paramaters)
         {
             var _Filter = $"COA={paramaters.N_COA} ORDER BY COA,Vou_Date";
             DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
             return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }
 
-        internal static DataTable GetGLCompany(string UserName, AppReportClass.ReportFilters paramaters)
+        internal static DataTable GetGLCompany(string UserName, ReportFilters paramaters)
         {
             
 
@@ -285,7 +283,7 @@ namespace Applied_WebApplication.Data
             return Generate_LedgerTable(UserName, _Table, paramaters);
         }
 
-        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, AppReportClass.ReportFilters paramaters)
+        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportFilters paramaters)
         {
             
             var _Filter = $" [L].ID<0";
@@ -386,7 +384,7 @@ namespace Applied_WebApplication.Data
             return _List;
         }
 
-        internal static DataTable GetTB(string UserName, AppReportClass.ReportFilters filters)
+        internal static DataTable GetTB(string UserName, ReportFilters filters)
         {
             DataTableClass tc_TB = new(UserName, Tables.TB);
             DataTable tb_TrialBal = tc_TB.MyDataTable.Clone();

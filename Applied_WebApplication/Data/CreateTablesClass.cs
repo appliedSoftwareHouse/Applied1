@@ -1,5 +1,6 @@
 ﻿using Applied_WebApplication.Pages.Stock;
 using System.Data.SQLite;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
@@ -172,6 +173,29 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Cheak Bill Receivable
+
+        public static void Chk_BillReceivable1(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [Chk_BillReceivable1] AS ");
+            Text.Append(SQLQuery.Chk_BillReceivable1());
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+
+        public static void Chk_BillReceivable2(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [Chk_BillReceivable2] AS ");
+            Text.Append(SQLQuery.Chk_BillReceivable2());
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+        #endregion
+
+
         #region Create DataTable into Source Data
 
         public static void CreateTable(string UserName, Tables _Table)
@@ -310,10 +334,20 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.TempLedger:
                     break;
+                case Tables.Chk_BillReceivable1:
+                    Chk_BillReceivable1(UserName);
+                    break;
+                case Tables.Chk_BillReceivable2:
+                    Chk_BillReceivable2(UserName);
+                    break;
+
+
                 default:
                     break;
             }
         }
+
+        
         #endregion
     }
 }

@@ -3,15 +3,19 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static NPOI.HSSF.Util.HSSFColor;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class JVListModel : PageModel
     {
         [BindProperty]
         public MyParameters Variables { get; set; }
         public DataTable JVList { get; set; }
         public string UserName => User.Identity.Name;
+        public int Sr_No { get; set; }
+        public bool Refresh { get; set; }
 
         public void OnGet()
         {
@@ -39,7 +43,9 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostJV(string Vou_No)
         {
-            return RedirectToPage("JV", routeValues: new { Vou_No });
+            Sr_No = -1; Refresh = true;
+
+            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No, Refresh });
         }
 
         public IActionResult OnPostNew()

@@ -3,7 +3,7 @@
 @model Applied_WebApplication.Pages.Accounts.BankBookModel
 @{
     var UserName = User.Identity.Name;
-    var UserData = new UserProfile(UserName);
+    var UserData = new UserProfile(User.Identity.Name);
     //var BookTitles = Titles(UserName, SQLQuery.BookTitles(Model.BookNature));
     var FMTAmount = AppRegistry.GetText(UserName, "FMTCurrency");
     var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
@@ -12,9 +12,9 @@
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
 
-    if(Model.BookTitles.Count> 0)
+    if (Model.BookTitles.Count > 0)
     {
-    if (Model.Variables.BankBookID == 0) { Model.Variables.BankBookID = Model.BookTitles.ElementAt(0).Key; }
+        if (Model.Variables.BankBookID == 0) { Model.Variables.BankBookID = Model.BookTitles.ElementAt(0).Key; }
     }
 
     var _SelectPosted = "SELECT...";
@@ -174,5 +174,14 @@
                 }
             </div>
         </div>
+        @*<div class="row">
+            <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+                    asp-page-handler="Add">
+                <i class="bi bi-database-add"></i>
+            </button>
+        </div>*@
     </div>
+
+   
+
 </form>

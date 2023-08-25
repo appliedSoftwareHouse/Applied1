@@ -105,49 +105,6 @@ AppHeading-2:hover {
     width: 120px;
 }
 
-.table-list {
-    display: table;
-    width: 100%;
-    border: 2px solid black;
-    margin: 0 auto;
-    padding-left: 2px;
-    padding-right: 2px
-}
-
-.table-list, thead {
-    background-color:aliceblue;
-    height:10px;
-        
-}
-
-.table-list, tr {
-}
-
-    .table-list tr:hover {
-        background-color: #ffff99;
-    }
-
-.table-list, th {
-       font-display:block;
-}
-
-.table-list, td {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    border-bottom: dotted;
-    border-bottom-color: dimgrey;
-    border-bottom-width: thin;
-    font-size: small;
-    color:rebeccapurple
-
-}
-
-
-
-
-
 
 .amount {
     text-align: right
@@ -193,19 +150,22 @@ AppHeading-2:hover {
 .listbutton-red {
     background-color: transparent;
     color: red;
-    border: none;
+    border: 0px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    padding: 0px;
+    margin:0px
 }
 
 .listbutton-blue {
     background-color: transparent;
     color: darkblue;
-    border: none;
+    border: 0px;
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    padding: 0px
 }
 
 .listbutton-green {
@@ -215,4 +175,5 @@ AppHeading-2:hover {
     text-align: center;
     text-decoration: none;
     display: inline-block;
+    padding:0px
 }

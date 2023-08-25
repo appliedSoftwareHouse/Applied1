@@ -1806,7 +1806,6 @@ LEFT JOIN [Inventory] [I] ON [I].[ID] = [L].[INVENTORY]
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                   </TablixCells>
@@ -1877,7 +1876,7 @@ LEFT JOIN [Inventory] [I] ON [I].[ID] = [L].[INVENTORY]
             <DataSetName>dsname_Ledger</DataSetName>
             <Top>0.04167in</Top>
             <Height>2in</Height>
-            <Width>7.2in</Width>
+            <Width>7.20002in</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -1888,7 +1887,7 @@ LEFT JOIN [Inventory] [I] ON [I].[ID] = [L].[INVENTORY]
         <Height>2.04167in</Height>
         <Style />
       </Body>
-      <Width>7.2in</Width>
+      <Width>7.20002in</Width>
       <Page>
         <PageHeader>
           <Height>0.88764in</Height>

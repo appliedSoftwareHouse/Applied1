@@ -1,5 +1,12 @@
-﻿using System.Data.SQLite;
+﻿using Applied_WebApplication.Pages.Sales;
+using Microsoft.Extensions.Primitives;
+using NPOI.SS.Formula.Functions;
+using NPOI.Util;
+using NPOI.XWPF.UserModel;
+using System.Data.SQLite;
+using System.Net.NetworkInformation;
 using System.Text;
+using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Applied_WebApplication.Data
 {
@@ -285,6 +292,54 @@ namespace Applied_WebApplication.Data
                 Text.Append($" WHERE {_Filter}");
             }
 
+            return Text.ToString();
+        }
+        #endregion
+
+        #region Ledger 2
+        public static string Ledger2(string _Filter, string[] Dates, string _OrderBy)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM (");
+            Text.Append("SELECT ");
+            Text.Append("'OBAL' AS [Vou_No],");
+            Text.Append($"DATE('{Dates[0]}') AS [Vou_Date],");
+            Text.Append($"'Opening Balance as on ' || DATE('{Dates[0]}') AS [Description],");
+            Text.Append("IIF([BAL] > 0,[BAL],0) AS [DR],");
+            Text.Append("IIF([BAL] < 0,ABS([BAL]),0) AS [CR],");
+            Text.Append("0 AS [AccountTitle],");
+            Text.Append("0 AS [CompanyName],");
+            Text.Append("0 AS [EmployeeName],");
+            Text.Append("0 AS [ProjectTitle],");
+            Text.Append("0 AS [StockTitle] ");
+            Text.Append("FROM(SELECT SUM([DR] -[CR]) AS [BAL] ");
+            Text.Append("FROM(SELECT * ");
+            Text.Append($"FROM[Ledger] WHERE DATE([Vou_Date]) < DATE('{Dates[0]}') AND {_Filter})) ");
+            Text.Append("UNION ");
+
+            Text.Append("SELECT ");
+            Text.Append("[L].[Vou_No], ");
+            Text.Append("[L].[Vou_Date],");
+            Text.Append("[L].[Description],");
+            Text.Append("[L].[DR],");
+            Text.Append("[L].[CR],");
+            Text.Append("[A].[TITLE] AS [AccountTitle],");
+            Text.Append("[C].[TITLE] AS [CompanyName],");
+            Text.Append("[E].[TITLE] AS [EmployeeName],");
+            Text.Append("[P].[TITLE] AS [ProjectTitle],");
+            Text.Append("[I].[TITLE] AS [StockTitle]");
+            Text.Append("FROM(");
+            Text.Append("SELECT * FROM[Ledger] [L] ");
+            Text.Append($"WHERE (Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}')) ");
+            Text.Append($"AND {_Filter}");
+            Text.Append(" ) AS[L]");
+            Text.Append("LEFT JOIN[COA]       [A] ON[A].[ID] = [L].[COA]");
+            Text.Append("LEFT JOIN[Customers] [C] ON[C].[ID] = [L].[CUSTOMER]");
+            Text.Append("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[EMPLOYEE]");
+            Text.Append("LEFT JOIN[Project]   [P] ON[P].[ID] = [L].[PROJECT]");
+            Text.Append("LEFT JOIN[Inventory] [I] ON[I].[ID] = [L].[INVENTORY]");
+            Text.Append(") AS [GLedger]");
+            Text.Append($"ORDER BY {_OrderBy}");
             return Text.ToString();
         }
         #endregion
@@ -824,14 +879,14 @@ namespace Applied_WebApplication.Data
             //ok
 
         }
-        
+
         #endregion
 
         #region Stock in Hand
         public static string StockInHand(string Filter)
         {
             var Text = new StringBuilder();
-            
+
             Text.Append("SELECT ");
             Text.Append("[S].[Inventory], ");
             Text.Append("[I].[Title], ");
@@ -860,6 +915,69 @@ namespace Applied_WebApplication.Data
 
         }
         #endregion
+
+        #region  Check Bill Receivable
+        public static string Chk_BillReceivable1()
+        {
+            // Query show record which has BillReceivable record by not any records in BillReceivable2
+            var Text = new StringBuilder();
+            Text.Append("SELECT* FROM (");
+            Text.Append("SELECT ");
+            Text.Append("[B1].[ID] AS[ID1],");
+            Text.Append("[B2].[ID] AS[ID2],");
+            Text.Append("[B2].[TranID],");
+            Text.Append("[B1].[Vou_No],");
+            Text.Append("[B1].[Vou_Date] ");
+            Text.Append("FROM (SELECT* FROM [BillReceivable] WHERE [Status]= 'Posted') AS [B1]");
+            Text.Append(" LEFT JOIN [BillReceivable2] [B2] ON [B2].[TranID] = [B1].[ID]");
+            Text.Append(") ");
+            Text.Append(" WHERE[ID2] IS NULL");
+
+
+            return Text.ToString();
+        }
+
+        public static string Chk_BillReceivable2()
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT");
+            Text.Append("[B].[Vou_No][Bill_VNo],");
+            Text.Append("[B].[Vou_Date],");
+            Text.Append("[B].[Company],");
+            Text.Append("[B].[Ref_No],");
+            Text.Append("[B].[Amount],");
+            Text.Append("[B].[Status],");
+            Text.Append("[L].[Vou_No][Led_VNo],");
+            Text.Append("[L].[DR],");
+            Text.Append("[L].[CR]");
+
+            Text.Append("FROM[BillReceivable][B]");
+            Text.Append("LEFT JOIN(SELECT* FROM [Ledger] WHERE Vou_Type = 'Receivable') [L] ON[L].[TranID] = [B].[ID]");
+            Text.Append("WHERE[L].[TRanID] IS NULL and[B].[Status] = 'Posted'");
+
+            return Text.ToString();
+        }
+        #endregion
+
+        #region Bill Payable List
+        public static string BillPayableList(string? _Filter)
+        {
+            _Filter ??= string.Empty;
+            var Text = new StringBuilder();
+            Text.Append("SELECT[B].*,");
+            Text.Append("[C].[Title] AS [CompanyTitle],");
+            Text.Append("[E].[Title] AS [EmployeeTitle] ");
+            Text.Append("FROM [BillPayable] [B] ");
+            Text.Append("LEFT JOIN [Customers] [C] ON [C].[ID] = [B].[Company] ");
+            Text.Append("LEFT JOIN [Employees] [E] ON [E].[ID] = [B].[Employee] ");
+            if (_Filter.Length > 0)
+            {
+                Text.Append($"WHERE {_Filter} ");
+            }
+            return Text.ToString();
+        }
+        #endregion
+
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

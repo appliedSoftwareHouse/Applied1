@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
@@ -7,6 +8,7 @@ using static Applied_WebApplication.Pages.Accounts.CashBookModel;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class CashBookRecordModel : PageModel
     {
         [BindProperty]
@@ -29,7 +31,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 Row = _Table.CurrentRow;
                 if (BookRecord == null) { BookRecord = new(); }
                 Row["Vou_No"] = GetNewCashVoucher(UserName);
-                Row["Vou_Date"] = DateTime.Now;
+                Row["Vou_Date"] = AppRegistry.GetDate(UserName, "cbook-dt");
                 Row["BookID"] = BookID;
             }
 
@@ -81,6 +83,8 @@ namespace Applied_WebApplication.Pages.Accounts
             Row["Employee"] = BookRecord.Employee;
             Row["Status"] = VoucherStatus.Submitted;
             Table.Save();
+
+            AppRegistry.SetKey(UserName, "cbook-dt", BookRecord.Vou_Date, KeyType.Date);
 
             if (Table.IsError)
             {

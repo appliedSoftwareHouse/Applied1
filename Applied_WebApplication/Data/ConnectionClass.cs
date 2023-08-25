@@ -15,10 +15,10 @@ namespace Applied_WebApplication.Data
         private UserProfile UProfile { get; set; }
         public string DataBaseFile { get; set; }
         public string DataBaseTempFile { get; set; }
-        
+
         public string DBFile_Name = "";
 
-        public bool DBFile_Exist => File.Exists(DataBaseFile); 
+        public bool DBFile_Exist => File.Exists(DataBaseFile);
 
         public ConnectionClass(string _UserName)
         {
@@ -26,10 +26,12 @@ namespace Applied_WebApplication.Data
             DataBaseFile = UProfile.DataBaseFile;
             DataBaseTempFile = $"{AppGlobal.AppDBTempPath}{UProfile.UserID}.Temp";
 
-            AppliedConnection = new($"Data Source={DataBaseFile}");                      // Established a Connection with Database File
-            AppliedConnection.Open();
-
-            TempConnection = AppTempConnection(UserName);
+            if (DataBaseFile.Length > 0)
+            {
+                AppliedConnection = new($"Data Source={DataBaseFile}");                      // Established a Connection with Database File
+                AppliedConnection.Open();
+                TempConnection = AppTempConnection(UserName);
+            }
         }
 
 
@@ -56,7 +58,7 @@ namespace Applied_WebApplication.Data
 
         public static SQLiteConnection AppTempConnection(string UserName)
         {
-            
+
             UserProfile _Profile = new(UserName);
             if (!Directory.Exists(_Profile.DataBaseTempPath)) { Directory.CreateDirectory(_Profile.DataBaseTempPath); }
             if (!File.Exists(_Profile.DataBaseTempFile)) { SQLiteConnection.CreateFile(_Profile.DataBaseTempFile); }

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
@@ -10,6 +11,7 @@ using static Applied_WebApplication.Pages.Accounts.BankBookModel;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class BankBookRecordModel : PageModel
     {
         [BindProperty]
@@ -32,8 +34,9 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 Row = _Table.CurrentRow;
                 if (BookRecord == null) { BookRecord = new(); }
-                Row["Vou_No"] = GetNewVouNo(DateTime.Now);
-                Row["Vou_Date"] = DateTime.Now;
+                //Row["Vou_No"] = GetNewVouNo(DateTime.Now);
+                Row["Vou_No"] = "New";
+                Row["Vou_Date"] = AppRegistry.GetDate(UserName, "bbook-dt");
                 Row["BookID"] = BookID;
             }
 
@@ -82,7 +85,12 @@ namespace Applied_WebApplication.Pages.Accounts
             Row["Project"] = BookRecord.Project;
             Row["Employee"] = BookRecord.Employee;
             Row["Status"] = VoucherStatus.Submitted;
+            // Generate a new voucher number
+            if (BookRecord.Vou_No.ToUpper()=="NEW") { Row["Vou_No"] = GetNewVouNo(BookRecord.Vou_Date); }  
+
             Table.Save();
+
+            AppRegistry.SetKey(UserName, "bbook-dt", BookRecord.Vou_Date, KeyType.Date);
 
             if (Table.IsError)
             {

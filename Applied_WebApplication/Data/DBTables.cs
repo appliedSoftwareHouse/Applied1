@@ -67,6 +67,9 @@ public enum Tables
     fun_BillPayableAmounts = 601,                    // Function of Bill Payable Amount and Tax Amount
     fun_BillPayableEntry = 602,
 
+    Chk_BillReceivable1 = 701,
+    Chk_BillReceivable2 = 702,
+
     TempLedger = 9999,
 
 }

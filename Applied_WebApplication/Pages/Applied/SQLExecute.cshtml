@@ -1,0 +1,31 @@
+﻿@page
+@model Applied_WebApplication.Pages.Applied.SQLExecuteModel
+@{
+}
+
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">EXECUTE A SQL QUERY IN DATABASE</h5>
+</div>
+
+
+<form method="post">
+    <div class="container">
+    <div class="row">
+        <div class="input-group">
+            <span class="input-group-text">With textarea</span>
+            <textarea class="form-control" aria-label="SQLite Query Executor" asp-for="@Model.Variables.SQLQuery"></textarea>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mt-2">
+                <button type="submit" class="btn btn-success" asp-page-handler="SQLExecute">Run</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col mt-2">
+            <label>@Model.Variables.QueryMessage</label>
+        </div>
+    </div>
+</div>
+</form>

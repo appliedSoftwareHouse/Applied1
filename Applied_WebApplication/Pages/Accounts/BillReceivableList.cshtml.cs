@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -5,6 +6,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class BillReceivableListModel : PageModel
     {
         [BindProperty]
@@ -51,7 +53,7 @@ namespace Applied_WebApplication.Pages.Accounts
         #region Add Record
         public IActionResult OnPostAdd()
         {
-            return RedirectToPage("../Sales/SaleInvoice");
+            return RedirectToPage("../Sales/SaleInvoice", "New");
         }
         #endregion
 
@@ -61,11 +63,21 @@ namespace Applied_WebApplication.Pages.Accounts
             DataTableClass _Table = new(UserName, Tables.BillReceivable, $"ID={ID}");
             if (_Table.Count > 0)
             {
-                var Vou_No = _Table.CurrentRow["Vou_No"];
+                var Vou_No = _Table.CurrentRow["Vou_No"].ToString();
                 var Sr_No = 1;
-                return RedirectToPage("../Sales/SaleInvoice", routeValues: new { Vou_No, Sr_No });
+
+                //if(Vou_No.ToUpper() == "NEW" )
+                //{
+                //    return RedirectToPage("../Sales/SaleInvoice", "New");
+                //}
+                //else
+                //{
+                    return RedirectToPage("../Sales/SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh=true });
+                //}
+                
+                
             }
-            return RedirectToPage("../Sales/SaleInvoice");
+            return Page(); ;
         }
         #endregion
 

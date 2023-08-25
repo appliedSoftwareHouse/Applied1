@@ -10,15 +10,20 @@ namespace Applied_WebApplication.Pages
     {
         public string MyMessage = string.Empty;
         public string UserName => User.Identity.Name;
+        public bool IsDBCreate  {get; set;} = true;
 
         public void OnGet()
         {
-            CreateTablesClass CreateDataTables = new(User);
-            CreateDataTables.CreateTables();
+            if (IsDBCreate)
+            {
+                CreateTablesClass CreateDataTables = new(User);
+                CreateDataTables.CreateTables();
+            }
+
         }
 
 
-        
+
         public IActionResult OnPostTest()
         {
             return RedirectToPage("/ReportPrint/PrintReport", "Ledger", routeValues: new { COAID = 2 });

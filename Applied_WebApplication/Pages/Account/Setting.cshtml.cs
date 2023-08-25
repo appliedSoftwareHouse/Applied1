@@ -16,10 +16,11 @@ namespace Applied_WebApplication.Pages.Account
         public string[] CurrencyFormats { get; set; } = new string[] { string.Empty, "#,0", "#.0.00", "#,###0", "#,##0.00" };
         
         public string[] DateFormats { get; set; } = new string[] {string.Empty, "dd-MM-yy", "dd-MM-yyyy", "MM-dd-yy", "MM-dd-yyyy", "dd-MMM-yy", "dd-MMM-yyyy" };
-        
+
         #endregion
 
 
+        #region Get
         public void OnGet()
         {
             string UserName = User.Identity.Name;
@@ -51,7 +52,8 @@ namespace Applied_WebApplication.Pages.Account
 
             };
         }
-
+        #endregion
+        #region Save
         public IActionResult OnPostSave()
         {
             
@@ -80,7 +82,8 @@ namespace Applied_WebApplication.Pages.Account
 
             return RedirectToPage();
         }
-
+        #endregion
+        #region Variables
         public class MyParameters
         {
             public int OBCompany { get; set; }              // COA for opening balance for Company.
@@ -106,6 +109,14 @@ namespace Applied_WebApplication.Pages.Account
             public int BankBookNature { get; set; }
 
         }
+        #endregion
+        #region SQL Query
+        public IActionResult OnPostSQLQuery()
+        {
+            return RedirectToPage("/Applied/SQLExecute");
+        }
+
+        #endregion
 
     }
 

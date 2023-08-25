@@ -1,4 +1,5 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -8,6 +9,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class CashBookModel : PageModel
     {
         [BindProperty]
@@ -25,45 +27,17 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void OnGet(int? id)
         {
-
-
-            #region Temp
-            //if (id == null)
-            //{
-
-            //    Variables = new()
-            //    {
-            //        IsSelected = false,
-            //        ID = 0,
-            //        CashBookID = (int)GetKey(UserName, "CashBookID", KeyType.Number),
-            //        MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
-            //        MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-            //        IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number)
-            //    };
-            //}
-            //else
-            //{
-            //    Variables = new()
-            //    {
-            //        IsSelected = false,
-            //        CashBookID = (int)id,
-            //        MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
-            //        MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
-            //        IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
-            //    };
-            //}
-            #endregion
-            id ??= Variables.CashBookID;
-            if (id == 0) { id=GetNumber(UserName, "CashBookID"); }
-
             Variables = new()
             {
                 IsSelected = false,
-                CashBookID = (int)id,
+                CashBookID = GetNumber(UserName, "CashBookID"),
                 MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
                 MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
                 IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
             };
+            
+            id ??= Variables.CashBookID;
+            if (id == 0) { id = GetNumber(UserName, "CashBookID"); }
 
             var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
             var Date1 = Variables.MinDate.AddDays(-1).ToString("yyyy-MM-dd");
@@ -142,6 +116,9 @@ namespace Applied_WebApplication.Pages.Accounts
             CashBook.CurrentRow["Project"] = MyRecord.Project;
             CashBook.CurrentRow["Employee"] = MyRecord.Employee;
             CashBook.Save();
+
+
+            
 
             ErrorMessages = CashBook.TableValidation.MyMessages;
             if (ErrorMessages.Count == 0)

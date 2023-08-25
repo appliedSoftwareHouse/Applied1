@@ -6,7 +6,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
 {
-    public class TempTableClass
+    public class xTempTableClass
     {
         #region Setup
 
@@ -38,7 +38,7 @@ namespace Applied_WebApplication.Data
 
         #region Constructor
 
-        public TempTableClass(string _UserName, Tables _TableID, string _VoucherNo, bool IsLoad)
+        public xTempTableClass(string _UserName, Tables _TableID, string _VoucherNo, bool IsLoad)
         {
             VoucherNo = _VoucherNo;
             UserName = _UserName;
@@ -66,7 +66,7 @@ namespace Applied_WebApplication.Data
 
             TableValidate = new(TempTable);
         }
-        public TempTableClass(string _UserName, Tables _TableID, int _TranID, bool? IsNew)
+        public xTempTableClass(string _UserName, Tables _TableID, int _TranID, bool? IsNew)
         {
             IsNew ??= false;
             TranID = _TranID;
@@ -131,7 +131,7 @@ namespace Applied_WebApplication.Data
 
             TableValidate = new(TempTable);
         }
-        public TempTableClass(string _UserName, Tables _TableID)
+        public xTempTableClass(string _UserName, Tables _TableID)
         {
             IsNew = true;
             TranID = 0;

@@ -7,6 +7,7 @@
     var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
     var MFTDate = AppRegistry.GetKey(UserName, "FMTDate", KeyType.Text).ToString();
     var DateFormat = AppRegistry.FormatDateY2;
+    var TitleCompany = GetTitle(UserName, Tables.Customers, Model.Variables.Company);
 
 }
 
@@ -15,6 +16,40 @@
 </div>
 
 <form method="post">
+
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.MinDate />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.MaxDate />
+                    <span class="input-group-text" style="width:30%" id="To">End</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" aria-label="Select Company" id="txtCompany" asp-for="@Model.Variables.Company">
+                    <option selected>@TitleCompany</option>
+                    <option value="-1">All</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+
+
+
     <div class="container">
         <table class="table-list">
             <thead>
@@ -26,26 +61,28 @@
                     <th width="10%">Inv Date</th>
                     <th width="10%">Pay Date</th>
                     <th width="10%">Amount</th>
-                    <th width="10%">..</th>
+                    <th width="10%">
+                        <input type="submit" class="btn btn-primary btn-sm" value="Add" asp-page="BillPayable" asp-route-id="0" asp-page-handler="New" formmethod="get" />
+                    </th>
 
                 </tr>
             </thead>
             <tbody>
-                @foreach (DataRow Row in Model.BillPayable.MyDataTable.Rows)
+                @foreach (DataRow Row in Model.BillPayable.Rows)
                 {
-                    string _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
-                    var _Vou_Date = (DateTime)Row["Vou_Date"];
-                    var _Inv_Date = (DateTime)Row["Inv_Date"];
-                    var _Pay_Date = (DateTime)Row["Pay_Date"];
-                    decimal _Amount = (decimal)Row["Amount"];
+                    
+                    var _Vou_Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                    var _Inv_Date = ((DateTime)Row["Inv_Date"]).ToString(DateFormat);
+                    var _Pay_Date = ((DateTime)Row["Pay_Date"]).ToString(DateFormat);
+                    var _Amount = ((decimal)Row["Amount"]).ToString(FMTCurrency);
                     <tr>
                         <td>@Row["Vou_No"].ToString()</td>
-                        <td>@_Vou_Date.ToString(DateFormat)</td>
-                        <td>@_TitleCompany</td>
+                        <td>@_Vou_Date</td>
+                        <td>@Row["CompanyTitle"]</td>
                         <td>@Row["Inv_No"]</td>
-                        <td>@_Inv_Date.ToString(DateFormat)</td>
-                        <td>@_Pay_Date.ToString(DateFormat)</td>
-                        <td class="table-col-amount">@_Amount.ToString(FMTCurrency)</td>
+                        <td>@_Inv_Date</td>
+                        <td>@_Pay_Date</td>
+                        <td class="amount">@_Amount</td>
                         <td>
                             <a formaction="get"
                               asp-page="BillPayable"
@@ -68,6 +105,6 @@
     </div>
     <!--Buttons Area-->
     <div>
-        <input type="submit" class="btn btn-primary" value="Add" asp-page="BillPayable" asp-route-id="0" asp-page-handler="New" formmethod="get" />
+        <input type="submit" class="btn btn-primary mt-2" value="Add" asp-page="BillPayable" asp-route-id="0" asp-page-handler="New" formmethod="get" />
     </div>
 </form>

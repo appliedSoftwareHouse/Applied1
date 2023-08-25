@@ -1,6 +1,6 @@
-using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
@@ -8,6 +8,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class JVModel : PageModel
     {
         [BindProperty]
@@ -18,23 +19,28 @@ namespace Applied_WebApplication.Pages.Accounts
         public DataTable Voucher { get; set; }
         public Boolean IsBalance { get; set; }
 
+
+        #region GET
         public void OnGetNew()
         {
             ErrorMessages = new();
-            TempTableClass TempClass;
-            Variables = new();              // Setup of Variables
+            Variables = new();                                                                                                                 // Setup of Variables
+            var _Filter = $"Vou_No='New'";
+            TempDBClass TempClass = new(UserName, Tables.Ledger, _Filter, true);
 
-            TempClass = new TempTableClass(UserName, Tables.Ledger);
-            if (TempClass.TempTable.Rows.Count > 0)
-            {
-                //TempClass.TableValidate = new();
-                foreach (DataRow Row in TempClass.TempTable.Rows)
-                {
-                    TempClass.CurrentRow = Row;
-                    TempClass.Delete();
-                }
-                TempClass = new TempTableClass(UserName, Tables.Ledger);
-            }
+            Voucher = TempClass.TempTable;
+
+            //TempClass = new TempDBClass(UserName, Tables.Ledger);
+            //if (TempClass.TempTable.Rows.Count > 0)
+            //{
+            //    //TempClass.TableValidate = new();
+            //    foreach (DataRow Row in TempClass.TempTable.Rows)
+            //    {
+            //        TempClass.CurrentRow = Row;
+            //        TempClass.Delete();
+            //    }
+            //    TempClass = new xTempTableClass(UserName, Tables.Ledger);
+            //}
 
 
             if (TempClass.TempTable.Rows.Count == 0)
@@ -55,61 +61,65 @@ namespace Applied_WebApplication.Pages.Accounts
             Voucher = TempClass.TempTable;
 
         }
-
-
-        public void OnGet(string? Vou_No, int? Sr_No)
+        public void OnGet(string? Vou_No, int? Sr_No, bool? Refresh)
         {
             ErrorMessages = new();
+            Sr_No ??= 1;
+            Refresh ??= true;
             try
             {
-                TempTableClass TempClass;
                 Variables = new();              // Setup of Variables
+                var _Filter = $"Vou_No='{Vou_No}'";
+                TempDBClass TempClass = new(UserName, Tables.Ledger, _Filter, (bool)Refresh);
 
-                if (Vou_No == null || Vou_No == "New")
+                #region Temp
+                //if (Vou_No == null || Vou_No == "New")
+                //{
+
+                //TempClass = new TempDBClass(UserName, Tables.Ledger);
+                //if (TempClass.TempTable.Rows.Count == 0)
+                //{
+                //    TempClass.CurrentRow = TempClass.NewRecord();
+                //    TempClass.CurrentRow["ID"] = 0;
+                //    TempClass.CurrentRow["TranID"] = 0;
+                //    TempClass.CurrentRow["Vou_No"] = "NEW";
+                //    TempClass.CurrentRow["Vou_Date"] = DateTime.Now;
+                //    TempClass.CurrentRow["Sr_No"] = 1;
+                //    TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
+                //    TempClass.CurrentRow["Vou_Type"] = VoucherType.JV;
+                //}
+                //Row2Variable(TempClass.CurrentRow);
+                //}
+                //else
+                //{
+
+                //}
+                #endregion
+
+                if (Sr_No == -1)
                 {
-
-                    TempClass = new TempTableClass(UserName, Tables.Ledger);
-                    if (TempClass.TempTable.Rows.Count == 0)
+                    if (TempClass.TempTable.Rows.Count > 0)
                     {
                         TempClass.CurrentRow = TempClass.NewRecord();
                         TempClass.CurrentRow["ID"] = 0;
-                        TempClass.CurrentRow["TranID"] = 0;
-                        TempClass.CurrentRow["Vou_No"] = "NEW";
-                        TempClass.CurrentRow["Vou_Date"] = DateTime.Now;
-                        TempClass.CurrentRow["Sr_No"] = 1;
-                        TempClass.CurrentRow["Status"] = VoucherStatus.Submitted;
-                        TempClass.CurrentRow["Vou_Type"] = VoucherType.JV;
+                        TempClass.CurrentRow["TranID"] = TempClass.TempTable.Rows[0]["TranID"];
+                        TempClass.CurrentRow["Vou_Type"] = TempClass.TempTable.Rows[0]["Vou_Type"];
+                        TempClass.CurrentRow["Vou_No"] = TempClass.TempTable.Rows[0]["Vou_No"];
+                        TempClass.CurrentRow["Vou_Date"] = TempClass.TempTable.Rows[0]["Vou_Date"];
+                        TempClass.CurrentRow["Sr_No"] = MaxSrNo(TempClass.TempTable);
+                        TempClass.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
+                        Row2Variable(TempClass.CurrentRow);
                     }
-                    Row2Variable(TempClass.CurrentRow);
                 }
                 else
                 {
-                    TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
-                    if (Sr_No == -1)
+                    Sr_No ??= 1;
+                    var _DataView = TempClass.TempView;
+                    _DataView.RowFilter = string.Format("SR_No={0}", (int)Sr_No);
+                    if (_DataView.Count == 1)
                     {
-                        if (TempClass.TempTable.Rows.Count > 0)
-                        {
-                            TempClass.CurrentRow = TempClass.NewRecord();
-                            TempClass.CurrentRow["ID"] = 0;
-                            TempClass.CurrentRow["TranID"] = TempClass.TempTable.Rows[0]["TranID"];
-                            TempClass.CurrentRow["Vou_Type"] = TempClass.TempTable.Rows[0]["Vou_Type"];
-                            TempClass.CurrentRow["Vou_No"] = TempClass.TempTable.Rows[0]["Vou_No"];
-                            TempClass.CurrentRow["Vou_Date"] = TempClass.TempTable.Rows[0]["Vou_Date"];
-                            TempClass.CurrentRow["Sr_No"] = MaxSrNo(TempClass.TempTable);
-                            TempClass.CurrentRow["Status"] = VoucherStatus.Submitted.ToString();
-                            Row2Variable(TempClass.CurrentRow);
-                        }
-                    }
-                    else
-                    {
-                        Sr_No ??= 1;
-                        var _DataView = TempClass.TempView;
-                        _DataView.RowFilter = string.Format("SR_No={0}", (int)Sr_No);
-                        if (_DataView.Count == 1)
-                        {
-                            TempClass.CurrentRow = _DataView[0].Row;
-                            Row2Variable(TempClass.CurrentRow);
-                        }
+                        TempClass.CurrentRow = _DataView[0].Row;
+                        Row2Variable(TempClass.CurrentRow);
                     }
                 }
 
@@ -128,7 +138,7 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
         }
-
+        #endregion
 
         #region Methods
 
@@ -182,8 +192,7 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         #endregion
 
-        #region POST
-
+        #region SAVE
         public IActionResult OnPostSave()
         {
             #region Variables Setup
@@ -196,9 +205,10 @@ namespace Applied_WebApplication.Pages.Accounts
             ErrorMessages = new();
             #endregion
 
-            var TempClass = new TempTableClass(UserName, Tables.Ledger, Variables.Vou_No, true);
+            var _Filter = $"Vou_No='{Variables.Vou_No}'";
+            var TempClass = new TempDBClass(UserName, Tables.Ledger, _Filter, false);
             var _View = TempClass.TempView;
-            _View.RowFilter = string.Format("Sr_No={0}", Variables.Sr_No);
+            _View.RowFilter = $"Sr_No={Variables.Sr_No}";
             if (_View.Count == 1) { TempClass.CurrentRow = _View[0].Row; }
             else
             {
@@ -222,7 +232,7 @@ namespace Applied_WebApplication.Pages.Accounts
             TempClass.CurrentRow["Description"] = Variables.Description;
             TempClass.CurrentRow["Comments"] = Variables.Comments;
             TempClass.CurrentRow["Status"] = Variables.Status;
-            TempClass.Save();
+            TempClass.Save(TempClass.MyTempConnection);
             ErrorMessages.AddRange(TempClass.ErrorMessages);
             if (TempClass.ErrorMessages.Count > 0)
             {
@@ -231,24 +241,33 @@ namespace Applied_WebApplication.Pages.Accounts
 
             var Vou_No = TempClass.CurrentRow["Vou_No"].ToString();
             var Sr_No = TempClass.CurrentRow["Sr_No"].ToString();
+            var Refresh = false;
 
 
-            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No });
+            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No, Refresh });
         }
+        #endregion
+
+        #region Add
         public IActionResult OnPostAdd(string Vou_No, int Sr_No)
         {
-            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No });
+            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No, Refresh=false });
         }
+        #endregion
+        #region EDIT
         public IActionResult OnPostEdit(string Vou_No, int Sr_No)
         {
-
-            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No });
+            return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No, Refresh = false });
 
         }
+        #endregion
+        #region Back
         public IActionResult OnPostBack()
         {
-            return RedirectToPage("../Index");
+            return RedirectToPage("./JVList");
         }
+        #endregion
+        #region Save Voucher
         public IActionResult OnPostSaveVoucher(string Vou_No)
         {
 
@@ -261,14 +280,16 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             #endregion
 
-
-            TempTableClass TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
+            var _Filter = $"Vou_No='{Vou_No}'";
+            TempDBClass TempClass = new(UserName, Tables.Ledger, _Filter, false);
             DataTableClass SourceClass = new(UserName, Tables.Ledger);
 
             var Voucher = TempClass.TempTable;
-
-            if (Voucher.Rows.Count > 0)
+            var _TranCount = Voucher.Rows.Count;
+            
+            if (_TranCount > 0)
             {
+
                 var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
                 var _CR = (decimal)Voucher.Compute("SUM(CR)", "");
                 if (_DR.Equals(_CR))
@@ -277,59 +298,60 @@ namespace Applied_WebApplication.Pages.Accounts
                     { }
                     #endregion
 
-                    #region Deletion of Source Voucher  Delete all existing voucher entries for update new entries from temp Voucher.
-                    SourceClass.MyDataView.RowFilter = string.Format("Vou_No='{0}'", Vou_No);
+                    #region Deletion of Source Voucher  Delete all existing voucher entries for updation of new entries from temp Voucher.
+                    SourceClass.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
                     if (SourceClass.MyDataView.Count > 0)
                     {
-                        string CommandText = "DELETE FROM [Ledger] WHERE Vou_No=" + Vou_No;
+                        string CommandText = $"DELETE FROM [Ledger] WHERE Vou_No='{Vou_No}'";
                         SQLiteCommand Command = new(CommandText, SourceClass.MyConnection);
-                        Command.ExecuteNonQuery();
+                        var _TranDeleted = Command.ExecuteNonQuery();
+                        SourceClass.Refresh();
                     }
                     #endregion
 
                     #region SAVE VOUCHER
-                    string NewVouNo = Vou_No;
-                    int NewTranID = 0;
-                    if (Vou_No == "NEW")
-                    {
-                        NewVouNo = NewVoucherNo((DateTime)Voucher.Rows[0]["Vou_Date"]);
-                        NewTranID = SourceClass.GetMaxTranID(VoucherType.JV);
-                    }
-
-                    foreach (DataRow Row in Voucher.Rows)
-                    {
-                        if ((string)Row["Vou_No"] == "NEW")
+                        string NewVouNo = Vou_No;
+                        int NewTranID = 0;
+                        if (Vou_No == "NEW")
                         {
-                            Row["ID"] = 0;
-                            Row["Vou_No"] = NewVouNo;
-                            Row["TranID"] = NewTranID;
+                            NewVouNo = NewVoucherNo((DateTime)Voucher.Rows[0]["Vou_Date"]);
+                            NewTranID = SourceClass.GetMaxTranID(VoucherType.JV);
                         }
 
-                        SourceClass.CurrentRow = Row;
-                        SourceClass.Save();
-                        ErrorMessages.AddRange(SourceClass.TableValidation.MyMessages);
-                    }
-
-                    if (ErrorMessages.Count == 0)
-                    {
-                        TempClass = new TempTableClass(UserName, Tables.Ledger, Vou_No, true);
-
-                        foreach (DataRow Row in TempClass.TempTable.Rows)
+                        foreach (DataRow Row in Voucher.Rows)
                         {
-                            TempClass.CurrentRow = Row;
-                            TempClass.Delete();
+                            if ((string)Row["Vou_No"] == "NEW")
+                            {
+                                Row["ID"] = 0;
+                                Row["Vou_No"] = NewVouNo;
+                                Row["TranID"] = NewTranID;
+                            }
+
+                            SourceClass.CurrentRow = Row;
+                            SourceClass.Save();
+                            ErrorMessages.AddRange(SourceClass.TableValidation.MyMessages);
                         }
-                    }
+
+                        if (ErrorMessages.Count == 0)
+                        {
+                            _Filter = $"Vou_No='{Vou_No}'";
+                            TempClass = new TempDBClass(UserName, Tables.Ledger, _Filter, true);
+                            TempClass.DeleteAll();
+                            
+                        }
+                    
                     #endregion
                 }
             }
 
             return RedirectToPage("JVList");
         }
+        #endregion
+        #region Delete
         public IActionResult OnPostDelete(int ID)
         {
             int Sr_No;
-            TempTableClass _TempTable = new(UserName, Tables.Ledger, Variables.Vou_No, true);
+            xTempTableClass _TempTable = new(UserName, Tables.Ledger, Variables.Vou_No, true);
             _TempTable.TempSeek(ID);
             _TempTable.Delete();
             ErrorMessages.AddRange(_TempTable.ErrorMessages);

@@ -582,8 +582,7 @@ namespace Applied_WebApplication.Data
                         GetDataTable();
                         MyMessage = "Insert record in " + MyTableName;
                     }
-
-                    if (MyDataView.Count > 0)
+                    else
                     {
                         TableValidation.SQLAction = CommandAction.Update.ToString();
                         CommandUpdate();
@@ -594,7 +593,7 @@ namespace Applied_WebApplication.Data
                 }
                 catch (Exception e)
                 {
-                    TableValidation.MyMessages.Add(MessageClass.SetMessage(e.Message));
+                    TableValidation.MyMessages.Add(SetMessage(e.Message));
                     MyMessage = e.Message;
                     IsError = true;
                 }

@@ -220,7 +220,7 @@ namespace Applied_WebApplication.Data
                     tb_Ledger.CurrentRow["Ref_No"] = RowBill1["Ref_No"];
                     tb_Ledger.CurrentRow["BookID"] = 0;
                     tb_Ledger.CurrentRow["COA"] = COA_Purchase;                                                           // COA => Book ID
-                    tb_Ledger.CurrentRow["DR"] = Row["Amount"];                                                                    // DR => CR
+                    tb_Ledger.CurrentRow["DR"] = Row["Total"];                                                                 // DR => CR
                     tb_Ledger.CurrentRow["CR"] = 0;                                                                    // CR => DR
                     tb_Ledger.CurrentRow["Customer"] = RowBill1["Company"];
                     tb_Ledger.CurrentRow["Project"] = 0;
@@ -267,7 +267,7 @@ namespace Applied_WebApplication.Data
                     tb_Ledger.CurrentRow["BookID"] = 0;
                     tb_Ledger.CurrentRow["COA"] = COA_Payable;
                     tb_Ledger.CurrentRow["DR"] = 0;
-                    tb_Ledger.CurrentRow["CR"] = Row["Total"];
+                    tb_Ledger.CurrentRow["CR"] = Row["Amount"];
                     tb_Ledger.CurrentRow["Customer"] = RowBill1["Company"];
                     tb_Ledger.CurrentRow["Project"] = Row["Project"];
                     tb_Ledger.CurrentRow["Employee"] = RowBill1["Employee"];
