@@ -1,10 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages
 {
-
+    [Authorize]
     public class AccountsModel : PageModel
     {
         public List<Message> ThisMessages { get; set; } = new();

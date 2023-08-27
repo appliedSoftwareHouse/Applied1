@@ -761,6 +761,7 @@ namespace Applied_WebApplication.Data
         public static string StockPositionData(string Filter)
         {
             var Text = new StringBuilder();
+            Text.Append("SELECT * FROM (");
             Text.Append("SELECT * FROM ( SELECT ");
             Text.Append("'PURCHASED' AS [TRAN],");
             Text.Append("[B1].[Vou_No],");
@@ -810,7 +811,7 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN BillReceivable2 [B2] ON [B2].[ID] = [SR].[TranID] ");
             Text.Append("LEFT JOIN BillReceivable   [B1] ON [B1].[ID] = [B2].[TranID] ");
             Text.Append("LEFT JOIN Taxes                 [T]   ON [T].[ID]   = [B2].[Tax] ");
-            Text.Append(") AS [SRETURN] ");
+            Text.Append(") AS [SRETURN] ) ");
             if (Filter.Length > 0) { Text.Append($" WHERE {Filter}"); }
             return Text.ToString();
 

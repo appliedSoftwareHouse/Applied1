@@ -224,6 +224,11 @@ namespace Applied_WebApplication.Data
 
         public static bool SetKey(string UserName, string Key, object KeyValue, KeyType keytype, string _Title)
         {
+            if(UserName == null) 
+            { 
+                return false; 
+            }
+
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)

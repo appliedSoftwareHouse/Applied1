@@ -89,7 +89,7 @@
                             <td>@Row["Inv_No"]</td>
                             <td>@_Inv_Date.ToString(FMTDate)</td>
                             <td>@_Pay_Date.ToString(FMTDate)</td>
-                            <td class="table-col-amount">@_Amount.ToString(FMTCurrency)</td>
+                            <td class="amount">@_Amount.ToString(FMTCurrency)</td>
                             @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                             {
                                 <td class="text-center">

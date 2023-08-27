@@ -16,9 +16,26 @@ namespace Applied_WebApplication.Data
                 var Amount = (decimal)_Value;
                 _Result = Amount.ToString(AppRegistry.FormatCurrency1);
             }
-            catch (Exception e)
+            catch (Exception)
             {
-                _Result = e.Message;
+                _Result = "No Value";
+            }
+            return _Result;
+        }
+
+        public static string Row2Date(object _Value)
+        {
+            string _Result = string.Empty;
+            if (_Value == null) { return _Result; }
+
+            try
+            {
+                var _Date = (DateTime)_Value;
+                _Result = _Date.ToString(AppRegistry.FormatDate);
+            }
+            catch (Exception)
+            {
+                _Result = "No Date";
             }
             return _Result;
         }

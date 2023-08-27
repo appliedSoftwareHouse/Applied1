@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Applied_WebApplication.Pages
 {
-    //[Authorize(Policy = "MustBelongToHRPolicy")]
+    [Authorize]
     public class HumanResourcesModel : PageModel
     {
         public void OnGet()

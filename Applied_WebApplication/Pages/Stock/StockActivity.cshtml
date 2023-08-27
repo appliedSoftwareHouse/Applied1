@@ -1,0 +1,113 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Stock.StockActivityModel
+@{
+    var UserName = User.Identity.Name;
+    var InventoryTitle = GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
+    var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+
+
+}
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Stock Activity</h5>
+</div>
+
+
+<form method="post">
+    <div class="container">
+        <div class="row mb-2">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.MinDate />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.MaxDate />
+                    <span class="input-group-text" style="width:30%" id="To">End</span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select class="form-select" aria-label="Select Inventory" id="txtInventory" asp-for="@Model.Variables.Inventory">
+                    <option selected>@InventoryTitle</option>
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Inventory))
+                    {
+                        <option value="@_Title.Key">@_Title.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Refresh</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Voucher</th>
+                    <th>Trans.</th>
+                    <th>Qty</th>
+                    <th>Rate</th>
+                    <th>Amount</th>
+                    <th>Tax %</th>
+                    <th>Tax Amount</th>
+                    <th>Net Amount</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.MyTable != null)
+                {
+                    @foreach (DataRow Row in Model.MyTable.Rows)
+                    {
+                        var _Date = Conversion.Row2Date(Row["Vou_Date"]);
+                        var _Qty = Conversion.Row2Money(Row["Qty"]);
+                        var _Rate = Conversion.Row2Money(Row["Rate"]);
+                        var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+                        var _TaxRate = Conversion.ToDecimal(Row["TaxRate"]);
+                        var _TaxAmount = Conversion.Row2Money(Row["TaxAmount"]);
+                        var _NetAmount = Conversion.Row2Money(Row["NetAmount"]);
+
+                        var __Amount = _Amount.ToString(FMTCurrency);
+                        var __TaxRate = _TaxRate.ToString(FMTCurrency);
+
+
+                        <tr>
+                            <td>@_Date</td>
+                            <td>@Row["Vou_No"]</td>
+                            <td>@Row["Tran"]</td>
+                            <td class="amount">@_Qty</td>
+                            <td class="amount">@_Rate</td>
+                            <td class="amount">@__Amount</td>
+                            <td class="amount">@_TaxRate</td>
+                            <td class="amount">@_TaxAmount</td>
+                            <td class="amount">@_NetAmount</td>
+                        </tr>
+                    }
+
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
+
+        </table>
+    </div>
+
+</form>
+
