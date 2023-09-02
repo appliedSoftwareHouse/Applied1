@@ -4,9 +4,14 @@
 @{
     var UserName = User.Identity.Name;
     var InventoryTitle = GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
-    var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+    var FMTCurrency = AppRegistry.GetFormatCurrency(UserName);
+    var StockBalance = 0.00M;
+    var TotQty = 0.00M;
+    var TotAmount = 0.00M;
+    var TotTaxAmount = 0.00M;
+    var TotNetAmount = 0.00M;
 
-
+    
 }
 
 <div class="AppHeading-2">
@@ -63,46 +68,58 @@
             <tbody>
                 @if (Model.MyTable != null)
                 {
+
                     @foreach (DataRow Row in Model.MyTable.Rows)
                     {
                         var _Date = Conversion.Row2Date(Row["Vou_Date"]);
-                        var _Qty = Conversion.Row2Money(Row["Qty"]);
-                        var _Rate = Conversion.Row2Money(Row["Rate"]);
+                        var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                        var _Rate = Conversion.ToDecimal(Row["Rate"]);
                         var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
                         var _TaxRate = Conversion.ToDecimal(Row["TaxRate"]);
-                        var _TaxAmount = Conversion.Row2Money(Row["TaxAmount"]);
-                        var _NetAmount = Conversion.Row2Money(Row["NetAmount"]);
+                        var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                        var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
 
+                        TotQty += _Qty;
+                        TotAmount += _Amount;
+                        TotTaxAmount += _TaxAmount;
+                        TotNetAmount += _NetAmount;
+                        StockBalance += _NetAmount;
+
+                        var __Qty = _Qty.ToString(FMTCurrency);
+                        var __Rate = _Rate.ToString(FMTCurrency);
                         var __Amount = _Amount.ToString(FMTCurrency);
                         var __TaxRate = _TaxRate.ToString(FMTCurrency);
-
+                        var __TaxAmount = _TaxAmount.ToString(FMTCurrency);
+                        var __NetAmount = _NetAmount.ToString(FMTCurrency);
+                        var __StockBalance = StockBalance.ToString(FMTCurrency);
 
                         <tr>
                             <td>@_Date</td>
                             <td>@Row["Vou_No"]</td>
                             <td>@Row["Tran"]</td>
-                            <td class="amount">@_Qty</td>
-                            <td class="amount">@_Rate</td>
+                            <td class="amount">@__Qty</td>
+                            <td class="amount">@__Rate</td>
                             <td class="amount">@__Amount</td>
-                            <td class="amount">@_TaxRate</td>
-                            <td class="amount">@_TaxAmount</td>
-                            <td class="amount">@_NetAmount</td>
+                            <td class="amount">@__TaxRate</td>
+                            <td class="amount">@__TaxAmount</td>
+                            <td class="amount">@__NetAmount</td>
+                            <td class="amount">@__StockBalance</td>
                         </tr>
                     }
-
                 }
             </tbody>
-            <tfoot>
-                <tr>
+            <tfoot >
+                <tr style="background-color:antiquewhite">
                     <td></td>
                     <td></td>
                     <td>TOTAL</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td class="amount">@TotQty.ToString(FMTCurrency)</td>
+                    <td class="amount"></td>
+                    <td class="amount">@TotAmount.ToString(FMTCurrency)</td>
+                    <td class="amount"></td>
+                    <td class="amount">@TotTaxAmount.ToString(FMTCurrency)</td>
+                    <td class="amount">@TotNetAmount.ToString(FMTCurrency)</td>
+                    <td class="amount"></td>
                 </tr>
             </tfoot>
 

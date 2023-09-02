@@ -16,6 +16,12 @@ namespace Applied_WebApplication.Pages.Stock
         public List<Message> ErrorMessages { get; set; }
         public string UserName => User.Identity.Name;
 
+
+        public void OnGet()
+        {
+
+        }
+
         public void OnGet(int? ID)
         {
             DataTableClass _Table = new(UserName, Tables.BOMProfile);

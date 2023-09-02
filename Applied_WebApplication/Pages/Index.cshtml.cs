@@ -10,7 +10,7 @@ namespace Applied_WebApplication.Pages
     {
         public string MyMessage = string.Empty;
         public string UserName => User.Identity.Name;
-        public bool IsDBCreate  {get; set;} = true;
+        public bool IsDBCreate  {get; set;} = false;
 
         public void OnGet()
         {

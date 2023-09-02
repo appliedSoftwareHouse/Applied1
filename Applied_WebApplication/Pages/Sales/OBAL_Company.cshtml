@@ -5,6 +5,7 @@
     var UserName = User.Identity.Name;
     var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.Company);
     var TitleCOA = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA);
+    var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
 }
 
 
@@ -81,7 +82,7 @@
             {
                 var _TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Company"]);
                 var _TitleCOA = AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
-                var _Amount = Conversion.Row2Money(Row["Amount"]);
+                var _Amount = Conversion.Row2Money(Row["Amount"],"");
                 <tr>
                     <td>@_TitleCompany</td>
                     <td>@_TitleCOA</td>

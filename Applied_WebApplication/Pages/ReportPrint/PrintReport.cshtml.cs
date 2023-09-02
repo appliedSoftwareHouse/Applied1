@@ -5,11 +5,9 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Data.SQLite;
+using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
-using NPOI.OpenXmlFormats.Dml.Chart;
-using Microsoft.ReportingServices.Interfaces;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -68,43 +66,71 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region General Ledger
-        public IActionResult OnGetGL()
+        public IActionResult OnGetGL(ReportType _ReportType)
         {
 
             ReportFilters Filters = new ReportFilters()
             {
-                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
-                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+                N_COA = (int)GetKey(UserName, "GL_COA", KeyType.Number),
+                Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
-            DataTable tb_Ledger = Ledger.GetGL(UserName, Filters);
-
-            ReportClass reports = new ReportClass
+            DataTable _Table = Ledger.GetGL(UserName, Filters);
+            
+            if (_Table.Rows.Count > 0)
             {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = "Ledger.rdl",
-                ReportDataSet = "dsname_Ledger",
-                ReportSourceData = tb_Ledger,
-                RecordSort = "Vou_Date",
+                var FMTDate = GetFormatDate(UserName);
+                var Date1 = MinDate(Filters.Dt_From, Filters.Dt_To).ToString(FMTDate);
+                var Date2 = MaxDate(Filters.Dt_From, Filters.Dt_To).ToString(FMTDate);
+                var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, Filters.N_COA)}";
+                var _Heading2 = $"From {Date1} to {Date2}";
+                var _CompanyName = UserProfile.GetCompanyName(User);
 
-                OutputFilePath = AppGlobals.PrintedReportPath,
-                OutputFile = "GeneralLedger",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
-            };
 
-            string _Heading1 = "GENERAL LEDGER";
-            string _Heading2 = GetTitle(UserName, Tables.COA, Filters.N_COA);
+                List<ReportParameter> _Parameters = new List<ReportParameter>
+                {
+                    new ReportParameter("CompanyName", CompanyName),
+                    new ReportParameter("Heading1", _Heading1),
+                    new ReportParameter("Heading2", _Heading2),
+                    new ReportParameter("Footer", AppGlobals.ReportFooter)
+                };
 
-            reports.RptParameters.Add("CompanyName", CompanyName);
-            reports.RptParameters.Add("Heading1", _Heading1);
-            reports.RptParameters.Add("Heading2", _Heading2);
-            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+                var Variables = new ReportParameters()
+                {
+                    ReportPath = AppGlobals.ReportPath,
+                    ReportFile = "Ledger.rdl",
+                    OutputPath = AppGlobals.PrintedReportPath,
+                    OutputPathLink = AppGlobals.PrintedReportPathLink,
+                    OutputFile = "Ledger",
+                    CompanyName = _CompanyName,
+                    Heading1 = _Heading1,
+                    Heading2 = _Heading2,
+                    Footer = AppGlobals.ReportFooter,
+                    ReportType = _ReportType,
+                    DataSetName = "dsname_Ledger",
+                    ReportData = _Table,
+                    DataParameters = _Parameters
+                };
 
-            ReportLink = reports.GetReportLink();
-            IsShowPdf = !reports.IsError;
+                var ReportClass = new ExportReport(Variables);
+                ReportClass.Render();
 
+                if (_ReportType == ReportType.Preview)
+                {
+                    ReportLink = ReportClass.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                else
+                {
+                    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
+                }
+
+            }
+            
             return Page();
+
+
         }
         #endregion
 
@@ -134,7 +160,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 if (_Status.Length > 0)
                 {
                     _StatusTitle = DirectoryClass.GetDirectoryValue(UserName, "CompanyStatus", Convert.ToInt32(_Status));
-                    if(_StatusTitle.Length==0) { _StatusTitle = "Un-assigned"; }
+                    if (_StatusTitle.Length == 0) { _StatusTitle = "Un-assigned"; }
                 }
                 var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
                 var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
@@ -199,7 +225,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
             #endregion
 
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText()+" ORDER BY Customer, COA, Vou_Date"));
+            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText() + " ORDER BY Customer, COA, Vou_Date"));
 
             if (_Table.Rows.Count > 0)
             {
@@ -292,7 +318,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _DataSet = new DataSet();
             var _SalesReportName = AppRegistry.GetText(UserName, "SalesReportRDL");
 
-            if(_SalesReportName.Length==0) { _SalesReportName = "SalesInvoiceST"; }
+            if (_SalesReportName.Length == 0) { _SalesReportName = "SalesInvoiceST"; }
 
             _Command.Parameters.AddWithValue("@ID", TranID);
             _Adapter.Fill(_DataSet, "SalesInvoice");

@@ -1,12 +1,4 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using Microsoft.Extensions.Primitives;
-using NPOI.SS.Formula.Functions;
-using NPOI.Util;
-using NPOI.XWPF.UserModel;
-using System.Data.SQLite;
-using System.Net.NetworkInformation;
-using System.Text;
-using static NPOI.HSSF.Util.HSSFColor;
+﻿using System.Text;
 
 namespace Applied_WebApplication.Data
 {
@@ -579,6 +571,63 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Cash Book Ledger
+        public static string BookLedger(string _Filter, string[] Dates, string Book)
+        {
+            string _BookName = string.Empty;
+            if(Book=="Cash") { _BookName = "CashBook"; }
+            if(Book=="Bank") { _BookName = "BankBook"; }
+            
+            var Text = new StringBuilder();
+
+            Text.Append("SELECT * FROM ( ");
+            Text.Append("SELECT ");
+            Text.Append("-1 AS [ID],");
+            Text.Append($"'{Dates[0]}' AS [Vou_date], ");
+            Text.Append("'OBAL' AS [Vou_No], ");
+            Text.Append("'Opening Balance' AS [Description], ");
+            Text.Append("SUM([DR]) AS [DR], ");
+            Text.Append("SUM([CR]) AS [CR], ");
+            Text.Append("'Posted' AS [Status]");
+            Text.Append("FROM (");
+            Text.Append($"SELECT [DR],[CR] FROM [{_BookName}] WHERE Date([Vou_Date]) < Date('{Dates[0]}') ");
+            
+            Text.Append("UNION ALL ");
+            Text.Append("SELECT [CR] AS [DR] ,[CR] AS [DR] ");
+            Text.Append($"FROM [Ledger] WHERE {_Filter} and [Vou_Type] <> '{Book}' ");
+            Text.Append($"AND Date([Vou_Date]) < Date('{Dates[0]}') ");
+            Text.Append(") ");
+            
+            Text.Append("UNION ALL  ");
+            Text.Append("SELECT ");
+            Text.Append("[ID],");
+            Text.Append("[Vou_Date], ");
+            Text.Append("[Vou_No], ");
+            Text.Append("[Description], ");
+            Text.Append("[DR], ");
+            Text.Append("[CR], ");
+            Text.Append("[Status]");
+            Text.Append($"FROM [{_BookName}] ");
+            Text.Append($"WHERE Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
+            
+            Text.Append("UNION ALL ");
+            Text.Append("SELECT ");
+            Text.Append("0 AS [ID],");
+            Text.Append("[Vou_Date], ");
+            Text.Append("[Vou_No], ");
+            Text.Append("[Description], ");
+            Text.Append("[CR] AS [DR] , ");
+            Text.Append("[DR] AS [CR], ");
+            Text.Append("'Posted' AS [Status]");
+            Text.Append("FROM [Ledger] ");
+            Text.Append($"WHERE {_Filter} AND Date([Vou_date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
+            Text.Append($"AND [Vou_type] <> '{Book}' ");
+            Text.Append(") AS [CashBookLedger] ");
+            Text.Append("ORDER BY [Vou_Date],[Vou_No]");
+
+            return Text.ToString();
+        }
+        #endregion
         #region Get New Voucher
         public static string NewVouNo(Tables _Table)
         {
@@ -625,21 +674,6 @@ namespace Applied_WebApplication.Data
         public static string PostSaleReturnList(string? _Filter)
         {
             _Filter ??= string.Empty;
-
-            //SELECT
-            //[ST].[ID],
-            //[ST].[TranID],
-            //[B1].[Vou_No], 
-            //[B1].[Vou_Date], 
-            //[CM].[TITLE],
-            //[B1].[Amount] AS[DR],
-            //00 AS[CR], 
-            //[ST].[Status]
-            //FROM[SaleReturn][ST]
-            //LEFT JOIN[BillReceivable2] [B2] ON[B2].[ID] = [ST].[TranID]
-            //LEFT JOIN[BillReceivable]  [B1] ON[B1].[ID] = [B2].[TranID]
-            //LEFT JOIN[Customers] [CM] ON[B1].[Company] = [CM].[ID]
-
 
             var Text = new StringBuilder();
             Text.Append("SELECT ");

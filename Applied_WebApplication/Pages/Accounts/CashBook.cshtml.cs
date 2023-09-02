@@ -19,7 +19,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public List<Message> ErrorMessages = new();
         public string FMTNumber { get; set; }
-        public string FMTCurrency { get; set; }
+        public string FMTCurrency  { get; set; }
         public string FMTDate { get; set; }
         public string UserName => User.Identity.Name;
 
@@ -39,15 +39,15 @@ namespace Applied_WebApplication.Pages.Accounts
             id ??= Variables.CashBookID;
             if (id == 0) { id = GetNumber(UserName, "CashBookID"); }
 
-            var LedgerClass = new Ledger(UserName);                                                                                     // Create a Class for ledger style record.
-            var Date1 = Variables.MinDate.AddDays(-1).ToString("yyyy-MM-dd");
-            var Date2 = Variables.MaxDate.AddDays(1).ToString("yyyy-MM-dd");
-            LedgerClass.TableName = Tables.CashBook;
-            LedgerClass.Date_From = DateTime.Parse(Date1);
-            LedgerClass.Date_To = DateTime.Parse(Date2);
-            LedgerClass.Sort = "Vou_Date";
-            LedgerClass.Filter = $"BookID={id} AND Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-            Cashbook = LedgerClass.Records;               // Fill cashbook as ledger style
+            var _Date1 = AppFunctions.MinDate(Variables.MinDate, Variables.MaxDate).ToString(DateYMD);
+            var _Date2 = AppFunctions.MaxDate(Variables.MinDate, Variables.MaxDate).ToString(DateYMD);
+
+            var _Filter = $"COA={id}";
+            var _Dates = new string[] { _Date1, _Date2 };
+            var _Book = "Cash";
+
+            Cashbook = DataTableClass.GetTable(UserName, SQLQuery.BookLedger(_Filter, _Dates, _Book));
+
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {
                 DataView BookView = Cashbook.AsDataView();
@@ -68,8 +68,6 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
             FMTNumber = GetText(UserName, "FMT");
-
-
         }
     
         #endregion

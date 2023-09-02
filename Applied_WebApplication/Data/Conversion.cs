@@ -6,21 +6,9 @@ namespace Applied_WebApplication.Data
     public class Conversion
     {
 
-        public static string Row2Money(object _Value)
+        public static string Row2Money(object _Value, string _Format)
         {
-            string _Result = string.Empty;
-            if (_Value == null) { return _Result; }
-
-            try
-            {
-                var Amount = (decimal)_Value;
-                _Result = Amount.ToString(AppRegistry.FormatCurrency1);
-            }
-            catch (Exception)
-            {
-                _Result = "No Value";
-            }
-            return _Result;
+            return ToDecimal(_Value).ToString(_Format);
         }
 
         public static string Row2Date(object _Value)
