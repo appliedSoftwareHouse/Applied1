@@ -429,8 +429,15 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN[Employees]   [E] ON[E].[ID] = [B1].[Employee]");
             Text.Append("LEFT JOIN[Project]         [P] ON[P].[ID] = [B2].[Project]");
             Text.Append("LEFT JOIN[Inventory]     [I] ON[I].[ID] = [B2].[Inventory]");
-            Text.Append("LEFT JOIN[Taxes]           [T] ON[T].[ID] = [B2].[Tax]");
-
+            Text.Append("LEFT JOIN[Taxes]           [T] ON[T].[ID] = [B2].[Tax] ");
+            if (_Filter.Length > 0) { Text.Append($"WHERE {_Filter} "); }
+            return Text.ToString();
+        }
+        public static string PurchaseRegister(string _Filter, string _Order)
+        {
+            var Text = new StringBuilder();
+            Text.Append(PurchaseRegister(_Filter));
+            Text.Append($" ORDER BY {_Order}");
             return Text.ToString();
         }
 
@@ -575,9 +582,9 @@ namespace Applied_WebApplication.Data
         public static string BookLedger(string _Filter, string[] Dates, string Book)
         {
             string _BookName = string.Empty;
-            if(Book=="Cash") { _BookName = "CashBook"; }
-            if(Book=="Bank") { _BookName = "BankBook"; }
-            
+            if (Book == "Cash") { _BookName = "CashBook"; }
+            if (Book == "Bank") { _BookName = "BankBook"; }
+
             var Text = new StringBuilder();
 
             Text.Append("SELECT * FROM ( ");
@@ -591,13 +598,13 @@ namespace Applied_WebApplication.Data
             Text.Append("'Posted' AS [Status]");
             Text.Append("FROM (");
             Text.Append($"SELECT [DR],[CR] FROM [{_BookName}] WHERE Date([Vou_Date]) < Date('{Dates[0]}') ");
-            
+
             Text.Append("UNION ALL ");
             Text.Append("SELECT [CR] AS [DR] ,[CR] AS [DR] ");
             Text.Append($"FROM [Ledger] WHERE {_Filter} and [Vou_Type] <> '{Book}' ");
             Text.Append($"AND Date([Vou_Date]) < Date('{Dates[0]}') ");
             Text.Append(") ");
-            
+
             Text.Append("UNION ALL  ");
             Text.Append("SELECT ");
             Text.Append("[ID],");
@@ -609,7 +616,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[Status]");
             Text.Append($"FROM [{_BookName}] ");
             Text.Append($"WHERE Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
-            
+
             Text.Append("UNION ALL ");
             Text.Append("SELECT ");
             Text.Append("0 AS [ID],");
@@ -628,6 +635,7 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
         #endregion
+
         #region Get New Voucher
         public static string NewVouNo(Tables _Table)
         {
@@ -1013,6 +1021,41 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Bill Payable Combine (Purchased) View
+        public static string view_Purchased()
+        {
+            var Text = new StringBuilder();
+
+            Text.Append("SELECT [B1].[Vou_No], [B1].[Vou_Date], ");
+            Text.Append("[B2].[Inventory], [B2].[Qty], [B2].[Rate], [B2].[Qty] *[B2].[Rate] AS [Amount], ");
+            Text.Append("[T].[Rate] AS [TaxRate], ");
+            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]) * [T].[Rate] AS Float) AS [TaxAmount] " );
+            Text.Append("FROM [BillPayable] [B1] ");
+            Text.Append("LEFT JOIN [BillPayable2] [B2] ON [B2].[TranID] = [B1].[ID] ");
+            Text.Append("LEFT JOIN [Taxes] [T] ON [T].[ID] = [B2].[Tax]; ");
+
+            return Text.ToString();
+        }
+        #endregion
+
+        #region Bill Receivable (SOLD) Combine View
+        public static string view_Sold()
+        {
+            var Text = new StringBuilder();
+            Text.Append("");
+
+
+            Text.Append("SELECT [B1].[Vou_No], [B1].[Vou_Date], ");
+            Text.Append("[B2].[Inventory], [B2].[Qty], [B2].[Rate], [B2].[Qty] *[B2].[Rate] AS [Amount], ");
+            Text.Append("[T].[Rate] AS [TaxRate], ");
+            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]) * [T].[Rate] AS Float) AS [TaxAmount] ");
+            Text.Append("FROM [BillReceivable] [B1] ");
+            Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[TranID] = [B1].[ID] ");
+            Text.Append("LEFT JOIN [Taxes] [T] ON [T].[ID] = [B2].[Tax]; ");
+
+            return Text.ToString();
+        }
+        #endregion
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

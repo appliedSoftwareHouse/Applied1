@@ -9,6 +9,7 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 
+
 namespace Applied_WebApplication.Pages.ReportPrint
 {
     public class COAListModel : PageModel
@@ -362,7 +363,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetSaleRegister()
         {
-
             SalesReportsModel model = new();
             model.Variables = new()
             {
@@ -404,6 +404,56 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
         }
         #endregion
+
+        #region Purchase Register
+        public IActionResult OnGetPurchaseRegister()
+        {
+            PurchaseReportsModel model = new();
+            model.Variables = new()
+            {
+                StartDate = AppRegistry.GetDate(UserName, "pRptDate1"),
+                EndDate = AppRegistry.GetDate(UserName, "pRptDate2"),
+                AllCompany = AppRegistry.GetBool(UserName, "pRptComAll"),
+                AllInventory = AppRegistry.GetBool(UserName, "pRptStockAll"),
+                CompanyID = AppRegistry.GetNumber(UserName, "pRptCompany"),
+                InventoryID = AppRegistry.GetNumber(UserName, "pRptInventory"),
+                Heading1 = AppRegistry.GetText(UserName, "pRptHeading1"),
+                Heading2 = AppRegistry.GetText(UserName, "pRptHeading2"),
+                ReportFile = AppRegistry.GetText(UserName, "pRptName"),
+            };
+
+            var _Filter = model.GetFilter(model.Variables);
+            var _OrderBy = "[Vou_Date],[Vou_No]";
+            var _SQLQuery = SQLQuery.PurchaseRegister(_Filter);
+            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, _OrderBy);
+            var PurchaseRegister = new ReportClass
+            {
+                AppUser = User,
+                ReportFilePath = AppGlobals.ReportPath,
+                ReportFile = model.Variables.ReportFile,
+                ReportDataSet = "ds_PurchaseRegister",
+                ReportSourceData = _SourceTable,
+                RecordSort = "[Company], [Vou_Date], [Vou_No]",
+
+                OutputFilePath = AppGlobals.PrintedReportPath,
+                OutputFile = "PurchaseRegister",
+                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+            };
+
+            PurchaseRegister.RptParameters.Add("CompanyName", CompanyName);
+            PurchaseRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
+            PurchaseRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
+            PurchaseRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+            ReportLink = PurchaseRegister.GetReportLink();
+            IsShowPdf = !PurchaseRegister.IsError;
+            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(PurchaseRegister.MyMessage)); }
+            return Page();
+
+
+        }
+        #endregion
+
+        
 
         #region ExpenseSheet
 

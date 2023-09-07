@@ -22,10 +22,9 @@ public enum Tables
     view_BillReceivable = 116,
     OBALCompany = 117,
     JVList = 118,
-    ExpenseSheet = 119,
     SaleReturn = 120,
     BankBook = 121,
-   
+
 
     Customers = 201,
     City = 202,
@@ -40,14 +39,15 @@ public enum Tables
     Inv_Packing = 304,
     Inv_UOM = 305,
     FinishedGoods = 306,
-    SamiFinished = 307,
     OBALStock = 308,
     BOMProfile = 309,
     BOMProfile2 = 310,
     StockPositionData = 311,
     StockPosition = 312,
     StockPositionSUM = 313,
-   
+    view_Purchased = 314,
+    view_Sold = 315,
+
     Ledger = 401,
     view_Ledger = 402,
     CashBookTitles = 403,
@@ -102,9 +102,9 @@ public enum PostType
     Receipt = 7,
     JV = 8,
     SaleReturn = 9,
-    BOM =10
-    
-    
+    BOM = 10
+
+
 }
 public enum VoucherStatus
 {
@@ -134,14 +134,14 @@ public enum PrintOption
 {
     Preview = 0,
     PDF = 1,
-    Excel=2,
-    Word=3,
-    HTML=4
+    Excel = 2,
+    Word = 3,
+    HTML = 4
 }
 
 public enum TBOption
 {
-    All=0,
-    UptoDate=1,
-    Monthly=2,
+    All = 0,
+    UptoDate = 1,
+    Monthly = 2,
 }

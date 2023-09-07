@@ -19,6 +19,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public int CompanyID { get; set; }
         public int InventoryID { get; set; }
         public DataTable SourceTable { get; set; }
+        public DataTable Customers { get; set; }
+        public DataTable Inventory { get; set; }
 
 
         public void OnGet()
@@ -33,15 +35,19 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
             };
 
-
+            Customers = DataTableClass.GetTable(UserName, Tables.Customers, "", "[Title]");
+            Inventory = DataTableClass.GetTable(UserName, Tables.Inventory, "", "[Title]");
 
             var _Filter = GetFilter(Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
 
-
         }
-
+        public IActionResult OnPostRefresh()
+        {
+            SetKeys();
+            return RedirectToPage();
+        }
         internal string GetFilter(Parameters variables)
         {
             var Date1 = AppRegistry.YMD(variables.StartDate);
@@ -61,26 +67,22 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
 
             if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-            Text.Append($"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}'");
+            Text.Append($"Date(Vou_Date)>=Date('{Date1}') AND Date(Vou_Date)<=Date('{Date2}')");
 
             return Text.ToString();
         }
-
         public IActionResult OnPostPrint()
         {
             SetKeys();
             AppRegistry.SetKey(UserName, "sRptName", "SaleRegister.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
-
         public IActionResult OnPostPrintList()
         {
             SetKeys();
             AppRegistry.SetKey(UserName, "sRptName", "SaleRegister2.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
-
-
         public IActionResult OnPost()
         {
            
@@ -88,7 +90,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return RedirectToPage();
 
         }
-
         private void SetKeys()
         {
             if (Variables.CompanyID == 0) { Variables.AllCompany = true; } else { Variables.AllCompany = false; }
@@ -110,8 +111,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "sRptHeading2", _Heading2, KeyType.Text);
 
         }
-
-
         public class Parameters
         {
             public DateTime StartDate { get; set; }

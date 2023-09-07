@@ -32,7 +32,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             };
 
             var _Filter = GetFilter(Variables);
-            var _SQLQuery = SQLQuery.PurchaseRegister(_Filter);
+            var _OrderBy = "[Vou_Date],[Vou_No]";
+            var _SQLQuery = SQLQuery.PurchaseRegister(_Filter,_OrderBy);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
 
 
@@ -57,7 +58,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
 
             if (Text.ToString().Length > 0) { Text.Append(" AND "); }
-            Text.Append($"Vou_Date>='{Date1}' AND Vou_Date<='{Date2}'");
+            Text.Append($"Date(Vou_Date)>=Date('{Date1}') AND Date(Vou_Date)<=Date('{Date2}')");
 
             return Text.ToString();
         }

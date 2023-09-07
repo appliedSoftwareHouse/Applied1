@@ -95,7 +95,7 @@
         <div class="p-2 d-inline-block">
             <input type="submit" id="btn-menu" class="btn btn-primary" value="Bill Payable" asp-page=".\Accounts\BillPayableList" formmethod="get" />
         </div>
-        
+
         <div class="p-2 d-inline-block">
             <input type="submit" id="btn-menu" class="btn btn-primary" value="Ledgers" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
         </div>
@@ -113,3 +113,14 @@
         </div>
     </div>
 </form>
+
+
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+}
+else
+{
+    <h5>No Error</h5>
+}

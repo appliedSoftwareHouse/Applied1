@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using ExcelClass;
+using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages
 {
@@ -9,8 +10,9 @@ namespace Applied_WebApplication.Pages
     public class IndexModel : PageModel
     {
         public string MyMessage = string.Empty;
+        public List<Message> ErrorMessages { get; set; }
         public string UserName => User.Identity.Name;
-        public bool IsDBCreate  {get; set;} = false;
+        public bool IsDBCreate  {get; set;} = true;
 
         public void OnGet()
         {
@@ -18,6 +20,7 @@ namespace Applied_WebApplication.Pages
             {
                 CreateTablesClass CreateDataTables = new(User);
                 CreateDataTables.CreateTables();
+                ErrorMessages = CreateDataTables.MyMessages;
             }
 
         }

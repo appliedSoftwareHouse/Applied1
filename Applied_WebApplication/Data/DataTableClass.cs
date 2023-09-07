@@ -1,4 +1,6 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Mvc.Formatters;
+using NPOI.OpenXmlFormats.Spreadsheet;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
@@ -133,84 +135,11 @@ namespace Applied_WebApplication.Data
                 MyMessage = e.Message;
             }
         }
-        public static DataTable GetTable(string UserName, Tables _Table)                      // Load Database 
-        {
-            SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
-            if (_Table.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
-            if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-            SQLiteCommand _Command = new("SELECT * FROM [" + _Table + "]", MyConnection);
-            SQLiteDataAdapter _Adapter = new(_Command);
-            DataSet _DataSet = new();
-            _Adapter.Fill(_DataSet, _Table.ToString());
-            DataTable datatable;
-            if (_DataSet.Tables.Count == 1)
-            {
-                datatable = _DataSet.Tables[0];
-            }
-            else { datatable = new DataTable(); }
-            return datatable;
-        }
-        public static DataTable GetTable(string UserName, string SQLQuery)
-        {
-            return GetTable(UserName, SQLQuery, "");
-        }
-        public static DataTable GetTable(string UserName, string _Text, string? _Sort)                      // Load Database 
-        {
-            DataTable _Table = new DataTable();
-            if (_Text.Length > 0)
-            {
-                try
-                {
-                    _Sort ??= string.Empty;
-                    if (_Sort.Length > 0) { _Text = string.Concat(_Text, " ORDER BY ", _Sort); }
-                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
 
-                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-                    SQLiteCommand _Command = new(_Text, MyConnection);
-                    SQLiteDataAdapter _Adapter = new(_Command);
-                    DataSet _DataSet = new();
-                    _Adapter.Fill(_DataSet, "Table");
 
-                    if (_DataSet.Tables.Count == 1)
-                    {
-                        _Table = _DataSet.Tables[0];
-                    }
-                }
-                catch (Exception)
-                {
-                    _Table = new DataTable();
-                }
-            }
-            return _Table;
-        }
-        public static DataTable GetTable(string UserName, string _Text, SQLiteParameter _ID)                      // Load Database with ID Parameter
-        {
-            DataTable _Table = new DataTable();
-            if (_Text.Length > 0)
-            {
-                try
-                {
-                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
-                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-                    SQLiteCommand _Command = new(_Text, MyConnection);
-                    SQLiteDataAdapter _Adapter = new(_Command);
-                    DataSet _DataSet = new();
-                    _Command.Parameters.Add(_ID);
-                    _Adapter.Fill(_DataSet);
 
-                    if (_DataSet.Tables.Count == 1)
-                    {
-                        _Table = _DataSet.Tables[0];
-                    }
-                }
-                catch (Exception)
-                {
-                    _Table = new DataTable();
-                }
-            }
-            return _Table;
-        }
 
+        #region  Get Table after Class Constructed
         private void GetDataTable()
         {
             if (MyTableName == null) { return; }                 // Exit here if table name is not specified.
@@ -248,7 +177,6 @@ namespace Applied_WebApplication.Data
             }
             return;
         }
-
         private void GetDataTable(string _Text)
         {
             MyTableName ??= "MyTable";                           // Exit here if table name is not specified.
@@ -285,18 +213,140 @@ namespace Applied_WebApplication.Data
             }
             return;
         }
-        internal DataTable GetTable(string filter)
-        {
-            MyDataView.RowFilter = filter;
-            return MyDataView.ToTable();
-        }
+        //private DataTable GetTable(string filter)
+        //{
+        //    MyDataView.RowFilter = filter;
+        //    return MyDataView.ToTable();
+        //}
+        #endregion
 
+        #endregion
+
+        #region Get Table by Static Methods.
+        public static DataTable GetTable(string UserName, Tables _Table)                      // Load Database 
+        {
+            try
+            {
+                SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+                if (_Table.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
+                if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                SQLiteCommand _Command = new("SELECT * FROM [" + _Table + "]", MyConnection);
+                SQLiteDataAdapter _Adapter = new(_Command);
+                DataSet _DataSet = new();
+                _Adapter.Fill(_DataSet, _Table.ToString());
+                DataTable datatable;
+                if (_DataSet.Tables.Count == 1)
+                {
+                    datatable = _DataSet.Tables[0];
+                }
+                else { datatable = new DataTable(); }
+                return datatable;
+            }
+            catch (Exception)
+            {
+                return new DataTable();
+            }
+        }
+        public static DataTable GetTable(string UserName, Tables _Table, string Filter)
+        {
+            return GetTable(UserName, _Table, Filter, "");
+        }
+        public static DataTable GetTable(string UserName, Tables _Table, string Filter, string OrderBy)
+        {
+            var _Filter = string.Empty;
+            var _OrderBy = string.Empty;
+
+            if(Filter.Length > 0) { _Filter = $" WHERE {Filter}"; }
+            if(OrderBy.Length > 0) { _OrderBy = $" Order by {OrderBy}"; }
+
+            try
+            {
+                SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+                if (_Table.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
+                if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                SQLiteCommand _Command = new( $"SELECT * FROM [{_Table}] {_Filter} {_OrderBy} ", MyConnection);
+                SQLiteDataAdapter _Adapter = new(_Command);
+                DataSet _DataSet = new();
+                _Adapter.Fill(_DataSet, _Table.ToString());
+                DataTable datatable;
+                if (_DataSet.Tables.Count == 1)
+                {
+                    datatable = _DataSet.Tables[0];
+                }
+                else { datatable = new DataTable(); }
+                return datatable;
+            }
+            catch (Exception)
+            {
+                return new DataTable();
+            }
+        }
+        public static DataTable GetTable(string UserName, string SQLQuery)
+        {
+            return GetTable(UserName, SQLQuery, "");
+        }
+        public static DataTable GetTable(string UserName, string SQLQuery, string? _Sort)                                    // Load Database 
+        {
+            DataTable _Table = new DataTable();
+            if (SQLQuery.Length > 0)
+            {
+                try
+                {
+                    _Sort ??= string.Empty;
+                    if (_Sort.Length > 0) { SQLQuery = string.Concat(SQLQuery, " ORDER BY ", _Sort); }
+                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+
+                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                    SQLiteCommand _Command = new(SQLQuery, MyConnection);
+                    SQLiteDataAdapter _Adapter = new(_Command);
+                    DataSet _DataSet = new();
+                    _Adapter.Fill(_DataSet, "Table");
+
+                    if (_DataSet.Tables.Count == 1)
+                    {
+                        _Table = _DataSet.Tables[0];
+                    }
+                }
+                catch (Exception)
+                {
+                    _Table = new DataTable();
+                }
+            }
+            return _Table;
+        }
+        public static DataTable GetTable(string UserName, string SQLQuery, SQLiteParameter _ID)                      // Load Database with ID Parameter
+        {
+            DataTable _Table = new DataTable();
+            if (SQLQuery.Length > 0)
+            {
+                try
+                {
+                    SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
+                    if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
+                    SQLiteCommand _Command = new(SQLQuery, MyConnection);
+                    SQLiteDataAdapter _Adapter = new(_Command);
+                    DataSet _DataSet = new();
+                    _Command.Parameters.Add(_ID);
+                    _Adapter.Fill(_DataSet);
+
+                    if (_DataSet.Tables.Count == 1)
+                    {
+                        _Table = _DataSet.Tables[0];
+                    }
+                }
+                catch (Exception)
+                {
+                    _Table = new DataTable();
+                }
+            }
+            return _Table;
+        }
         #endregion
 
         #region New Row / Refresh
         public DataRow NewRecord()
         {
-            if(MyDataTable == null) { return null; }
+            if (MyDataTable == null) { return null; }
             CurrentRow = MyDataTable.NewRow();
 
             foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
@@ -564,7 +614,7 @@ namespace Applied_WebApplication.Data
                 if ((bool)Validate)
                 {
                     var IsValidated = TableValidation.Validation(CurrentRow);
-                    if(!IsValidated)
+                    if (!IsValidated)
                     {
                         IsError = true;
                         return;
@@ -680,10 +730,10 @@ namespace Applied_WebApplication.Data
 
         #region Static Methods
 
-        public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
-        {
-            return GetTable(UserName, _Table, _Filter, ConnectionClass.AppConnection(UserName));
-        }
+        //public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
+        //{
+        //    return GetTable(UserName, _Table, _Filter, ConnectionClass.AppConnection(UserName));
+        //}
 
         public static DataTable GetTable(string UserName, Tables _Table, string _Filter, SQLiteConnection _Connection)
         {

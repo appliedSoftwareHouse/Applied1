@@ -1,4 +1,6 @@
 ﻿using Applied_WebApplication.Pages.Stock;
+using NPOI.Util;
+using System.Data;
 using System.Data.SQLite;
 using System.Reflection.Metadata;
 using System.Security.Claims;
@@ -13,8 +15,6 @@ namespace Applied_WebApplication.Data
         private string UserName { get; set; }
         public Array TableList { get; set; }
         public List<Message> MyMessages { get; set; }
-       
-
 
         #region Constructor
         public CreateTablesClass(string _UserName, string _TableName)
@@ -135,12 +135,32 @@ namespace Applied_WebApplication.Data
 
         public void CreateTables()
         {
-            foreach (object Table in TableList)
+            var _SQLQuery = $"SELECT name FROM sqlite_master WHERE type in('table', 'view') ORDER BY 1";
+            var _TablesName = DataTableClass.GetTable(UserName, _SQLQuery);
+            var _TableView = _TablesName.AsDataView();
+            MyMessages = new();
+
+            foreach (Tables EnumTable in TableList)
             {
-                AppRegistry.SetKey(UserName, "Tbs_Created", 0, KeyType.Number);
-                CreateTable(UserName, (Tables)Table);
+                if ((int)EnumTable > 8999) { continue; }                      // Skip on Temporary Table Names. 
+
+                bool IsTableFound;
+                var _TargetTable = EnumTable;
+                var _Table = EnumTable.ToString();
+
+                _TableView.RowFilter = $"Name='{_Table}'";
+                if (_TableView.Count == 0) { IsTableFound = false; } else { IsTableFound = true; }
+
+                if (!IsTableFound)
+                {
+                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}",ConsoleColor.Yellow));
+                    CreateTable(UserName, _TargetTable);
+
+                }
             }
         }
+
+
         #endregion
 
         #region Stock Position Data
@@ -192,10 +212,32 @@ namespace Applied_WebApplication.Data
             Text.Append(SQLQuery.Chk_BillReceivable2());
             var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
+
         }
         #endregion
 
+        #region Purchased
 
+        private static void Purchased(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [view_Purchased] AS ");
+            Text.Append(SQLQuery.view_Purchased());
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+        #endregion
+
+        private static void Sold(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [view_Sold] AS ");
+            Text.Append(SQLQuery.view_Purchased());
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        //========================================================================= CREATE
         #region Create DataTable into Source Data
 
         public static void CreateTable(string UserName, Tables _Table)
@@ -239,6 +281,13 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.BillPayable2:
                     break;
+                case Tables.view_Purchased:
+                    Purchased(UserName);
+                    break;
+                case Tables.view_Sold:
+                    Sold(UserName);
+                    break;
+
                 case Tables.TB:
                     break;
                 case Tables.BillReceivable:
@@ -253,9 +302,6 @@ namespace Applied_WebApplication.Data
                 case Tables.OBALCompany:
                     break;
                 case Tables.JVList:
-                    break;
-                case Tables.ExpenseSheet:
-
                     break;
                 case Tables.Customers:
                     break;
@@ -282,8 +328,6 @@ namespace Applied_WebApplication.Data
                 case Tables.Inv_UOM:
                     break;
                 case Tables.FinishedGoods:
-                    break;
-                case Tables.SamiFinished:
                     break;
                 case Tables.OBALStock:
                     break;
@@ -347,7 +391,8 @@ namespace Applied_WebApplication.Data
             }
         }
 
-        
+
+
         #endregion
     }
 }

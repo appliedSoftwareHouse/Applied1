@@ -40,3 +40,7 @@
     font-size: small;
     color: rebeccapurple
 }
+
+.table-list, tfoot {
+    background-color:antiquewhite;
+}

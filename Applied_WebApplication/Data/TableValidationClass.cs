@@ -17,12 +17,6 @@ namespace Applied_WebApplication.Data
         private DataView MyDataView { get; set; }
         public int Count => MyMessages.Count;
 
-
-
-        //private static DateTime FiscalFrom => AppRegistry.GetFiscalFrom(UserName);
-        //private static DateTime FiscalTo => AppRegistry.GetFiscalTo(UserName);
-
-
         public TableValidationClass()
         {
             MyDataTable = new DataTable();
@@ -40,8 +34,6 @@ namespace Applied_WebApplication.Data
                 SQLAction = string.Empty;
             }
         }
-
-
 
         public bool Validation(DataRow Row, CommandAction _SQLAction)
         {

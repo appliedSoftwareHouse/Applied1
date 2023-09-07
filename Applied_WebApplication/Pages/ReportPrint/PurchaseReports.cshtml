@@ -5,7 +5,13 @@
     var UserName = User.Identity.Name;
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
-    var DateFormat = AppRegistry.FormatDate;
+    var DateFormat = AppRegistry.GetFormatDate(UserName);
+    var NumberFormat = AppRegistry.GetFormatCurrency(UserName);
+    var TotQty = 0.00M;
+    var TotAmount = 0.00M;
+    var TotTaxAmount = 0.00M;
+    var TotNetAmount = 0.00M;
+
 }
 
 <style>
@@ -20,7 +26,7 @@
 </style>
 
 <div class="AppHeading-2">
-    <h5 class="TextCenter">SALES REPORTS</h5>
+    <h5 class="TextCenter">PURCHASE REGISTER</h5>
 </div>
 
 <form method="post">
@@ -28,19 +34,19 @@
 
 
     <div class="container">
-        <div class="row">
+        <div class="row d-flex mb-2">
 
-            <div class="col-md-2">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="StartDate">Start</span>
-                    <input type="date" class="form-control" asp-for="@Model.Variables.StartDate"
+            <div class="col date-width ">
+                <div class="input-group date-group ">
+                    <span class="input-group-text date-title" id="StartDate">Start</span>
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
                            placeholder="Start Date" aria-label="Start Date" aria-describedby="txtVouDate">
                 </div>
             </div>
 
-            <div class="col-md-2">
+            <div class="col">
                 <div class="input-group mb-3">
-                    <input type="date" class="form-control" asp-for="@Model.Variables.EndDate">
+                    <input type="date" class="form-control dt-width" asp-for="@Model.Variables.EndDate">
                     <span class="input-group-text" id="Enddate">End</span>
                 </div>
             </div>
@@ -65,8 +71,8 @@
                 </select>
             </div>
 
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary justify-content-end">REFRESH 6</button>
+            <div class="col-md">
+                <button type="submit" class="btn btn-primary justify-content-end">REFRESH</button>
             </div>
         </div>
     </div>
@@ -86,7 +92,7 @@
                     <div class="col-2">
                         <button class="btn btn-primary btn-sm" type="submit"
                                 asp-page-handler="PrintList">
-                            <i class="bi bi-printer"> PRINT 2</i>
+                            <i class="bi bi-printer"> PRINT</i>
                         </button>
                     </div>
                 </div>
@@ -96,12 +102,13 @@
             <table>
                 <thead>
                     <tr>
-                        <th style="width:5%">SNo.</th>
-                        <th style="width:10%">Vou. No</th>
-                        <th style="width:10%">Vou. Date</th>
-                        <th style="width:25%">Stock Title</th>
+                        <th style="width:8%">SNo.</th>
+                        <th style="width:6%">Vou. No</th>
+                        <th style="width:7%">Vou. Date</th>
+                        <th style="width:15%">Supplier Name</th>
+                        <th style="width:15%">Stock Title</th>
                         <th style="width:10%">Quantity</th>
-                        <th style="width:10%">Rate</th>
+                        <th style="width:8%">Rate</th>
                         <th style="width:10%">Amount</th>
                         <th style="width:10%">Tax Amount</th>
                         <th style="width:10%">Net Amount</th>
@@ -111,22 +118,45 @@
                     @foreach (DataRow Row in Model.SourceTable.Rows)
                     {
                         var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                        var _Qty = Conversion.ToDecimal(Row["Qty"]).ToString(NumberFormat);
+                        var _Rate = Conversion.ToDecimal(Row["Rate"]).ToString(NumberFormat);
+                        var _Amount = Conversion.ToDecimal(Row["Amount"]).ToString(NumberFormat);
+                        var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]).ToString(NumberFormat);
+                        var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]).ToString(NumberFormat);
 
+                        TotQty += Conversion.ToDecimal(Row["Qty"]);
+                        TotAmount += Conversion.ToDecimal(Row["Amount"]);
+                        TotTaxAmount += Conversion.ToDecimal(Row["TaxAmount"]);
+                        TotNetAmount += Conversion.ToDecimal(Row["NetAmount"]);
 
                         <tr>
                             <td>@Row["Sr_No"]</td>
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
+                            <td>@Row["CompanyName"]</td>
                             <td>@Row["StockTitle"]</td>
-                            <td>@Row["Qty"]</td>
-                            <td>@Row["Rate"]</td>
-                            <td>@Row["Amount"]</td>
-                            <td>@Row["TaxAmount"]</td>
-                            <td>@Row["NetAmount"]</td>
+                            <td class="amount">@_Qty</td>
+                            <td class="amount">@_Rate</td>
+                            <td class="amount">@_Amount</td>
+                            <td class="amount">@_TaxAmount</td>
+                            <td class="amount">@_NetAmount</td>
                         </tr>
                     }
-
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>TOTAL</td>
+                        <td class="amount">@TotQty.ToString(NumberFormat)</td>
+                        <td></td>
+                        <td class="amount">@TotAmount.ToString(NumberFormat)</td>
+                        <td class="amount">@TotTaxAmount.ToString(NumberFormat)</td>
+                        <td class="amount">@TotNetAmount.ToString(NumberFormat)</td>
+                    </tr>
+                </tfoot>
             </table>
 
 
