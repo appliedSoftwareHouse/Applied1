@@ -80,18 +80,6 @@ namespace Applied_WebApplication.Data
             return message;
         }
 
-
-
-
-        public class Message
-        {
-
-            public bool Success { get; set; } = false;
-            public string Msg { get; set; } = string.Empty;
-            public int ErrorID { get; set; } = 0;
-            public Color Colour { get; set; } = Color.Orange;
-        }
-
         private static Color GetColor(ConsoleColor _Color)
         {
             return _Color switch
@@ -117,4 +105,14 @@ namespace Applied_WebApplication.Data
         }
 
     }
+
+    public class Message
+    {
+
+        public bool Success { get; set; } = false;
+        public string Msg { get; set; } = string.Empty;
+        public int ErrorID { get; set; } = 0;
+        public Color Colour { get; set; } = Color.Orange;
+    }
+
 }

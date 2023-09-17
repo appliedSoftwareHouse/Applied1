@@ -44,10 +44,7 @@ namespace Applied_WebApplication.Pages.Sales
                     COA = (int)OBalCompany.CurrentRow["COA"],
                     Amount = (decimal)OBalCompany.CurrentRow["Amount"]
                 };
-
             }
-
-
         }
 
         public void OnPostSave()
@@ -99,8 +96,6 @@ namespace Applied_WebApplication.Pages.Sales
 
             return RedirectToPage("../Index");
         }
-
-
 
         #region Parameters
         public class MyParameters

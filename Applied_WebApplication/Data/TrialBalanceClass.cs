@@ -96,6 +96,11 @@ namespace Applied_WebApplication.Data
             return _Table;
         }
 
+       
+
+       
+
+        #region DownLoad
         public DataTable TB_All()
         {
             DataTable _Table;
@@ -133,6 +138,6 @@ namespace Applied_WebApplication.Data
 
             //return File(_RenderedReport, _mimeType, MyReportClass.OutputFile + _Extention);
         }
-
+        #endregion
     }
 }

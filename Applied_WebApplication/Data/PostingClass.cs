@@ -1,7 +1,4 @@
-﻿using Applied_WebApplication.Pages;
-using NPOI.XSSF.UserModel.Charts;
-using NPOI.XWPF.UserModel;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using static Applied_WebApplication.Data.MessageClass;
@@ -85,9 +82,9 @@ namespace Applied_WebApplication.Data
             {
                 tb_Ledger.TableValidation.SQLAction = CommandAction.Insert.ToString();
                 tb_Ledger.CurrentRow = VoucherRows[0];                  // Debit Transaction
-                tb_Ledger.Save(false);
+                tb_Ledger.Save();
                 tb_Ledger.CurrentRow = VoucherRows[1];                  // Credit Transaction.
-                tb_Ledger.Save(false);
+                tb_Ledger.Save();
                 DataTableClass.Replace(UserName, Tables.CashBook, id, "Status", VoucherStatus.Posted.ToString());
             }
 
@@ -723,8 +720,46 @@ namespace Applied_WebApplication.Data
         {
             List<Message> MyMessages = new List<Message>();
 
-            DataTableClass OBALCompany = new(UserName, Tables.OBALCompany);
-            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+            var Currency = AppRegistry.GetText(UserName, "CurrencySign");
+            var CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency");
+            var COA_DR = AppRegistry.GetNumber(UserName, "OBCompanyDR");
+            var COA_CR = AppRegistry.GetNumber(UserName, "OBCompanyCR");
+            var OBCOA = 0;                                                                                                  // COA for DR or CR subject to O Bal Amount.
+
+            if(COA_DR ==0 || COA_CR == 0)
+            {
+                MyMessages.Add(SetMessage("Chart of Accounts is not valid to post company balances."));
+                return MyMessages;
+            }
+
+            DataTableClass OBALCompany = new(UserName, SQLQuery.OBALCompany());
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "Vou_Type='OBalCom'");
+
+            #region Delete Ledger Records, if not exist in Opening Balance Data Table.
+            var Records = 0;
+            foreach(DataRow Row in tb_Ledger.Rows)
+            {
+                if ((int)Row["Customer"]==39)
+                {
+                    MyMessages.Add(SetMessage($"ID={Row["ID"]}"));
+                }
+
+                if ((string)Row["Vou_Type"] != "OBalCom") { continue; }
+
+                OBALCompany.MyDataView.RowFilter = $"Company={Row["Customer"]}";
+                if(OBALCompany.MyDataView.Count>0) { continue; }
+                else
+                {
+                    tb_Ledger.SeekRecord((int)Row["ID"]);
+                    tb_Ledger.Delete();
+                    Records++;
+                    var CustomerName = AppFunctions.GetTitle(UserName, Tables.Customers, (int)Row["Customer"]);
+                    var CustomerAmount = ((decimal)Row["DR"] - (decimal)Row["CR"]);
+                    MyMessages.Add(SetMessage($" {Records}: {CustomerName} of {Currency} {CustomerAmount} Transaction DELETED.", ConsoleColor.Red));
+                }
+            }
+            MyMessages.Add(SetMessage($"Total {Records} record(s) deleted."));
+            #endregion
 
             if (OBALCompany.Count == 0)
             {
@@ -733,11 +768,12 @@ namespace Applied_WebApplication.Data
             }
 
             DateTime Vou_Date = (DateTime)AppRegistry.GetKey(UserName, "OBDate", KeyType.Date);
-            int OBCom = (int)AppRegistry.GetKey(UserName, "OBCompany", KeyType.Number);
             decimal _DR, _CR; List<DataRow> Voucher;
 
+            Records = 0;
             foreach (DataRow Row in OBALCompany.Rows)
             {
+                #region Voucher Setup
                 var TranID = Row["ID"];
                 Voucher = new();
                 if ((decimal)Row["Amount"] >= 0) { _DR = (decimal)Row["Amount"]; _CR = 0.00M; }
@@ -765,7 +801,9 @@ namespace Applied_WebApplication.Data
                     Voucher[1]["TranID"] = (int)TranID;
 
                 }
+                #endregion
 
+                #region Voucher Transactions
                 Voucher[0]["Vou_Type"] = VoucherType.OBalCom.ToString();
                 Voucher[0]["Vou_Date"] = Vou_Date;
                 Voucher[0]["Vou_No"] = VoucherType.OBalCom.ToString();
@@ -778,8 +816,11 @@ namespace Applied_WebApplication.Data
                 Voucher[0]["Customer"] = Row["Company"];
                 Voucher[0]["Project"] = Row["Project"];
                 Voucher[0]["Employee"] = Row["Employee"];
-                Voucher[0]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                Voucher[0]["Description"] = string.Concat("Company Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
                 Voucher[0]["Comments"] = DBNull.Value;
+
+                if(_DR==0) { OBCOA = COA_DR; }           // Assign DR COA if Debit amount is zero
+                if(_CR==0) { OBCOA = COA_CR; }            // Assign CR COA if Credit amount is zero
 
                 Voucher[1]["Vou_Type"] = VoucherType.OBalCom.ToString();
                 Voucher[1]["Vou_Date"] = Vou_Date;
@@ -787,15 +828,17 @@ namespace Applied_WebApplication.Data
                 Voucher[1]["SR_No"] = 2;
                 Voucher[1]["Ref_No"] = "OBalance";
                 Voucher[1]["BookID"] = 0;
-                Voucher[1]["COA"] = OBCom;
+                Voucher[1]["COA"] = OBCOA;
                 Voucher[1]["DR"] = _CR;                                           // DR equal of CR of first entry
                 Voucher[1]["CR"] = _DR;                                           // CR equal of DR of first entry
                 Voucher[1]["Customer"] = Row["Company"];
                 Voucher[1]["Project"] = Row["Project"];
                 Voucher[1]["Employee"] = Row["Employee"];
-                Voucher[1]["Description"] = string.Concat("Stock Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
+                Voucher[1]["Description"] = string.Concat("Company Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
                 Voucher[1]["Comments"] = DBNull.Value;
+                #endregion
 
+                #region Save Voucher
 
                 // Validation of Voucher;
                 bool IsValidated1 = tb_Ledger.TableValidation.Validation(Voucher[0]);
@@ -805,8 +848,12 @@ namespace Applied_WebApplication.Data
                 {
                     tb_Ledger.CurrentRow = Voucher[0]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
                     tb_Ledger.CurrentRow = Voucher[1]; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.TableValidation.MyMessages);
+                    Records++;
+                    MyMessages.Add(SetMessage($" {Records}: {Row["CompanyName"]} of {Currency} {_DR.ToString(CurrencyFormat)} voucher posted.", ConsoleColor.Green));
                 }
+                #endregion
             }
+            MyMessages.Add(SetMessage($"Total {Records} records posted."));
             return MyMessages;
         }
 
@@ -819,7 +866,7 @@ namespace Applied_WebApplication.Data
 
             if (OBALStock.Count == 0)
             {
-                MyMessages.Add(MessageClass.SetMessage("No Record Found."));
+                MyMessages.Add(SetMessage("No Record Found."));
                 return MyMessages;
             }
 

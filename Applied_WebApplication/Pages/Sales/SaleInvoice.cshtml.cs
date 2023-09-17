@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Text;
-using static Applied_WebApplication.Data.MessageClass;
+
 
 namespace Applied_WebApplication.Pages.Sales
 {
@@ -38,7 +38,6 @@ namespace Applied_WebApplication.Pages.Sales
 
         //public void OnGet()
         //{
-
         //}
 
 
@@ -48,8 +47,10 @@ namespace Applied_WebApplication.Pages.Sales
 
             _Filter1 = $"Vou_No='{Vou_No}'";
             TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, true);
+            TempInvoice11.TempTableFlash();
             _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
             TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, true);
+            TempInvoice22.TempTableFlash();
 
             Row1 = TempInvoice11.CurrentRow;
             Row2 = TempInvoice22.CurrentRow;

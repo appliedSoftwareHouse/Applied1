@@ -142,14 +142,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
             #region Report Filter Variables
             ReportFilters Filters = new()
             {
-                N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
-                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+                N_Customer = (int)GetKey(UserName, "GL_Company", KeyType.Number),
+                Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             #endregion
-            var _COAs = AppRegistry.GetText(UserName, "CompanyGLs");
+            var _COAs = GetText(UserName, "CompanyGLs");
             var _Filter = $"COA IN ({_COAs}) AND Customer = {Filters.N_Customer} ";
-            var _Dates = new string[] { Filters.Dt_From.ToString(AppRegistry.DateYMD), Filters.Dt_To.ToString(AppRegistry.DateYMD) };
+            var _Dates = new string[] { Filters.Dt_From.ToString(DateYMD), Filters.Dt_To.ToString(DateYMD) };
             var _OrderBy = "[Vou_Date], [Vou_No]";
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger2(_Filter, _Dates, _OrderBy));
 
@@ -164,7 +164,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     if (_StatusTitle.Length == 0) { _StatusTitle = "Un-assigned"; }
                 }
                 var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
-                var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
+                var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(FormatDate), " To ", Filters.Dt_To.ToString(FormatDate));
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
@@ -206,7 +206,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 }
             }
 
-            ErrorMessages.Add(MessageClass.SetMessage("No Record / File found to generate Report........", ConsoleColor.Yellow));
+            ErrorMessages.Add(SetMessage("No Record / File found to generate Report........", ConsoleColor.Yellow));
             return Page();
         }
 

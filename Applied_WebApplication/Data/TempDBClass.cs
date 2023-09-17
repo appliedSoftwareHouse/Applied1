@@ -232,7 +232,7 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-        private void TempTableFlash()
+        internal void TempTableFlash()
         {
             if (TempTable != null)
             {

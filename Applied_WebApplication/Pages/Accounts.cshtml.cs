@@ -25,6 +25,7 @@ namespace Applied_WebApplication.Pages
 
         public IActionResult OnPostOBalPostCompany()
         {
+            return RedirectToPage("./Stock/OpeningCompany");
             ThisMessages.Add(SetMessage("Posting of Opening Balance of Comapny (Suppliers / Cusotmers) done!!!!"));
             ThisMessages = PostingClass.PostOpeningBalanceCompany(UserName);
             return Page();

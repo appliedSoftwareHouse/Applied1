@@ -647,7 +647,7 @@ namespace Applied_WebApplication.Data
                     MyMessage = e.Message;
                     IsError = true;
                 }
-                //if (TableValidation.MyMessages.Count > 0) { IsError = true; }
+             
 
             }
         }
@@ -679,6 +679,9 @@ namespace Applied_WebApplication.Data
 
             return IsError;
         }
+
+    
+
         public int NewID()
         {
             if (MyDataTable.Rows.Count > 0)

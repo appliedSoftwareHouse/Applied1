@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using Microsoft.Extensions.Primitives;
+using System.Text;
 
 namespace Applied_WebApplication.Data
 {
@@ -307,7 +308,7 @@ namespace Applied_WebApplication.Data
             Text.Append("FROM(SELECT SUM([DR] -[CR]) AS [BAL] ");
             Text.Append("FROM(SELECT * ");
             Text.Append($"FROM[Ledger] WHERE DATE([Vou_Date]) < DATE('{Dates[0]}') AND {_Filter})) ");
-            Text.Append("UNION ");
+            Text.Append("UNION ALL ");
 
             Text.Append("SELECT ");
             Text.Append("[L].[Vou_No], ");
@@ -1029,7 +1030,7 @@ namespace Applied_WebApplication.Data
             Text.Append("SELECT [B1].[Vou_No], [B1].[Vou_Date], ");
             Text.Append("[B2].[Inventory], [B2].[Qty], [B2].[Rate], [B2].[Qty] *[B2].[Rate] AS [Amount], ");
             Text.Append("[T].[Rate] AS [TaxRate], ");
-            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]) * [T].[Rate] AS Float) AS [TaxAmount] " );
+            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]) * [T].[Rate] AS Float) AS [TaxAmount] ");
             Text.Append("FROM [BillPayable] [B1] ");
             Text.Append("LEFT JOIN [BillPayable2] [B2] ON [B2].[TranID] = [B1].[ID] ");
             Text.Append("LEFT JOIN [Taxes] [T] ON [T].[ID] = [B2].[Tax]; ");
@@ -1042,13 +1043,15 @@ namespace Applied_WebApplication.Data
         public static string view_Sold()
         {
             var Text = new StringBuilder();
-            Text.Append("");
 
-
-            Text.Append("SELECT [B1].[Vou_No], [B1].[Vou_Date], ");
-            Text.Append("[B2].[Inventory], [B2].[Qty], [B2].[Rate], [B2].[Qty] *[B2].[Rate] AS [Amount], ");
-            Text.Append("[T].[Rate] AS [TaxRate], ");
-            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]) * [T].[Rate] AS Float) AS [TaxAmount] ");
+            Text.Append("SELECT [B1].[Vou_No], ");
+            Text.Append("[B1].[Vou_Date], ");
+            Text.Append("[B2].[Inventory], ");
+            Text.Append("[B2].[Qty] * -1 AS [Qty], ");
+            Text.Append("[B2].[Rate] * -1 AS [Rate], ");
+            Text.Append("[B2].[Qty] *[B2].[Rate] * -1 AS [Amount], ");
+            Text.Append("[T].[Rate] *-1 AS [TaxRate], ");
+            Text.Append("CAST(([B2].[Qty] *[B2].[Rate]*-1) * ([T].[Rate]*-1) AS Float) AS [TaxAmount] ");
             Text.Append("FROM [BillReceivable] [B1] ");
             Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[TranID] = [B1].[ID] ");
             Text.Append("LEFT JOIN [Taxes] [T] ON [T].[ID] = [B2].[Tax]; ");
@@ -1056,6 +1059,50 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
         #endregion
+
+        #region Opening Balance for Company / Customer / Vendors
+        public static string OBALCompany()
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT [OB].*, ");
+            Text.Append("[C].[Title] AS [CompanyName], ");
+            Text.Append("[P].[Title] AS [ProjectTitle], ");
+            Text.Append("[E].[Title] AS [EmployeeName] ");
+            Text.Append("FROM OBALCompany [OB] ");
+            Text.Append("LEFT JOIN [Customers] [C] ON [C].[ID] = [OB].[Company] ");
+            Text.Append("LEFT JOIN [Project]       [P] ON [P].[ID] = [OB].[Project] ");
+            Text.Append("LEFT JOIN [Employees] [E] ON [E].[ID] = [OB].[Employee] ");
+            Text.Append("ORDER BY [OB].[Company]");
+            return Text.ToString();
+        }
+
+        #endregion
+
+        #region Trial Balance Customer wise
+        public static string TBCustomer(string UserName, string _Filter)
+        {
+            var COAList = AppRegistry.GetText(UserName, "CompanyGLs");
+
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM ( ");
+            Text.Append("SELECT ");
+            Text.Append("[Customer],");
+            Text.Append("[C].[Title] AS[CustomerName],");
+            Text.Append("[COA],");
+            Text.Append("[A].[Title] AS[Account],");
+            Text.Append("SUM([DR]) AS[DR],");
+            Text.Append("SUM([CR]) AS[CR],");
+            Text.Append("SUM([DR] -[CR]) AS [BAL] ");
+            Text.Append($"FROM (SELECT * FROM [Ledger] WHERE [Customer] > 0 AND {_Filter}) AS [L] ");
+            Text.Append("LEFT JOIN [Customers] [C] ON [C].[ID] = [L].[Customer] ");
+            Text.Append("LEFT JOIN [COA] [A] ON [A].[ID] = [L].[COA] ");
+            Text.Append("GROUP BY [Customer],[COA]");
+            Text.Append("ORDER BY [CustomerName],[Account] ) AS [TBCustomer] ");
+            Text.Append($"WHERE [COA] IN({COAList})");
+            return Text.ToString();
+        }
+        #endregion
+
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

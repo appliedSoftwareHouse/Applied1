@@ -228,14 +228,16 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Sold
         private static void Sold(string UserName)
         {
             var Text = new StringBuilder();
             Text.Append("CREATE VIEW [view_Sold] AS ");
-            Text.Append(SQLQuery.view_Purchased());
+            Text.Append(SQLQuery.view_Sold());
             var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
         }
+        #endregion
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data

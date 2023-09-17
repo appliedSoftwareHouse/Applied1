@@ -1,0 +1,63 @@
+﻿@page
+@model Applied_WebApplication.Pages.Stock.OpeningCompanyModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleCOA_DR = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA_DR);
+    var TitleCOA_CR = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.COA_CR);
+}
+
+
+
+<div class="AppHeading-2">
+    <h5 class="TextCenter">Posting of Company Opening Balances</h5>
+</div>
+
+<form method="post">
+    <div class="container">
+        <div class="row mb-1">
+            <div class="col-md-3 mb-1">
+                <div class="form-floating mb-1">
+                    <input type="Date" class="form-control" placeholder="Opening Balance Date" asp-for="@Model.Variables.OBDate" disable>
+                    <label for="OBDate">Opening Balance Date</label>
+                </div>
+            </div>
+            <div class="col-md-3 mb-1">
+                <div class="form-floating">
+                    <select class="form-select" id="COA_DR" aria-label="Select Account for Stock Debit" asp-for="@Model.Variables.COA_DR">
+                        <option selected>@TitleCOA_DR</option>
+                        @foreach (KeyValuePair<int, string> Item in Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="COA_DR">Account for Debit Amount</label>
+                </div>
+            </div>
+            <div class="col-md-3 mb-1">
+
+                <div class="form-floating">
+                    <select class="form-select" id="COA_CR" aria-label="Select Account for Stock Credit" asp-for="@Model.Variables.COA_CR">
+                        <option selected>@TitleCOA_CR</option>
+                        @foreach (KeyValuePair<int, string> Item in Titles(UserName, Tables.COA))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+                    </select>
+                    <label for="COA_CR">Account for Credit Amount</label>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-1">
+            <div class="col-4 mb-1">
+                <button class="btn btn-primary" asp-page-handler="Company">
+                    <i class="bi bi-save"></i> Post in Ledger
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.ErrorMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
+}

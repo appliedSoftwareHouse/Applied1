@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using ExcelClass;
-using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages
 {
@@ -16,7 +14,7 @@ namespace Applied_WebApplication.Pages
 
         public void OnGet()
         {
-            if (IsDBCreate)
+            if (IsDBCreate)                                                                             // Create Data Tables and Views if they not existed.
             {
                 CreateTablesClass CreateDataTables = new(User);
                 CreateDataTables.CreateTables();

@@ -1,0 +1,71 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.ReportPrint.TBCustomersModel
+@{
+    var UserName = User.Identity.Name;
+    var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
+    decimal _TotDebit=0.00M, _TotCredit=0.00M;
+
+}
+
+<div class="container">
+    <div class="row">
+
+    </div>
+
+</div>
+
+
+
+<div class="container">
+    <table class="table-list">
+        <thead>
+            <tr>
+                <td>Code</td>
+                <td>Customer Name</td>
+                <td>Account</td>
+                <td>Account Title</td>
+                <td>Debit</td>
+                <td>Credit</td>
+                <td>Ledger</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow Row in Model.TBCus.Rows)
+            {
+                decimal Debit, Credit;
+                var Amount = Conversion.ToDecimal(Row["DR"]) - Conversion.ToDecimal(Row["CR"]);
+                if(Amount>0) { Debit = Amount; Credit = 0; } else { Debit = 0; Credit = Math.Abs(Amount);  }
+
+                _TotDebit =+ Debit;
+                _TotCredit =+ Credit;
+
+
+                var _Debit = Debit.ToString(CurrencyFormat);
+                var _Credit = Credit.ToString(CurrencyFormat);
+
+                <tr>
+                    <td>@Row["Customer"]</td>
+                    <td>@Row["CustomerName"]</td>
+                    <td>@Row["COA"]</td>
+                    <td>@Row["Account"]</td>
+                    <td>@_Debit</td>
+                    <td>@_Credit</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>TOTAL</td>
+                <td>@_TotDebit.ToString(CurrencyFormat)</td>
+                <td>@_TotCredit.ToString(CurrencyFormat)</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+</div>
