@@ -1093,12 +1093,12 @@ namespace Applied_WebApplication.Data
             Text.Append("SUM([DR]) AS[DR],");
             Text.Append("SUM([CR]) AS[CR],");
             Text.Append("SUM([DR] -[CR]) AS [BAL] ");
-            Text.Append($"FROM (SELECT * FROM [Ledger] WHERE [Customer] > 0 AND {_Filter}) AS [L] ");
+            Text.Append($"FROM (SELECT * FROM [Ledger] WHERE [Customer] > 0 AND {COAList}) AS [L] ");
             Text.Append("LEFT JOIN [Customers] [C] ON [C].[ID] = [L].[Customer] ");
             Text.Append("LEFT JOIN [COA] [A] ON [A].[ID] = [L].[COA] ");
             Text.Append("GROUP BY [Customer],[COA]");
             Text.Append("ORDER BY [CustomerName],[Account] ) AS [TBCustomer] ");
-            Text.Append($"WHERE [COA] IN({COAList})");
+            Text.Append($"WHERE [COA] IN({_Filter})");
             return Text.ToString();
         }
         #endregion

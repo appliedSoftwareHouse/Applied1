@@ -343,7 +343,7 @@ namespace Applied_WebApplication.Data
 
             foreach (DataRow Row in SaleInvoice.Rows)
             {
-                if(Vou_No != Row["Vou_No"].ToString())
+                if (Vou_No != Row["Vou_No"].ToString())
                 {
                     ErrorMessages.Add(SetMessage("Voucher Number not matched. Posting process suspended.", ConsoleColor.Red));
                     break;
@@ -479,7 +479,7 @@ namespace Applied_WebApplication.Data
             }
             #endregion
 
-            var COA_DR = AppRegistry.GetNumber(UserName, "BRec_Stock"); 
+            var COA_DR = AppRegistry.GetNumber(UserName, "BRec_Stock");
             var COA_CR = AppRegistry.GetNumber(UserName, "BRec_Receivable");
             var COA_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax");
             var IsValidated = true;
@@ -542,7 +542,7 @@ namespace Applied_WebApplication.Data
                     tb_Ledger.CurrentRow["Ref_No"] = DBNull.Value;
                     tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
                     tb_Ledger.CurrentRow["COA"] = COA_Tax;
-                    tb_Ledger.CurrentRow["DR"] =  0;
+                    tb_Ledger.CurrentRow["DR"] = 0;
                     tb_Ledger.CurrentRow["CR"] = Row["RTaxAmount"];
                     tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                     tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
@@ -640,7 +640,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.MyDataView.RowFilter = $"Vou_Type='{VoucherType.OBalance}' AND COA={Row["ID"]}";
                 if (tb_Ledger.MyDataView.Count == 1)
                 {
-                    
+
                     tb_Ledger.CurrentRow = tb_Ledger.MyDataView[0].Row;
                     tb_Ledger.CurrentRow["Vou_Date"] = Vou_Date;
                     tb_Ledger.CurrentRow["DR"] = _DR;
@@ -726,7 +726,7 @@ namespace Applied_WebApplication.Data
             var COA_CR = AppRegistry.GetNumber(UserName, "OBCompanyCR");
             var OBCOA = 0;                                                                                                  // COA for DR or CR subject to O Bal Amount.
 
-            if(COA_DR ==0 || COA_CR == 0)
+            if (COA_DR == 0 || COA_CR == 0)
             {
                 MyMessages.Add(SetMessage("Chart of Accounts is not valid to post company balances."));
                 return MyMessages;
@@ -737,17 +737,12 @@ namespace Applied_WebApplication.Data
 
             #region Delete Ledger Records, if not exist in Opening Balance Data Table.
             var Records = 0;
-            foreach(DataRow Row in tb_Ledger.Rows)
+            foreach (DataRow Row in tb_Ledger.Rows)
             {
-                if ((int)Row["Customer"]==39)
-                {
-                    MyMessages.Add(SetMessage($"ID={Row["ID"]}"));
-                }
-
                 if ((string)Row["Vou_Type"] != "OBalCom") { continue; }
 
                 OBALCompany.MyDataView.RowFilter = $"Company={Row["Customer"]}";
-                if(OBALCompany.MyDataView.Count>0) { continue; }
+                if (OBALCompany.MyDataView.Count > 0) { continue; }
                 else
                 {
                     tb_Ledger.SeekRecord((int)Row["ID"]);
@@ -763,7 +758,7 @@ namespace Applied_WebApplication.Data
 
             if (OBALCompany.Count == 0)
             {
-                MyMessages.Add(MessageClass.SetMessage("No Record Found."));
+                MyMessages.Add(SetMessage("No Record Found."));
                 return MyMessages;
             }
 
@@ -783,13 +778,13 @@ namespace Applied_WebApplication.Data
                     _DR = 0.00M;
                 }
 
-                string _Filter = string.Format("Vou_Type='{0}' AND TranID={1}", VoucherType.OBalCom.ToString(), Row["ID"].ToString());
+                string _Filter = string.Format($"Vou_Type='{VoucherType.OBalCom}' AND TranID={Row["ID"]}");
                 tb_Ledger.MyDataView.RowFilter = _Filter;
                 if (tb_Ledger.Count == 2)
                 {
                     Voucher.Add(tb_Ledger.MyDataView[0].Row);
                     Voucher.Add(tb_Ledger.MyDataView[1].Row);
-               }
+                }
                 else
                 {
                     Voucher.Add(tb_Ledger.NewRecord());
@@ -799,7 +794,6 @@ namespace Applied_WebApplication.Data
                     Voucher[1]["ID"] = 0;
                     Voucher[0]["TranID"] = (int)TranID;
                     Voucher[1]["TranID"] = (int)TranID;
-
                 }
                 #endregion
 
@@ -819,8 +813,8 @@ namespace Applied_WebApplication.Data
                 Voucher[0]["Description"] = string.Concat("Company Opening Balance as on ", Vou_Date.ToString("dd-MMM-yyyy"));
                 Voucher[0]["Comments"] = DBNull.Value;
 
-                if(_DR==0) { OBCOA = COA_DR; }           // Assign DR COA if Debit amount is zero
-                if(_CR==0) { OBCOA = COA_CR; }            // Assign CR COA if Credit amount is zero
+                if (_DR == 0) { OBCOA = COA_DR; }           // Assign DR COA if Debit amount is zero
+                if (_CR == 0) { OBCOA = COA_CR; }            // Assign CR COA if Credit amount is zero
 
                 Voucher[1]["Vou_Type"] = VoucherType.OBalCom.ToString();
                 Voucher[1]["Vou_Date"] = Vou_Date;

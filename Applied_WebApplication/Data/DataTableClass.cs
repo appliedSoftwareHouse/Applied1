@@ -680,49 +680,17 @@ namespace Applied_WebApplication.Data
             return IsError;
         }
 
-    
-
         public int NewID()
         {
-            if (MyDataTable.Rows.Count > 0)
-            {
-                int _result = int.Parse(MyDataTable.Compute("MAX(ID)", "").ToString()) + 1;
-                return _result;
-            }
+            int _Result;
+            var _Table = GetTable(UserName, $"SELECT CAST(MAX(ID) AS INTEGER) AS [ID] FROM [{MyDataTable.TableName}]");
+            if(_Table.Rows.Count==0) { _Result= 1; }
             else
-            {
-                return 1;
-            }
+            { _Result = Conversion.ToInteger(_Table.Rows[0]["ID"]) + 1; }
+
+            return _Result;
         }
-        public void Add()
-        {
-            IsError = false;
-            TableValidation = new TableValidationClass(MyDataTable);
-
-
-            if (CurrentRow != null)
-            {
-                try
-                {
-                    TableValidation.SQLAction = CommandAction.Insert.ToString();
-                    if (TableValidation.Validation(CurrentRow))
-                    {
-                        CommandInsert();                                            // Create a command and assign new ID value.
-                        Command_Insert.ExecuteNonQuery();
-                        GetDataTable();
-                        MyMessage = "Insert (Add) record in " + MyTableName;
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    TableValidation.MyMessages.Add(MessageClass.SetMessage(e.Message));
-                    MyMessage = e.Message;
-                }
-                if (TableValidation.MyMessages.Count > 0) { IsError = true; }
-
-            }
-        }
+                
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
             DataTableClass tb_table = new(UserName, table, "");
@@ -733,36 +701,32 @@ namespace Applied_WebApplication.Data
 
         #region Static Methods
 
-        //public static DataTable GetTable(string UserName, Tables _Table, string _Filter)
+
+        //public static DataTable GetTable(string UserName, Tables _Table, string _Filter, SQLiteConnection _Connection)
         //{
-        //    return GetTable(UserName, _Table, _Filter, ConnectionClass.AppConnection(UserName));
+        //    var _TableName = _Table.ToString();
+        //    if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
+        //    var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
+        //    var _Command = new SQLiteCommand(_CommandText, _Connection);
+        //    var _Adapter = new SQLiteDataAdapter(_Command);
+        //    var _DataSet = new DataSet();
+        //    _Adapter.Fill(_DataSet, _TableName);
+        //    if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
+        //    return new DataTable();
         //}
 
-        public static DataTable GetTable(string UserName, Tables _Table, string _Filter, SQLiteConnection _Connection)
-        {
-            var _TableName = _Table.ToString();
-            if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-            var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-            _Adapter.Fill(_DataSet, _TableName);
-            if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
-            return new DataTable();
-        }
 
+        //public static bool Delete(string UserName, Tables _Table, int ID)
+        //{
+        //    var _Connection = ConnectionClass.AppConnection(UserName);
+        //    var _TableName = _Table.ToString();
+        //    var _CommandText = $"DELETE FROM {_TableName} WHERE ID={ID}";
+        //    var _Command = new SQLiteCommand(_CommandText, _Connection);
+        //    var _RecordNo = _Command.ExecuteNonQuery();
+        //    if (_RecordNo == 0) { return false; }
+        //    return true;
 
-        public static bool Delete(string UserName, Tables _Table, int ID)
-        {
-            var _Connection = ConnectionClass.AppConnection(UserName);
-            var _TableName = _Table.ToString();
-            var _CommandText = $"DELETE FROM {_TableName} WHERE ID={ID}";
-            var _Command = new SQLiteCommand(_CommandText, _Connection);
-            var _RecordNo = _Command.ExecuteNonQuery();
-            if (_RecordNo == 0) { return false; }
-            return true;
-
-        }
+        //}
 
 
         #endregion
