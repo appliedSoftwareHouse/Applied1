@@ -40,7 +40,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Filter = GetFilter(Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
+            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery,"[Vou_Date],[Vou_No]");
 
         }
         public IActionResult OnPostRefresh()
