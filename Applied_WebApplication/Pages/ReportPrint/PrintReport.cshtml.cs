@@ -379,7 +379,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Filter = model.GetFilter(model.Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
+            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
             var SaleRegister = new ReportClass
             {
                 AppUser = User,
@@ -400,7 +400,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
             ReportLink = SaleRegister.GetReportLink();
             IsShowPdf = !SaleRegister.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleRegister.MyMessage)); }
+            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
             return Page();
         }
         #endregion
@@ -446,7 +446,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             PurchaseRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
             ReportLink = PurchaseRegister.GetReportLink();
             IsShowPdf = !PurchaseRegister.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(PurchaseRegister.MyMessage)); }
+            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(PurchaseRegister.MyMessage)); }
             return Page();
 
 
