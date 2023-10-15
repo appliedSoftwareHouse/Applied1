@@ -1,8 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using static NPOI.HSSF.Util.HSSFColor;
-using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Applied_WebApplication.Pages.Accounts

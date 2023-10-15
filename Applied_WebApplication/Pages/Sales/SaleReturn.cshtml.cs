@@ -1,7 +1,5 @@
-using Applied_WebApplication.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using NPOI.SS.Formula.Functions;
 using System.Data;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;

@@ -1,8 +1,5 @@
-﻿using Applied_WebApplication.Pages.Stock;
-using NPOI.Util;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
-using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;

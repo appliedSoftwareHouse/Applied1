@@ -81,7 +81,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\AppReporting\AppReportClass.csproj" />
-    <ProjectReference Include="..\ExcelClass\ExcelClass.csproj" />
   </ItemGroup>
 
 </Project>

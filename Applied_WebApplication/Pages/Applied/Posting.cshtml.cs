@@ -1,12 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
-using NPOI.SS.Formula.Functions;
 using System.Data;
 using static Applied_WebApplication.Data.DataTableClass;
-using static Applied_WebApplication.Data.MessageClass;
-using static NPOI.HSSF.Util.HSSFColor;
 
 namespace Applied_WebApplication.Pages.Applied
 {

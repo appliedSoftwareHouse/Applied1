@@ -1,71 +1,116 @@
 ﻿@page
-@using System.Data;
 @model Applied_WebApplication.Pages.ReportPrint.TBCustomersModel
+@using System.Data;
 @{
     var UserName = User.Identity.Name;
     var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
-    decimal _TotDebit=0.00M, _TotCredit=0.00M;
-   
+    decimal _TotDebit = 0.00M, _TotCredit = 0.00M, _TotBalance = 0.00M;
+
+    _TotDebit = Conversion.ToDecimal(Model.TBCustomer.Compute("SUM(DR)",""));
+    _TotCredit = Conversion.ToDecimal(Model.TBCustomer.Compute("SUM(CR)",""));
+    _TotBalance = _TotDebit - _TotCredit;
+
 }
 
-<div class="container">
-    <div class="row bg-info">
-
+<form method="post">
+    <div class="container mt-0">
+        <div class="row align-items-center bg-light">
+            <div class="col-3 pt-3">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputCustomerID">Company</label>
+                    <select class="form-select" id="inputCustomerID" asp-for="@Model.Variables.CboxCustomerId">
+                        <option selected>Choose...</option>
+                        @foreach (DataRow Row in Model.CboxCusotmer.Rows)
+                        {
+                            <option value="@Row["ID"].ToString()"> @Row["Title"].ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-3 pt-3">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="inputAccountsID">Account</label>
+                    <select class="form-select" id="inputAccountsID" asp-for="@Model.Variables.CboxAccountsId">
+                        <option selected>Choose...</option>
+                        @foreach (DataRow Row in Model.CboxAccounts.Rows)
+                        {
+                            <option value="@Row["ID"].ToString()"> @Row["Title"].ToString()</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-2">
+                <div class="input-group mb-3">
+                    @* <label for="lblDate" class="form-label">Date</label> *@
+                    <input type="date" class="form-control" id="inputDate" placeholder="Date & time" asp-for="@Model.Variables.DateTo">
+                </div>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Refresh</button>
+            </div>
+            <div class="col-1">
+                <button type="submit" class="btn btn-primary" asp-page-handler="Reset">ReSet</button>
+            </div>
+            <div class="col-1 ">
+                <button class="btn btn-success">Print</button>
+            </div>
+        </div>
     </div>
 
-</div>
 
 
-
-<div class="container">
-    <table class="table-list">
-        <thead>
-            <tr>
-                <td>Code</td>
-                <td>Customer Name</td>
-                <td>Account</td>
-                <td>Account Title</td>
-                <td>Debit</td>
-                <td>Credit</td>
-                <td>Ledger</td>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DataRow Row in Model.TBCus.Rows)
-            {
-                decimal Debit, Credit;
-                var Amount = Conversion.ToDecimal(Row["DR"]) - Conversion.ToDecimal(Row["CR"]);
-                if(Amount>0) { Debit = Amount; Credit = 0; } else { Debit = 0; Credit = Math.Abs(Amount);  }
-
-                _TotDebit =+ Debit;
-                _TotCredit =+ Credit;
-
-
-                var _Debit = Debit.ToString(CurrencyFormat);
-                var _Credit = Credit.ToString(CurrencyFormat);
-
+    <div class="container">
+        <table class="table-list">
+            <thead>
                 <tr>
-                    <td>@Row["Customer"]</td>
-                    <td>@Row["CustomerName"]</td>
-                    <td>@Row["COA"]</td>
-                    <td>@Row["Account"]</td>
-                    <td>@_Debit</td>
-                    <td>@_Credit</td>
+                    <td>Code</td>
+                    <td>Customer Name</td>
+                    <td>Account</td>
+                    <td>Account Title</td>
+                    <td>Debit</td>
+                    <td>Credit</td>
+                    <td>Ledger</td>
                 </tr>
-            }
-        </tbody>
-        <tfoot>
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>TOTAL</td>
-                <td>@_TotDebit.ToString(CurrencyFormat)</td>
-                <td>@_TotCredit.ToString(CurrencyFormat)</td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (DataRow Row in Model.TBCustomer.Rows)
+                {
+                    decimal Debit, Credit;
+                    var Amount = Conversion.ToDecimal(Row["DR"]) - Conversion.ToDecimal(Row["CR"]);
+                    if (Amount > 0) { Debit = Amount; Credit = 0; } else { Debit = 0; Credit = Math.Abs(Amount); }
 
-</div>
+                    @* _TotDebit = +Debit;
+                    _TotCredit = +Credit;
+                     *@
+
+
+                    var _Debit = Debit.ToString(CurrencyFormat);
+                    var _Credit = Credit.ToString(CurrencyFormat);
+                    var _Balance = (Debit - Credit).ToString(CurrencyFormat);
+
+                    <tr>
+                        <td>@Row["Customer"]</td>
+                        <td>@Row["CustomerName"]</td>
+                        <td>@Row["COA"]</td>
+                        <td>@Row["Account"]</td>
+                        <td>@_Debit</td>
+                        <td>@_Credit</td>
+                        <td>@_Balance</td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr style="background-color:lightblue">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td>@_TotDebit.ToString(CurrencyFormat)</td>
+                    <td>@_TotCredit.ToString(CurrencyFormat)</td>
+                    <td>@_TotBalance.ToString(CurrencyFormat)</td>
+                    
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</form>
