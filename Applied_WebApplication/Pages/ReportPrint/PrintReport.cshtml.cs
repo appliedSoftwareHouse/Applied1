@@ -364,6 +364,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetSaleRegister()
         {
             SalesReportsModel model = new();
+            //
             model.Variables = new()
             {
                 StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
@@ -380,6 +381,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Filter = model.GetFilter(model.Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
             var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+            
             var SaleRegister = new ReportClass
             {
                 AppUser = User,

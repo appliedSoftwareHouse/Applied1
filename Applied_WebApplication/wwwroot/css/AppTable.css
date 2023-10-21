@@ -41,6 +41,6 @@
     color: rebeccapurple
 }
 
-.table-list, tfoot {
+.table-list, tfoot tr {
     background-color:antiquewhite;
 }
