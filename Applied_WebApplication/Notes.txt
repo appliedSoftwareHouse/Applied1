@@ -4,7 +4,7 @@ https://earth.doctorhoster.com:8443/login_up.php
 
 RunTime Compilation
 =============================================================================
-Install-Package Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation -Version 6.0.2 dont need
+Install-Package Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation -Version 6.0.2
 =============================================================================
 
 User Registration / Login etc.

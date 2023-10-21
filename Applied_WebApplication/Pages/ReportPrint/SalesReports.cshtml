@@ -6,7 +6,7 @@
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
-    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
 
 
 }
@@ -27,11 +27,8 @@
 </div>
 
 <form method="post">
-
-   
-
     <div class="container">
-        <div class="d-flex justify-content-between ">
+        <div class="row filter-row">
 
             <div class="col-md-3 date-width">
                 <div class="input-group date-group">
@@ -40,15 +37,13 @@
                            placeholder="Start Date" aria-label="Start Date" aria-describedby="txtVouDate">
                 </div>
             </div>
-            
             <div class="col-md-3 date-width">
                 <div class="input-group date-group">
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.EndDate">
                     <span class="input-group-text" id="Enddate">End</span>
                 </div>
             </div>
-
-            <div class="col-md-3  filter-select">
+            <div class="col-md-2 m  filter-select">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -57,8 +52,7 @@
                     }
                 </select>
             </div>
-
-            <div class="col-md-3 filter-select">
+            <div class="col-md-2 filter-select">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Inventory.Rows)
@@ -67,35 +61,31 @@
                     }
                 </select>
             </div>
-
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary justify-content-end"
-                asp-page-handler="Refresh">REFRESH</button>
+            <div class="col-md-1 filter-buttons">
+                <button class="btn btn-refresh btn-sm" type="submit"
+                        asp-page-handler="Refresh">
+                    <i class="bi bi-arrow-repeat"></i>
+                </button>
+                <button class="btn btn-print btn-sm" type="submit"
+                        asp-page-handler="Print">
+                    <i class="bi bi-printer"></i>
+                </button>
+                <button class="btn btn-print btn-sm" type="submit"
+                        asp-page-handler="PrintList">
+                    <i class="bi bi-printer"></i>
+                </button>
             </div>
+
+
+
         </div>
     </div>
 
-    @if(Model.SourceTable != null)
+    @if (Model.SourceTable != null)
     {
-        if(Model.SourceTable.Rows.Count > 0)
+        if (Model.SourceTable.Rows.Count > 0)
         {
-            <div class="container">
-                <div class="row mb-2">
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
-                        asp-page-handler="Print">
-                            <i class="bi bi-printer"> PRINT</i>
-                        </button>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
-                        asp-page-handler="PrintList">
-                            <i class="bi bi-printer"> PRINT 2</i>
-                        </button>
-                    </div>
-                </div>
-            </div>
-            
+
 
             <table class="table-list">
                 <thead>
@@ -116,7 +106,7 @@
                     @foreach (DataRow Row in Model.SourceTable.Rows)
                     {
                         var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
-                        
+
                         var _Qty = Conversion.ToDecimal(Row["Qty"]);
                         var _Rate = Conversion.ToDecimal(Row["Rate"]);
                         var _Amount = Conversion.ToDecimal(Row["Amount"]);
@@ -136,11 +126,27 @@
                             <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
                         </tr>
                     }
-                    
+
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>TOTAL</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+
+                </tfoot>
             </table>
 
-    }
+        }
         else
         {
             <h5>No Record Found.....</h5>
