@@ -7,6 +7,12 @@
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
     var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
+    var TotQty = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(QTY)",""));
+    var TotAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(Amount)", "")); 
+    var TotTaxAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(TaxAmount)", ""));
+    var TotNetAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(NetAmount)", ""));
+
+
 
 
 }
@@ -135,11 +141,11 @@
                         <td></td>
                         <td></td>
                         <td>TOTAL</td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td class="amount">@TotQty.ToString(AmountFormat)</td>
+                        <td class="amount"></td>
+                        <td class="amount">@TotAmount.ToString(AmountFormat)</td>
+                        <td class="amount">@TotTaxAmount.ToString(AmountFormat)</td>
+                        <td class="amount">@TotNetAmount.ToString(AmountFormat)</td>
                     </tr>
 
 
