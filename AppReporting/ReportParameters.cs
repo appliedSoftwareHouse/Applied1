@@ -1,6 +1,6 @@
 ﻿using Microsoft.Reporting.NETCore;
 using System.Data;
-
+using System.Text;
 
 namespace AppReportClass
 {
@@ -32,6 +32,7 @@ namespace AppReportClass
         {
             return $"{OutputPathLink}{OutputFileName}";
         }
+
 
     }
 }

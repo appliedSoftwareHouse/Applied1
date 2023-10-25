@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -40,7 +41,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Filter = GetFilter(Variables);
             var _SQLQuery = SQLQuery.SaleRegister2(_Filter);
-            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery,"[Vou_Date],[Vou_No]");
+            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
 
         }
         public IActionResult OnPostRefresh()
@@ -77,15 +78,21 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "sRptName", "SaleRegister.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
-        public IActionResult OnPostPrintList()
+        public IActionResult OnPostPrintList(ReportType Option)
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister2.rdl", KeyType.Text);
-            return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
+            return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister", new { _ReportType = Option });
+
+
+            //SetKeys();
+            //var _ReportName = "SaleRegister2.rdl";
+            //AppRegistry.SetKey(UserName, "sRptName", _ReportName, KeyType.Text);
+            //return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister", new {_ReportType, _ReportName });
+
         }
         public IActionResult OnPost()
         {
-           
+
             SetKeys();
             return RedirectToPage();
 
@@ -100,7 +107,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Heading1 = $"Sale Register";
             var _Heading2 = $"From {_Date1} to {_Date2}";
-            
+
             AppRegistry.SetKey(UserName, "sRptDate1", Variables.StartDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptDate2", Variables.EndDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptComAll", Variables.AllCompany, KeyType.Boolean);
