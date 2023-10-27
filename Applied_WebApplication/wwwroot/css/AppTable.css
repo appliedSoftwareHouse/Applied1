@@ -22,6 +22,7 @@ table-list, tbody tr:hover{
 }
 
 
+
 .table-width {
     position:absolute;
     top: 0;
@@ -29,4 +30,6 @@ table-list, tbody tr:hover{
     left: 0;
     right: 0;
     height: 600px;
+.table-list, tfoot tr {
+    background-color:antiquewhite;
 }

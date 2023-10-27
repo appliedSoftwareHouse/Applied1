@@ -5,12 +5,14 @@
     var UserName = User.Identity.Name;
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
-    var DateFormat = AppRegistry.FormatDate;
+    var DateFormat = AppRegistry.FormatDate; 
     var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
     var TotQty = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(QTY)",""));
     var TotAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(Amount)", "")); 
     var TotTaxAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(TaxAmount)", ""));
     var TotNetAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(NetAmount)", ""));
+    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+
 }
 
 <style>
@@ -29,10 +31,8 @@
 </div>
 
 <form method="post">
-    <div class="container">
-        <div class="row filter-row">
 
-            <div class="col-md-3 date-width">
+            <div class="col-md-3 date-width mb-1">
                 <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
@@ -45,7 +45,12 @@
                     <span class="input-group-text" id="Enddate">End</span>
                 </div>
             </div>
+
             <div class="col-md-2 m  filter-select">
+
+
+            <div class="col-md-2  filter-select">
+
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -91,6 +96,11 @@
                         </ul>
                     </div>
                 </div>
+
+
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary justify-content-end"
+                asp-page-handler="Refresh">Refresh</button>
 
             </div>
 

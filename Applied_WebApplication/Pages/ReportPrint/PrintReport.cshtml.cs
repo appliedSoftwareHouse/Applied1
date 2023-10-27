@@ -373,7 +373,28 @@ namespace Applied_WebApplication.Pages.ReportPrint
             //DataTable _Table = Ledger.GetGL(UserName, Filters);
 
             if (_Table.Rows.Count > 0)
+
+            SalesReportsModel model = new();
+            //
+            model.Variables = new()
             {
+                StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
+                EndDate = AppRegistry.GetDate(UserName, "sRptDate2"),
+                AllCompany = AppRegistry.GetBool(UserName, "sRptComAll"),
+                AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
+                CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
+                InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
+                Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
+                Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
+                ReportFile = AppRegistry.GetText(UserName, "sRptName"),
+            };
+
+            var _Filter = model.GetFilter(model.Variables);
+            var _SQLQuery = SQLQuery.SaleRegister(_Filter);
+            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+            
+            var SaleRegister = new ReportClass
+           {
                 var _CompanyName = UserProfile.GetCompanyName(User);
                 var FMTDate = GetFormatDate(UserName);
                 var Account = (int)GetKey(UserName, "GL_COA", KeyType.Number);
