@@ -39,7 +39,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             Inventory = DataTableClass.GetTable(UserName, Tables.Inventory, "", "[Title]");
 
             var _Filter = GetFilter(Variables);
-            var _SQLQuery = SQLQuery.SaleRegister(_Filter);
+            var _SQLQuery = SQLQuery.SaleRegister2(_Filter);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery,"[Vou_Date],[Vou_No]");
 
         }
@@ -48,7 +48,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             SetKeys();
             return RedirectToPage();
         }
-        internal string GetFilter(Parameters variables)
+        public string GetFilter(Parameters variables)
         {
             var Date1 = AppRegistry.YMD(variables.StartDate);
             var Date2 = AppRegistry.YMD(variables.EndDate);

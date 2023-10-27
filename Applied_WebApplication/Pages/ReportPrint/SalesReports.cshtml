@@ -7,8 +7,6 @@
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
     var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
-
-
 }
 
 <style>
@@ -28,12 +26,10 @@
 
 <form method="post">
 
-   
-
     <div class="container">
         <div class="d-flex justify-content-between ">
 
-            <div class="col-md-3 date-width">
+            <div class="col-md-3 date-width mb-1">
                 <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
@@ -48,7 +44,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3  filter-select">
+            <div class="col-md-2  filter-select">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -58,7 +54,7 @@
                 </select>
             </div>
 
-            <div class="col-md-3 filter-select">
+            <div class="col-md-2 filter-select">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Inventory.Rows)
@@ -70,7 +66,7 @@
 
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary justify-content-end"
-                asp-page-handler="Refresh">REFRESH</button>
+                asp-page-handler="Refresh">Refresh</button>
             </div>
         </div>
     </div>
