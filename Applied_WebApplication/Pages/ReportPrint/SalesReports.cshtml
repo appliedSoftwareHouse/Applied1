@@ -24,6 +24,10 @@
         width: 20%
     }
 
+    .col-width {
+        width: 60px;
+    }
+
 </style>
 
 <div class="AppHeading-2">
@@ -68,19 +72,36 @@
                     }
                 </select>
             </div>
+            <div class="col-md-2 filter-select">
+                <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.CityName">
+                    <option selected>Select All</option>
+                    @foreach (DataRow Row in Model.City.Rows)
+                    {
+                        <option value="@Row["City"]">@Row["City"]</option>
+                    }
+                </select>
+            </div>
             <div class="col-md-1 filter-buttons">
                 <button class="btn btn-refresh btn-sm" type="submit"
                         asp-page-handler="Refresh">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
-                <button class="btn btn-print btn-sm" type="submit"
-                        asp-page-handler="Print">
-                    <i class="bi bi-printer"></i>
-                </button>
-                <button class="btn btn-print btn-sm" type="submit" hidden
-                        asp-page-handler="PrintList">
-                    <i class="bi bi-printer"></i>
-                </button>
+               
+                
+                <div class="col-1 col-width">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary btn-250 dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                            <i class="bi bi-printer"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@AppReportClass.ReportType.Preview">Preview</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@AppReportClass.ReportType.PDF">PDF</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@AppReportClass.ReportType.Excel">Excel</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@AppReportClass.ReportType.Word">Word</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@AppReportClass.ReportType.HTML">HTML</button></li>
+                        </ul>
+                    </div>
+                </div>
 
                 <div class="col-1 col-width">
                     <div class="dropdown">
@@ -96,16 +117,16 @@
                         </ul>
                     </div>
                 </div>
+<<<<<<< HEAD
+=======
 
 
             <div class="col-md-2">
                 <button type="submit" class="btn btn-primary justify-content-end"
                 asp-page-handler="Refresh">Refresh</button>
 
+>>>>>>> 4e06b5329e359e5e3e74d2ad25492fe4c5e530f3
             </div>
-
-
-
         </div>
     </div>
 
@@ -121,7 +142,8 @@
                         <th style="width:4%">SNo.</th>
                         <th style="width:7%">Vou. No</th>
                         <th style="width:8%">Vou. Date</th>
-                        <th style="width:20%">Company Name</th>
+                        <th style="width:15%">Company Name</th>
+                        <th style="width:5%">City</th>
                         <th style="width:15%">Stock Title</th>
                         <th style="width:8%">Quantity</th>
                         <th style="width:8%">Rate</th>
@@ -146,6 +168,7 @@
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
                             <td>@Row["CompanyName"]</td>
+                            <td>@Row["City"]</td>
                             <td>@Row["StockTitle"]</td>
                             <td class="amount">@_Qty.ToString(AmountFormat)</td>
                             <td class="amount">@_Rate.ToString(AmountFormat)</td>
@@ -158,6 +181,7 @@
                 </tbody>
                 <tfoot>
                     <tr>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td></td>

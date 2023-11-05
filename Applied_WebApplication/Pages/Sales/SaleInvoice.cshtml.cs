@@ -179,6 +179,9 @@ namespace Applied_WebApplication.Pages.Sales
         #region Variables / Rows
         private void Row2Variables()
         {
+            if (Row1 == null) { Row2 = TempInvoice11.NewRecord(); }
+            if (Row2 == null) { Row2 = TempInvoice22.NewRecord(); }
+
 
             Variables = new()
             {
