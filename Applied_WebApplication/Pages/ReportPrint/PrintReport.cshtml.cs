@@ -9,6 +9,7 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using Applied_WebApplication.Data;
+using Applied_WebApplication.Pages.Sales;
 
 
 namespace Applied_WebApplication.Pages.ReportPrint
@@ -78,7 +79,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             DataTable _Table = Ledger.GetGL(UserName, Filters);
-            
+
             if (_Table.Rows.Count > 0)
             {
                 var FMTDate = GetFormatDate(UserName);
@@ -129,7 +130,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 }
 
             }
-            
+
             return Page();
 
 
@@ -362,16 +363,38 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #region Sale Register
 
-        public IActionResult OnGetSaleRegister(ReportType _ReportType, string _ReportName, DataTable _Table)
+        public IActionResult OnGetSaleRegister(ReportType _ReportType)
         {
-            //ReportFilters Filters = new ReportFilters()
-            //{
-            //    N_COA = (int)GetKey(UserName, "GL_COA", KeyType.Number),
-            //    Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
-            //    Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
-            //};
-            //DataTable _Table = Ledger.GetGL(UserName, Filters);
+            var _Globals = AppGlobals;
+            var _CompanyName = UserProfile.GetCompanyName(User);
+            var _Date1 = GetDate(UserName, "sRptDate1");
+            var _Date2 = GetDate(UserName, "sRptDate2");
+            var _CompanyID = GetNumber(UserName, "sRptCompany");
+            var _CityName = GetNumber(UserName, "sRptCity");
+            var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, _CompanyID)}";
+            var _FMTDate = GetFormatDate(UserName);
+            var _Heading2 = DateFromTo(_Date1, _Date2, _FMTDate);
 
+<<<<<<< HEAD
+            var model = new SalesReportsModel();
+
+            SalesReportsModel.Parameters Variables = new()
+            {
+                StartDate = GetDate(UserName, "sRptDate1"),
+                EndDate = GetDate(UserName, "sRptDate2"),
+                AllCompany = GetBool(UserName, "sRptComAll"),
+                AllInventory = GetBool(UserName, "sRptStockAll"),
+                CompanyID = GetNumber(UserName, "sRptCompany"),
+                CityName = GetText(UserName, "sRptCity"),
+                InventoryID = GetNumber(UserName, "sRptInventory"),
+                ReportFile = GetText(UserName, "sRptFileName"),
+            };
+            
+            var _Filter = model.GetFilter(Variables);
+            _Filter = _Filter.Replace("[City]", "[C].[City]");
+            var _SQLQuery = SQLQuery.SaleRegister2(_Filter);
+            var SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+=======
             if (_Table.Rows.Count > 0)
 
             SalesReportsModel model = new();
@@ -402,142 +425,43 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var Date2 = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date);
                 var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, Account)}";
                 var _Heading2 = DateFromTo(Date1, Date2, FMTDate);
+>>>>>>> 4e06b5329e359e5e3e74d2ad25492fe4c5e530f3
 
-                List<ReportParameter> _Parameters = new List<ReportParameter>
-                {
-                    new ReportParameter("CompanyName", CompanyName),
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                    new ReportParameter("CompanyName", _CompanyName),
                     new ReportParameter("Heading1", _Heading1),
                     new ReportParameter("Heading2", _Heading2),
-                    new ReportParameter("Footer", AppGlobals.ReportFooter)
-                };
+                    new ReportParameter("Footer", _Globals.ReportFooter)
+            };
 
-                var Variables = new ReportParameters()
-                {
-                    ReportPath = AppGlobals.ReportPath,
-                    ReportFile = _ReportName,
-                    OutputPath = AppGlobals.PrintedReportPath,
-                    OutputPathLink = AppGlobals.PrintedReportPathLink,
-                    OutputFile = "SaleRegister",
-                    CompanyName = _CompanyName,
-                    Heading1 = _Heading1,
-                    Heading2 = _Heading2,
-                    Footer = AppGlobals.ReportFooter,
-                    ReportType = _ReportType,
-                    DataSetName = "ds_SalesRegister",
-                    ReportData = _Table,
-                    DataParameters = _Parameters
-                };
+            var ReportsVariables = new ReportParameters()
+            {
+                ReportPath = _Globals.ReportPath,
+                ReportFile = Variables.ReportFile +".rdl",
+                OutputPath = _Globals.PrintedReportPath,
+                OutputPathLink = _Globals.PrintedReportPathLink,
+                OutputFile = Variables.ReportFile,
+                CompanyName = _CompanyName,
+                Heading1 = _Heading1,
+                Heading2 = _Heading2,
+                Footer = _Globals.ReportFooter,
+                ReportType = _ReportType,
+                DataSetName = "ds_SalesRegister",
+                ReportData =    SourceTable,
+                DataParameters = _Parameters
+            };
 
-                var ReportClass = new ExportReport(Variables);
-                ReportClass.Render());
+            var _ExportClass = new ExportReport(ReportsVariables);
+            _ExportClass.Render();
 
-                if (_ReportType == ReportType.Preview)
-                {
-                    ReportLink = ReportClass.Variables.GetFileLink();
-                    IsShowPdf = true;
-                    return Page();
-                }
-                else
-                {
-                    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
-                }
+            if (_ExportClass.Variables.IsSaved)
+            {
+                ReportLink = _ExportClass.Variables.GetFileLink();
+                IsShowPdf = true;
+                return Page();
             }
-
-
-
-            //    //-----------------------------------------------------------------------------------------
-            //    SalesReportsModel model = new();
-            ////
-            //model.Variables = new()
-            //{
-            //    StartDate = GetDate(UserName, "sRptDate1"),
-            //    EndDate = GetDate(UserName, "sRptDate2"),
-            //    AllCompany = GetBool(UserName, "sRptComAll"),
-            //    AllInventory = GetBool(UserName, "sRptStockAll"),
-            //    CompanyID = GetNumber(UserName, "sRptCompany"),
-            //    InventoryID = GetNumber(UserName, "sRptInventory"),
-            //    Heading1 = GetText(UserName, "sRptHeading1"),
-            //    Heading2 = GetText(UserName, "sRptHeading2"),
-            //    ReportFile = GetText(UserName, "sRptName"),
-            //};
-
-            ////var _Filter = model.GetFilter(model.Variables);
-            ////var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            ////var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
-
-            //List<ReportParameter> _Parameters = new List<ReportParameter>
-            //    {
-            //        new ReportParameter("CompanyName", CompanyName),
-            //        new ReportParameter("Heading1", model.Variables.Heading1),
-            //        new ReportParameter("Heading2", model.Variables.Heading2),
-            //        new ReportParameter("Footer", AppGlobals.ReportFooter)
-            //    };
-
-
-            //var Variables = new ReportParameters()
-            //{
-            //    ReportPath = AppGlobals.ReportPath,
-            //    ReportFile = _ReportName,
-            //    OutputPath = AppGlobals.PrintedReportPath,
-            //    OutputPathLink = AppGlobals.PrintedReportPathLink,
-            //    OutputFile = _ReportName.Replace(".rdl", ExportReport.GetReportExtention(_ReportType)),
-            //    CompanyName = UserProfile.GetCompanyName(User),
-            //    Heading1 = "Sale Register",
-            //    Heading2 = DateFromTo(model.Variables.StartDate, model.Variables.EndDate, FormatDate),
-            //    Footer = AppGlobals.ReportFooter,
-            //    ReportType = _ReportType,
-            //    DataSetName = "ds_SalesRegister",
-            //    ReportData = _Table,
-            //    DataParameters = _Parameters,
-                
-            //};
-
-            //var SaleRegister = new ReportClass
-            //{
-            //    AppUser = User,
-            //    ReportFilePath = AppGlobals.ReportPath,
-            //    ReportFile = model.Variables.ReportFile,
-            //    ReportDataSet = "ds_SalesRegister",
-            //    ReportSourceData = _Table,
-            //    RecordSort = "Company, Vou_Date",
-
-            //    OutputFilePath = AppGlobals.PrintedReportPath,
-            //    OutputFile = "SaleRegister",
-            //    OutputFileLinkPath = AppGlobals.PrintedReportPathLink
-            //};
-
-            
-            //var ReportClass = new ExportReport(SaleRegister);
-            //ReportClass.Render();
-
-            //if (_ReportType == ReportType.Preview)
-            //{
-            //    ReportLink = ReportClass.Variables.GetFileLink();
-            //    IsShowPdf = true;
-            //    return Page();
-            //}
-            //else
-            //{
-            //    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
-            //}
-
-
-
-
-            //await Task.Run(() => ReportLink = SaleRegister.GetReportLink());
-
-            //if(_ReportType == ReportType.Preview)
-            //{
-            //    IsShowPdf = !SaleRegister.IsError;
-            //    if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
-            //    return Page();
-            //}
-
-            
-
-            
-
-            
+            return File(_ExportClass.Variables.FileBytes, _ExportClass.Variables.MimeType, _ExportClass.Variables.OutputFileFullName);
         }
         #endregion
 
@@ -589,7 +513,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        
+
 
         #region ExpenseSheet
 

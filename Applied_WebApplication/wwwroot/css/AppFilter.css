@@ -1,8 +1,8 @@
-﻿.filter-row{
-    width:auto;
-    display:flex;
-    justify-content:center;
-
+﻿.filter-row {
+    width: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .date-width {
     width: 200px;
@@ -33,11 +33,18 @@
 
 .btn-refresh {
     display: flex;
-    width: 35px;
+    width: 50px;
+    height:32px;
+    margin-top:3px;
+    margin-left:30px;
+    margin-right:10px;
     padding-left: 10px;
-    padding-right: 0px;
-    padding-top: 6.5px;
+    padding-right: 10px;
+    padding-top: 5px;
     padding-bottom: 2px;
+    border:solid;
+    border-color:gray;
+    border-width:.5px;
     color: blue;
     
 }
@@ -52,7 +59,7 @@
     display: flex;
     width: 35px;
     padding-left: 10px;
-    padding-right: 0px;
+    padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 2px;
     margin-left: 5px;
@@ -62,4 +69,9 @@
     .btn-print:hover {
         color: red;
         background-color: aliceblue
+    }
+
+    .btn-250{
+        width:50px;
+        margin-top:3px
     }
