@@ -370,12 +370,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Date1 = GetDate(UserName, "sRptDate1");
             var _Date2 = GetDate(UserName, "sRptDate2");
             var _CompanyID = GetNumber(UserName, "sRptCompany");
-            var _CityName = GetNumber(UserName, "sRptCity");
+            //var _CityName = GetText(UserName, "sRptCity");
             var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, _CompanyID)}";
             var _FMTDate = GetFormatDate(UserName);
             var _Heading2 = DateFromTo(_Date1, _Date2, _FMTDate);
 
-<<<<<<< HEAD
+
             var model = new SalesReportsModel();
 
             SalesReportsModel.Parameters Variables = new()
@@ -394,38 +394,38 @@ namespace Applied_WebApplication.Pages.ReportPrint
             _Filter = _Filter.Replace("[City]", "[C].[City]");
             var _SQLQuery = SQLQuery.SaleRegister2(_Filter);
             var SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
-=======
-            if (_Table.Rows.Count > 0)
 
-            SalesReportsModel model = new();
-            //
-            model.Variables = new()
-            {
-                StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
-                EndDate = AppRegistry.GetDate(UserName, "sRptDate2"),
-                AllCompany = AppRegistry.GetBool(UserName, "sRptComAll"),
-                AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
-                CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
-                InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
-                Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
-                Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
-                ReportFile = AppRegistry.GetText(UserName, "sRptName"),
-            };
+            //if (_Table.Rows.Count > 0)
 
-            var _Filter = model.GetFilter(model.Variables);
-            var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+            //SalesReportsModel model = new();
+            ////
+            //model.Variables = new()
+            //{
+            //    StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
+            //    EndDate = AppRegistry.GetDate(UserName, "sRptDate2"),
+            //    AllCompany = AppRegistry.GetBool(UserName, "sRptComAll"),
+            //    AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
+            //    CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
+            //    InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
+            //    Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
+            //    Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
+            //    ReportFile = AppRegistry.GetText(UserName, "sRptName"),
+            //};
+
+            //var _Filter = model.GetFilter(model.Variables);
+            //var _SQLQuery = SQLQuery.SaleRegister(_Filter);
+            //var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
             
-            var SaleRegister = new ReportClass
-           {
-                var _CompanyName = UserProfile.GetCompanyName(User);
-                var FMTDate = GetFormatDate(UserName);
-                var Account = (int)GetKey(UserName, "GL_COA", KeyType.Number);
-                var Date1 = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date);
-                var Date2 = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date);
-                var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, Account)}";
-                var _Heading2 = DateFromTo(Date1, Date2, FMTDate);
->>>>>>> 4e06b5329e359e5e3e74d2ad25492fe4c5e530f3
+           // var SaleRegister = new ReportClass
+           //{
+           //     var _CompanyName = UserProfile.GetCompanyName(User);
+           //     var FMTDate = GetFormatDate(UserName);
+           //     var Account = (int)GetKey(UserName, "GL_COA", KeyType.Number);
+           //     var Date1 = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date);
+           //     var Date2 = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date);
+           //     var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, Account)}";
+           //     var _Heading2 = DateFromTo(Date1, Date2, FMTDate);
+
 
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {
