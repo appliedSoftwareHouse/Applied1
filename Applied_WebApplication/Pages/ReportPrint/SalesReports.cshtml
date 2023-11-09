@@ -11,7 +11,7 @@
     var TotAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(Amount)", "")); 
     var TotTaxAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(TaxAmount)", ""));
     var TotNetAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(NetAmount)", ""));
-    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+    // var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
 
 }
 
