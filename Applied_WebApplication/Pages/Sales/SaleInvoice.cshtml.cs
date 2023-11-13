@@ -308,32 +308,54 @@ namespace Applied_WebApplication.Pages.Sales
         public IActionResult OnPostDelete(int? Sr_No)
         {
             var Vou_No = Variables.Vou_No;
-            var Refresh = false;
+            var Refresh = true;
 
             if (Sr_No == 0) { return Page(); }                    // return page 
-
+            
             var _Receivable1 = new DataTableClass(UserName, Tables.BillReceivable);
             var _Receivable2 = new DataTableClass(UserName, Tables.BillReceivable2);
             var _ValidforDelete1 = false;
             var _ValidforDelete2 = false;
 
             _Receivable1.MyDataView.RowFilter = $"ID={Variables.ID1}";
-            _Receivable2.MyDataView.RowFilter = $"ID={Variables.ID2}";
+            _Receivable2.MyDataView.RowFilter = $"TranID={Variables.ID1} AND Sr_No={Sr_No}";
 
 
             if (_Receivable1.CountView == 1) { _ValidforDelete1 = true; }
-            if (_Receivable2.CountView > 0) { _ValidforDelete2 = true; }
-
+            if (_Receivable2.CountView > 0) { _ValidforDelete2 = true; Variables.ID2 = (int)_Receivable2.MyDataView[0]["ID"]; }
+            
             if (_ValidforDelete1 && _ValidforDelete2)
             {
+                
+                _Receivable2.SeekRecord(Variables.ID2);
+                if (_Receivable2.IsSeek) 
+                { 
+                    _Receivable2.Delete();
+                    _Receivable2.Refresh($"TranID={Variables.ID1}");
+                }
 
-
+                
+                if(_Receivable2.IsDeleted)
+                {
+                    // Reindex / Re-serial Sales Iinvoice
+                    var _SrNo = 1;
+                    foreach(DataRow Row in _Receivable2.MyDataView.ToTable().Rows)
+                    {
+                        _Receivable2.Seek((int)Row["ID"]);
+                        if(_Receivable2.IsSeek) 
+                        {
+                            Row["Sr_No"] = _SrNo; _SrNo ++;
+                            _Receivable2.CurrentRow = Row;
+                            _Receivable2.Save();
+                        }
+                    }
+                }
             }
 
 
             // Write code here for delete the record.
 
-            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh });
+            return RedirectToPage("SaleInvoice", routeValues: new { Vou_No, Sr_No, Refresh});
         }
         public IActionResult OnPostNew()
         {
