@@ -20,11 +20,8 @@ namespace Applied_WebApplication.Data
         public int Count => MyDataView.Count;
         public int CountTable => MyDataTable.Rows.Count;
         public int CountView => MyDataView.Count;
-        public int EffectedRecords { get; set; }
         public string MyTableName { get; set; }
         public bool IsError { get; set; } = false;
-        public bool IsSeek { get; set; } = false;
-        public bool IsDeleted { get; set; } = false;
         public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
@@ -388,22 +385,6 @@ namespace Applied_WebApplication.Data
                 MyDataView = MyDataTable.AsDataView();
             }
         }
-
-        public void Refresh(string Filter)
-        {
-            var _CommandText = $"SELECT * FROM {MyTableName} WHERE {Filter}";
-            var _Command = new SQLiteCommand(_CommandText, GetConnection());
-            var _Adapter = new SQLiteDataAdapter(_Command);
-            var _DataSet = new DataSet();
-            _Adapter.Fill(_DataSet, MyTableName);
-            if (_DataSet.Tables.Count > 0)
-            {
-                MyDataTable = _DataSet.Tables[0];
-                MyDataView = MyDataTable.AsDataView();
-            }
-        }
-
-
         #endregion
 
         #region Commands INSERT / UPDATE / DELETE
@@ -499,13 +480,11 @@ namespace Applied_WebApplication.Data
         #region Table's Command
         public bool Seek(int _ID)
         {
-            IsSeek = false;
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
             if (MyDataView.Count > 0)
             {
-                IsSeek = true;
                 MyDataView.RowFilter = Filter; return true;
             }
             else
@@ -513,13 +492,11 @@ namespace Applied_WebApplication.Data
         }
         public bool Seek(string _Code)
         {
-            IsSeek = false;
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = String.Concat("Code='", _Code, "'");
 
             if (MyDataView.Count > 0)
             {
-                IsSeek = true;
                 MyDataView.RowFilter = Filter; return true;
             }
             else
@@ -528,12 +505,11 @@ namespace Applied_WebApplication.Data
         public DataRow SeekRecord(int _ID)
         {
             DataRow row;    // = MyDataTable.NewRow();
-            IsSeek = false;
             string Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
             if (MyDataView.Count > 0)
-            { IsSeek = true; ; row = MyDataView[0].Row; }
+            { row = MyDataView[0].Row; }
             else
             { row = MyDataTable.NewRow(); }
             CurrentRow = row;
@@ -553,13 +529,11 @@ namespace Applied_WebApplication.Data
         }
         internal bool Seek(string _Column, string _ColumnValue)                     // Search a specific colum by specific valu.
         {
-            IsSeek = false;
             bool _result = true;
             string _Filter = MyDataView.RowFilter;
             MyDataView.RowFilter = _Column + "='" + _ColumnValue + "'";
             if (MyDataView.Count > 0)
             {
-                IsSeek = true;
                 _result = false;
             }
             MyDataView.RowFilter = _Filter;
@@ -623,7 +597,7 @@ namespace Applied_WebApplication.Data
         {
             Validate ??= true;
             IsError = false;
-            
+
             if (CurrentRow != null)
             {
                 TableValidation = new TableValidationClass(CurrentRow.Table);
@@ -652,7 +626,7 @@ namespace Applied_WebApplication.Data
                     {
                         TableValidation.SQLAction = CommandAction.Insert.ToString();
                         CommandInsert();
-                        EffectedRecords = Command_Insert.ExecuteNonQuery();
+                        Command_Insert.ExecuteNonQuery();
                         GetDataTable();
                         MyMessage = "Insert record in " + MyTableName;
                     }
@@ -660,7 +634,7 @@ namespace Applied_WebApplication.Data
                     {
                         TableValidation.SQLAction = CommandAction.Update.ToString();
                         CommandUpdate();
-                        EffectedRecords = Command_Update.ExecuteNonQuery();
+                        Command_Update.ExecuteNonQuery();
                         GetDataTable();
                         MyMessage = "Update record in " + MyTableName;
                     }
@@ -677,31 +651,28 @@ namespace Applied_WebApplication.Data
         }
         public bool Delete()
         {
-            IsDeleted = false;
             IsError = true;
             TableValidation.MyMessages = new List<Message>();
             CommandDelete();
-            
+            int records;
             try
             {
-                EffectedRecords = Command_Delete.ExecuteNonQuery();
+                records = Command_Delete.ExecuteNonQuery();
             }
             catch (Exception)
             {
                 TableValidation.MyMessages.Add(new Message() { Success = false, ErrorID = 1, Msg = "Transaction FAIL to delete!!!!!. Contact to administrator.." });
                 throw;
             }
-            if (EffectedRecords == 1)
+            if (records == 1)
             {
                 IsError = false;
-                IsDeleted = true;
-                MyMessage = string.Concat(EffectedRecords.ToString(), " has been deleted.");
+                MyMessage = string.Concat(records.ToString(), " has been deleted.");
             }
-            if (EffectedRecords > 1)
+            if (records > 1)
             {
                 IsError = false;
-                IsDeleted = true;
-                MyMessage = string.Concat(EffectedRecords.ToString(), " have been deleted.");
+                MyMessage = string.Concat(records.ToString(), " have been deleted.");
             }
 
             return IsError;
