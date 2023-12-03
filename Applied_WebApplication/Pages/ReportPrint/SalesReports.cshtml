@@ -5,13 +5,13 @@
     var UserName = User.Identity.Name;
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
-    var DateFormat = AppRegistry.FormatDate; 
+    var DateFormat = AppRegistry.FormatDate;
     var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
-    var TotQty = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(QTY)",""));
-    var TotAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(Amount)", "")); 
+    var TotQty = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(QTY)", ""));
+    var TotAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(Amount)", ""));
     var TotTaxAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(TaxAmount)", ""));
     var TotNetAmount = Conversion.ToDecimal(Model.SourceTable.Compute("SUM(NetAmount)", ""));
-    // var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+    // var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
 
 }
 
@@ -36,6 +36,8 @@
 
 <form method="post">
 
+    <div class="container">
+        <div class="row">
             <div class="col-md-3 date-width mb-1">
                 <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
@@ -50,10 +52,7 @@
                 </div>
             </div>
 
-            <div class="col-md-2 m  filter-select">
-
-
-            <div class="col-md-2  filter-select">
+            <div class="col-md-2  filter-select ps-1"  style="margin-left:5px">
 
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
@@ -86,8 +85,6 @@
                         asp-page-handler="Refresh">
                     <i class="bi bi-arrow-repeat"></i>
                 </button>
-               
-                
                 <div class="col-1 col-width">
                     <div class="dropdown">
                         <button type="button" class="btn btn-primary btn-250 dropdown-toggle btn-sm" data-bs-toggle="dropdown">
@@ -102,7 +99,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="col-1 col-width">
                     <div class="dropdown">
                         <button type="button" class="btn btn-primary btn-250 dropdown-toggle btn-sm" data-bs-toggle="dropdown">
@@ -117,19 +113,11 @@
                         </ul>
                     </div>
                 </div>
-<<<<<<< HEAD
-=======
-
-
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary justify-content-end"
-                asp-page-handler="Refresh">Refresh</button>
-
->>>>>>> 4e06b5329e359e5e3e74d2ad25492fe4c5e530f3
             </div>
         </div>
     </div>
 
+    <!--  Data Table -->
     @if (Model.SourceTable != null)
     {
         if (Model.SourceTable.Rows.Count > 0)
