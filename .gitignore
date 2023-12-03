@@ -367,3 +367,5 @@ FodyWeavers.xsd
 /Applied_WebApplication/wwwroot/SQLiteDB/Amcorp.db
 /Applied_WebApplication/wwwroot/SQLiteDB/Mumtaz.db
 /Applied_WebApplication/wwwroot/DBTemp/Amcorp/AmcorpTemp.db
+/Applied_WebApplication/wwwroot/PrintedReports/Ledger.pdf
+/Applied_WebApplication/wwwroot/SQLiteDB/OCSLub.db
