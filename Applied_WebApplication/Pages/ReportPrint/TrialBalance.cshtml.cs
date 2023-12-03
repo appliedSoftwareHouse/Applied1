@@ -55,23 +55,23 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
             catch (Exception e)
             {
-                ErrorMessages.Add(MessageClass.SetMessage(e.Message));
+                ErrorMessages.Add(SetMessage(e.Message));
             }
         }
 
-        public IActionResult OnPostPrint(ReportType _ReportType, TBOption _rptOption)
+        public IActionResult OnPostPrint(ReportType ReportType)
         {
             ErrorMessages = new();
             var _Date1 = AppRegistry.GetDate(UserName, "TBDate1");
             var _Date2 = AppRegistry.GetDate(UserName, "TBDate2");
             var __Date1 = _Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
-            var __Date2 = _Date1.AddDays(1).ToString(AppRegistry.DateYMD);
-            var _Filter = string.Empty;
+            var __Date2 = _Date2.AddDays(1).ToString(AppRegistry.DateYMD);
+            var _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'";
             var _OrderBy = "Code";
 
-            if(_rptOption==TBOption.All) { _Filter = string.Empty; }
-            if(_rptOption== TBOption.UptoDate) { _Filter = $"Date(Vou_Date) < '{__Date2}'"; }
-            if(_rptOption==TBOption.Monthly) { _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'"; }
+            //if(RptOption==TBOption.All) { _Filter = string.Empty; }
+            //if(_rptOption== TBOption.UptoDate) { _Filter = $"Date(Vou_Date) < '{__Date2}'"; }
+            //if(_rptOption==TBOption.Monthly) { _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'"; }
 
             //_Filter += " ORDER BY Vou_Date,Vou_No";
 
@@ -83,11 +83,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var CompanyName = UserProfile.GetCompanyName(User);
 
                 var _Heading1 = "TRIAL BALANCE";
-                var _Heading2 = string.Empty;
+                var _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}";
 
-                if(_rptOption == TBOption.All) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
-                if(_rptOption == TBOption.UptoDate) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
-                if(_rptOption == TBOption.Monthly) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
+
+                //if(_rptOption == TBOption.All) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
+                //if(_rptOption == TBOption.UptoDate) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                //if(_rptOption == TBOption.Monthly) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
+
+
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
@@ -108,7 +111,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     Heading1 = _Heading1,
                     Heading2 = _Heading2,
                     Footer = AppFunctions.AppGlobals.ReportFooter,
-                    ReportType = _ReportType,
+                    ReportType = ReportType,
                     DataSetName = "dset_TB",
                     ReportData = _Table,
                     DataParameters = _Parameters
@@ -117,7 +120,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var ReportClass = new ExportReport(Variables);
                 ReportClass.Render();
 
-                if (_ReportType == ReportType.Preview)
+                if (ReportType == ReportType.Preview)
                 {
                     ReportLink = ReportClass.Variables.GetFileLink();
                     IsShowPdf = true;
@@ -136,14 +139,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
         }
 
-        public IActionResult OnPostTBOpeningAsync()
+        public IActionResult OnPostTBOpening()
         {
             var OBDate = AppRegistry.GetDate(UserName, "OBDate");
             AppRegistry.SetKey(UserName, "TBDate1", OBDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "TBDate2", OBDate, KeyType.Date);
             return RedirectToPage();
         }
-        public IActionResult OnPostTBALLAsync()
+        public IActionResult OnPostTBALL()
         {
             DataTableClass Ledger = new(UserName, Tables.Ledger);
 
