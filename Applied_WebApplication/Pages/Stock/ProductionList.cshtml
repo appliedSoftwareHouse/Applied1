@@ -1,0 +1,83 @@
+﻿@page
+@model Applied_WebApplication.Pages.Stock.ProductionListModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleInOut = string.Empty;
+
+}
+
+
+
+<div class="AppHeading-2">PRODUCTION LIST</div>
+
+
+<form method="post">
+    <div class="container">
+        <div class="row filter">
+            <div class="col-md-2 date-width ps-1">
+                <div class="input-group date-group">
+                    <span class="input-group-text date-title" id="DateStart">Start</span>
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.Date1"
+                           placeholder="Start Date" aria-label="Start Date" aria-describedby="DateStart">
+                </div>
+            </div>
+            <div class="col-md-2 date-width">
+                <div class="input-group date-group">
+
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.Date2"
+                           placeholder="End Date" aria-label="End Date" aria-describedby="EndDate">
+                    <span class="input-group-text date-title" id="DateEnd">End</span>
+                </div>
+            </div>
+            <div class="col-md-3 tbox-width">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtBatch">Batch</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Batch"
+                           placeholder="Batch" aria-label="Batch" aria-describedby="txtBatch">
+                </div>
+            </div>
+            <div class="col-md-3 tbox-width">
+                <div class="input-group mb-3">
+                    <label class="input-group-text" for="txtInOut">In OUT</label>
+                    <select class="form-select" id="txtInOut" asp-for="@Model.Variables.InOut">
+                        <option selected>@TitleInOut</option>
+                        <option value="Both">Both</option>
+                        <option value="In">Stock IN</option>
+                        <option value="Out">Stock Out</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3 tbox-width-2">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="txtRemarks">Search</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Search"
+                           placeholder="Search" aria-label="Voucher No" aria-describedby="txtRemarks">
+                </div>
+            </div>
+            <div class="col-md-1 btn-refresh">
+                <button type="submit" class="btn btn-primary p-1" asp-page-handler="Filter" ><i class="bi bi-arrow-repeat"></i></button>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="container">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>
+
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</form>

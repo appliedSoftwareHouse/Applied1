@@ -18,6 +18,7 @@ namespace AppReportClass
         }
         #endregion
 
+
         #region GET Report Vales
 
         public static string GetRenderFormat(ReportType _ReportType)
@@ -106,10 +107,9 @@ namespace AppReportClass
             };
             return _Parameters;
         }
-       
+
         public bool SaveReport()
         {
-            Variables.IsSaved = false;
             if (Variables.FileBytes.Length == 0)
             {
                 return false;
@@ -130,7 +130,6 @@ namespace AppReportClass
 
                     if (File.Exists(_FileName))
                     {
-                        Variables.IsSaved = true;
                         return true;
                     }
                 }
@@ -138,6 +137,8 @@ namespace AppReportClass
             return false;
         }
         #endregion
+
+
 
     }
 }

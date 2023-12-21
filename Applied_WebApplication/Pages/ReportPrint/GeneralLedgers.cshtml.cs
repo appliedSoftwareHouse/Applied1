@@ -13,7 +13,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         [BindProperty]
         public ReportFilters Parameters { get; set; }
-       
 
         public void OnGet()
         {
@@ -29,6 +28,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             if (Parameters.Dt_From.Year < 2000) { Parameters.Dt_From = DateTime.Now; }
             if (Parameters.Dt_To.Year < 2000) { Parameters.Dt_To = DateTime.Now; }
+
         }
 
 
@@ -84,7 +84,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #endregion
 
-        
+
+
         public void SetKeys()
         {
             var UserName = User.Identity.Name;

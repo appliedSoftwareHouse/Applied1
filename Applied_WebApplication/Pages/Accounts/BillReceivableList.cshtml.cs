@@ -88,7 +88,6 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 var _IsError = true;
                 var _Filter1 = $"ID={ID}";
-
                 DataTableClass _Receivable1 = new(UserName, Tables.BillReceivable, _Filter1);
                 if (_Receivable1.Count > 0)
                 {
@@ -124,25 +123,7 @@ namespace Applied_WebApplication.Pages.Accounts
                             }
                         }
                     }
-                    else
-                    {
-                        if (_Receivable1.Count > 0)
-                        {
-                            _Receivable1.SeekRecord(ID);
-                            if (_Receivable1.Delete())          // Delete return false means no error found in deletion of the record.
-                            {
-                                MyMessages.Add(SetMessage($"Sales Invoice Voucher No {_Vou_No} has NOT been deleted. Contact to Administrator."));
-                            }
-                            else
-                            {
-                                MyMessages.Add(SetMessage($"Sales Invoice Voucher No {_Vou_No} has been deleted sucessfully.", ConsoleColor.Yellow));
-                            }
-                        }
-                    }
                 }
-                
-
-
             }
             catch (Exception e)
             {
@@ -179,25 +160,25 @@ namespace Applied_WebApplication.Pages.Accounts
             #endregion
 
             return Page();
-        }
-        #endregion
+}
+#endregion
 
-        #region Print
+#region Print
 
-        public IActionResult OnPostPrint(int ID)
-        {
-            var TranID = ID;
-            return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
-        }
-        #endregion
+public IActionResult OnPostPrint(int ID)
+{
+    var TranID = ID;
+    return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
+}
+#endregion
 
-        #region Variables
-        public class Parameters
-        {
-            public DateTime MinDate { get; set; }
-            public DateTime MaxDate { get; set; }
-            public int Company { get; set; }
-        }
+#region Variables
+public class Parameters
+{
+    public DateTime MinDate { get; set; }
+    public DateTime MaxDate { get; set; }
+    public int Company { get; set; }
+}
         #endregion
     }
 }

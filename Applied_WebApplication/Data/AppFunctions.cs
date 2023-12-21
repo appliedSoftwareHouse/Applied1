@@ -1,6 +1,5 @@
 ﻿using System.Data;
 using System.Data.SQLite;
-using System.Text;
 using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
@@ -317,23 +316,13 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        public static string DateFromTo(DateTime? _Date1, DateTime? _Date2, string _DateFormat)
-        {
-            StringBuilder Text = new();
-
-
-
-            if (_Date1 != null)
-            {
-                Text.Append($"From {((DateTime)_Date1).ToString(_DateFormat)} ");
-            }
-
-            if (_Date2 != null)
-            {
-                Text.Append($"To {((DateTime)_Date2).ToString(_DateFormat)}");
-            }
-            return Text.ToString();
-        }
+        //public static string AddCommas(string UserName, object _Value)
+        //{
+        //    var _Number = Decimal.Round(Conversion.ToDecimal(_Value), 2);
+        //    var _Format = AppRegistry.GetFormatCurrency(UserName);
+        //    var _result = _Number.ToString(_Format);
+        //    return _result;
+        //}
 
 
     }

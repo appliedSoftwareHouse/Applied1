@@ -40,14 +40,6 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage();
         }
 
-        public IActionResult OnPostDelete(int ID)
-        {
-
-
-
-            return Page();
-        }
-
 
         #region Variables
         public class Parameters

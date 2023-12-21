@@ -83,11 +83,11 @@
                         Print <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">
-                        <li><button class="btn btn-link" asp-route-ReportType="Preview" asp-page-handler="Print">Preview</button></li>
-                        <li><button class="btn btn-link" asp-route-ReportType="PDF"  asp-page-handler="Print">PDF</button></li>
-                        <li><button class="btn btn-link" asp-route-ReportType="Excel" asp-page-handler="Print">Excel</button></li>
-                        <li><button class="btn btn-link" asp-route-ReportType="Word"  asp-page-handler="Print">Word</button></li>
-                        <li><button class="btn btn-link" asp-route-ReportType="HTML"  asp-page-handler="Print">HTML</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Preview" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Preview</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="PDF" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">PDF</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Excel" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Excel</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="Word" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">Word</button></li>
+                        <li><button class="btn btn-link" asp-route-_ReportType="HTML" asp-route-_rptOption="@Model.Variables.ReportOption" asp-page-handler="Print">HTML</button></li>
                     </ul>
                 </div>
             </div>

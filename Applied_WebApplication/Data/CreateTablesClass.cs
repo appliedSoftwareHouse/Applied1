@@ -1,7 +1,12 @@
-﻿using System.Data;
+﻿using Applied_WebApplication.Pages.Stock;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Reporting.Map.WebForms.BingMaps;
+using System;
+using System.Data;
 using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
+using System.Xml.Linq;
 using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
@@ -150,7 +155,7 @@ namespace Applied_WebApplication.Data
 
                 if (!IsTableFound)
                 {
-                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}",ConsoleColor.Yellow));
+                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}", ConsoleColor.Yellow));
                     CreateTable(UserName, _TargetTable);
 
                 }
@@ -236,6 +241,49 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Production
+
+        private static void Production1(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE TABLE[Production]( ");
+            Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+            Text.Append("[Vou_No] TEXT(10) NOT NULL UNIQUE, ");
+            Text.Append("[Vou_Date] DATETIME NOT NULL, ");
+            Text.Append("[Batch] NVARCHAR(25) NOT NULL UNIQUE, ");
+            Text.Append("[Remarks] NVARCHAR, ");
+            Text.Append("[Comments] NVARCHAR);");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        private static void Production2(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE TABLE[Production2](");
+            Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+            Text.Append("[TranID] INT NOT NULL REFERENCES[Production]([ID]), ");
+            Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]), ");
+            Text.Append("[Flow] BOOL NOT NULL, ");
+            Text.Append("[Qty] DEC NOT NULL, ");
+            Text.Append("[Rate] DECIMAL NOT NULL, ");
+            Text.Append("[Remarks] NVARCHAR(100));");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        private static void ProductionView(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [view_Production] AS ");
+            Text.Append(SQLQuery.View_Production(UserName));
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        #endregion
+
+
         //========================================================================= CREATE
         #region Create DataTable into Source Data
 
@@ -286,7 +334,13 @@ namespace Applied_WebApplication.Data
                 case Tables.view_Sold:
                     Sold(UserName);
                     break;
-
+                case Tables.Production:
+                    Production1(UserName);
+                    Production2(UserName);
+                    break;
+                case Tables.view_Production:
+                    ProductionView(UserName);
+                    break;
                 case Tables.TB:
                     break;
                 case Tables.BillReceivable:

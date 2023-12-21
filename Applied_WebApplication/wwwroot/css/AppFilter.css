@@ -1,77 +1,67 @@
-﻿.filter-row {
+﻿.filter {
     width: auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.date-width {
-    width: 200px;
-    height: 45px;
-    padding-left:0px;
-    padding-right: 0px;
+    height:44px;
+    background-color:cornsilk;
+    margin-left:0px;
+    margin-right:0px;
+    padding-left: 0;
+    padding-right: 0;
     padding-top: 3px;
-    padding-bottom: 2px;
+    padding-bottom: 3px;
 }
 
-.filter-select {
-    width: 200px;
+.date-width {
+    width: 220px;
+    align-items: center;
+    padding:0px;
+}
+
+.date-group {
+    width: 215px;
     padding-left: 0px;
     padding-right: 0px;
-    padding-top: 3px;
-    padding-bottom: 2px;
-    margin-left: 3px;
-    justify-content: center;
-}
-
-
-.filter-buttons {
-    height: auto;
-    width:150px;
-    display: flex;
-    justify-content: center;
-}
-
-.btn-refresh {
-    display: flex;
-    width: 50px;
-    height:32px;
-    margin-top:3px;
-    margin-left:30px;
-    margin-right:10px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 2px;
-    border:solid;
-    border-color:gray;
-    border-width:.5px;
-    color: blue;
+    align-items:center;
     
 }
 
-    .btn-refresh:hover {
-        color: red;
-        background-color: aliceblue
-    }
-
-
-.btn-print {
-    display: flex;
-    width: 35px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 5px;
-    padding-bottom: 2px;
-    margin-left: 5px;
-    color: green;
+.date-title {
+    width: 60px;
+    text-align:center;
+   
 }
 
-    .btn-print:hover {
-        color: red;
-        background-color: aliceblue
-    }
+.date-date {
+    width: 60px;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:4px;
+    padding-bottom:4px;
+    border:solid 1px;
+    border-color:black;
+    text-align:center;
+}
 
-    .btn-250{
-        width:50px;
-        margin-top:3px
-    }
+.filter-select{
+    width:200px
+}
+
+.btn-refresh {
+    width: 80px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    
+}
+
+.tbox-width {
+    width: 220px;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.tbox-width-2 {
+    width: 300px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
