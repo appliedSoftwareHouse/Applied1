@@ -1,0 +1,147 @@
+﻿@page
+@using System.Data;
+@model Applied_WebApplication.Pages.Stock.ProductionModel
+@{
+    string UserName = User.Identity.Name;
+    DataTable _Table = new DataTable();
+
+    string TitleStock = "";
+    string TitleInOut = "";
+
+}
+
+
+<div class="AppHeading-2">PRODUCTION</div>
+
+<form method="post">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtVouNo">Vou. No.</span>
+                    <input type="text" class="form-control hd-w70" asp-for="@Model.Variables.Vou_No"
+                           placeholder="Voucher No." aria-label="Voucher No" aria-describedby="txtVouNo">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtVouDate">Vou. Date</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Vou_Date"
+                           placeholder="Voucher Date" aria-label="Voucher Date" aria-describedby="txtVouDate">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtBatch">Batch</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Batch"
+                           placeholder="Batch" aria-label="Batch" aria-describedby="txtBatch">
+                </div>
+
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text hd-w30" for="txtInventory">Inventory</label>
+                    <select class="form-select" id="txtInventory" asp-for="@Model.Variables.StockID">
+                        <option selected>@TitleStock</option>
+                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.Inventory))
+                        {
+                            <option value="@Item.Key">@Item.Value</option>
+                        }
+
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <label class="input-group-text hd-w30" for="txtInOut">In OUT</label>
+                    <select class="form-select" id="txtInOut" asp-for="@Model.Variables.InOut">
+                        <option selected>@TitleInOut</option>
+                        <option value="In">Stock IN</option>
+                        <option value="Out">Stock Out</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtRemarks">Remarks</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Remarks"
+                           placeholder="Remarks" aria-label="Voucher No" aria-describedby="txtRemarks">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtQuantity">Quantity</span>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Qty"
+                           placeholder="Quantity" aria-label="Quantity" aria-describedby="txtQty">
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtRate">Rate</span>
+                    <input type="number" step=".01" class="form-control" asp-for="@Model.Variables.Rate"
+                           placeholder="Rate" aria-label="Rate" aria-describedby="txtRate">
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group mb-3">
+                    <span class="input-group-text hd-w30" id="txtAmount">Amount</span>
+                    <input type="number" step=".01" class="form-control" asp-for="@Model.Variables.Amount"
+                           placeholder="Amount" aria-label="Amount" aria-describedby="txtAmount">
+                </div>
+            </div>
+        </div>
+        <div class="row mb-3  clearfix">
+            <div style="width:12%">
+                <button class="btn btn-success btn-w3" asp-route-ID="" asp-page-handler="Save">Save</button>
+            </div>
+            <div style="width:12%">
+                <button class="btn btn-success btn-w3">New</button>
+            </div>
+            <div style="width:12%">
+                <button class="btn btn-success btn-w3">Save All</button>
+            </div>
+            <div style="width:64%">
+                <button class="btn btn-warning btn-w3 float-end">Back</button>
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="container">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th style="width:15%">Batch</th>
+                    <th style="width:10%">IN-OUT</th>
+                    <th style="width:15%">Qty</th>
+                    <th style="width:15%">Rate</th>
+                    <th style="width:15%">Amount</th>
+                    <th style="width:30%">Remarks</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (DataRow Row in _Table.Rows)
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                }
+            </tbody>
+
+
+        </table>
+    </div>
+</form>
+

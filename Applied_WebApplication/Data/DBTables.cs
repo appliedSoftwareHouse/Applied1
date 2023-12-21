@@ -47,6 +47,8 @@ public enum Tables
     StockPositionSUM = 313,
     view_Purchased = 314,
     view_Sold = 315,
+    Production = 316,
+    view_Production = 317,
 
     Ledger = 401,
     view_Ledger = 402,

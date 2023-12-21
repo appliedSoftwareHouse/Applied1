@@ -1,20 +1,44 @@
-﻿.date-width {
+﻿.filter {
+    width: auto;
+    height:44px;
+    background-color:cornsilk;
+    margin-left:0px;
+    margin-right:0px;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.date-width {
     width: 220px;
+    align-items: center;
+    padding:0px;
 }
 
 .date-group {
-    width: 200px;
-    padding-left: 5px;
-    padding-right: 5px;
-   
+    width: 215px;
+    padding-left: 0px;
+    padding-right: 0px;
+    align-items:center;
+    
 }
 
 .date-title {
     width: 60px;
+    text-align:center;
+   
 }
 
 .date-date {
-    width: 80px;
+    width: 60px;
+    padding-left:5px;
+    padding-right:5px;
+    padding-top:4px;
+    padding-bottom:4px;
+    border:solid 1px;
+    border-color:black;
+    text-align:center;
 }
 
 .filter-select{
@@ -22,5 +46,22 @@
 }
 
 .btn-refresh {
-    width:80px;
+    width: 80px;
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    
+}
+
+.tbox-width {
+    width: 220px;
+    padding-left:5px;
+    padding-right:5px;
+}
+
+.tbox-width-2 {
+    width: 300px;
+    padding-left: 5px;
+    padding-right: 5px;
 }

@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.Data.SQLite;
 using System.Text;
 
 namespace Applied_WebApplication.Data
@@ -1047,6 +1048,7 @@ namespace Applied_WebApplication.Data
             Text.Append("SELECT [B1].[Vou_No], ");
             Text.Append("[B1].[Vou_Date], ");
             Text.Append("[B2].[Inventory], ");
+            Text.Append("[I].[Title] AS [StockTitle],");
             Text.Append("[B2].[Qty] * -1 AS [Qty], ");
             Text.Append("[B2].[Rate] * -1 AS [Rate], ");
             Text.Append("[B2].[Qty] *[B2].[Rate] * -1 AS [Amount], ");
@@ -1055,7 +1057,24 @@ namespace Applied_WebApplication.Data
             Text.Append("FROM [BillReceivable] [B1] ");
             Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[TranID] = [B1].[ID] ");
             Text.Append("LEFT JOIN [Taxes] [T] ON [T].[ID] = [B2].[Tax]; ");
+            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [B2].[Inventory]; ");
 
+            return Text.ToString();
+        }
+        #endregion
+
+        #region View Production
+        public static string View_Production(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT ");
+            Text.Append("[P1].[ID] AS ID1,[P1].[Vou_no],[P1].[Vou_Date],[P1].[Batch],[P1].[Remarks],[P1].[Comments], ");
+            Text.Append("[P2].[ID] AS ID2,[P2].[TranID],[P2].[Flow],[P2].[Qty],[P2].[Rate],");
+            Text.Append("([P2].[Qty] * [P2].[Rate]) AS [Amount],");
+            Text.Append("[P2].[Remarks] AS [Remarks2] ");
+            Text.Append("FROM [Production2] [P2]");
+            Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID]");
+            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[ID]");
             return Text.ToString();
         }
         #endregion

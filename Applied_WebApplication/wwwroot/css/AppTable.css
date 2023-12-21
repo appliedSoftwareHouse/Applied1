@@ -44,3 +44,56 @@
 .table-list, tfoot {
     background-color:antiquewhite;
 }
+
+
+.table-col-amount {
+    text-align: right
+}
+
+.table-col-amount-red {
+    text-align: right;
+    color: darkred
+}
+
+
+.table-caption {
+    display: table-caption;
+    text-align: center;
+    text-transform: uppercase;
+    color: red;
+}
+
+.TableFooter {
+    background: #F9DBDB
+}
+
+.listbutton-red {
+    background-color: transparent;
+    color: red;
+    border: 0px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px;
+    margin: 0px
+}
+
+.listbutton-blue {
+    background-color: transparent;
+    color: darkblue;
+    border: 0px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px
+}
+
+.listbutton-green {
+    background-color: transparent;
+    color: darkgreen;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    padding: 0px
+}
