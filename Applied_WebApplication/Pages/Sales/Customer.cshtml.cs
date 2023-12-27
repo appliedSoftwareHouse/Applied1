@@ -11,9 +11,10 @@ namespace Applied_WebApplication.Pages.Sales
         public Customer Record { get; set; }
         public bool IsError = false;
         public List<Message> ErrorMessages;
+        public string UserName => User.Identity.Name;
         public string MyPageAction { get; set; } = "Add";
 
-        public void OnGetEdit(string UserName, int id)
+        public void OnGetEdit(int id)
         {
             MyPageAction = "Edit";
             DataTableClass Customers = new(UserName, Tables.Customers);
@@ -38,7 +39,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         }
 
-        public void OnGetDelete(string UserName, int id)
+        public void OnGetDelete(int id)
         {
             MyPageAction = "Delete";
             DataTableClass Customers = new(UserName, Tables.Customers);
@@ -60,7 +61,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         }
 
-        public IActionResult OnPostSave(Customer _Record, string UserName)
+        public IActionResult OnPostSave(Customer _Record)
         {
 
             DataTableClass Customers = new(UserName, Tables.Customers);
@@ -105,7 +106,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         }
 
-        public IActionResult OnPostDelete(Customer _Record, string UserName)
+        public IActionResult OnPostDelete(Customer _Record)
         {
             DataTableClass Customers = new(UserName, Tables.Customers);
 
@@ -141,6 +142,7 @@ namespace Applied_WebApplication.Pages.Sales
         public string NTN { get; set; }
         public string CNIC { get; set; }
         public string Notes { get; set; }
+        public string ContactPerson { get; set; }
     }
 
 }

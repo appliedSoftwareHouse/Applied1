@@ -47,20 +47,25 @@
                 </div>
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <label asp-for=@Model.Record.Email class="form-label">Email <span class="text-muted">(Optional)</span></label>
                 <input type="email" asp-for=@Model.Record.Email name="Email" value=@Model.Record.Email class="form-control" placeholder="you@example.com">
                 <span class="text-danger" asp-validation-for=@Model.Record.Email> </span>
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <label asp-for=@Model.Record.Address1 class="form-label">Address</label>
                 <input type="text" asp-for=@Model.Record.Address1 class="form-control" name="Address1" value=@Model.Record.Address1 placeholder="Address Line 1" required="">
             </div>
 
-            <div class="col-12">
+            <div class="col-6">
                 <label asp-for=@Model.Record.Address2 class="form-label">Address 2 <span class="text-muted"></span></label>
-                <input type="text" asp-for=@Model.Record.Address2 value=@Model.Record.Address2 class="form-control" name="Address2" placeholder="Address Line 2" >
+                <input type="text" asp-for=@Model.Record.Address2 value=@Model.Record.Address2 class="form-control" name="Address2" placeholder="Address Line 2">
+            </div>
+
+            <div class="col-6">
+                <label asp-for=@Model.Record.ContactPerson class="form-label">Contact Person<span class="text-muted"></span></label>
+                <input type="text" asp-for=@Model.Record.ContactPerson value=@Model.Record.ContactPerson class="form-control" name="ContactPerson" placeholder="Contact Person Name">
             </div>
 
             <div class="col-md-3">
@@ -73,7 +78,7 @@
 
             <div class="col-md-4">
                 <label asp-for=@Model.Record.State class="form-label">State</label>
-                <input type="text" asp-for=@Model.Record.State value=@Model.Record.State class="form-control" Name="State" placeholder="Enter City Name" >
+                <input type="text" asp-for=@Model.Record.State value=@Model.Record.State class="form-control" Name="State" placeholder="Enter City Name">
                 <div class="invalid-feedback">
                     Provience / State name is required.
                 </div>
@@ -81,7 +86,7 @@
 
             <div class="col-md-5">
                 <label asp-for=@Model.Record.Country class="form-label">Country</label>
-                <select class="form-select" name="Country" asp-for=@Model.Record.Country >
+                <select class="form-select" name="Country" asp-for=@Model.Record.Country>
                     <option value=@Model.Record.Country>Choose...</option>
                     <option>Pakistan</option>
                     <option>Muzambique</option>
@@ -111,7 +116,7 @@
             </div>
 
             <div class="col-md-6">
-                <label asp-for=@Model.Record.NTN class="form-label">National Tax Number (TNT)</label>
+                <label asp-for=@Model.Record.NTN class="form-label">National Tax Number (NTN)</label>
                 <input type="text" asp-for=@Model.Record.NTN value=@Model.Record.NTN class="form-control" name="NTN" placeholder="Enter National Tax Number">
             </div>
 
@@ -129,15 +134,15 @@
             <hr style="width:50%;text-align:center;margin-left:0">
         </div>
         <div class="row g-md-1">
-                        @if (Model.MyPageAction == "Delete")
-                        {
-                            <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete" asp-route-UserName=@UserName>Delete</button>
-                        }
-                        else
-                        {
-                        <button class="btn btn-primary p-1" type="submit" asp-page-handler="Save" asp-route-UserName=@UserName>Save</button>
-                        <button class="btn btn-primary p-1" type="submit" asp-page="Customers">Back</button>
-                        }
+            @if (Model.MyPageAction == "Delete")
+            {
+                <button class="btn btn-primary p-1" type="submit" asp-page-handler="Delete">Delete</button>
+            }
+            else
+            {
+                <button class="btn btn-primary p-1" type="submit" asp-page-handler="Save">Save</button>
+                <button class="btn btn-primary p-1" type="submit" asp-page="Customers">Back</button>
+            }
         </div>
     </form>
 </div>
