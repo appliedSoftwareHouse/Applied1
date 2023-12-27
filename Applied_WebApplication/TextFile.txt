@@ -36,12 +36,12 @@ HTML File					<i class="bi bi-filetype-html"></i>
 Home							<i class="bi bi-house-fill"></i>
 Pencil							<i class="bi bi-pencil-fill"></i>
 Pencil							<i class="bi bi-pencil"></i>
-User								<i class="bi bi-person-fill"></i>
-Save								<i class="bi bi-save"></i>
-Save								<i class="bi bi-save-fill"></i>
+User							<i class="bi bi-person-fill"></i>
+Save							<i class="bi bi-save"></i>
+Save							<i class="bi bi-save-fill"></i>
 Printer							<i class="bi bi-printer">
 Details							<i class="bi bi-arrows-fullscreen"></i>
-DEtails							<i class="bi bi-chat-square-text"></i>
+Details							<i class="bi bi-chat-square-text"></i>
 
 Trash							<i class="bi bi-trash-fill"></i>
 Trash							<i class="bi bi-trash"></i>

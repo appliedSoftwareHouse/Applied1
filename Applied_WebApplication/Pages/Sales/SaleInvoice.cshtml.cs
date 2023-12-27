@@ -264,6 +264,11 @@ namespace Applied_WebApplication.Pages.Sales
             Row1 = TempInvoice11.CurrentRow;
             Row2 = TempInvoice22.CurrentRow;
 
+            TempInvoice11.TableValidate.SQLAction = CommandAction.Insert.ToString();
+            TempInvoice22.TableValidate.SQLAction = CommandAction.Insert.ToString();
+            if (TempInvoice11.CountTemp > 0) { TempInvoice11.TableValidate.SQLAction = CommandAction.Update.ToString(); }
+            if (TempInvoice22.CountTemp > 0) { TempInvoice22.TableValidate.SQLAction = CommandAction.Update.ToString(); }
+            
             Variables2Row();
 
             var ValidRow1 = TempInvoice11.TableValidate.Validation(Row1);
@@ -277,22 +282,27 @@ namespace Applied_WebApplication.Pages.Sales
             }
             else
             {
-                ErrorMessages.AddRange(TempInvoice11.ErrorMessages);
-                ErrorMessages.AddRange(TempInvoice22.ErrorMessages);
+                ErrorMessages.AddRange(TempInvoice11.TableValidate.MyMessages);
+                ErrorMessages.AddRange(TempInvoice22.TableValidate.MyMessages);
+   
+                
             }
 
-            // Reset and Update Web Page Data
+           
+
             if (ErrorMessages.Count == 0)
             {
                 _Filter1 = $"Vou_No='{Vou_No}'";
                 TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, false);
                 _Filter2 = $"TranID={TempInvoice11.CurrentRow["ID"]}";
                 TempInvoice22 = new(UserName, Tables.BillReceivable2, _Filter2, false);
-
-                Invoice = TempInvoice22.TempTable;
                 var message2 = $"Serial No {Variables.Sr_No} of Invoice No {Variables.Vou_No} has been saved successfully.";
                 ErrorMessages.Add(MessageClass.SetMessage(message2, Color.Yellow));
             }
+
+            // Reset and Update Web Page Data
+
+            Invoice = TempInvoice22.TempTable;
             return Page();
         }
         public IActionResult OnPostEdit(int? Sr_No)

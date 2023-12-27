@@ -39,22 +39,25 @@ namespace Applied_WebApplication.Data
 
         public DataTableClass(string _UserName, Tables _Tables)
         {
-            SetTableClass(_UserName, _Tables, "");
+            UserName = _UserName;
+            SetTableClass(UserName, _Tables, "");
         }
         public DataTableClass(string _UserName, Tables _Tables, string _Filter)
         {
+            UserName = _UserName;
             SetTableClass(_UserName, _Tables, _Filter);
         }
         public DataTableClass(string _UserName, string _Text)
         {
+            UserName = _UserName;
             if (_Text.Length > 0 || _Text != null)
             {
                 SetTableClass(_UserName, _Text, "");
             }
         }
-
         public DataTableClass(string _UserName, string _Text, Tables _TableName)
         {
+            UserName = _UserName;
             MyTableName = _TableName.ToString();
             if (_Text.Length > 0 || _Text != null)
             {
@@ -63,6 +66,7 @@ namespace Applied_WebApplication.Data
         }
         public DataTableClass(string _UserName, string _Text, string _Filter)
         {
+            UserName = _UserName;
             if (_Text.Length > 0 || _Text != null)
             {
                 SetTableClass(_UserName, _Text, _Filter);
@@ -600,7 +604,8 @@ namespace Applied_WebApplication.Data
 
             if (CurrentRow != null)
             {
-                TableValidation = new TableValidationClass(CurrentRow.Table);
+                TableValidation = new(CurrentRow.Table) { UserName = UserName };
+                
 
                 if (TableValidation.SQLAction.Length == 0)
                 {
@@ -645,10 +650,9 @@ namespace Applied_WebApplication.Data
                     MyMessage = e.Message;
                     IsError = true;
                 }
-             
-
             }
         }
+
         public bool Delete()
         {
             IsError = true;
@@ -750,6 +754,8 @@ namespace Applied_WebApplication.Data
                 {
                     var _Type = Column.DataType;
                     if (_Type == typeof(int)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(long)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(decimal)) { CurrentRow[Column] = 0.00M; }
                     if (_Type == typeof(string)) { CurrentRow[Column] = ""; }
                     if (_Type == typeof(DateTime)) { CurrentRow[Column] = new DateTime(); }
                     if (_Type == typeof(bool)) { CurrentRow[Column] = false; }

@@ -1,8 +1,11 @@
 ﻿@page
+@using System.Data;
 @model Applied_WebApplication.Pages.Stock.ProductionListModel
 @{
     var UserName = User.Identity.Name;
     var TitleInOut = string.Empty;
+    string NumberFormat = AppRegistry.GetFormatCurrency(UserName);
+    string DateFormat = AppRegistry.GetFormatDate(UserName);
 
 }
 
@@ -55,7 +58,7 @@
                 </div>
             </div>
             <div class="col-md-1 btn-refresh">
-                <button type="submit" class="btn btn-primary p-1" asp-page-handler="Filter" ><i class="bi bi-arrow-repeat"></i></button>
+                <button type="submit" class="btn btn-primary p-1" asp-page-handler="Filter"><i class="bi bi-arrow-repeat"></i></button>
             </div>
 
         </div>
@@ -67,16 +70,48 @@
         <table class="table-list">
             <thead>
                 <tr>
-                    <th>
-
-                    </th>
+                    <th>Vou No</th>
+                    <th>Date</th>
+                    <th>Products</th>
+                    <th>Amount</th>
+                    <th>Remarks</th>
+                    <th><button type="submit" asp-page-handler="New"><i class="bi bi-database-fill-add"></i></button></th>
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>
-                    </td>
-                </tr>
+                @if (Model.tb_Products != null)
+                {
+                    @foreach (DataRow Row in Model.tb_Products.Rows)
+                    {
+                        var _Qty = ((decimal)Row["Qty"]).ToString(NumberFormat);
+                        var _Rate = ((decimal)Row["Rate"]).ToString(NumberFormat);
+                        var _Amount = ((decimal)Row["Amount"]).ToString(NumberFormat);
+
+                        <tr>
+                            <td>@Row["Vou_No"]</td>
+                            <td>@Row["Vou_Date"]</td>
+                            <td>@Row["StockTitle"]</td>
+                            <td>@_Amount</td>
+                            <td>@Row["Remarks1"]</td>
+                            <td>
+                                <button type="submit" class="btn btn-link listbutton-blue"><i class="bi bi-pencil-fill"></i></button>                            |
+                                <button type="submit" class="btn btn-link listbutton-red"><i class="bi bi-trash-fill"></i></button>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th><button type="submit" asp-page-handler="New"><i class="bi bi-database-fill-add"></i></button></th>
+                    </tr>
+                }
             </tbody>
         </table>
     </div>

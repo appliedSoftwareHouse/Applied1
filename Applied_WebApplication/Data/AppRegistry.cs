@@ -208,7 +208,7 @@ namespace Applied_WebApplication.Data
         {
             DateTime[] Dates = new DateTime[2];
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
-            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            tb_Registry.MyDataView.RowFilter = string.Concat($"Code='{Key}'");
             if (tb_Registry.MyDataView.Count == 1)
             {
                 Dates[0] = (DateTime)tb_Registry.MyDataView[0]["From"];

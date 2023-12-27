@@ -48,7 +48,8 @@ public enum Tables
     view_Purchased = 314,
     view_Sold = 315,
     Production = 316,
-    view_Production = 317,
+    Production2 = 317,
+    view_Production = 318,
 
     Ledger = 401,
     view_Ledger = 402,
