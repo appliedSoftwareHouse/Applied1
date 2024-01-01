@@ -317,7 +317,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Adapter = new SQLiteDataAdapter(_Command);
             var _DataSet = new DataSet();
-            var _SalesReportName = AppRegistry.GetText(UserName, "SalesReportRDL");
+            var _SalesReportName = GetText(UserName, "SalesReportRDL");
 
             if (_SalesReportName.Length == 0) { _SalesReportName = "SalesInvoiceST"; }
 

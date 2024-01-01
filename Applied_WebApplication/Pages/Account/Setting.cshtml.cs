@@ -36,6 +36,7 @@ namespace Applied_WebApplication.Pages.Account
                 OBDate = AppRegistry.GetDate(UserName, "OBDate"),
                 CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
                 DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
+                SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL"),
 
                 BPay_Stock = AppRegistry.GetNumber(UserName, "BPay_Stock"),
                 BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax"),
