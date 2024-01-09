@@ -89,12 +89,7 @@ namespace Applied_WebApplication.Data
             if (SQLAction == null || SQLAction.Length == 0)
             {
                 if ((int)Row["ID"] <= 0) { SQLAction = CommandAction.Insert.ToString(); }
-                else
-                {
-                    SQLAction = CommandAction.Update.ToString();
-                    //MyMessages.Add(SetMessage("Database query action is not defined."));
-                    //return false;
-                }
+                else {SQLAction = CommandAction.Update.ToString();}
             }
 
             if (MyDataTable == null)
@@ -674,8 +669,10 @@ namespace Applied_WebApplication.Data
 
             if ((int)Row["Stock"] == 0) { MyMessages.Add(SetMessage("Stock Item is not define...")); }
             //if ((string)Row["Flow"]) 
-            if ((decimal)Row["Qty"] == 0.00M) { MyMessages.Add(SetMessage("Quantity must be some value..")); }
-            if ((decimal)Row["Rate"] == 0.00M) { MyMessages.Add(SetMessage("Rate must be some value..")); }
+            if ((decimal)Row["Qty"] <= 0.00M) { MyMessages.Add(SetMessage("Quantity must be some positive value..")); }
+            if ((decimal)Row["Rate"] <= 0.00M) { MyMessages.Add(SetMessage("Rate must be some positive value..")); }
+            if (Row["Flow"].ToString().Length == 0) { MyMessages.Add(SetMessage("Stock Flow is not define.")); }
+            if (Row["Remarks"].ToString().Length == 0) { MyMessages.Add(SetMessage("Transaction Remarks is empty...")); }
 
         }
 

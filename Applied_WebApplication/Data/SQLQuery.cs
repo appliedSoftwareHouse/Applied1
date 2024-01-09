@@ -1076,7 +1076,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[U].[Code] As [UnitTag], [U].[Title] As [UnitTitle] ");
             Text.Append("FROM [Production2] [P2]");
             Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID]");
-            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[ID]");
+            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
             Text.Append("LEFT JOIN [Inv_UOM] [U] ON [U].[ID] = [I].[UOM]");
             
             return Text.ToString();

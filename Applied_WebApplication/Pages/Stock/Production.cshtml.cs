@@ -24,7 +24,7 @@ namespace Applied_WebApplication.Pages.Stock
 
         public void OnGet()
         {
-            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID < 0");
+            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID1 < 0");
             tb_Products = Class_ProductsView.MyDataTable;
 
             Variables = new Parameters();
@@ -42,34 +42,37 @@ namespace Applied_WebApplication.Pages.Stock
             }
         }
 
-        //public void OnGetEdit(int _ID)
-        //{
-        //    Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID2 = {_ID}");
-        //    if (Class_ProductsView.CountView > 0)
-        //    {
-        //        GetVariables(Class_ProductsView.MyDataView[0].Row);
-        //    }
-        //}
-
-
-
-
         public void OnGetRefresh(string Vou_No, int ID2)
         {
             var _Filter = $"Vou_No='{Vou_No}'";
             Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, _Filter);
             tb_Products = Class_ProductsView.MyDataTable;
 
-            if (ID2 > 0)
+            if (Class_ProductsView.CountTable > 0)
             {
-                Class_ProductsView.MyDataView.RowFilter = $"ID2={ID2}";
-                GetVariables(Class_ProductsView.CurrentRow);
+                if (ID2 > 0)
+                {
+                    Class_ProductsView.MyDataView.RowFilter = $"ID2={ID2}";
+                    if (Class_ProductsView.CountView > 0)
+                    {
+                        Class_ProductsView.CurrentRow = Class_ProductsView.MyDataView[0].Row;
+
+                    }
+                    else
+                    {
+                        Class_ProductsView.CurrentRow = Class_ProductsView.MyDataTable.Rows[0];
+
+                    }
+
+                    GetVariables(Class_ProductsView.CurrentRow);
+                }
+                else
+                {
+                    Variables = new Parameters();
+                    GetNewRow(Class_ProductsView.CurrentRow);
+                }
             }
-            else
-            {
-                Variables = new Parameters();
-                GetNewRow(Class_ProductsView.CurrentRow);
-            }
+
         }
         #endregion
 
@@ -77,14 +80,41 @@ namespace Applied_WebApplication.Pages.Stock
 
         public IActionResult OnPostNew()
         {
-            //var _Filter = $"Vou_No='{Variables.Vou_No}'";
-            //Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, _Filter);
-            //tb_Products = Class_ProductsView.MyDataTable;
-            //GetNewRow();
-            //return Page();
             return RedirectToPage("Production", "Refresh", new { Variables.Vou_No, ID2 = 0 });
         }
 
+        public IActionResult OnPostEdit(int ID2)
+        {
+            return RedirectToPage("Production", "Refresh", new { Variables.Vou_No, ID2 });
+        }
+
+        public IActionResult OnPostDelete(int _ID)
+        {
+            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID2 = {_ID}");
+            if (Class_ProductsView.CountView > 0)
+            {
+                int _ID1 = (int)Class_ProductsView.MyDataView[0].Row["ID1"];
+                int _ID2 = (int)Class_ProductsView.MyDataView[0].Row["ID2"];
+
+                Class_Products2 = new DataTableClass(UserName, Tables.Production2);
+                Class_Products2.SeekRecord(_ID2);
+                if (Class_Products2.IsFound)
+                {
+                    Class_Products2.Delete();
+                    if (!Class_Products2.IsError)
+                    {
+                        ErrorMessages.Add(new Message() { Success = true, ErrorID = 00, Msg = "Record has been deleted." });
+                        Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, $"ID1 = {_ID1}");
+                    }
+                }
+            }
+            return Page();
+        }
+        public IActionResult OnPostBack()
+        {
+            return RedirectToPage("ProductionList");
+
+        }
         public IActionResult OnPostSave(int ID2)
         {
             Class_Products = new DataTableClass(UserName, Tables.Production);
@@ -92,7 +122,7 @@ namespace Applied_WebApplication.Pages.Stock
             GetRow();
 
             var Validate1 = Class_Products.TableValidation.Validation(Class_Products.CurrentRow);  // Validate the current row
-            var Validate2 = Class_Products.TableValidation.Validation(Class_Products.CurrentRow);  // Validate the current row
+            var Validate2 = Class_Products2.TableValidation.Validation(Class_Products2.CurrentRow);  // Validate the current row
 
             if (Validate1 || Validate2)
             {
@@ -119,53 +149,6 @@ namespace Applied_WebApplication.Pages.Stock
             return Page();
 
         }
-
-        public IActionResult OnPostDelete(int _ID)
-        {
-            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID2 = {_ID}");
-            if (Class_ProductsView.CountView > 0)
-            {
-                int _ID1 = (int)Class_ProductsView.MyDataView[0].Row["ID1"];
-                int _ID2 = (int)Class_ProductsView.MyDataView[0].Row["ID2"];
-
-                Class_Products2 = new DataTableClass(UserName, Tables.Production2);
-                Class_Products2.SeekRecord(_ID2);
-                if (Class_Products2.IsFound)
-                {
-                    Class_Products2.Delete();
-                    if (!Class_Products2.IsError)
-                    {
-                        ErrorMessages.Add(new Message() { Success = true, ErrorID = 00, Msg = "Record has been deleted." });
-                        Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, $"ID1 = {_ID1}");
-                    }
-                }
-            }
-            return Page();
-        }
-
-        public IActionResult OnPostBack()
-        {
-            return RedirectToPage("ProductionList");
-
-        }
-
-        //public void OnPostEdit(string Vou_No)
-        //{
-        //    if (Vou_No != null || Vou_No.Length == 0)
-        //    {
-        //        var _SQLQuery = $"SELECT * FROM [view_Production] WHERE [Vou_No] = '{Vou_No}'";
-        //        Class_Products = new DataTableClass(UserName, _SQLQuery);
-
-        //        if (Class_Products.CountTable == 0)
-        //        {
-        //            OnGet();                // show a New voucher if not found the specific voucher number in table.
-        //            return;
-        //        }
-
-        //        tb_Products = Class_Products.MyDataTable;
-        //    }
-        //}
-
 
 
         #endregion
@@ -207,6 +190,7 @@ namespace Applied_WebApplication.Pages.Stock
             Variables.Qty = 0.00M;
             Variables.Rate = 0.00M;
             Variables.Remarks2 = string.Empty;
+
         }
 
         private void GetVariables(DataRow _Row)
@@ -253,7 +237,6 @@ namespace Applied_WebApplication.Pages.Stock
         public int UOM { get; set; }
         public decimal Rate { get; set; }
         public decimal Amount => Qty * Rate;
-        public List<DataRow> ListRows { get; set; }
 
 
         // Non DataBase Parameters
@@ -266,23 +249,34 @@ namespace Applied_WebApplication.Pages.Stock
 
         private string GetStockTitle()
         {
-            if (UserName.Length > 0)
+            try
             {
-                return AppFunctions.GetTitle(UserName, Tables.Inventory, StockID);
+                if (UserName.Length > 0)
+                {
+                    return AppFunctions.GetTitle(UserName, Tables.Inventory, StockID);
+                }
+            }
+            catch (Exception)
+            {
+                return "";
             }
             return "";
         }
 
         private string GetUOMTitle()
         {
-            if (UserName.Length > 0)
+            try
             {
-                return AppFunctions.GetTitle(UserName, Tables.Inv_UOM, UOM);
+                if (UserName.Length > 0)
+                {
+                    return AppFunctions.GetTitle(UserName, Tables.Inv_UOM, UOM);
+                }
+                return "";
             }
-            return "";
-
+            catch (Exception)
+            {
+                return "";
+            }
         }
-
     }
-
 }
