@@ -349,7 +349,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 SaleInvoice.RptParameters.Add("Footer", AppGlobals.ReportFooter);
                 await Task.Run(() => (ReportLink = SaleInvoice.GetReportLink()));
                 IsShowPdf = !SaleInvoice.IsError;
-                if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(SaleInvoice.MyMessage)); }
+                if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleInvoice.MyMessage)); }
                 return Page();
             }
 

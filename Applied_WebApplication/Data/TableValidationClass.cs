@@ -55,7 +55,7 @@ namespace Applied_WebApplication.Data
                     var _Today = DateTime.Now;
                     var _Year = _Today.Year;
                     var _Month = _Today.Month;
-                    if(_Month >= 1 || _Month < 7 )  { _Year = _Today.Year -1; }
+                    if (_Month >= 1 || _Month < 7) { _Year = _Today.Year - 1; }
                     FYStart = new DateTime(_Year, 7, 1);
                     FYEnd = new DateTime(++_Year, 6, 30);
                 }
@@ -85,10 +85,16 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(SetMessage("Current row is null"));
                 return false;
             }   // Return false if row is null
-            if (SQLAction == null)
+
+            if (SQLAction == null || SQLAction.Length == 0)
             {
-                MyMessages.Add(SetMessage("Database query action is not defined."));
-                return false;
+                if ((int)Row["ID"] <= 0) { SQLAction = CommandAction.Insert.ToString(); }
+                else
+                {
+                    SQLAction = CommandAction.Update.ToString();
+                    //MyMessages.Add(SetMessage("Database query action is not defined."));
+                    //return false;
+                }
             }
 
             if (MyDataTable == null)
@@ -118,6 +124,7 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
             if (Row.Table.TableName == Tables.Production.ToString()) { ValidateTable_Product(Row); }
+            if (Row.Table.TableName == Tables.Production2.ToString()) { ValidateTable_Product2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
 
@@ -646,12 +653,32 @@ namespace Applied_WebApplication.Data
             {
                 if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
             }
-            if (Row["Vou_No"].ToString().Length != 11) { MyMessages.Add(SetMessage("Voucher Number is not defined properly.")); }
+            else
+            {
+                if (Row["Vou_No"].ToString().Length != 11) { MyMessages.Add(SetMessage("Voucher Number is not defined properly.")); }
+            }
+
             if ((DateTime)Row["Vou_Date"] < FYStart) { MyMessages.Add(SetMessage("Voucher Date is less than fiscal year start date")); }
             if ((DateTime)Row["Vou_Date"] > FYEnd) { MyMessages.Add(SetMessage("Voucher Date is more than fiscal year end date")); }
             if (Row["Batch"].ToString().Length == 0) { MyMessages.Add(SetMessage("Production Bach Number not defined.")); }
 
         }
+
+        private void ValidateTable_Product2(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+
+            if ((int)Row["Stock"] == 0) { MyMessages.Add(SetMessage("Stock Item is not define...")); }
+            //if ((string)Row["Flow"]) 
+            if ((decimal)Row["Qty"] == 0.00M) { MyMessages.Add(SetMessage("Quantity must be some value..")); }
+            if ((decimal)Row["Rate"] == 0.00M) { MyMessages.Add(SetMessage("Rate must be some value..")); }
+
+        }
+
         #endregion
 
     }

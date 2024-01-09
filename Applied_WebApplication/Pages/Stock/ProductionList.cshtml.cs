@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.CodeAnalysis.VisualBasic.Syntax;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.Stock
@@ -9,13 +10,14 @@ namespace Applied_WebApplication.Pages.Stock
         [BindProperty]
         public Parameters Variables { get; set; }
         public string UserName => User.Identity.Name;
-        public DataTable tb_Products { get; set; }
+        public DataTable tb_Production { get; set; }
+        public List<Message> MyMessages { get; set; }
 
 
         public void OnGet()
         {
             GetVariables();
-            tb_Products = DataTableClass.GetTable(UserName, Tables.view_Production);
+            tb_Production = DataTableClass.GetTable(UserName, Tables.Production);
         }
 
         #region Set & Get Variables Values
@@ -53,14 +55,47 @@ namespace Applied_WebApplication.Pages.Stock
             return RedirectToPage("Production");
         }
 
-        public IActionResult OnPostEdit()
+        public IActionResult OnPostEdit(string Vou_No)
         {
-            return RedirectToPage("Production", "Edit", new { Vou_No = Variables.Vou_No });
+            return RedirectToPage("Production", "Refresh", new { Vou_No, ID2=1 });
         }
 
-        public IActionResult OnPostDelete()
+        public IActionResult OnPostDelete(string Vou_No)
         {
-            return Page();
+            var view_Production = DataTableClass.GetTable(UserName, Tables.view_Production, $"Vou_No = '{Vou_No}'");
+            if (view_Production.Rows.Count > 0)
+            {
+                var class_Production1 = new DataTableClass(UserName, Tables.Production);
+                var class_Production2 = new DataTableClass(UserName, Tables.Production2);
+                bool _IsDeleted = true;
+                int _Records = 0;
+                int _ID1 = (int)view_Production.Rows[0]["ID1"];
+                MyMessages = new();
+
+                foreach (DataRow Row in view_Production.Rows)
+                {
+                    int _ID2 = (int)Row["ID2"];
+                    class_Production2.SeekRecord(_ID1);
+                    class_Production2.Delete();
+                    if (!class_Production2.IsError) { _Records++; } else { _IsDeleted = false; break; }
+                }
+
+                if (_IsDeleted)
+                {
+                    class_Production1.SeekRecord(_ID1);
+                    class_Production1.Delete();
+                    if (!class_Production1.IsError)
+                    {
+                        MyMessages.Add(new Message() { Success = true, ErrorID = 00, Msg = $"{Vou_No} has been deleted." });
+                    }
+                    else
+                    {
+                        { MyMessages.Add(new Message() { Success = true, ErrorID = 00, Msg = $"{Vou_No} did NOT delete completely." }); }
+                    }
+                }
+            }
+
+            return RedirectToPage();
         }
 
         public void OnPostPrint()

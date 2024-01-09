@@ -1072,10 +1072,13 @@ namespace Applied_WebApplication.Data
             Text.Append("[P2].[ID] AS ID2,[P2].[TranID],[P2].[Flow],[P2].[Stock],[P2].[Qty],[P2].[Rate],");
             Text.Append("([P2].[Qty] * [P2].[Rate]) AS [Amount],");
             Text.Append("[P2].[Remarks] AS [Remarks2], ");
-            Text.Append("[I].[Title] AS [StockTitle] ");
+            Text.Append("[I].[Title] AS [StockTitle], ");
+            Text.Append("[U].[Code] As [UnitTag], [U].[Title] As [UnitTitle] ");
             Text.Append("FROM [Production2] [P2]");
             Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID]");
             Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[ID]");
+            Text.Append("LEFT JOIN [Inv_UOM] [U] ON [U].[ID] = [I].[UOM]");
+            
             return Text.ToString();
         }
         #endregion
