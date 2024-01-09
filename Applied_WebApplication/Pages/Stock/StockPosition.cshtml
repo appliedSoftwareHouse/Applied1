@@ -7,14 +7,22 @@
     var NumberFormat = AppRegistry.FormatCurrency2;
     var IsDeailed = Model.Variables.ShowDetail;
     var ValueCheck = true;
-    var Tot_PQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PQty)", "")).ToString(NumberFormat);
-    var Tot_SQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SQty)", "")).ToString(NumberFormat);
-    var Tot_SRQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRQty)", "")).ToString(NumberFormat);
-    var Tot_PAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PNetAmount)", "")).ToString(NumberFormat);
-    var Tot_SAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SNetAmount)", "")).ToString(NumberFormat);
-    var Tot_SRAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRNetAmount)", "")).ToString(NumberFormat);
+    var Tot_PQty = string.Empty;
+    var Tot_SQty = string.Empty;
+    var Tot_SRQty = string.Empty;
+    var Tot_PAmt = string.Empty;
+    var Tot_SAmt = string.Empty;
+    var Tot_SRAmt = string.Empty;
 
-
+    if (Model.MyTable != null)
+    {
+        Tot_PQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PQty)", "")).ToString(NumberFormat);
+        Tot_SQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SQty)", "")).ToString(NumberFormat);
+        Tot_SRQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRQty)", "")).ToString(NumberFormat);
+        Tot_PAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PNetAmount)", "")).ToString(NumberFormat);
+        Tot_SAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SNetAmount)", "")).ToString(NumberFormat);
+        Tot_SRAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRNetAmount)", "")).ToString(NumberFormat);
+    }
 }
 
 <style>
@@ -54,7 +62,7 @@
     }
 
     .btn {
-        width:100px
+        width: 100px
     }
 
 </style>
@@ -156,7 +164,9 @@
                                 <td class="amount-red">@__SRAmt</td>
                                 <td class="amount">@__NetQty</td>
                                 <td class="amount">@__NetAmt</td>
-                                <td><button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button></td>
+                                <td>
+                                    <button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button>
+                                </td>
                             </tr>
                         }
                     </tbody>

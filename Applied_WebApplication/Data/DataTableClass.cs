@@ -22,12 +22,28 @@ namespace Applied_WebApplication.Data
         public int CountView => MyDataView.Count;
         public string MyTableName { get; set; }
         public bool IsError { get; set; } = false;
+        public bool IsFound { get; set; } = false;
         public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
-        public DataRowCollection Rows => MyDataTable.Rows;
+        public DataRowCollection Rows => MyDataTable_Rows();
+
+        private DataRowCollection MyDataTable_Rows()
+        {
+            if(MyDataTable != null )
+            {
+                return MyDataTable.Rows;
+            }
+            else
+            {
+                return null;
+            }
+            
+        }
+
         public DataColumnCollection Columns => MyDataTable.Columns;
 
+        
 
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
@@ -39,22 +55,25 @@ namespace Applied_WebApplication.Data
 
         public DataTableClass(string _UserName, Tables _Tables)
         {
-            SetTableClass(_UserName, _Tables, "");
+            UserName = _UserName;
+            SetTableClass(UserName, _Tables, "");
         }
         public DataTableClass(string _UserName, Tables _Tables, string _Filter)
         {
+            UserName = _UserName;
             SetTableClass(_UserName, _Tables, _Filter);
         }
         public DataTableClass(string _UserName, string _Text)
         {
+            UserName = _UserName;
             if (_Text.Length > 0 || _Text != null)
             {
                 SetTableClass(_UserName, _Text, "");
             }
         }
-
         public DataTableClass(string _UserName, string _Text, Tables _TableName)
         {
+            UserName = _UserName;
             MyTableName = _TableName.ToString();
             if (_Text.Length > 0 || _Text != null)
             {
@@ -63,6 +82,7 @@ namespace Applied_WebApplication.Data
         }
         public DataTableClass(string _UserName, string _Text, string _Filter)
         {
+            UserName = _UserName;
             if (_Text.Length > 0 || _Text != null)
             {
                 SetTableClass(_UserName, _Text, _Filter);
@@ -505,13 +525,14 @@ namespace Applied_WebApplication.Data
         public DataRow SeekRecord(int _ID)
         {
             DataRow row;    // = MyDataTable.NewRow();
-            string Filter = MyDataView.RowFilter;
+            string Filter = MyDataView.RowFilter;                           // Set / Save value of View Filter
+            IsFound = false;
             MyDataView.RowFilter = "ID=" + _ID.ToString();
 
             if (MyDataView.Count > 0)
-            { row = MyDataView[0].Row; }
+            { row = MyDataView[0].Row; IsFound = true; }
             else
-            { row = MyDataTable.NewRow(); }
+            { row = MyDataTable.NewRow(); IsFound = false; }
             CurrentRow = row;
 
             foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
@@ -524,7 +545,7 @@ namespace Applied_WebApplication.Data
                     if (_Column.DataType.Name == "DateTime") { CurrentRow[_Column.ColumnName] = DateTime.Now; }
                 }
             }
-            MyDataView.RowFilter = Filter;
+            MyDataView.RowFilter = Filter;                              // Restore Filter values to Data View.
             return row;
         }
         internal bool Seek(string _Column, string _ColumnValue)                     // Search a specific colum by specific valu.
@@ -592,7 +613,6 @@ namespace Applied_WebApplication.Data
             Save(true);
         }
 
-
         public void Save(bool? Validate)
         {
             Validate ??= true;
@@ -600,7 +620,8 @@ namespace Applied_WebApplication.Data
 
             if (CurrentRow != null)
             {
-                TableValidation = new TableValidationClass(CurrentRow.Table);
+                TableValidation = new(CurrentRow.Table) { UserName = UserName };
+                
 
                 if (TableValidation.SQLAction.Length == 0)
                 {
@@ -645,10 +666,9 @@ namespace Applied_WebApplication.Data
                     MyMessage = e.Message;
                     IsError = true;
                 }
-             
-
             }
         }
+
         public bool Delete()
         {
             IsError = true;
@@ -697,38 +717,6 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        #region Static Methods
-
-
-        //public static DataTable GetTable(string UserName, Tables _Table, string _Filter, SQLiteConnection _Connection)
-        //{
-        //    var _TableName = _Table.ToString();
-        //    if (_Filter.Length > 0) { _Filter = $"WHERE {_Filter}"; }
-        //    var _CommandText = $"SELECT * FROM {_TableName} {_Filter}";
-        //    var _Command = new SQLiteCommand(_CommandText, _Connection);
-        //    var _Adapter = new SQLiteDataAdapter(_Command);
-        //    var _DataSet = new DataSet();
-        //    _Adapter.Fill(_DataSet, _TableName);
-        //    if (_DataSet.Tables.Count > 0) { return _DataSet.Tables[0]; }
-        //    return new DataTable();
-        //}
-
-
-        //public static bool Delete(string UserName, Tables _Table, int ID)
-        //{
-        //    var _Connection = ConnectionClass.AppConnection(UserName);
-        //    var _TableName = _Table.ToString();
-        //    var _CommandText = $"DELETE FROM {_TableName} WHERE ID={ID}";
-        //    var _Command = new SQLiteCommand(_CommandText, _Connection);
-        //    var _RecordNo = _Command.ExecuteNonQuery();
-        //    if (_RecordNo == 0) { return false; }
-        //    return true;
-
-        //}
-
-
-        #endregion
-
         #region Max
         public int GetMaxTranID(VoucherType _VouType)
         {
@@ -750,11 +738,33 @@ namespace Applied_WebApplication.Data
                 {
                     var _Type = Column.DataType;
                     if (_Type == typeof(int)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(short)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(long)) { CurrentRow[Column] = 0; }
+                    if (_Type == typeof(decimal)) { CurrentRow[Column] = 0.00M; }
                     if (_Type == typeof(string)) { CurrentRow[Column] = ""; }
                     if (_Type == typeof(DateTime)) { CurrentRow[Column] = new DateTime(); }
                     if (_Type == typeof(bool)) { CurrentRow[Column] = false; }
                 }
             }
+        }
+
+        internal static DataRow RemoveNull(DataRow Row)
+        {
+            foreach (DataColumn Column in Row.Table.Columns)
+            {
+                if (Row[Column] == DBNull.Value)
+                {
+                    var _Type = Column.DataType;
+                    if (_Type == typeof(int)) { Row[Column] = 0; }
+                    if (_Type == typeof(short)) { Row[Column] = 0; }
+                    if (_Type == typeof(long)) { Row[Column] = 0; }
+                    if (_Type == typeof(decimal)) { Row[Column] = 0.00M; }
+                    if (_Type == typeof(string)) { Row[Column] = ""; }
+                    if (_Type == typeof(DateTime)) { Row[Column] = new DateTime(); }
+                    if (_Type == typeof(bool)) { Row[Column] = false; }
+                }
+            }
+            return Row;
         }
 
         #endregion

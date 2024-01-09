@@ -56,7 +56,7 @@ body {
     color: whitesmoke;
     border-block: double;
     height: 40px;
-    font-size: 8px;
+    font-size: 18px;
 }
 
 AppHeading-2:hover {
@@ -125,55 +125,34 @@ AppHeading-2:hover {
     color: darkgreen
 }
 
-
-.table-col-amount {
-    text-align: right
+.hd-w30{
+    width:30%
 }
 
-.table-col-amount-red {
-    text-align: right;
-    color: darkred
+.hd-w70 {
+    width: 70%;
 }
 
-
-.table-caption {
-    display: table-caption;
-    text-align: center;
-    text-transform: uppercase;
-    color: red;
+.btn-w1 {
+    width: 70px;
+    margin-right:3px;
+    margin-left:3px;
 }
 
-.TableFooter {
-    background: #F9DBDB
+.btn-w2 {
+    width: 100px;
+    margin-right:3px;
+    margin-left:3px;
 }
 
-.listbutton-red {
-    background-color: transparent;
-    color: red;
-    border: 0px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    padding: 0px;
-    margin:0px
+.btn-w3 {
+    width: 130px;
+    margin-right:3px;
+    margin-left:3px;
 }
 
-.listbutton-blue {
-    background-color: transparent;
-    color: darkblue;
-    border: 0px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    padding: 0px
-}
-
-.listbutton-green {
-    background-color: transparent;
-    color: darkgreen;
-    border: none;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    padding:0px
+.btn-w4 {
+    width: 160px;
+    margin-right: 3px;
+    margin-left: 3px;
 }

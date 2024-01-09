@@ -1,5 +1,4 @@
-﻿using AppReportClass;
-using Microsoft.Reporting.NETCore;
+﻿using Microsoft.Reporting.NETCore;
 using System.Data;
 using System.Security.Claims;
 using System.Text;
@@ -13,6 +12,7 @@ namespace AppReporting
         public string OutputFilePath { get; set; }                                    // Path where to printed report store.
         public string OutputFileLinkPath { get; set; }                              // Location to printed report PDF.
         public string OutputFileLink { get; set; }                                      // Location to printed report PDF.
+
         public string ReportFilePath { get; set; }                                          // RDLC report path
         public string ReportFile { get; set; }                                                  // RDLC report path + FileName
         public string ReportFileName { get; set; }                                       // Output File .pdf, .doc or .xls
@@ -89,37 +89,75 @@ namespace AppReporting
             return MyBytes;
         }
         #endregion
-                
-        //public static string GetQueryText(ReportFilters ReportFilter)
+
+        #region GetPreview(DataTable reportData)
+
+        //private static DataTable GetPreview(DataTable reportData)
         //{
-        //    // Create a query to fatch data from Data Table for Display Reports.
-        //    string DateFormat = "yyyy-MM-dd";
-        //    if (ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
-        //    string _TableName = ReportFilter.TableName.ToString();
-        //    string _TableColumns = ReportFilter.Columns;
-        //    StringBuilder _SQL = new();
-        //    StringBuilder _Where = new();
+        //    // Show the Ledger if pdf fail to display ...............
 
-        //    _SQL.Append("SELECT ");
-        //    _SQL.Append(_TableColumns);
-        //    _SQL.Append(" FROM [" + _TableName + "]");
+        //    DataTable PreviewTable = new();
+        //    PreviewTable.Columns.Add("Vou_Date");
+        //    PreviewTable.Columns.Add("Vou_No");
+        //    PreviewTable.Columns.Add("Description");
+        //    PreviewTable.Columns.Add("DR");
+        //    PreviewTable.Columns.Add("CR");
+        //    PreviewTable.Columns.Add("Balance");
 
-        //    if (ReportFilter.Dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.Dt_From.ToString(DateFormat)); }
-        //    if (ReportFilter.Dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.Dt_To.ToString(DateFormat)); }
-        //    if (ReportFilter.N_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.N_ID.ToString() + " AND"); }
-        //    if (ReportFilter.N_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.N_COA.ToString() + " AND"); }
-        //    if (ReportFilter.N_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.N_Customer.ToString() + " AND"); }
-        //    if (ReportFilter.N_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.N_Project.ToString() + " AND"); }
-        //    if (ReportFilter.N_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.N_Employee.ToString() + " AND"); }
-        //    if (ReportFilter.N_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.N_InvCategory.ToString() + " AND"); }
-        //    if (ReportFilter.N_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.N_InvSubCategory.ToString() + " AND"); }
-        //    if (ReportFilter.N_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.N_Inventory.ToString() + " AND"); }
-        //    if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
-        //    string Where = _Where.ToString();
-        //    if (Where.EndsWith("AND")) { Where = Where[..^3]; }         // Delete END Word from where
+        //    if (reportData.Rows.Count > 0)
+        //    {
 
-        //    return string.Concat(_SQL.ToString(), Where);
+        //        decimal _Balance = 0;
+        //        foreach (DataRow Row in reportData.Rows)
+        //        {
+        //            decimal _Amount = (decimal)Row["DR"] - (decimal)Row["CR"];
+        //            _Balance += _Amount;
+
+        //            DataRow NewRow = PreviewTable.NewRow();
+        //            NewRow["Vou_Date"] = Row["Vou_Date"];
+        //            NewRow["Vou_No"] = Row["Vou_No"];
+        //            NewRow["Description"] = Row["Description"];
+        //            NewRow["DR"] = Row["DR"];
+        //            NewRow["CR"] = Row["CR"];
+        //            NewRow["Balance"] = _Balance;
+        //            PreviewTable.Rows.Add(NewRow);
+        //        }
+        //    }
+        //    return PreviewTable;
         //}
+
+        #endregion
+
+        public static string GetQueryText(AppReportClass.ReportFilters ReportFilter)
+        {
+            // Create a query to fatch data from Data Table for Display Reports.
+            string DateFormat = "yyyy-MM-dd";
+            if (ReportFilter == null) { return string.Empty; }                           // Return empty value if object is null
+            string _TableName = ReportFilter.TableName.ToString();
+            string _TableColumns = ReportFilter.Columns;
+            StringBuilder _SQL = new();
+            StringBuilder _Where = new();
+
+            _SQL.Append("SELECT ");
+            _SQL.Append(_TableColumns);
+            _SQL.Append(" FROM [" + _TableName + "]");
+
+            if (ReportFilter.Dt_From < new DateTime(2000, 1, 1)) { _Where.Append("Vou_Date>=" + ReportFilter.Dt_From.ToString(DateFormat)); }
+            if (ReportFilter.Dt_To < new DateTime(2000, 1, 1)) { _Where.Append(" Vou_Date<=" + ReportFilter.Dt_To.ToString(DateFormat)); }
+            if (ReportFilter.N_ID != 0) { _Where.Append(" [ID]=" + ReportFilter.N_ID.ToString() + " AND"); }
+            if (ReportFilter.N_COA != 0) { _Where.Append(" [COA]=" + ReportFilter.N_COA.ToString() + " AND"); }
+            if (ReportFilter.N_Customer != 0) { _Where.Append(" [Customer]=" + ReportFilter.N_Customer.ToString() + " AND"); }
+            if (ReportFilter.N_Project != 0) { _Where.Append(" [Project]=" + ReportFilter.N_Project.ToString() + " AND"); }
+            if (ReportFilter.N_Employee != 0) { _Where.Append(" [Employee]=" + ReportFilter.N_Employee.ToString() + " AND"); }
+            if (ReportFilter.N_InvCategory != 0) { _Where.Append(" [Category]=" + ReportFilter.N_InvCategory.ToString() + " AND"); }
+            if (ReportFilter.N_InvSubCategory != 0) { _Where.Append(" [SubCategory]=" + ReportFilter.N_InvSubCategory.ToString() + " AND"); }
+            if (ReportFilter.N_Inventory != 0) { _Where.Append(" [Inventory]=" + ReportFilter.N_Inventory.ToString() + " AND"); }
+            if (_Where.Length > 0) { _Where.Insert(0, " WHERE "); }
+            string Where = _Where.ToString();
+            if (Where.EndsWith("AND")) { Where = Where[..^3]; }         // Delete END Word from where
+
+            return string.Concat(_SQL.ToString(), Where);
+        }
 
 
         public class ReportData

@@ -42,29 +42,37 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDateM2 = "dd-MM-yy";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
 
-                public static DateTime GetFiscalFrom()
+        public static DateTime GetFiscalFrom()
         { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
-        public static DateTime GetFiscalTo() 
+        public static DateTime GetFiscalTo()
         { return new DateTime(2024, 06, 30); }
 
         public static DateTime GetFiscalFrom(string UserName)
-        { return GetDate(UserName, "FiscalStart"); }
+        {
+            if (UserName == null || UserName == string.Empty) { return DateTime.Today; }
+            return GetDate(UserName, "FiscalStart"); }
 
         public static DateTime GetFiscalTo(string UserName)
-        { return GetDate(UserName, "FiscalEnd"); }
+        {
+            if (UserName == null || UserName == string.Empty) { return DateTime.Today; }
+            return GetDate(UserName, "FiscalEnd");
+        }
 
 
         public static string GetFormatCurrency(string UserName)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             return GetText(UserName, "FMTCurrency");
         }
         public static string GetFormatDate(string UserName)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             return GetText(UserName, "FMTDate");
         }
 
         public static string Currency(string UserName, object Amount)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             var _Format = GetText(UserName, "FMTCurrency");
             var _Sign = GetCurrencySign(UserName);
             var _Amount = ((decimal)Amount).ToString(_Format);
@@ -72,6 +80,7 @@ namespace Applied_WebApplication.Data
         }
         public static string Amount(string UserName, object Amount)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             var _Format = GetText(UserName, "FMTCurrency");
             return ((decimal)Amount).ToString(_Format);
 
@@ -79,6 +88,7 @@ namespace Applied_WebApplication.Data
 
         public static string Date(string UserName, DateTime Date)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             var _Format = GetText(UserName, "FMTDate");
             return Date.ToString(_Format);
         }
@@ -91,6 +101,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetCurrencySign(string UserName)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             var sign = GetText(UserName, "CurrencySign");
             if (sign.Length > 0) { return sign; }
             return "Rs.";
@@ -98,6 +109,7 @@ namespace Applied_WebApplication.Data
 
         public static object GetKey(string UserName, string Key, KeyType keytype)
         {
+            if (UserName == null || UserName == string.Empty) { return null; }
             object ReturnValue;
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
@@ -132,6 +144,7 @@ namespace Applied_WebApplication.Data
 
         public static DateTime GetDate(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return DateTime.Now; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
@@ -146,6 +159,7 @@ namespace Applied_WebApplication.Data
 
         public static int GetNumber(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return 0; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
@@ -160,6 +174,7 @@ namespace Applied_WebApplication.Data
 
         public static decimal GetCurrency(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return 0.00M; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
@@ -174,6 +189,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetText(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return string.Empty; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = $"Code='{Key}'";
             if (tb_Registry.MyDataView.Count == 1)
@@ -190,6 +206,7 @@ namespace Applied_WebApplication.Data
 
         public static bool GetBool(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return false; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
@@ -206,9 +223,10 @@ namespace Applied_WebApplication.Data
 
         public static DateTime[] GetDates(string UserName, string Key)
         {
+            if (UserName == null || UserName == string.Empty) { return new DateTime[2]; }
             DateTime[] Dates = new DateTime[2];
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
-            tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
+            tb_Registry.MyDataView.RowFilter = string.Concat($"Code='{Key}'");
             if (tb_Registry.MyDataView.Count == 1)
             {
                 Dates[0] = (DateTime)tb_Registry.MyDataView[0]["From"];
@@ -219,16 +237,14 @@ namespace Applied_WebApplication.Data
 
         public static bool SetKey(string UserName, string _Key, object KeyValue, KeyType _KeyType)
         {
+            if (UserName == null || UserName == string.Empty) { return false; ; }
             return SetKey(UserName, _Key, KeyValue, _KeyType, "");
         }
 
         public static bool SetKey(string UserName, string Key, object KeyValue, KeyType keytype, string _Title)
         {
-            if(UserName == null) 
-            { 
-                return false; 
-            }
 
+            if (UserName == null || UserName == string.Empty) { return false; }
             DataTableClass tb_Registry = new(UserName, Tables.Registry);
             tb_Registry.MyDataView.RowFilter = string.Concat("Code='", Key, "'");
             if (tb_Registry.MyDataView.Count == 1)
@@ -277,6 +293,7 @@ namespace Applied_WebApplication.Data
 
         public static int ExpDays(string UserName)
         {
+            if (UserName == null || UserName == string.Empty) { return 0; }
             int Days = (int)GetKey(UserName, "StockExpiry", KeyType.Number);
             return Days;   // One Year of Expiry Date
         }

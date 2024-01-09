@@ -37,16 +37,17 @@
         <div class="row d-flex mb-2">
 
             <div class="col date-width ">
-                <div class="input-group date-group ">
+                <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
-                           placeholder="Start Date" aria-label="Start Date" aria-describedby="txtVouDate">
+                           placeholder="Start Date" aria-label="Start Date" aria-describedby="StartDate">
                 </div>
             </div>
 
             <div class="col">
-                <div class="input-group mb-3">
-                    <input type="date" class="form-control dt-width" asp-for="@Model.Variables.EndDate">
+                <div class="input-group date-group">
+                    <input type="date" class="form-control dt-width" asp-for="@Model.Variables.EndDate"
+                           placeholder="End Date" aria-label="End Date" aria-describedby="Enddate">
                     <span class="input-group-text" id="Enddate">End</span>
                 </div>
             </div>

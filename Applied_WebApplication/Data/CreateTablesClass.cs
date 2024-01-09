@@ -1,7 +1,12 @@
-﻿using System.Data;
+﻿using Applied_WebApplication.Pages.Stock;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.Reporting.Map.WebForms.BingMaps;
+using System;
+using System.Data;
 using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
+using System.Xml.Linq;
 using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
@@ -150,7 +155,7 @@ namespace Applied_WebApplication.Data
 
                 if (!IsTableFound)
                 {
-                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}",ConsoleColor.Yellow));
+                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}", ConsoleColor.Yellow));
                     CreateTable(UserName, _TargetTable);
 
                 }
@@ -163,29 +168,55 @@ namespace Applied_WebApplication.Data
         #region Stock Position Data
         public static void StockPositionData(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [StockPositionData] AS ");
-            Text.Append(SQLQuery.StockPositionData(""));
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [StockPositionData] AS ");
+                Text.Append(SQLQuery.StockPositionData(""));
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
 
         public static void StockPosition(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [StockPosition] AS ");
-            Text.Append(SQLQuery.StockPosition(UserName));
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [StockPosition] AS ");
+                Text.Append(SQLQuery.StockPosition(UserName));
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
 
         public static void StockPositionSUM(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [StockPositionSUM] AS ");
-            Text.Append(SQLQuery.StockPositionSUM(UserName));
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [StockPositionSUM] AS ");
+                Text.Append(SQLQuery.StockPositionSUM(UserName));
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
 
         #endregion
@@ -194,22 +225,42 @@ namespace Applied_WebApplication.Data
 
         public static void Chk_BillReceivable1(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [Chk_BillReceivable1] AS ");
-            Text.Append(SQLQuery.Chk_BillReceivable1());
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [Chk_BillReceivable1] AS ");
+                Text.Append(SQLQuery.Chk_BillReceivable1());
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
 
 
         public static void Chk_BillReceivable2(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [Chk_BillReceivable2] AS ");
-            Text.Append(SQLQuery.Chk_BillReceivable2());
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [Chk_BillReceivable2] AS ");
+                Text.Append(SQLQuery.Chk_BillReceivable2());
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
 
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
         #endregion
 
@@ -217,24 +268,115 @@ namespace Applied_WebApplication.Data
 
         private static void Purchased(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [view_Purchased] AS ");
-            Text.Append(SQLQuery.view_Purchased());
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [view_Purchased] AS ");
+                Text.Append(SQLQuery.view_Purchased());
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+
+            }
+
         }
         #endregion
 
         #region Sold
         private static void Sold(string UserName)
         {
-            var Text = new StringBuilder();
-            Text.Append("CREATE VIEW [view_Sold] AS ");
-            Text.Append(SQLQuery.view_Sold());
-            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
-            Command.ExecuteNonQuery();
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [view_Sold] AS ");
+                Text.Append(SQLQuery.view_Sold());
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
         }
         #endregion
+
+        #region Production
+
+        private static void Production1(string UserName)
+        {
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE TABLE[Production]( ");
+                Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+                Text.Append("[Vou_No] TEXT(10) NOT NULL UNIQUE, ");
+                Text.Append("[Vou_Date] DATETIME NOT NULL, ");
+                Text.Append("[Batch] NVARCHAR(25) NOT NULL, ");
+                Text.Append("[Remarks] NVARCHAR, ");
+                Text.Append("[Comments] NVARCHAR);");
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+
+            }
+        }
+
+        private static void Production2(string UserName)
+        {
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE TABLE[Production2](");
+                Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+                Text.Append("[TranID] INT NOT NULL REFERENCES[Production]([ID]), ");
+                Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]), ");
+                Text.Append("[Flow] TEXT(3) NOT NULL, ");
+                Text.Append("[Qty] DECIMAL NOT NULL, ");
+                Text.Append("[UOM] DECIMAL NOT NULL, ");
+                Text.Append("[Rate] DECIMAL NOT NULL, ");
+                Text.Append("[Remarks] NVARCHAR(100));");
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
+        }
+
+        private static void ProductionView(string UserName)
+        {
+            try
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
+                var Text = new StringBuilder();
+                Text.Append("CREATE VIEW [view_Production] AS ");
+                Text.Append(SQLQuery.View_Production(UserName));
+                var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+                Command.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                AppRegistry.SetKey(UserName, "QueryMessage", ex.Message, KeyType.Text);
+            }
+        }
+
+        #endregion
+
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data
@@ -286,7 +428,13 @@ namespace Applied_WebApplication.Data
                 case Tables.view_Sold:
                     Sold(UserName);
                     break;
-
+                case Tables.Production:
+                    Production1(UserName);
+                    Production2(UserName);
+                    break;
+                case Tables.view_Production:
+                    ProductionView(UserName);
+                    break;
                 case Tables.TB:
                     break;
                 case Tables.BillReceivable:
