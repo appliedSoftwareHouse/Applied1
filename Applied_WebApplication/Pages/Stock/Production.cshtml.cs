@@ -18,7 +18,7 @@ namespace Applied_WebApplication.Pages.Stock
         public DataTable tb_Products { get; set; }
 
         public List<Message> ErrorMessages = new();
-        public bool IsError = false;
+        public bool IsError => GetError();
 
         #region GET
 
@@ -88,26 +88,46 @@ namespace Applied_WebApplication.Pages.Stock
             return RedirectToPage("Production", "Refresh", new { Variables.Vou_No, ID2 });
         }
 
-        public IActionResult OnPostDelete(int _ID)
+        public IActionResult OnPostDelete(int ID2)
         {
-            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, "ID2 = {_ID}");
-            if (Class_ProductsView.CountView > 0)
+            var _ID1 = 0;
+            if (ID2 > 0)
             {
-                int _ID1 = (int)Class_ProductsView.MyDataView[0].Row["ID1"];
-                int _ID2 = (int)Class_ProductsView.MyDataView[0].Row["ID2"];
-
-                Class_Products2 = new DataTableClass(UserName, Tables.Production2);
-                Class_Products2.SeekRecord(_ID2);
-                if (Class_Products2.IsFound)
+                Class_Products2 = new DataTableClass(UserName, Tables.Production2, $"ID = {ID2}");
+                if(Class_Products2.CountTable > 0)
                 {
-                    Class_Products2.Delete();
-                    if (!Class_Products2.IsError)
+                    _ID1 = (int)Class_Products2.CurrentRow["TranID"];
+                    Class_Products2.SeekRecord(ID2);
+                    if(Class_Products2.IsFound)
                     {
-                        ErrorMessages.Add(new Message() { Success = true, ErrorID = 00, Msg = "Record has been deleted." });
-                        Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, $"ID1 = {_ID1}");
+                        Class_Products2.Delete();
+                        Class_Products2 = new DataTableClass(UserName, Tables.Production2, $"TranID = {_ID1}");              // Refresh Data after Delete 
+                        if(Class_Products2.CountTable == 0 )
+                        {
+                            ErrorMessages.Add(MessageClass.SetMessage("Record Deleted Sucessfully.", ConsoleColor.Green));
+                            Class_Products = new DataTableClass(UserName, Tables.Production, $"ID = {_ID1}");
+                            if ((int)Class_Products.CurrentRow["ID"] == _ID1)
+                            {
+                                Class_Products.Delete();                 // Delete From mater products table if details are empty.
+                                ErrorMessages.Add(MessageClass.SetMessage("Production Transaction has been Deleted Sucessfully.", ConsoleColor.Green));
+                                return RedirectToPage("ProductionList");
+                            }
+                        }
+                        
+                    }
+                    else
+                    {
+                        ErrorMessages.Add(MessageClass.SetMessage("Record NOT Deleted.", ConsoleColor.Red));
                     }
                 }
             }
+            else
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Record NOT found to Delete", ConsoleColor.Yellow));
+            }
+
+            var _Filter = $"Vou_No='{Variables.Vou_No}'";
+            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, _Filter);
             return Page();
         }
         public IActionResult OnPostBack()
@@ -124,7 +144,7 @@ namespace Applied_WebApplication.Pages.Stock
             var Validate1 = Class_Products.TableValidation.Validation(Class_Products.CurrentRow);  // Validate the current row
             var Validate2 = Class_Products2.TableValidation.Validation(Class_Products2.CurrentRow);  // Validate the current row
 
-            if (Validate1 || Validate2)
+            if (Validate1 && Validate2)
             {
                 if (Class_Products.CurrentRow["Vou_No"].ToString().ToUpper() == "NEW")
                 {
@@ -142,10 +162,15 @@ namespace Applied_WebApplication.Pages.Stock
 
             }
             {
-                IsError = true;
+                
                 ErrorMessages.AddRange(Class_Products.ErrorMessages);
                 ErrorMessages.AddRange(Class_Products2.ErrorMessages);
             }
+
+            var _Filter = $"Vou_No='{Variables.Vou_No}'";
+            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, _Filter);
+
+
             return Page();
 
         }
@@ -177,6 +202,7 @@ namespace Applied_WebApplication.Pages.Stock
 
         private void GetNewRow(DataRow Row)
         {
+            DataTableClass.RemoveNull(Row);
             Variables.ID1 = (int)Row["ID1"];
             Variables.Vou_No = (string)Row["Vou_No"];
             Variables.Vou_Date = (DateTime)Row["Vou_Date"];
@@ -216,6 +242,14 @@ namespace Applied_WebApplication.Pages.Stock
                 Variables.Remarks2 = (string)_Row["Remarks2"];
             }
         }
+
+        private bool GetError()
+        {
+            if (ErrorMessages.Count > 0) { return true; }
+            return false;
+        }
+
+
         #endregion
     }
 
