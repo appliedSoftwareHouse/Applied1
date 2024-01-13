@@ -14,7 +14,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 {
     public class COAListModel : PageModel
     {
-
         #region Setup
         [BindProperty]
         public string ReportLink { get; set; }
@@ -366,15 +365,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
             SalesReportsModel model = new();
             model.Variables = new()
             {
-                StartDate = AppRegistry.GetDate(UserName, "sRptDate1"),
-                EndDate = AppRegistry.GetDate(UserName, "sRptDate2"),
-                AllCompany = AppRegistry.GetBool(UserName, "sRptComAll"),
-                AllInventory = AppRegistry.GetBool(UserName, "sRptStockAll"),
-                CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
-                InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
-                Heading1 = AppRegistry.GetText(UserName, "sRptHeading1"),
-                Heading2 = AppRegistry.GetText(UserName, "sRptHeading2"),
-                ReportFile = AppRegistry.GetText(UserName, "sRptName"),
+                StartDate = GetDate(UserName, "sRptDate1"),
+                EndDate = GetDate(UserName, "sRptDate2"),
+                AllCompany = GetBool(UserName, "sRptComAll"),
+                AllInventory = GetBool(UserName, "sRptStockAll"),
+                CompanyID = GetNumber(UserName, "sRptCompany"),
+                InventoryID = GetNumber(UserName, "sRptInventory"),
+                Heading1 = GetText(UserName, "sRptHeading1"),
+                Heading2 = GetText(UserName, "sRptHeading2"),
+                ReportFile = GetText(UserName, "sRptName"),
             };
 
             var _Filter = model.GetFilter(model.Variables);
@@ -452,8 +451,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
         #endregion
-
-        
 
         #region ExpenseSheet
 
@@ -706,6 +703,5 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #endregion
-
     }
 }
