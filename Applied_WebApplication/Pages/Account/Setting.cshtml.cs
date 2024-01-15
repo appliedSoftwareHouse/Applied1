@@ -1,7 +1,7 @@
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-
+using Applied_WebApplication.Pages;
 
 namespace Applied_WebApplication.Pages.Account
 {
