@@ -20,9 +20,11 @@ namespace Applied_WebApplication.Data
             else
             {
                 string MaxVouNo = (string)_Table.Compute("MAX(Vou_No)", _View.RowFilter);
-                string Number = MaxVouNo.Substring(_View.RowFilter.Length, MaxVouNo.Length);
-                string _MaxNum = (int.Parse(Number) + 1).ToString("0000");
-                return $"{_NewNum}-{_MaxNum}";
+                string _Vou_No1 = MaxVouNo.Substring(0, 6);
+                string _Vou_No2 = MaxVouNo.Substring(7, 4);
+                int _Number = Conversion.ToInteger(_Vou_No2) + 1;
+                string _MaxNum = Conversion.ToInteger(_Number).ToString("0000");
+                return $"{_Vou_No1}-{_MaxNum}";
             }
         }
     }

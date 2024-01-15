@@ -58,6 +58,16 @@
                 </select>
             </div>
 
+            <div class="col-md-3  filter-select">
+                <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
+                    <option selected>Select All</option>
+                    @foreach (DataRow Row in Model.Cities.Rows)
+                    {
+                        <option value="@Row["Title"]">@Row["Title"]</option>
+                    }
+                </select>
+            </div>
+
             <div class="col-md-3 filter-select">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
@@ -103,7 +113,8 @@
                         <th style="width:4%">SNo.</th>
                         <th style="width:7%">Vou. No</th>
                         <th style="width:8%">Vou. Date</th>
-                        <th style="width:20%">Company Name</th>
+                        <th style="width:15%">Company Name</th>
+                        <th style="width:5%">City 1</th>
                         <th style="width:15%">Stock Title</th>
                         <th style="width:8%">Quantity</th>
                         <th style="width:8%">Rate</th>
@@ -128,6 +139,7 @@
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
                             <td>@Row["CompanyName"]</td>
+                            <td>@Row["CityName"]</td>
                             <td>@Row["StockTitle"]</td>
                             <td class="amount">@_Qty.ToString(AmountFormat)</td>
                             <td class="amount">@_Rate.ToString(AmountFormat)</td>

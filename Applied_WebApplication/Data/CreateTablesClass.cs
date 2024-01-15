@@ -320,7 +320,7 @@ namespace Applied_WebApplication.Data
                 Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
                 Text.Append("[Vou_No] TEXT(10) NOT NULL UNIQUE, ");
                 Text.Append("[Vou_Date] DATETIME NOT NULL, ");
-                Text.Append("[Batch] NVARCHAR(25) NOT NULL UNIQUE, ");
+                Text.Append("[Batch] NVARCHAR(25) NOT NULL, ");
                 Text.Append("[Remarks] NVARCHAR, ");
                 Text.Append("[Comments] NVARCHAR);");
                 var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
@@ -344,7 +344,7 @@ namespace Applied_WebApplication.Data
                 Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
                 Text.Append("[TranID] INT NOT NULL REFERENCES[Production]([ID]), ");
                 Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]), ");
-                Text.Append("[Flow] BOOL NOT NULL, ");
+                Text.Append("[Flow] TEXT(3) NOT NULL, ");
                 Text.Append("[Qty] DECIMAL NOT NULL, ");
                 Text.Append("[UOM] DECIMAL NOT NULL, ");
                 Text.Append("[Rate] DECIMAL NOT NULL, ");

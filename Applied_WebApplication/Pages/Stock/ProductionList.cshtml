@@ -6,13 +6,9 @@
     var TitleInOut = string.Empty;
     string NumberFormat = AppRegistry.GetFormatCurrency(UserName);
     string DateFormat = AppRegistry.GetFormatDate(UserName);
-
 }
 
-
-
 <div class="AppHeading-2">PRODUCTION LIST</div>
-
 
 <form method="post">
     <div class="container">
@@ -60,42 +56,39 @@
             <div class="col-md-1 btn-refresh">
                 <button type="submit" class="btn btn-primary p-1" asp-page-handler="Filter"><i class="bi bi-arrow-repeat"></i></button>
             </div>
-
         </div>
-
     </div>
 
-
-    <div class="container">
+    <div class="container mt-2">
         <table class="table-list">
             <thead>
                 <tr>
                     <th>Vou No</th>
                     <th>Date</th>
-                    <th>Products</th>
-                    <th>Amount</th>
+                    <th>Batch</th>
                     <th>Remarks</th>
                     <th><button type="submit" asp-page-handler="New"><i class="bi bi-database-fill-add"></i></button></th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.tb_Products != null)
+                @if (Model.tb_Production != null)
                 {
-                    @foreach (DataRow Row in Model.tb_Products.Rows)
+                    @foreach (DataRow Row in Model.tb_Production.Rows)
                     {
-                        var _Qty = ((decimal)Row["Qty"]).ToString(NumberFormat);
+                        @* var _Qty = ((decimal)Row["Qty"]).ToString(NumberFormat);
                         var _Rate = ((decimal)Row["Rate"]).ToString(NumberFormat);
-                        var _Amount = ((decimal)Row["Amount"]).ToString(NumberFormat);
-
+                        var _Amount = ((decimal)Row["Qty"] * (decimal)Row["Rate"]).ToString(NumberFormat);
+ *@
                         <tr>
                             <td>@Row["Vou_No"]</td>
                             <td>@Row["Vou_Date"]</td>
-                            <td>@Row["StockTitle"]</td>
-                            <td>@_Amount</td>
-                            <td>@Row["Remarks1"]</td>
+                            <td>@Row["Batch"]</td>
+      @*                       <td>@Row["StockTitle"]</td> *@
+   @*                          <td>@_Amount</td>
+    *@                         <td>@Row["Remarks"]</td>
                             <td>
-                                <button type="submit" class="btn btn-link listbutton-blue"><i class="bi bi-pencil-fill"></i></button>                            |
-                                <button type="submit" class="btn btn-link listbutton-red"><i class="bi bi-trash-fill"></i></button>
+                                <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button>                            |
+                                <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>
                             </td>
                         </tr>
                     }

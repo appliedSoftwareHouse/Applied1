@@ -1,6 +1,8 @@
-﻿using System.Data;
+﻿using Applied_WebApplication.Pages.Sales;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Applied_WebApplication.Data
 {
@@ -350,6 +352,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No],");
             Text.Append("[B1].[Vou_Date],");
             Text.Append("[B1].[Company],");
+            Text.Append("Upper([C].[City]) AS [CityName],");
             Text.Append("[B1].[Inv_No],");
             Text.Append("[B1].[Inv_Date],");
             Text.Append("[B1].[Pay_Date],");
@@ -372,11 +375,11 @@ namespace Applied_WebApplication.Data
             Text.Append("[T].[Code]  As [TaxTitle] ");
             Text.Append("FROM[BillReceivable2] [B2] ");
             Text.Append("LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] ");
-            Text.Append("LEFT JOIN[Inventory]         [I]    ON [I].[ID] = [B2].[Inventory] ");
+            Text.Append("LEFT JOIN[Inventory]      [I]   ON [I].[ID] = [B2].[Inventory] ");
             Text.Append("LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] ");
             Text.Append("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
-            Text.Append("LEFT JOIN[Project]            [P]   ON [P].[ID] = [B2].[Project]");
-            Text.Append("LEFT JOIN[Taxes]              [T]   ON [T].[ID] = [B2].[Tax]");
+            Text.Append("LEFT JOIN[Project]        [P]   ON [P].[ID] = [B2].[Project]");
+            Text.Append("LEFT JOIN[Taxes]          [T]   ON [T].[ID] = [B2].[Tax]");
             if (_Filter != null)
             {
                 if (_Filter.Length > 0)
@@ -388,7 +391,6 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
-
         public static string PurchaseRegister(string _Filter)
         {
             var Text = new StringBuilder();
@@ -399,6 +401,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No],  ");
             Text.Append("[B1].[Vou_Date], ");
             Text.Append("[B1].[Company],");
+            Text.Append("Upper([C].[City]) AS [CityName],");
             Text.Append("[B1].[Employee],");
             Text.Append("[B1].[Ref_No],");
             Text.Append("[B1].[Inv_No],");
@@ -427,11 +430,11 @@ namespace Applied_WebApplication.Data
             Text.Append("[T].[Rate]  AS[TaxRate]");
             Text.Append("FROM [BillPayable2][B2]");
             Text.Append("LEFT JOIN[BillPayable]  [B1] ON[B1].[ID] = [B2].[TranID]");
-            Text.Append("LEFT JOIN[Customers]   [C] ON[C].[ID] = [B1].[Company]");
-            Text.Append("LEFT JOIN[Employees]   [E] ON[E].[ID] = [B1].[Employee]");
-            Text.Append("LEFT JOIN[Project]         [P] ON[P].[ID] = [B2].[Project]");
-            Text.Append("LEFT JOIN[Inventory]     [I] ON[I].[ID] = [B2].[Inventory]");
-            Text.Append("LEFT JOIN[Taxes]           [T] ON[T].[ID] = [B2].[Tax] ");
+            Text.Append("LEFT JOIN[Customers]    [C]  ON[C].[ID] = [B1].[Company]");
+            Text.Append("LEFT JOIN[Employees]    [E]  ON[E].[ID] = [B1].[Employee]");
+            Text.Append("LEFT JOIN[Project]      [P]  ON[P].[ID] = [B2].[Project]");
+            Text.Append("LEFT JOIN[Inventory]    [I]  ON[I].[ID] = [B2].[Inventory]");
+            Text.Append("LEFT JOIN[Taxes]        [T]  ON[T].[ID] = [B2].[Tax] ");
             if (_Filter.Length > 0) { Text.Append($"WHERE {_Filter} "); }
             return Text.ToString();
         }
@@ -442,7 +445,6 @@ namespace Applied_WebApplication.Data
             Text.Append($" ORDER BY {_Order}");
             return Text.ToString();
         }
-
         public static string SaleReturn(string _Filter)
         {
             var Text = new StringBuilder();
@@ -454,6 +456,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No] AS [SaleVou_No],");
             Text.Append("[B1].[Vou_Date],");
             Text.Append("[B1].[Company],");
+            Text.Append("[C].[City] AS [CityName],");
             Text.Append("[B1].[Inv_No],");
             Text.Append("[B1].[Inv_Date],");
             Text.Append("[B1].[Pay_Date],");
@@ -477,11 +480,11 @@ namespace Applied_WebApplication.Data
             Text.Append("[T].[Code]  As [TaxTitle] ");
             Text.Append("FROM[BillReceivable2] [B2] ");
             Text.Append("LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] ");
-            Text.Append("LEFT JOIN[Inventory]         [I]    ON [I].[ID] = [B2].[Inventory] ");
+            Text.Append("LEFT JOIN[Inventory]      [I]   ON [I].[ID] = [B2].[Inventory] ");
             Text.Append("LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] ");
             Text.Append("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
-            Text.Append("LEFT JOIN[Project]            [P]   ON [P].[ID] = [B2].[Project]");
-            Text.Append("LEFT JOIN[Taxes]              [T]   ON [T].[ID] = [B2].[Tax]");
+            Text.Append("LEFT JOIN[Project]        [P]   ON [P].[ID] = [B2].[Project]");
+            Text.Append("LEFT JOIN[Taxes]          [T]   ON [T].[ID] = [B2].[Tax]");
             Text.Append("LEFT JOIN[SaleReturn]     [R]   ON [R].[TranID] = [B2].[ID]");
             if (_Filter != null)
             {
@@ -495,6 +498,17 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
 
+        #endregion
+
+        #region City
+        public static string Cities()
+        {
+            var Text = new StringBuilder();
+            Text.Append("SELECT Upper(Trim([City])) AS [Title] FROM [Customers] ");
+            Text.Append("GROUP BY 1 ");
+            Text.Append("ORDER BY 1 ");
+            return Text.ToString();
+        }
         #endregion
 
         #region Trial Balance
@@ -1072,10 +1086,13 @@ namespace Applied_WebApplication.Data
             Text.Append("[P2].[ID] AS ID2,[P2].[TranID],[P2].[Flow],[P2].[Stock],[P2].[Qty],[P2].[Rate],");
             Text.Append("([P2].[Qty] * [P2].[Rate]) AS [Amount],");
             Text.Append("[P2].[Remarks] AS [Remarks2], ");
-            Text.Append("[I].[Title] AS [StockTitle] ");
+            Text.Append("[I].[Title] AS [StockTitle], ");
+            Text.Append("[U].[Code] As [UnitTag], [U].[Title] As [UnitTitle] ");
             Text.Append("FROM [Production2] [P2]");
             Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID]");
-            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[ID]");
+            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
+            Text.Append("LEFT JOIN [Inv_UOM] [U] ON [U].[ID] = [I].[UOM]");
+            
             return Text.ToString();
         }
         #endregion

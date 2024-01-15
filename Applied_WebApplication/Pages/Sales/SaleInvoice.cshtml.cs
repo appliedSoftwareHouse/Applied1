@@ -284,8 +284,6 @@ namespace Applied_WebApplication.Pages.Sales
             {
                 ErrorMessages.AddRange(TempInvoice11.TableValidate.MyMessages);
                 ErrorMessages.AddRange(TempInvoice22.TableValidate.MyMessages);
-   
-                
             }
 
            

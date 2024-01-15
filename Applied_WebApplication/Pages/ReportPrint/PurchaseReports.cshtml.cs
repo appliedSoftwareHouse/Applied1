@@ -16,7 +16,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public bool AllInventory { get; set; }
         public int CompanyID { get; set; }
         public int InventoryID { get; set; }
+        public DataTable Customers { get; set; }
+        public DataTable Inventory { get; set; }
         public DataTable SourceTable { get; set; }
+        public DataTable Cities { get; set; }
 
 
         public void OnGet()
@@ -28,8 +31,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 AllCompany = AppRegistry.GetBool(UserName, "pRptComAll"),
                 AllInventory = AppRegistry.GetBool(UserName, "pRptStockAll"),
                 CompanyID = AppRegistry.GetNumber(UserName, "pRptCompany"),
+                City = AppRegistry.GetText(UserName, "pRptCity"),
                 InventoryID = AppRegistry.GetNumber(UserName, "pRptInventory"),
             };
+
+            Customers = DataTableClass.GetTable(UserName, Tables.Customers, "", "[Title]");
+            Inventory = DataTableClass.GetTable(UserName, Tables.Inventory, "", "[Title]");
+            Cities = DataTableClass.GetTable(UserName, SQLQuery.Cities());
+
+
 
             var _Filter = GetFilter(Variables);
             var _OrderBy = "[Vou_Date],[Vou_No]";
@@ -55,6 +65,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
                 Text.Append($"Inventory={variables.InventoryID}");
+            }
+
+            if (Variables.City != "Select All" && Variables.City.Length > 0 )
+            {
+                if (Text.ToString().Length > 0) { Text.Append(" AND "); }
+                Text.Append($"Upper([CityName])='{variables.City.ToUpper()}'");
             }
 
             if (Text.ToString().Length > 0) { Text.Append(" AND "); }
@@ -102,6 +118,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "pRptComAll", Variables.AllCompany, KeyType.Boolean);
             AppRegistry.SetKey(UserName, "pRptStockAll", Variables.AllInventory, KeyType.Boolean);
             AppRegistry.SetKey(UserName, "pRptCompany", Variables.CompanyID, KeyType.Number);
+            AppRegistry.SetKey(UserName, "pRptCity", Variables.City, KeyType.Text);
             AppRegistry.SetKey(UserName, "pRptInventory", Variables.InventoryID, KeyType.Number);
             AppRegistry.SetKey(UserName, "pRptHeading1", _Heading1, KeyType.Text);
             AppRegistry.SetKey(UserName, "pRptHeading2", _Heading2, KeyType.Text);
@@ -120,7 +137,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public string Heading1 { get; set; }
             public string Heading2 { get; set; }
             public string ReportFile { get; set; }
-            
+            public string City { get; set; }
         }
     }
 }
