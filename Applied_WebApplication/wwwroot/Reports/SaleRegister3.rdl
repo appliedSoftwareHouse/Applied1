@@ -17,39 +17,7 @@
     <DataSet Name="ds_SalesRegister">
       <Query>
         <DataSourceName>ds_SalesRegister</DataSourceName>
-        <CommandText>SELECT
-[B2].[ID],
-[B2].[TranID],
-[B2].[SR_No],
-[B1].[Vou_No],
-[B1].[Vou_Date],
-[B1].[Company],
-[B1].[Inv_No],
-[B1].[Inv_Date],
-[B1].[Pay_Date],
-[B2].[Inventory],
-[B2].[Batch],
-[B2].[Qty],
-[B2].[Rate],
-[B2].[Qty] * [B2].[Rate] AS [Amount],
-([B2].[Qty] * [B2].[Rate]) * [T].[Rate] As [TaxAmount],
-[B2].[Qty] * [B2].[Rate] + (([B2].[Qty] * [B2].[Rate]) * [T].[Rate]) AS [NetAmount],
-[B2].[ID] AS [ID2], 
-[I].[Title] AS [StockTitle],
-[C].[Title] AS [CompanyName],
-[C].[City],
-[E].[Title] AS [EmployeeName],
-[P].[title] AS [ProjectTitle],
-[T].[Code]  As [TaxTitle]
-
-FROM [BillReceivable2] [B2]
-LEFT JOIN [BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID]
-LEFT JOIN [Inventory]      [I]  ON [I].[ID]  = [B2].[Inventory]
-LEFT JOIN [Customers]      [C]  ON [C].[ID]  = [B1].[Company]
-LEFT JOIN [Employees]      [E]  ON [E].[ID]  = [B1].[Employee]
-LEFT JOIN [Project]        [P]  ON [P].[ID]  = [B2].[Project]
-LEFT JOIN [Taxes]          [T]  ON [T].[ID]  = [B2].[Tax]
-ORDER BY [C].[City]</CommandText>
+        <CommandText>SELECT [B2].[ID],[B2].[TranID],[B2].[SR_No],[B1].[Vou_No],[B1].[Vou_Date],[B1].[Company],Upper([C].[City]) AS [CityName],[B1].[Inv_No],[B1].[Inv_Date],[B1].[Pay_Date],[B2].[Inventory],[B2].[Batch],[B2].[Qty],[B2].[Rate],[T].[Rate] AS [Tax], CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],[B2].[ID] AS [ID2], [I].[Title] AS [StockTitle],[C].[Title] AS [CompanyName],[E].[Title] AS [EmployeeName],[P].[title] AS [ProjectTitle],[T].[Code]  As [TaxTitle] FROM[BillReceivable2] [B2] LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] LEFT JOIN[Inventory]      [I]   ON [I].[ID] = [B2].[Inventory] LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] LEFT JOIN[Project]        [P]   ON [P].[ID] = [B2].[Project]LEFT JOIN[Taxes]          [T]   ON [T].[ID] = [B2].[Tax]</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -109,6 +77,10 @@ ORDER BY [C].[City]</CommandText>
           <DataField>Amount</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Tax">
+          <DataField>Tax</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="TaxAmount">
           <DataField>TaxAmount</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -129,8 +101,8 @@ ORDER BY [C].[City]</CommandText>
           <DataField>CompanyName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
-        <Field Name="City">
-          <DataField>City</DataField>
+        <Field Name="CityName">
+          <DataField>CityName</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="EmployeeName">
@@ -580,14 +552,14 @@ ORDER BY [C].[City]</CommandText>
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="City2">
+                        <Textbox Name="CityName">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!City.Value</Value>
+                                  <Value>=Fields!CityName.Value</Value>
                                   <Style>
                                     <FontSize>8pt</FontSize>
                                   </Style>
@@ -596,7 +568,7 @@ ORDER BY [C].[City]</CommandText>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>City2</rd:DefaultName>
+                          <rd:DefaultName>CityName</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>
@@ -2191,14 +2163,17 @@ ORDER BY [C].[City]</CommandText>
               <TablixMembers>
                 <TablixMember />
                 <TablixMember>
-                  <Group Name="City">
+                  <Group Name="CityName">
                     <GroupExpressions>
-                      <GroupExpression>=Fields!City.Value</GroupExpression>
+                      <GroupExpression>=Fields!CityName.Value</GroupExpression>
                     </GroupExpressions>
                   </Group>
                   <SortExpressions>
                     <SortExpression>
-                      <Value>=Fields!City.Value</Value>
+                      <Value>=Fields!Vou_Date.Value</Value>
+                    </SortExpression>
+                    <SortExpression>
+                      <Value>=Fields!Vou_No.Value</Value>
                     </SortExpression>
                   </SortExpressions>
                   <TablixMembers>

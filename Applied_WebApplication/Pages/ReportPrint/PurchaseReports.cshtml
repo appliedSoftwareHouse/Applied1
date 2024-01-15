@@ -36,7 +36,7 @@
     <div class="container">
         <div class="row d-flex mb-2">
 
-            <div class="col date-width ">
+            <div class="col-md-3 date-width">
                 <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
@@ -44,37 +44,50 @@
                 </div>
             </div>
 
-            <div class="col">
+            <div class="col-md-3 date-width">
                 <div class="input-group date-group">
-                    <input type="date" class="form-control dt-width" asp-for="@Model.Variables.EndDate"
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.EndDate"
                            placeholder="End Date" aria-label="End Date" aria-describedby="Enddate">
-                    <span class="input-group-text" id="Enddate">End</span>
+                    <span class="input-group-text date-title" id="Enddate">End</span>
                 </div>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3  filter-select" style="background-color:aqua">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
-                    @foreach (DataRow Row in DataTableClass.GetTable(UserName, Tables.Customers).Rows)
+                    @foreach (DataRow Row in Model.Customers.Rows)
                     {
                         <option value="@Row["ID"]">@Row["Title"]</option>
                     }
                 </select>
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-3  filter-select" style="background-color:lightblue">
+                <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
+                    <option selected>Select All</option>
+                    @foreach (DataRow Row in Model.Cities.Rows)
+                    {
+                        <option value="@Row["Title"]">@Row["Title"]</option>
+                    }
+                </select>
+            </div>
+
+
+            <div class="col-md-3  filter-select" style="background-color:aliceblue">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
-                    @foreach (DataRow Row in DataTableClass.GetTable(UserName, Tables.Inventory).Rows)
+                    @foreach (DataRow Row in Model.Inventory.Rows)
                     {
                         <option value="@Row["ID"]">@Row["Title"]</option>
                     }
                 </select>
             </div>
 
-            <div class="col-md">
+            <div class="col-md-2" style="background-color:darkkhaki">
                 <button type="submit" class="btn btn-primary justify-content-end">REFRESH</button>
             </div>
+            
+
         </div>
     </div>
 
@@ -85,15 +98,15 @@
             <div class="container">
                 <div class="row mb-2">
                     <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
+                        <button class="btn btn-primary btn-sm btn-w1" type="submit"
                                 asp-page-handler="Print">
-                            <i class="bi bi-printer"> PRINT</i>
+                            <i class="bi bi-printer"> Print</i>
                         </button>
                     </div>
                     <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
+                        <button class="btn btn-primary btn-sm btn-w1" type="submit"
                                 asp-page-handler="PrintList">
-                            <i class="bi bi-printer"> PRINT</i>
+                            <i class="bi bi-printer"> List</i>
                         </button>
                     </div>
                 </div>
@@ -106,13 +119,14 @@
                         <th style="width:8%">SNo.</th>
                         <th style="width:6%">Vou. No</th>
                         <th style="width:7%">Vou. Date</th>
-                        <th style="width:15%">Supplier Name</th>
+                        <th style="width:12%">Supplier Name</th>
+                        <th style="width:12%">City</th>
                         <th style="width:15%">Stock Title</th>
-                        <th style="width:10%">Quantity</th>
+                        <th style="width:8%">Quantity</th>
                         <th style="width:8%">Rate</th>
-                        <th style="width:10%">Amount</th>
-                        <th style="width:10%">Tax Amount</th>
-                        <th style="width:10%">Net Amount</th>
+                        <th style="width:8%">Amount</th>
+                        <th style="width:8%">Tax Amount</th>
+                        <th style="width:8%">Net Amount</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -135,6 +149,7 @@
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
                             <td>@Row["CompanyName"]</td>
+                            <td>@Row["CityName"]</td>
                             <td>@Row["StockTitle"]</td>
                             <td class="amount">@_Qty</td>
                             <td class="amount">@_Rate</td>

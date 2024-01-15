@@ -36,7 +36,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 CompanyID = AppRegistry.GetNumber(UserName, "sRptCompany"),
                 City = AppRegistry.GetText(UserName, "sRptCity"),
                 InventoryID = AppRegistry.GetNumber(UserName, "sRptInventory"),
-                
+
             };
 
             Customers = DataTableClass.GetTable(UserName, Tables.Customers, "", "[Title]");
@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Filter = GetFilter(Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery,"[Vou_Date],[Vou_No]");
+            SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
 
         }
         public IActionResult OnPostRefresh()
@@ -71,7 +71,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Text.Append($"Inventory={variables.InventoryID}");
             }
 
-            if(Variables.City != "Select All")
+            if (Variables.City != "Select All" || Variables.City.Length > 0)
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
                 Text.Append($"Upper([CityName])='{variables.City.ToUpper()}'");
@@ -86,18 +86,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnPostPrint()
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister3.rdl", KeyType.Text);
+            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
         public IActionResult OnPostPrintList()
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister2.rdl", KeyType.Text);
+            AppRegistry.SetKey(UserName, "sRptName", "SaleRegister3.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
         public IActionResult OnPost()
         {
-           
+
             SetKeys();
             return RedirectToPage();
 
@@ -112,7 +112,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _Heading1 = $"Sale Register";
             var _Heading2 = $"From {_Date1} to {_Date2}";
-            
+
             AppRegistry.SetKey(UserName, "sRptDate1", Variables.StartDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptDate2", Variables.EndDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "sRptComAll", Variables.AllCompany, KeyType.Boolean);

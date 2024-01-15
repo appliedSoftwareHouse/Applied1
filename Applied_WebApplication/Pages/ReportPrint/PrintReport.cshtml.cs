@@ -370,6 +370,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 AllCompany = GetBool(UserName, "sRptComAll"),
                 AllInventory = GetBool(UserName, "sRptStockAll"),
                 CompanyID = GetNumber(UserName, "sRptCompany"),
+                City = GetText(UserName, "sRptCity"),
                 InventoryID = GetNumber(UserName, "sRptInventory"),
                 Heading1 = GetText(UserName, "sRptHeading1"),
                 Heading2 = GetText(UserName, "sRptHeading2"),
@@ -405,20 +406,21 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Purchase Register
-        public IActionResult OnGetPurchaseRegister()
+        public IActionResult OnGetPurchaseRegister() 
         {
             PurchaseReportsModel model = new();
             model.Variables = new()
             {
-                StartDate = AppRegistry.GetDate(UserName, "pRptDate1"),
-                EndDate = AppRegistry.GetDate(UserName, "pRptDate2"),
-                AllCompany = AppRegistry.GetBool(UserName, "pRptComAll"),
-                AllInventory = AppRegistry.GetBool(UserName, "pRptStockAll"),
-                CompanyID = AppRegistry.GetNumber(UserName, "pRptCompany"),
-                InventoryID = AppRegistry.GetNumber(UserName, "pRptInventory"),
-                Heading1 = AppRegistry.GetText(UserName, "pRptHeading1"),
-                Heading2 = AppRegistry.GetText(UserName, "pRptHeading2"),
-                ReportFile = AppRegistry.GetText(UserName, "pRptName"),
+                StartDate = GetDate(UserName, "pRptDate1"),
+                EndDate = GetDate(UserName, "pRptDate2"),
+                AllCompany = GetBool(UserName, "pRptComAll"),
+                AllInventory = GetBool(UserName, "pRptStockAll"),
+                CompanyID = GetNumber(UserName, "pRptCompany"),
+                City = GetText(UserName, "pRptCity"),
+                InventoryID = GetNumber(UserName, "pRptInventory"),
+                Heading1 = GetText(UserName, "pRptHeading1"),
+                Heading2 = GetText(UserName, "pRptHeading2"),
+                ReportFile = GetText(UserName, "pRptName"),
             };
 
             var _Filter = model.GetFilter(model.Variables);

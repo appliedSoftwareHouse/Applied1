@@ -352,7 +352,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No],");
             Text.Append("[B1].[Vou_Date],");
             Text.Append("[B1].[Company],");
-            Text.Append("[C].[City] AS [CityName],");
+            Text.Append("Upper([C].[City]) AS [CityName],");
             Text.Append("[B1].[Inv_No],");
             Text.Append("[B1].[Inv_Date],");
             Text.Append("[B1].[Pay_Date],");
@@ -401,7 +401,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[B1].[Vou_No],  ");
             Text.Append("[B1].[Vou_Date], ");
             Text.Append("[B1].[Company],");
-            Text.Append("[C].[City] AS [CityName],");
+            Text.Append("Upper([C].[City]) AS [CityName],");
             Text.Append("[B1].[Employee],");
             Text.Append("[B1].[Ref_No],");
             Text.Append("[B1].[Inv_No],");
