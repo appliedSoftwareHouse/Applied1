@@ -71,7 +71,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Text.Append($"Inventory={variables.InventoryID}");
             }
 
-            if (Variables.City != "Select All" || Variables.City.Length > 0)
+            if (Variables.City.ToUpper() != "SELECT ALL" && Variables.City.Length > 0)
             {
                 if (Text.ToString().Length > 0) { Text.Append(" AND "); }
                 Text.Append($"Upper([CityName])='{variables.City.ToUpper()}'");
