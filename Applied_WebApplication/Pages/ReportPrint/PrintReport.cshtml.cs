@@ -8,6 +8,7 @@ using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
+using Applied_WebApplication.Data;
 
 
 namespace Applied_WebApplication.Pages.ReportPrint
@@ -76,7 +77,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             DataTable _Table = Ledger.GetGL(UserName, Filters);
-            
+
             if (_Table.Rows.Count > 0)
             {
                 var FMTDate = GetFormatDate(UserName);
@@ -127,7 +128,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 }
 
             }
-            
+
             return Page();
 
 
@@ -358,10 +359,19 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region Sale Register
+        #region Sales Register Report
 
-        public IActionResult OnGetSaleRegister()
+        public IActionResult OnGetSaleRegister(ReportType _ReportType)
         {
+            #region Check Error
+            if (_ReportType.ToString().Length == 0)
+            {
+                ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
+                return Page();
+            }
+            #endregion
+
+            #region Create Report Data Class
             SalesReportsModel model = new();
             model.Variables = new()
             {
@@ -375,38 +385,99 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Heading1 = GetText(UserName, "sRptHeading1"),
                 Heading2 = GetText(UserName, "sRptHeading2"),
                 ReportFile = GetText(UserName, "sRptName"),
+                ReportType = GetNumber(UserName, "sRptType")
             };
 
             var _Filter = model.GetFilter(model.Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
-            var SaleRegister = new ReportClass
-            {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = model.Variables.ReportFile,
-                ReportDataSet = "ds_SalesRegister",
-                ReportSourceData = _SourceTable,
-                RecordSort = "Company, Vou_Date",
+            var _Table = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+            #endregion
 
-                OutputFilePath = AppGlobals.PrintedReportPath,
+            #region Report's Data Parameters
+
+            var Heading1 = "PROJECT EXPENSES SHEET";
+            var Heading2 = $"Sale Register";
+
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+            #endregion
+
+            #region Report Setup
+
+            var SaleRegisterReport = new ReportParameters()
+            {
+                ReportPath = AppGlobals.ReportPath,
+                ReportFile = model.Variables.ReportFile,
+                ReportType = (ReportType)model.Variables.ReportType,
+                ReportData = _Table,
+                DataParameters = _Parameters,
+
+                OutputPath = AppGlobals.PrintedReportPath,
+                OutputPathLink = AppGlobals.PrintedReportPathLink,
                 OutputFile = "SaleRegister",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+
+                DataSetName = "ds_SalesRegister",
+                Footer = AppGlobals.ReportFooter,
+                Heading1 = Heading1,
+                Heading2 = Heading2,
             };
 
-            SaleRegister.RptParameters.Add("CompanyName", CompanyName);
-            SaleRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
-            SaleRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
-            SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
-            ReportLink = SaleRegister.GetReportLink();
-            IsShowPdf = !SaleRegister.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
+            #region Generae Report
+            try
+            {
+                var _Download = new ExportReport(SaleRegisterReport);
+                _Download.Render();
+                if (_Download.Variables.IsSaved)
+                {
+                    ReportLink = _Download.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileName);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+            }
+            #endregion
+
             return Page();
+
+            //var SaleRegister = new ReportClass
+            //{
+            //    AppUser = User,
+            //    ReportFilePath = AppGlobals.ReportPath,
+            //    ReportFile = model.Variables.ReportFile,
+
+            //    ReportDataSet = "ds_SalesRegister",
+            //    ReportSourceData = _SourceTable,
+            //    RecordSort = "Company, Vou_Date",
+
+            //    OutputFilePath = AppGlobals.PrintedReportPath,
+            //    OutputFile = "SaleRegister",
+            //    OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+            //};
+
+
+            //SaleRegister.RptParameters.Add("CompanyName", CompanyName);
+            //SaleRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
+            //SaleRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
+            //SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+            //ReportLink = SaleRegister.GetReportLink();
+            //IsShowPdf = !SaleRegister.IsError;
+            //if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
+            //return Page();
+            #endregion
         }
         #endregion
 
         #region Purchase Register
-        public IActionResult OnGetPurchaseRegister() 
+        public IActionResult OnGetPurchaseRegister()
         {
             PurchaseReportsModel model = new();
             model.Variables = new()
@@ -462,11 +533,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             if (_ReportType.ToString().Length == 0)
             {
                 ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
+                return Page();
             }
             #endregion
 
             #region Get Data Table
-            var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
+            var _SheetNo = GetText(UserName, "Sheet_No");
 
             if (_SheetNo.Length == 0)
             {
@@ -537,8 +609,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
 
         }
+        #endregion
 
-
+        #region Expense Group Report
         public IActionResult OnGetExpenseGroup(ReportType _ReportType)
         {
             #region Get Data Table
@@ -592,6 +665,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #endregion
 
+            #region Print Report
             try
             {
                 var _Download = new ExportReport(ReportParameters);
@@ -610,11 +684,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
             return Page();
 
-
+            #endregion
 
         }
-
-
 
         #endregion
 

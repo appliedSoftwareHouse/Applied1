@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -83,16 +84,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             return Text.ToString();
         }
-        public IActionResult OnPostPrint()
+        public IActionResult OnPostPrint(ReportType RptType)
         {
             SetKeys();
             AppRegistry.SetKey(UserName, "sRptName", "SaleRegister.rdl", KeyType.Text);
+            AppRegistry.SetKey(UserName, "sRptType", (int)RptType, KeyType.Number);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
-        public IActionResult OnPostPrintList()
+        public IActionResult OnPostPrintList(ReportType RptType)
         {
             SetKeys();
             AppRegistry.SetKey(UserName, "sRptName", "SaleRegister3.rdl", KeyType.Text);
+            AppRegistry.SetKey(UserName, "sRptType", (int)RptType, KeyType.Number);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleRegister");
         }
         public IActionResult OnPost()
@@ -122,6 +125,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "sRptInventory", Variables.InventoryID, KeyType.Number);
             AppRegistry.SetKey(UserName, "sRptHeading1", _Heading1, KeyType.Text);
             AppRegistry.SetKey(UserName, "sRptHeading2", _Heading2, KeyType.Text);
+            
 
         }
         public class Parameters
@@ -136,6 +140,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             public string Heading2 { get; set; }
             public string ReportFile { get; set; }
             public string City { get; set; }
+            public int ReportType { get; set; }
         }
     }
 }

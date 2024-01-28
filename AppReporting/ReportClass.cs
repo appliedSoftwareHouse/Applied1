@@ -8,23 +8,20 @@ namespace AppReporting
     public class ReportClass
     {
         public ClaimsPrincipal AppUser { get; set; }                                // Current User Profile
-        public string OutputFile { get; set; }                                            // Path + file name of printed report PDF/Doc/xls.
-        public string OutputFilePath { get; set; }                                    // Path where to printed report store.
+        public string OutputFile { get; set; }                                      // Path + file name of printed report PDF/Doc/xls.
+        public string OutputFilePath { get; set; }                                  // Path where to printed report store.
         public string OutputFileLinkPath { get; set; }                              // Location to printed report PDF.
-        public string OutputFileLink { get; set; }                                      // Location to printed report PDF.
-
-        public string ReportFilePath { get; set; }                                          // RDLC report path
-        public string ReportFile { get; set; }                                                  // RDLC report path + FileName
-        public string ReportFileName { get; set; }                                       // Output File .pdf, .doc or .xls
-        public string RecordSort { get; set; }                                                // Sorting of recport records.
-        public DataTable ReportSourceData { get; set; }                                       // DataTable to be perint in RDLC Report.
-        public string ReportDataSet { get; set; }                                         // Datasource DataSet name exact in RDLC
-
+        public string OutputFileLink { get; set; }                                  // Location to printed report PDF.
+        public string ReportFilePath { get; set; }                                  // RDLC report path
+        public string ReportFile { get; set; }                                      // RDLC report path + FileName
+        public string ReportFileName { get; set; }                                  // Output File .pdf, .doc or .xls
+        public string RecordSort { get; set; }                                      // Sorting of recport records.
+        public DataTable ReportSourceData { get; set; }                             // DataTable to be perint in RDLC Report.
+        public string ReportDataSet { get; set; }                                   // Datasource DataSet name exact in RDLC
         public Dictionary<string, string> RptParameters { get; set; } = new Dictionary<string, string>();     // Reports Paramates
-        public string MyMessage { get; set; }                                          // Store message of the class
-        public FileStream MyFileStream { get; set; }                                // File Stream Object
-        public byte[] MyBytes { get; set; }                                               // Rendered file bytes for view or print report
-
+        public string MyMessage { get; set; }                                        // Store message of the class
+        public FileStream MyFileStream { get; set; }                                 // File Stream Object
+        public byte[] MyBytes { get; set; }                                           // Rendered file bytes for view or print report
         public bool IsError { get; set; }
 
 
@@ -90,43 +87,7 @@ namespace AppReporting
         }
         #endregion
 
-        #region GetPreview(DataTable reportData)
-
-        //private static DataTable GetPreview(DataTable reportData)
-        //{
-        //    // Show the Ledger if pdf fail to display ...............
-
-        //    DataTable PreviewTable = new();
-        //    PreviewTable.Columns.Add("Vou_Date");
-        //    PreviewTable.Columns.Add("Vou_No");
-        //    PreviewTable.Columns.Add("Description");
-        //    PreviewTable.Columns.Add("DR");
-        //    PreviewTable.Columns.Add("CR");
-        //    PreviewTable.Columns.Add("Balance");
-
-        //    if (reportData.Rows.Count > 0)
-        //    {
-
-        //        decimal _Balance = 0;
-        //        foreach (DataRow Row in reportData.Rows)
-        //        {
-        //            decimal _Amount = (decimal)Row["DR"] - (decimal)Row["CR"];
-        //            _Balance += _Amount;
-
-        //            DataRow NewRow = PreviewTable.NewRow();
-        //            NewRow["Vou_Date"] = Row["Vou_Date"];
-        //            NewRow["Vou_No"] = Row["Vou_No"];
-        //            NewRow["Description"] = Row["Description"];
-        //            NewRow["DR"] = Row["DR"];
-        //            NewRow["CR"] = Row["CR"];
-        //            NewRow["Balance"] = _Balance;
-        //            PreviewTable.Rows.Add(NewRow);
-        //        }
-        //    }
-        //    return PreviewTable;
-        //}
-
-        #endregion
+        
 
         public static string GetQueryText(AppReportClass.ReportFilters ReportFilter)
         {

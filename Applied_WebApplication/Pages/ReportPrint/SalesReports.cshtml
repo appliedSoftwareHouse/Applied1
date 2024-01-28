@@ -1,12 +1,13 @@
 ﻿@page
 @using System.Data;
+@using AppReportClass;
 @model Applied_WebApplication.Pages.ReportPrint.SalesReportsModel
 @{
     var UserName = User.Identity.Name;
     var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
-    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency"); 
+    var AmountFormat = AppRegistry.GetText(UserName, "FMTCurrency");
 
 
 }
@@ -20,6 +21,14 @@
         width: 20%
     }
 
+    .btn-wh {
+        width: 175px;
+    }
+
+    .col-wh {
+        width: 200px;
+    }
+
 </style>
 
 <div class="AppHeading-2">
@@ -28,10 +37,8 @@
 
 <form method="post">
 
-   
-
     <div class="container">
-        <div class="d-flex justify-content-between ">
+        <div class="row d-flex justify-content-start ">
 
             <div class="col-md-3 date-width">
                 <div class="input-group date-group">
@@ -40,7 +47,7 @@
                            placeholder="Start Date" aria-label="Start Date" aria-describedby="txtVouDate">
                 </div>
             </div>
-            
+
             <div class="col-md-3 date-width">
                 <div class="input-group date-group">
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.EndDate">
@@ -48,7 +55,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3  filter-select">
+            <div class="col-md-3 filter-select">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -58,7 +65,7 @@
                 </select>
             </div>
 
-            <div class="col-md-3  filter-select">
+            <div class="col-md-3 filter-select">
                 <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Cities.Rows)
@@ -78,86 +85,119 @@
                 </select>
             </div>
 
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary justify-content-end"
-                asp-page-handler="Refresh">REFRESH</button>
-            </div>
         </div>
-    </div>
 
-    @if(Model.SourceTable != null)
-    {
-        if(Model.SourceTable.Rows.Count > 0)
-        {
-            <div class="container">
-                <div class="row mb-2">
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
+        <div class="row mt-1 mb-1">
+            <div class="col-md-2 btn-wh">
+                <button type="submit" class="btn btn-primary btn-sm justify-content-end"
+                        asp-page-handler="Refresh">
+                    REFRESH
+                </button>
+            </div>
+            <div class="col-md-2 btn-wh">
+                <button class="btn btn-primary btn-sm" type="submit"
                         asp-page-handler="Print">
-                            <i class="bi bi-printer"> PRINT</i>
-                        </button>
-                    </div>
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm" type="submit"
+                    <i class="bi bi-printer"> PRINT</i>
+                </button>
+            </div>
+            <div class="col-md-2 btn-wh">
+                <button class="btn btn-primary btn-sm" type="submit"
                         asp-page-handler="PrintList">
-                            <i class="bi bi-printer"> PRINT 2</i>
-                        </button>
-                    </div>
+                    <i class="bi bi-printer"> PRINT 2</i>
+                </button>
+            </div>
+
+            <div class="col-wh">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                        Print 1 <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Word">Word</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.HTML">HTML</button></li>
+                    </ul>
+
                 </div>
             </div>
-            
 
-            <table class="table-list">
-                <thead>
-                    <tr>
-                        <th style="width:4%">SNo.</th>
-                        <th style="width:7%">Vou. No</th>
-                        <th style="width:8%">Vou. Date</th>
-                        <th style="width:15%">Company Name</th>
-                        <th style="width:5%">City 1</th>
-                        <th style="width:15%">Stock Title</th>
-                        <th style="width:8%">Quantity</th>
-                        <th style="width:8%">Rate</th>
-                        <th style="width:10%">Amount</th>
-                        <th style="width:10%">Tax Amount</th>
-                        <th style="width:10%">Net Amount</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.SourceTable.Rows)
-                    {
-                        var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
-                        
-                        var _Qty = Conversion.ToDecimal(Row["Qty"]);
-                        var _Rate = Conversion.ToDecimal(Row["Rate"]);
-                        var _Amount = Conversion.ToDecimal(Row["Amount"]);
-                        var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
-                        var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
+            <div class="col-wh">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                        Print 2 <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn border-0" asp-page-handler="PrintList" asp-route-RptType="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn border-0" asp-page-handler="PrintList" asp-route-RptType="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn border-0" asp-page-handler="PrintList" asp-route-RptType="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn border-0" asp-page-handler="PrintList" asp-route-RptType="@ReportType.Word">Word</button></li>
+                        <li><button class="btn border-0" asp-page-handler="PrintList" asp-route-RptType="@ReportType.HTML">HTML</button></li>
+                    </ul>
 
-                        <tr style="font-size:small">
-                            <td>@Row["Sr_No"]</td>
-                            <td>@Row["Vou_No"]</td>
-                            <td>@_Date</td>
-                            <td>@Row["CompanyName"]</td>
-                            <td>@Row["CityName"]</td>
-                            <td>@Row["StockTitle"]</td>
-                            <td class="amount">@_Qty.ToString(AmountFormat)</td>
-                            <td class="amount">@_Rate.ToString(AmountFormat)</td>
-                            <td class="amount">@_Amount.ToString(AmountFormat)</td>
-                            <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
-                            <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
-                        </tr>
-                    }
-                    
-                </tbody>
-            </table>
+                </div>
+            </div>
 
-    }
-        else
+        </div>
+
+        @if (Model.SourceTable != null)
         {
-            <h5>No Record Found.....</h5>
+            if (Model.SourceTable.Rows.Count > 0)
+            {
+
+
+                <table class="table-list">
+                    <thead>
+                        <tr>
+                            <th style="width:4%">SNo.</th>
+                            <th style="width:7%">Vou. No</th>
+                            <th style="width:8%">Vou. Date</th>
+                            <th style="width:15%">Company Name</th>
+                            <th style="width:5%">City 1</th>
+                            <th style="width:15%">Stock Title</th>
+                            <th style="width:8%">Quantity</th>
+                            <th style="width:8%">Rate</th>
+                            <th style="width:10%">Amount</th>
+                            <th style="width:10%">Tax Amount</th>
+                            <th style="width:10%">Net Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow Row in Model.SourceTable.Rows)
+                        {
+                            var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+
+                            var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                            var _Rate = Conversion.ToDecimal(Row["Rate"]);
+                            var _Amount = Conversion.ToDecimal(Row["Amount"]);
+                            var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                            var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
+
+                            <tr style="font-size:small">
+                                <td>@Row["Sr_No"]</td>
+                                <td>@Row["Vou_No"]</td>
+                                <td>@_Date</td>
+                                <td>@Row["CompanyName"]</td>
+                                <td>@Row["CityName"]</td>
+                                <td>@Row["StockTitle"]</td>
+                                <td class="amount">@_Qty.ToString(AmountFormat)</td>
+                                <td class="amount">@_Rate.ToString(AmountFormat)</td>
+                                <td class="amount">@_Amount.ToString(AmountFormat)</td>
+                                <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
+                                <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+
+            }
+            else
+            {
+                <h5>No Record Found.....</h5>
+            }
         }
-    }
 
 
 </form>
