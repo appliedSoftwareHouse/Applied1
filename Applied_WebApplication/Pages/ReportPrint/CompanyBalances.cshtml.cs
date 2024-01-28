@@ -22,34 +22,48 @@ namespace Applied_WebApplication.Pages.ReportPrint
             Variables = new()
             {
                 ReportDate = AppRegistry.GetDate(UserName, "DueRptDate"),
-                ReportType = AppRegistry.GetText(UserName, "DueRptType")
+                ReportType = AppRegistry.GetText(UserName, "DueRptType"),
+                Filter = AppRegistry.GetText(UserName, "DueRptFilter"),
+
             };
 
             var _Filter1 = "";
+            var _Filter2 = "";
             if (Variables.ReportType == "All") { _Filter1 = ""; }
             if (Variables.ReportType == "Receivable") { _Filter1 = " AND [DR] <> 0"; }
             if (Variables.ReportType == "Payable") { _Filter1 = " AND [CR] <> 0"; }
-
+            if (Variables.Filter.Length > 0) { _Filter2 = $" AND [C].[Title] like '%{Variables.Filter}%'"; }
 
             var _ReportDate = Variables.ReportDate.AddDays(1).ToString(AppRegistry.DateYMD);
             var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}') {_Filter1}";
+            var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}') {_Filter1} {_Filter2}";
             MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
 
 
         }
+
+        public IActionResult OnPostClearFilter()
+        {
+            AppRegistry.SetKey(UserName, "DueRptDate", Variables.ReportDate, KeyType.Date);
+            AppRegistry.SetKey(UserName, "DueRptType", Variables.ReportType, KeyType.Text);
+            AppRegistry.SetKey(UserName, "DueRptFilter", "", KeyType.Text);
+            return RedirectToPage();
+        }
+
 
         #region Refresh
         public IActionResult OnPostRefresh()
         {
             AppRegistry.SetKey(UserName, "DueRptDate", Variables.ReportDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "DueRptType", Variables.ReportType, KeyType.Text);
+            AppRegistry.SetKey(UserName, "DueRptFilter", Variables.Filter, KeyType.Text);
+            return RedirectToPage();
 
-            var _ReportDate = Variables.ReportDate.AddDays(1).ToString(AppRegistry.DateYMD);
-            var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}')";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
-            return Page();
+            //var _ReportDate = Variables.ReportDate.AddDays(1).ToString(AppRegistry.DateYMD);
+            //var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
+            //var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}')";
+            //MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
+            //return Page();
         }
         #endregion
 
@@ -86,7 +100,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
 
 
-            AppReportClass.ReportParameters RptParameters = new()
+            ReportParameters RptParameters = new()
             {
                 ReportFile = "CompanyBalances",
                 OutputPath = "",
@@ -124,6 +138,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
             public DateTime ReportDate { get; set; }
             public string ReportType { get; set; } = "All";
+            public string Filter { get; set; } = string.Empty;
         }
         #endregion
 
