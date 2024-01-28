@@ -132,7 +132,6 @@ public enum VoucherType
     JV = 11,
     SaleReturn = 12
 }
-
 public enum PrintOption
 {
     Preview = 0,
@@ -141,7 +140,6 @@ public enum PrintOption
     Word = 3,
     HTML = 4
 }
-
 public enum TBOption
 {
     All = 0,

@@ -84,7 +84,7 @@ namespace Applied_WebApplication.Pages.Sales
 
             _Filter1 = $"Vou_No='{Vou_No}'";
             TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, (bool)Refresh);
-            if(TempInvoice11.TempTable.Rows.Count>0) { TranID = (int)TempInvoice11.TempTable.Rows[0]["ID"]; }
+            if (TempInvoice11.TempTable.Rows.Count > 0) { TranID = (int)TempInvoice11.TempTable.Rows[0]["ID"]; }
             Row1 = TempInvoice11.CurrentRow;
 
             _Filter2 = $"TranID={TranID}";
@@ -174,44 +174,51 @@ namespace Applied_WebApplication.Pages.Sales
 
         //            #endregion
         //        }
-               #endregion
+        #endregion
 
         #region Variables / Rows
         private void Row2Variables()
         {
 
-            Variables = new()
+            if (Row1 != null && Row2 != null)
             {
-                ID1 = (int)Row1["ID"],
-                ID2 = (int)Row2["ID"],
+                Variables = new();
+                {
+                    Variables.ID1 = (int)Row1["ID"];
+                    Variables.ID2 = (int)Row2["ID"];
 
-                Vou_No = Row1["Vou_No"].ToString(),
-                Vou_Date = (DateTime)Row1["Vou_Date"],
-                Company = (int)Row1["Company"],
-                Employee = (int)Row1["Employee"],
-                Ref_No = Row1["Ref_No"].ToString(),
-                Inv_No = Row1["Inv_No"].ToString(),
-                Inv_Date = (DateTime)Row1["Inv_Date"],
-                Pay_Date = (DateTime)Row1["Pay_Date"],
-                Remarks = Row1["Description"].ToString(),
-                Comments = Row1["Comments"].ToString(),
-                Status = Row1["Status"].ToString(),
+                    Variables.Vou_No = Row1["Vou_No"].ToString();
+                    Variables.Vou_Date = (DateTime)Row1["Vou_Date"];
+                    Variables.Company = (int)Row1["Company"];
+                    Variables.Employee = (int)Row1["Employee"];
+                    Variables.Ref_No = Row1["Ref_No"].ToString();
+                    Variables.Inv_No = Row1["Inv_No"].ToString();
+                    Variables.Inv_Date = (DateTime)Row1["Inv_Date"];
+                    Variables.Pay_Date = (DateTime)Row1["Pay_Date"];
+                    Variables.Remarks = Row1["Description"].ToString();
+                    Variables.Comments = Row1["Comments"].ToString();
+                    Variables.Status = Row1["Status"].ToString();
 
-                TranID = (int)Row1["ID"],
-                Sr_No = (int)Row2["Sr_No"],
-                Inventory = (int)Row2["Inventory"],
-                Batch = Row2["Batch"].ToString(),
-                Qty = (decimal)Row2["Qty"],
-                Rate = (decimal)Row2["Rate"],
-                Tax = (int)Row2["Tax"],
-                Description = Row2["Description"].ToString(),
-                Project = (int)Row2["Project"],
-            };
+                    Variables.TranID = (int)Row1["ID"];
+                    Variables.Sr_No = (int)Row2["Sr_No"];
+                    Variables.Inventory = (int)Row2["Inventory"];
+                    Variables.Batch = Row2["Batch"].ToString();
+                    Variables.Qty = (decimal)Row2["Qty"];
+                    Variables.Rate = (decimal)Row2["Rate"];
+                    Variables.Tax = (int)Row2["Tax"];
+                    Variables.Description = Row2["Description"].ToString();
+                    Variables.Project = (int)Row2["Project"];
+                };
 
-            Variables.Amount = (Variables.Qty * Variables.Rate);
-            Variables.TaxRate = (int)AppFunctions.GetTaxRate(UserName, Variables.Tax);
-            Variables.TaxAmount = (Variables.Amount * Variables.TaxRate) / 100;
-            Variables.NetAmount = Variables.Amount + Variables.TaxAmount;
+                Variables.Amount = (Variables.Qty * Variables.Rate);
+                Variables.TaxRate = (int)AppFunctions.GetTaxRate(UserName, Variables.Tax);
+                Variables.TaxAmount = (Variables.Amount * Variables.TaxRate) / 100;
+                Variables.NetAmount = Variables.Amount + Variables.TaxAmount;
+            }
+            else
+            {
+                ErrorMessages.Add(MessageClass.SetMessage("Data row is not defined properly. Contact To Administrator"));
+            }
 
 
         }
@@ -268,7 +275,7 @@ namespace Applied_WebApplication.Pages.Sales
             TempInvoice22.TableValidate.SQLAction = CommandAction.Insert.ToString();
             if (TempInvoice11.CountTemp > 0) { TempInvoice11.TableValidate.SQLAction = CommandAction.Update.ToString(); }
             if (TempInvoice22.CountTemp > 0) { TempInvoice22.TableValidate.SQLAction = CommandAction.Update.ToString(); }
-            
+
             Variables2Row();
 
             var ValidRow1 = TempInvoice11.TableValidate.Validation(Row1);
@@ -286,7 +293,7 @@ namespace Applied_WebApplication.Pages.Sales
                 ErrorMessages.AddRange(TempInvoice22.TableValidate.MyMessages);
             }
 
-           
+
 
             if (ErrorMessages.Count == 0)
             {

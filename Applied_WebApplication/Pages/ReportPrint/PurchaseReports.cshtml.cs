@@ -89,7 +89,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnPostPrintList()
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister2.rdl", KeyType.Text);
+            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister3.rdl", KeyType.Text);
             return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister");
         }
 
