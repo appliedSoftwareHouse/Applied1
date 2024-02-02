@@ -91,32 +91,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Print
-        public IActionResult OnPostPrint(AppReportClass.ReportType _ReportType)
+        public IActionResult OnPostPrint(ReportType Option)
         {
-            var _Heading1 = "Receivable / Payable Report";
-            var _Heading2 = "";
-            var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
 
+            AppRegistry.SetKey(UserName, "cRptFilter", Variables.Filter, KeyType.Text);
+            AppRegistry.SetKey(UserName, "cRptDate", Variables.ReportDate, KeyType.Date);
 
-            ReportParameters RptParameters = new()
-            {
-                ReportFile = "CompanyBalances",
-                OutputPath = "",
-                OutputPathLink = "",
-                OutputFileName = "",
-                OutputFileExtention = "",
-                OutputFileFullName = "",
-                DataSetName = "",
-                ReportData = MyTable,
-                ReportType = _ReportType,
-                CompanyName = "",
-                Heading1 = _Heading1,
-                Heading2 = _Heading2,
-                Footer = AppFunctions.AppGlobals.ReportFooter,
-            };
-            return Page();
+            return RedirectToPage("PrintReport", "ComBalances", routeValues:  new {Option});
         }
         #endregion
 

@@ -777,5 +777,45 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #endregion
+
+        #region Company Balances
+        public IActionResult ComBalances(ReportType Option)
+        {
+            var _COA_List = GetText(UserName, "CompanyGLs");
+            var _Filter = GetText(UserName, "cRptFilter");
+            var _RptDate = GetDate(UserName, "cRptDate").ToString(FormatDate);
+            var _MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
+            var _Heading1 = "Receivable / Payable Report";
+            var _Heading2 = $"Position as on {_RptDate}";
+            
+            ReportParameters RptParameters = new()
+            {
+                ReportFile = "CompanyBalances",
+                OutputPath = "",
+                OutputPathLink = "",
+                OutputFileName = "",
+                OutputFileExtention = "",
+                OutputFileFullName = "",
+                DataSetName = "",
+                ReportData = _MyTable,
+                ReportType = Option,
+                CompanyName = UserProfile.GetUserClaim(User, "Company"),
+                Heading1 = _Heading1,
+                Heading2 = _Heading2,
+                Footer = AppGlobals.ReportFooter,
+            };
+
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", _Heading1),
+                new ReportParameter("Heading2", _Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+            return Page();
+        }
+
+        #endregion
+
     }
 }
