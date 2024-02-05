@@ -15,16 +15,11 @@ namespace AppReportClass
         public List<ReportParameter> ReportParameters { get; set; }
         public bool Render => ReportRender();
 
-        public ReportModel()
-        {
-
-
-        }
-
+        public ReportModel() { }
 
         private bool ReportRender()
         {
-            if(ReportParameters.Count == 0) { GetDefaultParameters()}
+            if(ReportParameters.Count == 0) { GetDefaultParameters(); }
 
 
             if (InputReport.IsFileExist)
@@ -56,10 +51,16 @@ namespace AppReportClass
 
         private void GetDefaultParameters()
         {
-            throw new NotImplementedException();
+            ReportParameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", "Applied Software House"),
+                new ReportParameter("Heading1", "Heading "),
+                new ReportParameter("Heading2", "Sub Heading"),
+                new ReportParameter("Footer", "Powered by Applied Software House")
+            };
         }
 
-        public static string GetReportExtention(ReportType _ReportType)
+        private string GetReportExtention(ReportType _ReportType)
         {
             if (_ReportType == ReportType.PDF) { return ".pdf"; }
             if (_ReportType == ReportType.HTML) { return ".html"; }
@@ -68,7 +69,7 @@ namespace AppReportClass
             return "";
         }
 
-        public static string GetReportMime(ReportType _ReportType)
+        private string GetReportMime(ReportType _ReportType)
         {
             if (_ReportType == ReportType.PDF) { return "application/pdf"; }
             if (_ReportType == ReportType.HTML) { return "text/html"; }
@@ -123,7 +124,6 @@ namespace AppReportClass
             return string.Empty;
         }
     }
-
     public class OutputReport
     {
         public string FilePath { get; set; } = string.Empty;
@@ -143,7 +143,6 @@ namespace AppReportClass
             return string.Empty;
         }
     }
-
     public class ReportData
     {
         public string SQLQuery { get; set; }

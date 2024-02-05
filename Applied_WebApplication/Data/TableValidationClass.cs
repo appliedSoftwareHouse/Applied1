@@ -1,5 +1,4 @@
 ﻿using Applied_WebApplication.Pages;
-using Microsoft.Win32;
 using Microsoft.Win32.SafeHandles;
 using System.Data;
 using System.Drawing;
@@ -9,28 +8,22 @@ namespace Applied_WebApplication.Data
 {
     public class TableValidationClass
     {
-        public string UserName { get; set; }
+
         public string SQLAction { get; set; }
         public DataTable MyDataTable { get; set; }
 
         public List<Message> MyMessages = new();
         public PostType MyVoucherType { get; set; }
         private DataView MyDataView { get; set; }
-        public DateTime FYStart { get; set; }
-        public DateTime FYEnd { get; set; }
         public int Count => MyMessages.Count;
+
+        //public string UserName { get; internal set; }
 
         public TableValidationClass()
         {
             MyDataTable = new DataTable();
             MyMessages = new List<Message>();
             MyDataView = new DataView();
-
-            if (UserName.Length > 0)
-            {
-                FYStart = AppRegistry.GetDate(UserName, "FiscalStart");
-                FYEnd = AppRegistry.GetDate(UserName, "FiscalEnd");
-            }
         }
 
         public TableValidationClass(DataTable table)
@@ -41,24 +34,6 @@ namespace Applied_WebApplication.Data
                 MyDataView = MyDataTable.AsDataView();
                 MyMessages = new List<Message>();
                 SQLAction = string.Empty;
-                if (UserName != null)
-                {
-                    if (UserName.Length > 0)
-                    {
-                        FYStart = AppRegistry.GetDate(UserName, "FiscalStart");
-                        FYEnd = AppRegistry.GetDate(UserName, "FiscalEnd");
-                    }
-                }
-                else
-                {
-                    // Calculate the Fiscal year as per current year i.e  From 01-Jul-2023 to 30-Jun-2024. 
-                    var _Today = DateTime.Now;
-                    var _Year = _Today.Year;
-                    var _Month = _Today.Month;
-                    if (_Month >= 1 || _Month < 7) { _Year = _Today.Year - 1; }
-                    FYStart = new DateTime(_Year, 7, 1);
-                    FYEnd = new DateTime(++_Year, 6, 30);
-                }
             }
         }
 
@@ -85,19 +60,16 @@ namespace Applied_WebApplication.Data
                 MyMessages.Add(SetMessage("Current row is null"));
                 return false;
             }   // Return false if row is null
-
-            if (SQLAction == null || SQLAction.Length == 0)
+            if (SQLAction == null)
             {
-                if ((int)Row["ID"] <= 0) { SQLAction = CommandAction.Insert.ToString(); }
-                else {SQLAction = CommandAction.Update.ToString();}
+                MyMessages.Add(SetMessage("Database query action is not defined."));
+                return false;
             }
-
             if (MyDataTable == null)
             {
                 MyMessages.Add(SetMessage("DataTable is null. define Datatable to validate the record."));
                 return false;
             }
-
 
             if (Row.Table.TableName == Tables.COA.ToString()) { ValidateTable_COA(Row); }
             if (Row.Table.TableName == Tables.Customers.ToString()) { ValidateTable_Customer(Row); }
@@ -118,12 +90,8 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
-            if (Row.Table.TableName == Tables.Production.ToString()) { ValidateTable_Product(Row); }
-            if (Row.Table.TableName == Tables.Production2.ToString()) { ValidateTable_Product2(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
-
-
 
 
 
@@ -389,7 +357,7 @@ namespace Applied_WebApplication.Data
                     }
 
                 }
-
+                
             }
             catch (Exception e)
             {
@@ -497,8 +465,10 @@ namespace Applied_WebApplication.Data
             }
             if (string.IsNullOrEmpty(Row["Inv_No"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Invoice Number value is null, contact to Administrator." }); }
             if ((int)Row["Company"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Company ID is Zero, not allowed." }); }
-            if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = $"Description is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Description"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Description is Zero, not allowed." }); }
             if (string.IsNullOrEmpty(Row["Status"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Status is not defined, must be a valid value." }); }
+            //if ((DateTime)Row["Vou_Date"] < FiscalFrom) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the fiscal year date" }); }
+            //if ((DateTime)Row["Vou_Date"] > FiscalTo) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is above the fiscal year date" }); }
             if ((DateTime)Row["Vou_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Voucher Date is below the invoice Date, not allowed" }); }
             if ((DateTime)Row["Pay_Date"] < (DateTime)Row["Inv_Date"]) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Payment Date is below the invoice Date, not allowed" }); }
         }
@@ -623,6 +593,7 @@ namespace Applied_WebApplication.Data
             if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom()) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
             if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
         }
+
         private void ValidateTable_Employees(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -639,40 +610,6 @@ namespace Applied_WebApplication.Data
             if (Row["CNIC"].ToString().Length == 0) { MyMessages.Add(SetMessage("Employee national identity number is not defined.")); }
             if ((DateTime)Row["JOIN"] == new DateTime()) { MyMessages.Add(SetMessage("Joining Date is not defined.")); }
             if ((DateTime)Row["DOB"] == new DateTime()) { MyMessages.Add(SetMessage("Employee's date of birth is not defined.")); }
-
-        }
-        private void ValidateTable_Product(DataRow Row)
-        {
-            MyMessages = new List<Message>();
-            if (SQLAction == CommandAction.Insert.ToString())
-            {
-                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
-            }
-            else
-            {
-                if (Row["Vou_No"].ToString().Length != 11) { MyMessages.Add(SetMessage("Voucher Number is not defined properly.")); }
-            }
-
-            if ((DateTime)Row["Vou_Date"] < FYStart) { MyMessages.Add(SetMessage("Voucher Date is less than fiscal year start date")); }
-            if ((DateTime)Row["Vou_Date"] > FYEnd) { MyMessages.Add(SetMessage("Voucher Date is more than fiscal year end date")); }
-            if (Row["Batch"].ToString().Length == 0) { MyMessages.Add(SetMessage("Production Bach Number not defined.")); }
-
-        }
-
-        private void ValidateTable_Product2(DataRow Row)
-        {
-            MyMessages = new List<Message>();
-            if (SQLAction == CommandAction.Insert.ToString())
-            {
-                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
-            }
-
-            if ((int)Row["Stock"] == 0) { MyMessages.Add(SetMessage("Stock Item is not define...")); }
-            //if ((string)Row["Flow"]) 
-            if ((decimal)Row["Qty"] <= 0.00M) { MyMessages.Add(SetMessage("Quantity must be some positive value..")); }
-            if ((decimal)Row["Rate"] <= 0.00M) { MyMessages.Add(SetMessage("Rate must be some positive value..")); }
-            if (Row["Flow"].ToString().Length == 0) { MyMessages.Add(SetMessage("Stock Flow is not define.")); }
-            if (Row["Remarks"].ToString().Length == 0) { MyMessages.Add(SetMessage("Transaction Remarks is empty...")); }
 
         }
 
