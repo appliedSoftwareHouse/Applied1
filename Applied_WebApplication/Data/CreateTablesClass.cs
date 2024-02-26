@@ -27,7 +27,6 @@ namespace Applied_WebApplication.Data
 
             if (TableName == Tables.SaleReturn.ToString()) { SaleReturn(UserName); }
             if (TableName == Tables.BankBook.ToString()) { BankBook(UserName); }
-
         }
 
         public CreateTablesClass(ClaimsPrincipal _User)
