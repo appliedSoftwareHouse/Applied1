@@ -13,6 +13,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         [BindProperty]
         public Parameters Variables { get; set; }
         public DataTable MyTable { get; set; }
+        public string ReportFilter { get; set; }
         public string UserName => User.Identity.Name;
 
 
@@ -36,8 +37,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var _ReportDate = Variables.ReportDate.AddDays(1).ToString(AppRegistry.DateYMD);
             var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}') {_Filter1} {_Filter2}";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
+            ReportFilter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}') {_Filter1} {_Filter2}";
+            AppRegistry.SetKey(UserName, "cRptQuery", ReportFilter, KeyType.Text);
+
+            MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(ReportFilter, _COA_List));
 
 
         }
@@ -58,12 +61,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "DueRptType", Variables.ReportType, KeyType.Text);
             AppRegistry.SetKey(UserName, "DueRptFilter", Variables.Filter, KeyType.Text);
             return RedirectToPage();
-
-            //var _ReportDate = Variables.ReportDate.AddDays(1).ToString(AppRegistry.DateYMD);
-            //var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            //var _Filter = $"Date([L].[Vou_Date]) < Date('{_ReportDate}')";
-            //MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
-            //return Page();
         }
         #endregion
 
@@ -91,32 +88,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Print
-        public IActionResult OnPostPrint(AppReportClass.ReportType _ReportType)
+        public IActionResult OnPostPrint(ReportType _ReportType)
         {
-            var _Heading1 = "Receivable / Payable Report";
-            var _Heading2 = "";
-            var _COA_List = AppRegistry.GetText(UserName, "CompanyGLs");
-            var _Filter = $"";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
 
+            AppRegistry.SetKey(UserName, "cRptFilter", Variables.Filter, KeyType.Text);
+            AppRegistry.SetKey(UserName, "cRptDate", Variables.ReportDate, KeyType.Date);
+            AppRegistry.SetKey(UserName, "cRptHead1", $"Companies Balance as on", KeyType.Text);
+            AppRegistry.SetKey(UserName, "cRptHead2", $"{Variables.ReportDate.ToString(AppRegistry.FormatDate)}", KeyType.Text);
 
-            ReportParameters RptParameters = new()
-            {
-                ReportFile = "CompanyBalances",
-                OutputPath = "",
-                OutputPathLink = "",
-                OutputFileName = "",
-                OutputFileExtention = "",
-                OutputFileFullName = "",
-                DataSetName = "",
-                ReportData = MyTable,
-                ReportType = _ReportType,
-                CompanyName = "",
-                Heading1 = _Heading1,
-                Heading2 = _Heading2,
-                Footer = AppFunctions.AppGlobals.ReportFooter,
-            };
-            return Page();
+            return RedirectToPage("PrintReport", "ComBalances", routeValues:  new {_ReportType});
         }
         #endregion
 

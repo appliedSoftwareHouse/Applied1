@@ -1,0 +1,30 @@
+﻿@page
+@model Applied_WebApplication.Pages.ReportPrint.HTMLViewerModel
+@{
+}
+
+
+
+<style>
+    .iframe {
+        overflow: hidden;
+        height: 100%;
+        width: 100%
+    }
+
+</style>
+
+
+
+
+@if (Model.Messages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.Messages></component>
+}
+
+@if (Model.HTMLFile != null)
+{
+    <div class="container bg-info" style="height: 100vh; box-sizing: border-box;">
+        <iframe src=@Url.Content(Model.HTMLFile) frameborder="0" style="overflow:hidden;height:100%;width:100%"></iframe>
+    </div>
+}

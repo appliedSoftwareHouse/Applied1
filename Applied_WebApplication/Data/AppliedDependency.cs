@@ -41,6 +41,7 @@ namespace Applied_WebApplication.Data
         public string DateFormat { get; set; }
         public string CurrencyFormat { get; set; }
         public string ReportFooter { get; set; }
+        public string AppDomainDirectory => AppDomain.CurrentDomain.BaseDirectory;
         
 
         public ClaimsPrincipal AppUser { get; set; }
@@ -49,12 +50,12 @@ namespace Applied_WebApplication.Data
         {
 
             AppPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
-            AppRoot = ".\\wwwroot\\";
-            AppDBTempPath = $"{AppRoot}DBTemp\\";
-            ReportPath = string.Concat(AppRoot, "Reports\\");
-            PrintedReportPath = string.Concat(AppRoot, "PrintedReports\\");
+            AppRoot = "\\wwwroot\\";
+            AppDBTempPath = $".{AppRoot}DBTemp\\";
+            ReportPath = $".{AppRoot}Reports\\";
+            PrintedReportPath = $".{AppRoot}PrintedReports\\";
             PrintedReportPathLink = "~/PrintedReports/";
-            DataBasePath = string.Concat(AppRoot, "SQLiteDB\\");
+            DataBasePath = $".{AppRoot}SQLiteDB\\";
             UserDBPath = string.Concat(DataBasePath, "AppliedUsers.db");
             GuestDBPath = string.Concat(DataBasePath, "Applied.db");
             CultureString = "en-US";

@@ -9,7 +9,6 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 
-
 namespace Applied_WebApplication.Pages.ReportPrint
 {
     public class COAListModel : PageModel
@@ -24,6 +23,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public bool IsShowPdf { get; set; } = false;
         public string UserName => User.Identity.Name;
         public string CompanyName => UserProfile.GetUserClaim(User, "Company");
+        public string ReportFooter => GetReportFooter(User.Identity.Name);
+
+
+        public string AppPath => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        public string ReportPath => $"{AppPath}\\wwwroot\\Reports\\";
+        public string PrintedReportsPath => $"{AppPath}\\wwwroot\\PrintedReports\\";
+
+
         #endregion
 
         #region Get Reports.
@@ -76,7 +83,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
             DataTable _Table = Ledger.GetGL(UserName, Filters);
-            
+
             if (_Table.Rows.Count > 0)
             {
                 var FMTDate = GetFormatDate(UserName);
@@ -127,7 +134,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 }
 
             }
-            
+
             return Page();
 
 
@@ -289,8 +296,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public async Task<IActionResult> OnGetOBTBAsync()
         {
-            var OBDate = AppRegistry.GetDate(UserName, "OBDate");
-            var DateFormat = AppRegistry.FormatDate;
+            var OBDate = GetDate(UserName, "OBDate");
+            var DateFormat = FormatDate;
             TrialBalanceClass TB = new(User);
             TB.Heading2 = "Opening Balances as on " + OBDate.ToString(DateFormat);
             TB.MyDataTable = TB.TBOB_Data();
@@ -298,7 +305,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             IsShowPdf = !TB.MyReportClass.IsError;
 
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(TB.MyReportClass.MyMessage)); }
+            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(TB.MyReportClass.MyMessage)); }
             return Page();
         }
 
@@ -358,10 +365,19 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region Sale Register
+        #region Sales Register Report
 
-        public IActionResult OnGetSaleRegister()
+        public IActionResult OnGetSaleRegister(ReportType _ReportType)
         {
+            #region Check Error
+            if (_ReportType.ToString().Length == 0)
+            {
+                ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
+                return Page();
+            }
+            #endregion
+
+            #region Create Report Data Class
             SalesReportsModel model = new();
             model.Variables = new()
             {
@@ -375,38 +391,99 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Heading1 = GetText(UserName, "sRptHeading1"),
                 Heading2 = GetText(UserName, "sRptHeading2"),
                 ReportFile = GetText(UserName, "sRptName"),
+                ReportType = GetNumber(UserName, "sRptType")
             };
 
             var _Filter = model.GetFilter(model.Variables);
             var _SQLQuery = SQLQuery.SaleRegister(_Filter);
-            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
-            var SaleRegister = new ReportClass
-            {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = model.Variables.ReportFile,
-                ReportDataSet = "ds_SalesRegister",
-                ReportSourceData = _SourceTable,
-                RecordSort = "Company, Vou_Date",
+            var _Table = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
+            #endregion
 
-                OutputFilePath = AppGlobals.PrintedReportPath,
+            #region Report's Data Parameters
+
+            var Heading1 = "PROJECT EXPENSES SHEET";
+            var Heading2 = $"Sale Register";
+
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", CompanyName),
+                new ReportParameter("Heading1", Heading1),
+                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Footer", AppGlobals.ReportFooter)
+            };
+            #endregion
+
+            #region Report Setup
+
+            var SaleRegisterReport = new ReportParameters()
+            {
+                ReportPath = AppGlobals.ReportPath,
+                ReportFile = model.Variables.ReportFile,
+                ReportType = (ReportType)model.Variables.ReportType,
+                ReportData = _Table,
+                DataParameters = _Parameters,
+
+                OutputPath = AppGlobals.PrintedReportPath,
+                OutputPathLink = AppGlobals.PrintedReportPathLink,
                 OutputFile = "SaleRegister",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+
+                DataSetName = "ds_SalesRegister",
+                Footer = AppGlobals.ReportFooter,
+                Heading1 = Heading1,
+                Heading2 = Heading2,
             };
 
-            SaleRegister.RptParameters.Add("CompanyName", CompanyName);
-            SaleRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
-            SaleRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
-            SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
-            ReportLink = SaleRegister.GetReportLink();
-            IsShowPdf = !SaleRegister.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
+            #region Generae Report
+            try
+            {
+                var _Download = new ExportReport(SaleRegisterReport);
+                _Download.Render();
+                if (_Download.Variables.IsSaved)
+                {
+                    ReportLink = _Download.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
+                }
+                return File(_Download.Variables.FileBytes, _Download.Variables.MimeType, _Download.Variables.OutputFileName);
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
+            }
+            #endregion
+
             return Page();
+
+            //var SaleRegister = new ReportClass
+            //{
+            //    AppUser = User,
+            //    ReportFilePath = AppGlobals.ReportPath,
+            //    ReportFile = model.Variables.ReportFile,
+
+            //    ReportDataSet = "ds_SalesRegister",
+            //    ReportSourceData = _SourceTable,
+            //    RecordSort = "Company, Vou_Date",
+
+            //    OutputFilePath = AppGlobals.PrintedReportPath,
+            //    OutputFile = "SaleRegister",
+            //    OutputFileLinkPath = AppGlobals.PrintedReportPathLink
+            //};
+
+
+            //SaleRegister.RptParameters.Add("CompanyName", CompanyName);
+            //SaleRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
+            //SaleRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
+            //SaleRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+            //ReportLink = SaleRegister.GetReportLink();
+            //IsShowPdf = !SaleRegister.IsError;
+            //if (!IsShowPdf) { ErrorMessages.Add(SetMessage(SaleRegister.MyMessage)); }
+            //return Page();
+            #endregion
         }
         #endregion
 
         #region Purchase Register
-        public IActionResult OnGetPurchaseRegister() 
+        public IActionResult OnGetPurchaseRegister()
         {
             PurchaseReportsModel model = new();
             model.Variables = new()
@@ -462,11 +539,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             if (_ReportType.ToString().Length == 0)
             {
                 ErrorMessages.Add(SetMessage("Report Type not defined", ConsoleColor.Red));
+                return Page();
             }
             #endregion
 
             #region Get Data Table
-            var _SheetNo = AppRegistry.GetText(UserName, "Sheet_No");
+            var _SheetNo = GetText(UserName, "Sheet_No");
 
             if (_SheetNo.Length == 0)
             {
@@ -537,8 +615,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
 
         }
+        #endregion
 
-
+        #region Expense Group Report
         public IActionResult OnGetExpenseGroup(ReportType _ReportType)
         {
             #region Get Data Table
@@ -592,6 +671,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #endregion
 
+            #region Print Report
             try
             {
                 var _Download = new ExportReport(ReportParameters);
@@ -610,11 +690,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
             return Page();
 
-
+            #endregion
 
         }
-
-
 
         #endregion
 
@@ -705,5 +783,57 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #endregion
+
+        #region Company Balances
+        public IActionResult OnGetComBalances(ReportType _ReportType)
+        {
+            try
+            {
+                var _COA_List = GetText(UserName, "CompanyGLs");
+                var _Heading1 = GetText(UserName, "cRptHead1");
+                var _Heading2 = GetText(UserName, "cRptHead2");
+                var _RptQuery = GetText(UserName, "cRptQuery");
+
+                ReportModel Reportmodel = new ReportModel();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = "CompanyBalances";
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileName = "ComBalance";
+                Reportmodel.OutputReport.ReportType = _ReportType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_ComBalance";
+                Reportmodel.ReportData.ReportTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_RptQuery, _COA_List));
+
+                if (Reportmodel.Render)
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        return RedirectToPage("HTMLViewer", "HTMLView", new { _HTMLFile = Reportmodel.OutputReport.FileFullName });
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+        }
+
+        #endregion
+
     }
 }

@@ -6,6 +6,7 @@
         PDF,
         Excel,
         Word,
+        Image,
         HTML
     }
 }
