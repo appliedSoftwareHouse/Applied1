@@ -19,7 +19,7 @@
         <li><a class="dropdown-item" href="#">Stock</a></li>
         <li><a class="dropdown-item" href="#">Stock Category</a></li>
         <li><a class="dropdown-item" href="#">Stock Nature</a></li>
-        
+
     </ul>
 
     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -28,8 +28,23 @@
     <ul class="dropdown-menu dropdown-menu-dark">
         <li><a class="dropdown-item" href=".\Accounts\BillReceivableList">Sales Invoice</a></li>
         <li><a class="dropdown-item" href=".\Sales\SaleReturn">Sales Invocie - Return</a></li>
+        <li><a class="dropdown-item" href=".\Sales\CreateInvoice">Create Sales Invocie </a></li>
+        <li><a class="dropdown-item" href=".\Sales\RevSheet">Revenue Sheet </a></li>
+        <li><a class="dropdown-item" href=".\Sales\GenRevInvoice">Generate invoice</a></li>
     </ul>
 
+
+    @if (Model.ShowSaleRevenueMenu)
+    {
+        <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Revenue Sheet
+        </button>
+        <ul class="dropdown-menu dropdown-menu-dark">
+            <li><a class="dropdown-item" href=".\SaleRevenue\RevSheet">Revenue Sheet</a></li>
+            <li><a class="dropdown-item" href=".\SaleRevenue\GenRevInvoice">Generate Invoice</a></li>
+            <li><a class="dropdown-item" href=".\SaleRevenue\RevReports">Print Revenue Sheet</a></li>
+        </ul>
+    }
 
     <button class="btn btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
         Reports
@@ -39,6 +54,7 @@
         <li><a class="dropdown-item" href="">Sale Invocies - Return</a></li>
         <li><a class="dropdown-item" href=".\ReportPrint\SalesReports">Sale Register</a></li>
         <li><a class="dropdown-item" href=".\ReportPrint\PurchaseReports">Purchase Register</a></li>
+
     </ul>
 
 
