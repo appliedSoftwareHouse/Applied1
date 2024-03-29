@@ -68,6 +68,7 @@
   <ItemGroup>
     <Folder Include="Models\" />
     <Folder Include="wwwroot\Backup\" />
+    <Folder Include="wwwroot\Temp\" />
   </ItemGroup>
 
   <ItemGroup>

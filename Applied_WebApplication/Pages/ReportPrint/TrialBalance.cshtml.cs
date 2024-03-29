@@ -18,7 +18,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public decimal Tot_DR { get; set; } = 0.00M;
         public decimal Tot_CR { get; set; } = 0.00M;
         public string UserName => User.Identity.Name;
-        public List<Message> ErrorMessages { get; set; }
+        public List<Message> ErrorMessages { get; set; } = new();
 
         public void OnGet()
         {
@@ -26,15 +26,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             try
             {
-                string UserName = User.Identity.Name;
-
                 if (Variables == null)
                 {
                     Variables = new()
                     {
                         DateFrom = AppRegistry.GetDate(UserName, "TBDate1"),
                         DateTo = AppRegistry.GetDate(UserName, "TBDate2"),
-                        ReportType = "ALL",
+                        ReportOption = AppRegistry.GetText(UserName, "TBRptOption"),
                         Tot_DR = 0.00M,
                         Tot_CR = 0.00M
                     };
@@ -55,26 +53,25 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
             catch (Exception e)
             {
-                ErrorMessages.Add(MessageClass.SetMessage(e.Message));
+                ErrorMessages.Add(SetMessage(e.Message));
             }
         }
 
-        public IActionResult OnPostPrint(ReportType _ReportType, TBOption _rptOption)
+        public IActionResult OnPostPrint(ReportType _ReportType)
         {
             ErrorMessages = new();
             var _Date1 = AppRegistry.GetDate(UserName, "TBDate1");
             var _Date2 = AppRegistry.GetDate(UserName, "TBDate2");
             var __Date1 = _Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
-            var __Date2 = _Date1.AddDays(1).ToString(AppRegistry.DateYMD);
+            var __Date2 = _Date2.AddDays(1).ToString(AppRegistry.DateYMD);
             var _Filter = string.Empty;
             var _OrderBy = "Code";
 
-            if(_rptOption==TBOption.All) { _Filter = string.Empty; }
-            if(_rptOption== TBOption.UptoDate) { _Filter = $"Date(Vou_Date) < '{__Date2}'"; }
-            if(_rptOption==TBOption.Monthly) { _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'"; }
+            if(Variables.ReportOption == TBOption.All.ToString()) { _Filter = string.Empty; }
+            if(Variables.ReportOption == TBOption.UptoDate.ToString()) { _Filter = $"Date(Vou_Date) < '{__Date2}'"; }
+            if(Variables.ReportOption == TBOption.Monthly.ToString()) { _Filter = $"Date(Vou_Date) > '{__Date1}' AND Date(Vou_Date) < '{__Date2}'"; }
 
             //_Filter += " ORDER BY Vou_Date,Vou_No";
-
             
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.TrialBalance(_Filter, _OrderBy));
 
@@ -85,9 +82,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _Heading1 = "TRIAL BALANCE";
                 var _Heading2 = string.Empty;
 
-                if(_rptOption == TBOption.All) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
-                if(_rptOption == TBOption.UptoDate) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
-                if(_rptOption == TBOption.Monthly) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportType == TBOption.All.ToString()) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportType == TBOption.UptoDate.ToString()) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportType == TBOption.Monthly.ToString()) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
@@ -136,34 +133,40 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
         }
 
-        public IActionResult OnPostTBOpeningAsync()
+        public IActionResult OnPostTBOpening()
         {
             var OBDate = AppRegistry.GetDate(UserName, "OBDate");
-            AppRegistry.SetKey(UserName, "TBDate1", OBDate, KeyType.Date);
-            AppRegistry.SetKey(UserName, "TBDate2", OBDate, KeyType.Date);
+            SetKeys();
             return RedirectToPage();
         }
-        public IActionResult OnPostTBALLAsync()
+        public IActionResult OnPostTBALL()
         {
             DataTableClass Ledger = new(UserName, Tables.Ledger);
 
             var MinDate = Ledger.MyDataTable.Compute("MIN(Vou_Date)", "");
             var MaxDate = Ledger.MyDataTable.Compute("MAX(Vou_Date)", "");
-            AppRegistry.SetKey(UserName, "TBDate1", MinDate, KeyType.Date);
-            AppRegistry.SetKey(UserName, "TBDate2", MaxDate, KeyType.Date);
+            SetKeys();
             return RedirectToPage();
         }
         public IActionResult OnPostReload()
         {
-            AppRegistry.SetKey(UserName, "TBDate1", Variables.DateFrom, KeyType.Date);
-            AppRegistry.SetKey(UserName, "TBDate2", Variables.DateTo, KeyType.Date);
+            SetKeys();
             return RedirectToPage();
         }
+
+        private void SetKeys()
+        {
+            AppRegistry.SetKey(UserName, "TBDate1", Variables.DateFrom, KeyType.Date);
+            AppRegistry.SetKey(UserName, "TBDate2", Variables.DateTo, KeyType.Date);
+            AppRegistry.SetKey(UserName, "TBRptOption", Variables.ReportOption.ToString(), KeyType.Text);
+
+        }
+
         public class MyParameters
         {
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
-            public string ReportType { get; set; }
+            public string ReportType { get; set; } = "Preview";
             public string ReportOption { get; set; }
             public decimal Tot_DR { get; set; }
             public decimal Tot_CR { get; set; }

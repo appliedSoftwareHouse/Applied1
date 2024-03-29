@@ -8,8 +8,6 @@ using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
-using Applied_WebApplication.Data;
-
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -25,6 +23,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public bool IsShowPdf { get; set; } = false;
         public string UserName => User.Identity.Name;
         public string CompanyName => UserProfile.GetUserClaim(User, "Company");
+        public string ReportFooter => GetReportFooter(User.Identity.Name);
+
+
+        public string AppPath => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        public string ReportPath => $"{AppPath}\\wwwroot\\Reports\\";
+        public string PrintedReportsPath => $"{AppPath}\\wwwroot\\PrintedReports\\";
+
+
         #endregion
 
         #region Get Reports.
@@ -290,8 +296,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public async Task<IActionResult> OnGetOBTBAsync()
         {
-            var OBDate = AppRegistry.GetDate(UserName, "OBDate");
-            var DateFormat = AppRegistry.FormatDate;
+            var OBDate = GetDate(UserName, "OBDate");
+            var DateFormat = FormatDate;
             TrialBalanceClass TB = new(User);
             TB.Heading2 = "Opening Balances as on " + OBDate.ToString(DateFormat);
             TB.MyDataTable = TB.TBOB_Data();
@@ -299,7 +305,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             IsShowPdf = !TB.MyReportClass.IsError;
 
-            if (!IsShowPdf) { ErrorMessages.Add(MessageClass.SetMessage(TB.MyReportClass.MyMessage)); }
+            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(TB.MyReportClass.MyMessage)); }
             return Page();
         }
 
@@ -779,39 +785,51 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Company Balances
-        public IActionResult ComBalances(ReportType Option)
+        public IActionResult OnGetComBalances(ReportType _ReportType)
         {
-            var _COA_List = GetText(UserName, "CompanyGLs");
-            var _Filter = GetText(UserName, "cRptFilter");
-            var _RptDate = GetDate(UserName, "cRptDate").ToString(FormatDate);
-            var _MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_Filter, _COA_List));
-            var _Heading1 = "Receivable / Payable Report";
-            var _Heading2 = $"Position as on {_RptDate}";
-            
-            ReportParameters RptParameters = new()
+            try
             {
-                ReportFile = "CompanyBalances",
-                OutputPath = "",
-                OutputPathLink = "",
-                OutputFileName = "",
-                OutputFileExtention = "",
-                OutputFileFullName = "",
-                DataSetName = "",
-                ReportData = _MyTable,
-                ReportType = Option,
-                CompanyName = UserProfile.GetUserClaim(User, "Company"),
-                Heading1 = _Heading1,
-                Heading2 = _Heading2,
-                Footer = AppGlobals.ReportFooter,
-            };
+                var _COA_List = GetText(UserName, "CompanyGLs");
+                var _Heading1 = GetText(UserName, "cRptHead1");
+                var _Heading2 = GetText(UserName, "cRptHead2");
+                var _RptQuery = GetText(UserName, "cRptQuery");
 
-            List<ReportParameter> _Parameters = new List<ReportParameter>
+                ReportModel Reportmodel = new ReportModel();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = "CompanyBalances";
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileName = "ComBalance";
+                Reportmodel.OutputReport.ReportType = _ReportType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_ComBalance";
+                Reportmodel.ReportData.ReportTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_RptQuery, _COA_List));
+
+                if (Reportmodel.Render)
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        return RedirectToPage("HTMLViewer", "HTMLView", new { _HTMLFile = Reportmodel.OutputReport.FileFullName });
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception e)
             {
-                new ReportParameter("CompanyName", CompanyName),
-                new ReportParameter("Heading1", _Heading1),
-                new ReportParameter("Heading2", _Heading2),
-                new ReportParameter("Footer", AppGlobals.ReportFooter)
-            };
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
             return Page();
         }
 

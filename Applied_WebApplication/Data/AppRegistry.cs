@@ -50,7 +50,8 @@ namespace Applied_WebApplication.Data
         public static DateTime GetFiscalFrom(string UserName)
         {
             if (UserName == null || UserName == string.Empty) { return DateTime.Today; }
-            return GetDate(UserName, "FiscalStart"); }
+            return GetDate(UserName, "FiscalStart");
+        }
 
         public static DateTime GetFiscalTo(string UserName)
         {
@@ -298,6 +299,16 @@ namespace Applied_WebApplication.Data
             return Days;   // One Year of Expiry Date
         }
 
+        public static string GetReportFooter(string UserName)
+        {
+            var _Footer = GetText(UserName, "ReportFooter");
+            if (_Footer != null && _Footer.Length == 0)
+            {
+                return "Power by Applied Software House";
+            }
+            return _Footer;
+
+        }
 
         #region Registry Table
         public static object Get(string UserName, object Key, KeyType KeyType)

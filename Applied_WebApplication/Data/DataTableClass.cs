@@ -27,7 +27,6 @@ namespace Applied_WebApplication.Data
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
         public DataRowCollection Rows => MyDataTable_Rows();
-
         private DataRowCollection MyDataTable_Rows()
         {
             if(MyDataTable != null )
@@ -40,10 +39,7 @@ namespace Applied_WebApplication.Data
             }
             
         }
-
         public DataColumnCollection Columns => MyDataTable.Columns;
-
-        
 
         private SQLiteCommand Command_Update;
         private SQLiteCommand Command_Delete;
@@ -620,7 +616,7 @@ namespace Applied_WebApplication.Data
 
             if (CurrentRow != null)
             {
-                TableValidation = new(CurrentRow.Table) { UserName = UserName };
+                TableValidation = new(CurrentRow.Table); /*{ UserName = UserName };*/
                 
 
                 if (TableValidation.SQLAction.Length == 0)

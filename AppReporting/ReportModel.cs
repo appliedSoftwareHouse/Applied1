@@ -1,138 +1,147 @@
 ﻿using Microsoft.Reporting.NETCore;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
-using System.IO.Enumeration;
-using System.Text;
+using System.Data.SqlTypes;
 
 namespace AppReportClass
 {
     public class ReportModel
     {
+        public List<string> Messages { get; set; }
         public InputReport InputReport { get; set; }
         public OutputReport OutputReport { get; set; }
         public ReportData ReportData { get; set; }
         public byte[] ReportBytes { get; set; }
-        public StringBuilder Messages { get; set; }
+        
+
         public List<ReportParameter> ReportParameters { get; set; }
         public bool Render => ReportRender();
+        private readonly string DateTimeFormat = "yyyy-MM-dd [hh:mm:ss]";
+        private string DateTimeNow => DateTime.Now.ToString(DateTimeFormat);
+        
+
 
         public ReportModel()
         {
-            Messages.Append($"Report class start at {DateTime.Now}");
-        }
+            Messages = new List<string>();
+            InputReport = new InputReport();
+            OutputReport = new OutputReport();
+            ReportData = new ReportData();
+            ReportParameters = new List<ReportParameter>();
+            ReportBytes = Array.Empty<byte>();
+            
+            Messages.Add($"{DateTimeNow}: Report Class Started.");
 
+        }
 
         private bool ReportRender()
         {
-            Messages.Append($"Report rending at {DateTime.Now}");
+            
+            Messages.Add($"{DateTimeNow}: Report rendering started");
 
-            try
+            if (ReportParameters.Count == 0) { GetDefaultParameters(); }
+            if (InputReport.IsFileExist)
             {
+                Messages.Add($"{DateTimeNow}: Report file found {InputReport.FileFullName}");
+                var _ReportType = OutputReport.ReportType;
 
+                OutputReport.MimeType = GetReportMime(_ReportType);
+                OutputReport.FileExtention = OutputReport.GetFileExtention(_ReportType);
+                var _ReportFile = InputReport.FileFullName;
+                var _FileType = GetRenderFormat(_ReportType);
+                var _ReportStream = new StreamReader(_ReportFile);
+                Messages.Add($"{DateTimeNow}: {_ReportFile} is read as stream.");
 
-                if (ReportValildated())
+                LocalReport report = new();
+                report.LoadReportDefinition(_ReportStream);
+                report.DataSources.Add(ReportData.DataSource);
+                report.SetParameters(ReportParameters);
+                ReportBytes = report.Render(_FileType);
+
+                if (ReportBytes.Length > 0) { SaveReport(); }
+                else
                 {
-                    if (ReportParameters.Count == 0) { GetDefaultParameters(); }
-                    var _ReportFile = InputReport.FileName;
-                    LocalReport report = new();
-                    var _ReportStream = new StreamReader(_ReportFile);
-                    report.LoadReportDefinition(_ReportStream);
-                    report.DataSources.Add(ReportData.DataSource);
-                    report.SetParameters(ReportParameters);
-                    ReportBytes = report.Render(OutputReport.ReportType.ToString());
-
-                    //MimeType = OutputReport.MimeType;
-                    //Variables.OutputFileExtention = GetReportExtention(OutputReport.ReportType);
-                    //Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
-                    //Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
-
-                    //Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
-                    if (OutputReport.ReportType == ReportType.Preview)
-                    {
-                        SaveReport();
-                        Messages.Append($"Report save to file {OutputReport.FileFullName}");
-                    }
+                    Messages.Add($"{DateTimeNow}: ERROR: Report length is reporting zero");
                 }
-            }
-            catch (Exception ex)
-            {
-                Messages.Append($"Error foud on report rendering : {ex.Message}");
-            }
+                Messages.Add($"{DateTimeNow}: Report rendering completed at {DateTimeNow}");
+                return true;
 
-            if (ReportBytes.Length > 0) { return true; }
+            }
             return false;
         }
 
-        private bool ReportValildated()
-        {
-            var _Validated = false;
 
-            Messages.Append($"Report Validation Start at {DateTime.Now.ToShortDateString()}");
-            if (InputReport.IsFileExist) { Messages.Append($"Report File "); }
-            return _Validated;
+        private static string GetRenderFormat(ReportType _ReportType)
+        {
+            if (_ReportType == ReportType.Preview) { return "PDF"; }
+            if (_ReportType == ReportType.PDF) { return "PDF"; }
+            if (_ReportType == ReportType.HTML) { return "HTML5"; }
+            if (_ReportType == ReportType.Word) { return "WORDOPENXML"; }
+            if (_ReportType == ReportType.Excel) { return "EXCELOPENXML"; }
+            if (_ReportType == ReportType.Image) { return "IMAGE"; }
+            return "";
+        }
+
+        private static string GetReportMime(ReportType _ReportType)
+        {
+            if (_ReportType == ReportType.PDF) { return "application/pdf"; }
+            if (_ReportType == ReportType.HTML) { return "text/html"; }
+            if (_ReportType == ReportType.Word) { return "application/vnd.openxmlformats-officedocument.wordprocessingml.doc.ument"; }
+            if (_ReportType == ReportType.Excel) { return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; }
+            if (_ReportType == ReportType.Image) { return "image/tiff"; }
+            return "";
         }
 
         private void GetDefaultParameters()
         {
-            List<ReportParameter> _Parameters = new List<ReportParameter>
+            ReportParameters = new List<ReportParameter>
             {
                 new ReportParameter("CompanyName", "Applied Software House"),
                 new ReportParameter("Heading1", "Heading "),
                 new ReportParameter("Heading2", "Sub Heading"),
                 new ReportParameter("Footer", "Powered by Applied Software House")
             };
-
-            ReportParameters = _Parameters;
-        }
-
-        public static string GetReportExtention(ReportType _ReportType)
-        {
-            if (_ReportType == ReportType.PDF) { return ".pdf"; }
-            if (_ReportType == ReportType.HTML) { return ".html"; }
-            if (_ReportType == ReportType.Word) { return ".docx"; }
-            if (_ReportType == ReportType.Excel) { return ".xlsx"; }
-            return "";
-        }
-
-        public static string GetReportMime(ReportType _ReportType)
-        {
-            if (_ReportType == ReportType.PDF) { return "application/pdf"; }
-            if (_ReportType == ReportType.HTML) { return "text/html"; }
-            if (_ReportType == ReportType.Word) { return "application/vnd.openxmlformats-officedocument.wordprocessingml.doc.ument"; }
-            if (_ReportType == ReportType.Excel) { return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; }
-            return "";
         }
 
         public bool SaveReport()
         {
-            if (ReportBytes.Length == 0)
-            {
-                Messages.Append($"Report not rendered sucessfully.");
-                return false;
-            }
+            Messages.Add($"{DateTimeNow}: Report {ReportBytes.Length} btyes count.");
+            Messages.Add($"{DateTimeNow}: Report saving start at {DateTimeNow}");
 
-            Messages.Append($"Report rendered sucessfully. {OutputReport.FileFullName}");
-            FileStream MyFileStream;
             var _FileName = OutputReport.FileFullName;
             if (_FileName.Length > 0)
             {
-                if (File.Exists(_FileName)) 
+                if (File.Exists(_FileName))
                 {
-                    Messages.Append($"{_FileName} was already exist.");
+                    Messages.Add($"{DateTimeNow}: File {_FileName} already exist.");
                     File.Delete(_FileName);
-                    Messages.Append($"Deleted file {_FileName} sucessfully.");
+                    Messages.Add($"{DateTimeNow}: File {_FileName} Deleted.");
+
                 }
                 using (FileStream fstream = new FileStream(_FileName, FileMode.Create))
                 {
+                    Messages.Add($"{DateTimeNow}: Report File streamed.");
                     fstream.Write(ReportBytes, 0, ReportBytes.Length);
-                    MyFileStream = fstream;
-                    Messages.Append($"Created file {_FileName} sucessfully.");
+                    OutputReport.FileStream = fstream;
+                    Messages.Add($"{DateTimeNow}: Report saved sucessfully");
+                    Messages.Add($"{DateTimeNow}: Created a file {_FileName}");
                 }
             }
+            else
+            {
+                Messages.Add($"{DateTimeNow}: Report NOT saved.");
+            }
 
-            Messages.Append($"Output File not defined properly.");
             return false;
         }
+
+        public void AddReportParameter(string Key, string Value)
+        {
+            var _Parameter = new ReportParameter(Key, Value);
+            ReportParameters.Add(_Parameter);
+            Messages.Add($"{DateTimeNow}: Report Parameter add {Key} => {Value}");
+        }
+
+
     }
     public class InputReport
     {
@@ -165,17 +174,31 @@ namespace AppReportClass
         public string FileExtention { get; set; } = string.Empty;
         public ReportType ReportType { get; set; } = ReportType.Preview;
         public string MimeType { get; set; } = string.Empty;
+        public FileStream FileStream { get; set; }
         public bool IsFileExist => File.Exists(FileFullName);
-
         public string FileFullName => GetFullName();
         private string GetFullName()
         {
-            if (FilePath.Length > 0 && FileName.Length > 0 && FileExtention.Length > 0)
+            var _Extention = GetFileExtention(ReportType);
+
+            if (FilePath.Length > 0 && FileName.Length > 0 && _Extention.Length > 0)
             {
-                return $"{FilePath}{FileName}.{FileExtention}";
+                return $"{FilePath}{FileName}{_Extention}";
             }
             return string.Empty;
         }
+
+        public static string GetFileExtention(ReportType _ReportType)
+        {
+            if (_ReportType == ReportType.Preview) { return ".pdf"; }
+            if (_ReportType == ReportType.PDF) { return ".pdf"; }
+            if (_ReportType == ReportType.HTML) { return ".html"; }
+            if (_ReportType == ReportType.Word) { return ".docx"; }
+            if (_ReportType == ReportType.Excel) { return ".xlsx"; }
+            if (_ReportType == ReportType.Image) { return ".tiff"; }
+            return "";
+        }
+
     }
     public class ReportData
     {

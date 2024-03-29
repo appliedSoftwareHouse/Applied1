@@ -41,6 +41,7 @@
 }
 
 <form method="post">
+    <input asp-for="@Model.Variables.ReportType" hidden />
     <div class="conatianer">
         <div class="row mb-1">
             <div class="col-1  dt-width">
@@ -60,26 +61,26 @@
                     <label class="input-group-text" for="rptOption">Options</label>
                     <select class="form-select" id="rptOption" asp-for="@Model.Variables.ReportOption">
                         <option selected>Choose...</option>
-                        <option value="0">All</option>
-                        <option value="1">Upto</option>
-                        <option value="2">Dates</option>
+                        <option value="All">All</option>
+                        <option value="UptoDate">Upto</option>
+                        <option value="Monthly">Dates</option>
                     </select>
                 </div>
 
             </div>
             <div class="col-1 col-width">
-                <button type="submit" class="btn btn-primary btn-sm btn-width" asp-page-handler="Reload">Reload</button>
+                <button type="submit" class="btn btn-primary btn-width" asp-page-handler="Reload">Reload</button>
             </div>
             <div class="col-1 col-width">
-                <button type="submit" class="btn btn-primary btn-sm btn-width" style="margin-right:1px" asp-page-handler="TBOpening">Opening</button>
+                <button type="submit" class="btn btn-primary btn-width" style="margin-right:1px" asp-page-handler="TBOpening">Opening</button>
             </div>
             <div class="col-1 col-width">
-                <button type="submit" class="btn btn-primary btn-sm btn-width" style="margin-left:1px" asp-page-handler="TBALL">All</button>
+                <button type="submit" class="btn btn-primary btn-width" style="margin-left:1px" asp-page-handler="TBALL">All</button>
             </div>
             
             <div class="col-1">
                 <div class="dropdown">
-                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
                         Print <i class="bi bi-printer"></i>
                     </button>
                     <ul class="dropdown-menu">

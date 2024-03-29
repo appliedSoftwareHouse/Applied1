@@ -8,15 +8,20 @@
     padding-right: 2px
 }
 
-.table-list, thead {
+table-list, thead {
     background-color: aliceblue;
     height: 10px;
 }
 
+table-list, tfoot, tr {
+    background-color: antiquewhite;
+}
+
+
 .table-list, tr {
 }
 
-    .table-list tr:hover {
+    .table-list, tbody, tr:hover {
         background-color: #ffff99;
     }
 
@@ -42,7 +47,7 @@
 }
 
 .table-list, tfoot {
-    background-color:antiquewhite;
+    background-color: antiquewhite;
 }
 
 
