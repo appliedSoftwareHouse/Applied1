@@ -2,6 +2,7 @@
 using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
 using System.IO.Enumeration;
+using System.Text;
 
 namespace AppReportClass
 {
@@ -11,52 +12,77 @@ namespace AppReportClass
         public OutputReport OutputReport { get; set; }
         public ReportData ReportData { get; set; }
         public byte[] ReportBytes { get; set; }
-
+        public StringBuilder Messages { get; set; }
         public List<ReportParameter> ReportParameters { get; set; }
         public bool Render => ReportRender();
 
         public ReportModel()
         {
-
-
+            Messages.Append($"Report class start at {DateTime.Now}");
         }
 
 
         private bool ReportRender()
         {
-            if(ReportParameters.Count == 0) { GetDefaultParameters()}
+            Messages.Append($"Report rending at {DateTime.Now}");
 
-
-            if (InputReport.IsFileExist)
+            try
             {
 
-                var _ReportFile = InputReport.FileName;
-                LocalReport report = new();
-                var _ReportStream = new StreamReader(_ReportFile);
-                report.LoadReportDefinition(_ReportStream);
-                report.DataSources.Add(ReportData.DataSource);
-                report.SetParameters(ReportParameters);
-                ReportBytes = report.Render(OutputReport.ReportType.ToString());
 
-                //MimeType = OutputReport.MimeType;
-                //Variables.OutputFileExtention = GetReportExtention(OutputReport.ReportType);
-                //Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
-                //Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
-
-                //Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
-                if (OutputReport.ReportType == ReportType.Preview)
+                if (ReportValildated())
                 {
-                    SaveReport();
+                    if (ReportParameters.Count == 0) { GetDefaultParameters(); }
+                    var _ReportFile = InputReport.FileName;
+                    LocalReport report = new();
+                    var _ReportStream = new StreamReader(_ReportFile);
+                    report.LoadReportDefinition(_ReportStream);
+                    report.DataSources.Add(ReportData.DataSource);
+                    report.SetParameters(ReportParameters);
+                    ReportBytes = report.Render(OutputReport.ReportType.ToString());
+
+                    //MimeType = OutputReport.MimeType;
+                    //Variables.OutputFileExtention = GetReportExtention(OutputReport.ReportType);
+                    //Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
+                    //Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
+
+                    //Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
+                    if (OutputReport.ReportType == ReportType.Preview)
+                    {
+                        SaveReport();
+                        Messages.Append($"Report save to file {OutputReport.FileFullName}");
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                Messages.Append($"Error foud on report rendering : {ex.Message}");
+            }
 
-            if(ReportBytes.Length > 0) { return true; }
+            if (ReportBytes.Length > 0) { return true; }
             return false;
+        }
+
+        private bool ReportValildated()
+        {
+            var _Validated = false;
+
+            Messages.Append($"Report Validation Start at {DateTime.Now.ToShortDateString()}");
+            if (InputReport.IsFileExist) { Messages.Append($"Report File "); }
+            return _Validated;
         }
 
         private void GetDefaultParameters()
         {
-            throw new NotImplementedException();
+            List<ReportParameter> _Parameters = new List<ReportParameter>
+            {
+                new ReportParameter("CompanyName", "Applied Software House"),
+                new ReportParameter("Heading1", "Heading "),
+                new ReportParameter("Heading2", "Sub Heading"),
+                new ReportParameter("Footer", "Powered by Applied Software House")
+            };
+
+            ReportParameters = _Parameters;
         }
 
         public static string GetReportExtention(ReportType _ReportType)
@@ -81,21 +107,30 @@ namespace AppReportClass
         {
             if (ReportBytes.Length == 0)
             {
+                Messages.Append($"Report not rendered sucessfully.");
                 return false;
             }
 
+            Messages.Append($"Report rendered sucessfully. {OutputReport.FileFullName}");
             FileStream MyFileStream;
             var _FileName = OutputReport.FileFullName;
             if (_FileName.Length > 0)
             {
-                if (File.Exists(_FileName)) { File.Delete(_FileName); }
+                if (File.Exists(_FileName)) 
+                {
+                    Messages.Append($"{_FileName} was already exist.");
+                    File.Delete(_FileName);
+                    Messages.Append($"Deleted file {_FileName} sucessfully.");
+                }
                 using (FileStream fstream = new FileStream(_FileName, FileMode.Create))
                 {
                     fstream.Write(ReportBytes, 0, ReportBytes.Length);
                     MyFileStream = fstream;
+                    Messages.Append($"Created file {_FileName} sucessfully.");
                 }
             }
 
+            Messages.Append($"Output File not defined properly.");
             return false;
         }
     }
@@ -123,7 +158,6 @@ namespace AppReportClass
             return string.Empty;
         }
     }
-
     public class OutputReport
     {
         public string FilePath { get; set; } = string.Empty;
@@ -143,7 +177,6 @@ namespace AppReportClass
             return string.Empty;
         }
     }
-
     public class ReportData
     {
         public string SQLQuery { get; set; }
