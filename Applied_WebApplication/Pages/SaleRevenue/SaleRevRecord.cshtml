@@ -70,7 +70,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="Customer">Company</span>
+                    <span class="input-group-text" id="Customer">Vendor</span>
                     <select class="form-select" name="Customer" asp-for="@Model.BookRecord.Customer">
                         <option selected>@TitleCustomer</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
@@ -122,7 +122,7 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="COAID">Projects</span>
+                    <span class="input-group-text" id="COAID">Sector</span>
                     <select class="form-select" name="Project" asp-for="@Model.BookRecord.Project">
                         <option selected>@TitleProject</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
@@ -134,7 +134,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-6 input-group mb-3">
-                    <span class="input-group-text"  id="COAID">Employee</span>
+                    <span class="input-group-text"  id="COAID">User</span>
                     <select class="form-select" name="Employee" asp-for="@Model.BookRecord.Employee">
                         <option selected>@TitleEmployee</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))

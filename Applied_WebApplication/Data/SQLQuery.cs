@@ -125,7 +125,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Expense Sheet
-        public static string ExpenseSheetList()
+        public static string ExpenseSheetList()             // List of Expense / Revenue Sheet for Dropdown Object.
         {
             var Text = new StringBuilder();
             Text.Append("SELECT DISTINCT(Sheet_No) AS [Sheet_No] FROM [CashBook] ");
