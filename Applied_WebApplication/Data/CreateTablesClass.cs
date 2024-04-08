@@ -322,7 +322,8 @@ namespace Applied_WebApplication.Data
                 Text.Append("[Vou_Date] DATETIME NOT NULL, ");
                 Text.Append("[Batch] NVARCHAR(25) NOT NULL, ");
                 Text.Append("[Remarks] NVARCHAR, ");
-                Text.Append("[Comments] NVARCHAR);");
+                Text.Append("[Comments] NVARCHAR),");
+                Text.Append("[Status] TEXT(12) NOT NULL DEFAULT Submitted); ");
                 var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
                 Command.ExecuteNonQuery();
 
@@ -365,7 +366,7 @@ namespace Applied_WebApplication.Data
                 AppRegistry.SetKey(UserName, "QueryMessage", string.Empty, KeyType.Text);
                 var Text = new StringBuilder();
                 Text.Append("CREATE VIEW [view_Production] AS ");
-                Text.Append(SQLQuery.View_Production(UserName));
+                Text.Append(SQLQuery.View_Production());
                 var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
                 Command.ExecuteNonQuery();
             }

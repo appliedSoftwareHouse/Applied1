@@ -75,17 +75,13 @@
                 {
                     @foreach (DataRow Row in Model.tb_Production.Rows)
                     {
-                        @* var _Qty = ((decimal)Row["Qty"]).ToString(NumberFormat);
-                        var _Rate = ((decimal)Row["Rate"]).ToString(NumberFormat);
-                        var _Amount = ((decimal)Row["Qty"] * (decimal)Row["Rate"]).ToString(NumberFormat);
- *@
+                        
+ 
                         <tr>
                             <td>@Row["Vou_No"]</td>
                             <td>@Row["Vou_Date"]</td>
                             <td>@Row["Batch"]</td>
-      @*                       <td>@Row["StockTitle"]</td> *@
-   @*                          <td>@_Amount</td>
-    *@                         <td>@Row["Remarks"]</td>
+                          <td>@Row["Remarks"]</td>
                             <td>
                                 <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button>                            |
                                 <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>

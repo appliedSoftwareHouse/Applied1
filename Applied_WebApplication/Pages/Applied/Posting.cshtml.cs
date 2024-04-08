@@ -74,10 +74,12 @@ namespace Applied_WebApplication.Pages.Applied
                 case 9:             // Sales Return Transactions.
                     Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') AND [SR].[Status]='{Submitted}'";
                     PostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
-
-
                     break;
                 case 10:
+                         // Production Process
+                    Filter = $"Date([P1].[Vou_Date]) > Date('{Date1}') AND Date([P1].[Vou_Date]) < Date('{Date2}') AND [P1].[Status]='{Submitted}'";
+                    PostTable = GetTable(UserName, SQLQuery.PostProductionList(Filter));
+
                     break;
 
 
@@ -108,7 +110,8 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BankBook) { ErrorMessages = PostingClass.PostBankBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
-            if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
+            if (PostingType == (int)PostType.Production) { ErrorMessages = PostingClass.PostProduction(UserName, id); }
+            
 
             if (ErrorMessages.Count > 0)
             {

@@ -10,9 +10,16 @@
     var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);
     var TitleOBStock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBStock);
     var TitleBPay_Stock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Stock);
+    
+    // Bill Payable
     var TitleBPay_Tax = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Tax);
     var TitleBPay_Payable = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Payable);
+    
+    //Productuion
+    var TitlePriductIN = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.ProductIN);
+    var TitleProductOut = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.ProductOUT);
 
+    // Cash Books
     var TitleCashBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.CashBookNature);
     var TitleBankBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.BankBookNature);
 
@@ -246,6 +253,55 @@
                                     <label for="SelectReceivable">Receivable Account</label>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="hdReceivable">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        Production
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="hdReceivable" data-bs-parent="#accordionExample" style="">
+                    <div class="accordion-body">
+                        <div class="row">
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectProductIN" aria-label="Selection of Production IN" asp-for="@Model.Variables.ProductIN">
+                                        <option selected>@TitlePriductIN</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectStock2">Account for Production IN</label>
+                                </div>
+                            </div>
+                            <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectProductOut" aria-label="Selection of Production Out" asp-for="@Model.Variables.ProductOUT">
+                                        <option selected>@TitleProductOut</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectTax2">Account for Production OUT</label>
+                                </div>
+                            </div>
+                            @* <div class="col-4">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="SelectReceivable" aria-label="Selection of Receivable Account" asp-for="@Model.Variables.BRec_Receivable">
+                                        <option selected>@TitleBPay_Payable</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="SelectReceivable">Receivable Account</label>
+                                </div>
+                            </div> *@
                         </div>
                     </div>
                 </div>

@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Net.Http.Headers;
 using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data
@@ -191,7 +192,7 @@ namespace Applied_WebApplication.Data
 
             if (COA_Purchase == 0 || COA_Tax == 0 || COA_Payable == 0)
             {
-                ErrorMessages.Add(MessageClass.SetMessage("Posting Accounts are not define properly. Select (Assign) them in Setting."));
+                ErrorMessages.Add(SetMessage("Posting Accounts are not define properly. Select (Assign) them in Setting."));
                 return ErrorMessages;
             }
 
@@ -485,7 +486,7 @@ namespace Applied_WebApplication.Data
             var IsValidated = true;
             var SRNO = 1;
             var Vou_No = SaleReturn.Rows[0]["Vou_No"].ToString();
-            var Vou_Type = VoucherType.SaleReturn;
+            var Vou_Type = VoucherType.Production;
 
             #region Check the voher is already exist in the ledger ? or not exist.
             tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
@@ -600,10 +601,166 @@ namespace Applied_WebApplication.Data
             }
 
 
+            return ErrorMessages;
+        }
+        #endregion
+
+        #region Production
+        public static List<Message> PostProduction(string UserName, int id)
+        {
+            var ErrorMessages = new List<Message>();
+            var COA_DR = AppRegistry.GetNumber(UserName, "ProductIN");
+            var COA_CR = AppRegistry.GetNumber(UserName, "ProductOUT");
+
+            if (COA_DR > 0 && COA_CR > 0)                   // if Chart of account is valid.
+            {
+                var _Filter = $"[P1].[ID]={id}";
+
+                DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+                List<DataRow> VoucherRows = new();
+                DataTable Production = DataTableClass.GetTable(UserName, SQLQuery.PostProduction(_Filter));
+
+                var Tot_DR = Production.Compute("SUM(Amount)", "Flow='In'");
+                var Tot_CR = Production.Compute("SUM(Amount)", "Flow='Out'");
+
+                #region Validation
+                if (Production == null)
+                {
+                    ErrorMessages.Add(SetMessage("Error: Production voucher is null here. Contact to Administrator"));
+                    return ErrorMessages;
+                }
+
+                if (Production.Rows.Count == 0)
+                {
+                    ErrorMessages.Add(SetMessage("Error: Production voucher does't have any record to post. Contact to Administrator"));
+                    return ErrorMessages;
+                }
+
+                if (Production.Rows[0]["Status"].ToString() == VoucherStatus.Posted.ToString())
+                {
+                    ErrorMessages.Add(SetMessage("Error: Production voucher is already posted. Contact to Administrator"));
+                    return ErrorMessages;
+                }
+
+                if (!Tot_DR.Equals(Tot_CR))
+                {
+                    ErrorMessages.Add(SetMessage("Error: Production voucher amount is not equal. Contact to Administrator"));
+                    return ErrorMessages;
+                }
+
+                #endregion
+
+                var IsValidated = true;
+                var SRNO = 1;
+                var Vou_No = Production.Rows[0]["Vou_No"].ToString();
+                var Vou_Type = VoucherType.Production;
+
+                #region Check the voher is already exist in the ledger ? or not exist.
+                tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
+                if (tb_Ledger.CountView > 0)
+                {
+                    ErrorMessages.Add(SetMessage("Voucher Numbre is already exist in the ledger. Contact to Administrator."));
+                    return ErrorMessages;
+                }
+                #endregion
+
+
+                #region Create Voucher
+
+                foreach (DataRow Row in Production.Rows)
+                {
+                    IsValidated = true;         //  Default value.
+                    if (Vou_No == Row["Vou_No"].ToString())
+                    {
+                        var _Description = $"{Row["Title"]}:{Row["Qty"]}/{Row["UOM"]} {Row["Flow"]}| {(string)Row["Remarks2"]} ";
+                        #region Debit Entry
+                        if ((string)Row["Flow"] == "Out")               // Stock Out from Productuon Process (Finish / Sami Finish Goods)
+                        {
+                            tb_Ledger.NewRecord();
+                            tb_Ledger.CurrentRow["ID"] = 0;
+                            tb_Ledger.CurrentRow["TranID"] = Row["TranID"];
+                            tb_Ledger.CurrentRow["Vou_Type"] = Vou_Type;
+                            tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                            tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                            tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
+                            tb_Ledger.CurrentRow["Ref_No"] = DBNull.Value;
+                            tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
+                            tb_Ledger.CurrentRow["COA"] = COA_DR;
+                            tb_Ledger.CurrentRow["DR"] = Row["Amount"];
+                            tb_Ledger.CurrentRow["CR"] = 0;
+                            tb_Ledger.CurrentRow["Inventory"] = Row["Stock"];
+                            tb_Ledger.CurrentRow["Customer"] = 0;
+                            tb_Ledger.CurrentRow["Project"] = 0;
+                            tb_Ledger.CurrentRow["Employee"] = 0;
+                            tb_Ledger.CurrentRow["Description"] = _Description;
+                            tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                            tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
+                            if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
+                            else { VoucherRows.Add(tb_Ledger.CurrentRow); }
+                        }
+                        #endregion
+
+                        #region Credit Entry
+                        if ((string)Row["Flow"] == "In")               // Stock In to produce Finish / Sami Finish Goods
+                        {
+                            tb_Ledger.NewRecord();
+                            tb_Ledger.CurrentRow["ID"] = 0;
+                            tb_Ledger.CurrentRow["TranID"] = Row["TranID"];
+                            tb_Ledger.CurrentRow["Vou_Type"] = Vou_Type;
+                            tb_Ledger.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                            tb_Ledger.CurrentRow["Vou_No"] = Row["Vou_No"];
+                            tb_Ledger.CurrentRow["SR_No"] = SRNO; SRNO += 1;
+                            tb_Ledger.CurrentRow["Ref_No"] = DBNull.Value;
+                            tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
+                            tb_Ledger.CurrentRow["COA"] = COA_CR;
+                            tb_Ledger.CurrentRow["DR"] = 0;
+                            tb_Ledger.CurrentRow["CR"] = Row["Amount"];
+                            tb_Ledger.CurrentRow["Inventory"] = Row["Stock"];
+                            tb_Ledger.CurrentRow["Customer"] = 0;
+                            tb_Ledger.CurrentRow["Project"] = 0;
+                            tb_Ledger.CurrentRow["Employee"] = 0;
+                            tb_Ledger.CurrentRow["Description"] = _Description; 
+                            tb_Ledger.CurrentRow["Comments"] = Row["Comments"];
+                            tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
+                            if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
+                            else { VoucherRows.Add(tb_Ledger.CurrentRow); }
+                        }
+                        #endregion
+                    }
+                }
+
+                #endregion
+
+                // Save Voucher.
+                #region Save Voucher into DB
+                if (IsValidated)
+                {
+                    foreach (DataRow Row in VoucherRows)
+                    {
+                        var NoValidateAgain = false;
+                        tb_Ledger.CurrentRow = Row;
+                        tb_Ledger.Save(NoValidateAgain);
+                        ErrorMessages.AddRange(tb_Ledger.ErrorMessages);
+                    }
+                    DataTableClass.Replace(UserName, Tables.Production, id, "Status", VoucherStatus.Posted);
+                    ErrorMessages.Add(SetMessage($"Voucher No {Vou_No}  has been posted sucessfully.", Color.Green));
+
+                }
+                else
+                {
+                    ErrorMessages.Add(SetMessage($"Voucher No {Vou_No}  has not been posted sucessfully.", Color.Red));
+                }
+                #endregion
+            }
+            else
+            {
+                ErrorMessages.Add(SetMessage("Chart of Accounrs are not assign. Go to Setting for assign them."));
+            }
 
             return ErrorMessages;
         }
         #endregion
+
 
         #region Opening Balances Posting
         public static List<Message> PostOpeningBalance(string UserName)

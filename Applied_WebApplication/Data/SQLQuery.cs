@@ -3,6 +3,8 @@ using System.Data;
 using System.Data.SQLite;
 using System.Text;
 using System.Text.RegularExpressions;
+using static Applied_WebApplication.Pages.Stock.InventoryModel;
+using System.Xml.Linq;
 
 namespace Applied_WebApplication.Data
 {
@@ -1078,7 +1080,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region View Production
-        public static string View_Production(string UserName)
+        public static string View_Production()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
@@ -1093,6 +1095,60 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
             Text.Append("LEFT JOIN [Inv_UOM] [U] ON [U].[ID] = [I].[UOM]");
             
+            return Text.ToString();
+        }
+
+        #endregion
+
+        #region Posting Production list
+
+        public static string PostProductionList(string _Filter)
+        {
+            StringBuilder Text = new StringBuilder();
+
+            Text.Append("SELECT [ID],[Vou_No],[Vou_Date], [Title],  SUM([DR]) AS [DR],SUM([CR]) AS [CR],[Status] FROM (");
+            Text.Append("SELECT [P1].[ID] AS[ID], [P1].[Vou_No], [P1].[Vou_Date], [I].[TITLE],");
+            Text.Append("CASE WHEN [Flow] = 'In'  THEN([P2].[Qty] * [P2].[Rate]) ELSE 0 END AS [DR],");
+            Text.Append("CASE WHEN [Flow] = 'Out' THEN([P2].[Qty] * [P2].[Rate]) ELSE 0 END AS [CR],");
+            Text.Append("[P1].[Status]");
+            Text.Append("FROM [Production2] [P2]");
+            Text.Append("LEFT JOIN [Production][P1] ON [P1].[ID] = [P2].[TranID] ");
+            Text.Append("LEFT JOIN [Inventory][I]   ON [I].[ID]  = [P2].[Stock] ");
+            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter}"); }
+            Text.Append(") GROUP BY [Vou_No]");
+            return Text.ToString();
+        }
+
+        #endregion
+
+        #region Posting of Production
+        public static string PostProduction(string _Filter)
+        {
+            StringBuilder Text = new StringBuilder();
+
+            Text.Append("SELECT ");
+            Text.Append("[P1].[ID] AS[ID1],");
+            Text.Append("[P2].[ID] AS[ID2],");
+            Text.Append("[P2].[TranID],");
+            Text.Append("[P2].[Stock],");
+            Text.Append("[P2].[Flow],");
+            Text.Append("[I].[Code],");
+            Text.Append("[I].[Title],");
+            Text.Append("[P2].[Qty],");
+            Text.Append("[P2].[Rate],");
+            Text.Append("([P2].[Qty] * [P2].[Rate]) As[Amount],");
+            Text.Append("[P2].[UOM],");
+            Text.Append("[P1].[Vou_No],");
+            Text.Append("[P1].[Vou_Date],");
+            Text.Append("[P1].[Batch],");
+            Text.Append("[P1].[Remarks][Remarks1],");
+            Text.Append("[P2].[Remarks][Remarks2],");
+            Text.Append("[P1].[Comments],");
+            Text.Append("[P1].[Status]");
+            Text.Append("FROM[Production2][P2]");
+            Text.Append("LEFT JOIN[Production] [P1] ON[P1].[ID] = [P2].[TranID]");
+            Text.Append("LEFT JOIN[Inventory] [I] ON[I].[ID] = [P2].[Stock]");
+            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter}"); }
             return Text.ToString();
         }
         #endregion
