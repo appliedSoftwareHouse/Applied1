@@ -24,6 +24,7 @@ public enum Tables
     JVList = 118,
     SaleReturn = 120,
     BankBook = 121,
+    COA_Map =122,
 
 
     Customers = 201,

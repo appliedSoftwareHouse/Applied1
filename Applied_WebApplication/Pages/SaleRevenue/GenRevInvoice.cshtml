@@ -1,7 +1,35 @@
 ﻿@page
-@model GenRevInvoiceModel
+@using System.Data;
+@model Applied_WebApplication.Pages.SaleRevenue.GenRevInvoiceModel
 @{
+    var UserName = User.Identity.Name;
+    var RevenueSheet = "Select Sheet";
+
+
 }
 
 
-<h3>Generate Revenue Invoice from Reveneue Sheet</h3>
+<h3 class="AppHeading-2">Generate Revenue Invoice from Reveneue Sheet</h3>
+
+<form method="post">
+    <div class="container p-2 bg-info text-white rounded justify-content-between">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="RevenueSheet">Revenue Sheet</span>
+                    <select class="form-select" name="RevenueSheetNo" asp-for="@Model.Variables.RevSheetID">
+                        <option selected>@RevenueSheet</option>
+                        @foreach (DataRow Row in Model.MyTable.Rows)
+                        {
+                            <option value="@Row["Sheet_No"]">@Row["Sheet_No"]</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" asp-page-handler="Generate" asp-route-_RevSheetID="@Model.Variables.RevSheetID">Generate</button>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+</form>

@@ -8,6 +8,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Xml.Linq;
 using static Applied_WebApplication.Data.MessageClass;
+using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Data
 {
@@ -376,6 +377,19 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Accounts (COA)
+        private static void COA_Map(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE TABLE[COA_Map](");
+            Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+            Text.Append("[COA] INT NOT NULL UNIQUE REFERENCES[COA]([ID]), ");
+            Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]));");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+        #endregion
+
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data
@@ -403,6 +417,9 @@ namespace Applied_WebApplication.Data
                 case Tables.COA_Notes:
                     break;
                 case Tables.CashBook:
+                    break;
+                case Tables.COA_Map:
+                    COA_Map(UserName);
                     break;
                 case Tables.BankBook:
                     BankBook(UserName);
@@ -537,6 +554,7 @@ namespace Applied_WebApplication.Data
             }
         }
 
+       
 
 
         #endregion

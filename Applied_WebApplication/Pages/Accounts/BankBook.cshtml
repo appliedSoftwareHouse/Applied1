@@ -4,7 +4,6 @@
 @{
     var UserName = User.Identity.Name;
     var UserData = new UserProfile(User.Identity.Name);
-    //var BookTitles = Titles(UserName, SQLQuery.BookTitles(Model.BookNature));
     var FMTAmount = AppRegistry.GetText(UserName, "FMTCurrency");
     var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
     var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.BankBookID);
@@ -16,14 +15,16 @@
     {
         if (Model.Variables.BankBookID == 0) { Model.Variables.BankBookID = Model.BookTitles.ElementAt(0).Key; }
     }
-
     var _SelectPosted = "SELECT...";
-
 }
 
 <style>
     .date-1 {
         width: 100px
+    }
+
+    .box {
+        height: 100%;
     }
 </style>
 
@@ -77,7 +78,7 @@
         </div>
     </div>
 
-    <!-- SHOW CASH BOOK RECORD -->
+    <!-- SHOW SAlE REVENUE RECORD -->
     <div class="container">
         <!--DISBALE / HIDDEN VALUES-->
         <input hidden type="text" name="CashBookID" value="@Model.Variables.BankBookID" />                  <!--  Generate CashBookID i-->
@@ -174,14 +175,5 @@
                 }
             </div>
         </div>
-        @*<div class="row">
-            <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                    asp-page-handler="Add">
-                <i class="bi bi-database-add"></i>
-            </button>
-        </div>*@
     </div>
-
-   
-
 </form>

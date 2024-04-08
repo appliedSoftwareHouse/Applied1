@@ -30,13 +30,13 @@ namespace Applied_WebApplication.Pages.SaleRevenue
             Variables = new()
             {
                 IsSelected = false,
-                CashBookID = GetNumber(UserName, "CashBookID"),
+                RevSheetID = GetNumber(UserName, "CashBookID"),
                 MinDate = (DateTime)GetKey(UserName, "CashBookFrom", KeyType.Date),
                 MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
                 IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
             };
 
-            id ??= Variables.CashBookID;
+            id ??= Variables.RevSheetID;
             if (id == 0) { id = GetNumber(UserName, "CashBookID"); }
 
             var _Date1 = AppFunctions.MinDate(Variables.MinDate, Variables.MaxDate).ToString(DateYMD);
@@ -74,7 +74,7 @@ namespace Applied_WebApplication.Pages.SaleRevenue
 
         public IActionResult OnPostEdit(int ID)
         {
-            return RedirectToPage("SaleRevRecord", routeValues: new { ID, BookID = Variables.CashBookID });
+            return RedirectToPage("SaleRevRecord", routeValues: new { ID, BookID = Variables.RevSheetID });
         }
 
         public IActionResult OnPostRefresh(int id)
@@ -83,14 +83,14 @@ namespace Applied_WebApplication.Pages.SaleRevenue
             SetKey(UserName, "CashBookFrom", Variables.MinDate, KeyType.Date);
             SetKey(UserName, "CashBookTo", Variables.MaxDate, KeyType.Date);
             SetKey(UserName, "CashBookPost", Variables.IsPosted1, KeyType.Number);
-            SetKey(UserName, "CashBookID", Variables.CashBookID, KeyType.Number);
+            SetKey(UserName, "CashBookID", Variables.RevSheetID, KeyType.Number);
 
 
-            return RedirectToPage("RevSheet", routeValues: new { id = Variables.CashBookID });
+            return RedirectToPage("RevSheet", routeValues: new { id = Variables.RevSheetID });
         }
         public IActionResult OnPostAdd()
         {
-            return RedirectToPage("SaleRevRecord", new { ID = 0, _BookID = Variables.CashBookID });
+            return RedirectToPage("SaleRevRecord", new { ID = 0, _BookID = Variables.RevSheetID });
         }
         public IActionResult OnPostSave(int ID)
         {
@@ -177,7 +177,7 @@ namespace Applied_WebApplication.Pages.SaleRevenue
             public bool IsAdd { get; set; }
             public bool IsError { get; set; }
             public bool Reload { get; set; }
-            public int CashBookID { get; set; }
+            public int RevSheetID { get; set; }
             public DateTime MinDate { get; set; }
             public DateTime MaxDate { get; set; }
             public int IsPosted1 { get; set; }

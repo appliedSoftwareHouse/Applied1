@@ -12,12 +12,13 @@
     var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
     var FMTAmount = AppRegistry.GetText(UserName, "FMTCurrency");
     var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
-    var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
+    var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.RevSheetID);
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
 
     var _SelectPosted = "SELECT...";
+    
 }
 
 <style>
@@ -26,8 +27,8 @@
     }
 
     .box {
-        height:420px;
-        box-sizing:content-box;
+        height:100%x;
+        padding:0px;
     }
 </style>
 
@@ -39,9 +40,9 @@
         <div class="row d-flex align-items-center text-black">
 
             <div class="col-md-2 mb-1">
-                <select class="form-select" aria-label="Select a Sale Revenue sheet" asp-for="@Model.Variables.CashBookID">
+                <select class="form-select" aria-label="Select a Sale Revenue sheet" asp-for="@Model.Variables.RevSheetID">
                     <option selected>@TitleBook</option>
-                    @foreach (KeyValuePair<int, string> _Title in MyTable.Rows)
+                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.CashBookTitles))
                     {
                         <option value="@_Title.Key">@_Title.Value</option>
                     }
@@ -73,7 +74,7 @@
                 </button>
             </div>
             <div class="col-md-1 mb-1">
-                @if (Model.Variables.CashBookID > 0)
+                @if (Model.Variables.RevSheetID > 0)
                 {
                     <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
                         asp-page-handler="Add">
@@ -87,22 +88,21 @@
     <!-- SHOW CASH BOOK RECORD -->
     <div class="container" >
         <!--DISBALE / HIDDEN VALUES-->
-        <input hidden type="text" name="CashBookID" value="@Model.Variables.CashBookID" />                  <!--  Generate CashBookID i-->
+        <input hidden type="text" name="CashBookID" value="@Model.Variables.RevSheetID" />                  <!--  Generate RevSheetID i-->
         <!---->
         <div class="row" >
             <div class="overflow-auto box" >
                 @if (Model.Cashbook.Rows.Count > 0)
                 {
-                    
                         <table class="table-list box">
                             <thead class="table-header">
                                 <tr>
                                     <th style="width:10%">Date</th>
                                     <th style="width:10%">Vou No</th>
                                     <th style="width:40%">Description</th>
-                                    <th style="width:10%; text-align: right">Paid</th>
-                                    <th style="width:10%; text-align: right">Received</th>
-                                    <th style="width:10%; text-align: right">Balance</th>
+                                    <th style="width:10%; text-align: right">Amount</th>
+                                    @* <th style="width:10%; text-align: right">Received</th>
+                                    <th style="width:10%; text-align: right">Balance</th> *@
                                     <!--CASH BOOK ADD BUTTON-->
                                     <th style="width:10%; text-align: right">
                                         <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
@@ -126,7 +126,7 @@
                                         <td>@Row["Vou_No"].ToString()</td>
                                         <td>@Row["Description"].ToString()</td>
                                         <td class="amount">@_DR.ToString(FMTAmount)</td>
-                                        <td class="amount">@_CR.ToString(FMTAmount)</td>
+                                        @* <td class="amount">@_CR.ToString(FMTAmount)</td>
                                         @if (decimal.Parse(_BAL.ToString()) > 0)
                                         {
                                             <td class="table-col-amount">@_BAL.ToString(FMTAmount)</td>
@@ -135,7 +135,7 @@
                                         {
                                             <td class="table-col-amount-red">@_BAL.ToString(FMTAmount)</td>
                                         }
-
+ *@
                                         @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
                                         {
                                             <td class="text-center">
