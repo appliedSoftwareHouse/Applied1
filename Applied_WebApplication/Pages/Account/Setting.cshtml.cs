@@ -49,7 +49,11 @@ namespace Applied_WebApplication.Pages.Account
                 CompanyGLs = AppRegistry.GetText(UserName, "CompanyGLs"),
 
                 CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"),
-                BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature")
+                BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature"),
+
+                ProductIN = AppRegistry.GetNumber(UserName, "ProductIN"),
+                ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT")
+
 
             };
         }
@@ -81,6 +85,9 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "CashBkNature", Variables.CashBookNature, KeyType.Number);
             AppRegistry.SetKey(UserName, "BankBkNature", Variables.BankBookNature, KeyType.Number);
 
+            AppRegistry.SetKey(UserName, "ProductIN", Variables.ProductIN, KeyType.Number);
+            AppRegistry.SetKey(UserName, "ProductOUT", Variables.ProductOUT, KeyType.Number);
+
             return RedirectToPage();
         }
         #endregion
@@ -108,6 +115,8 @@ namespace Applied_WebApplication.Pages.Account
             public string CompanyGLs { get; set; }
             public int CashBookNature { get; set; }
             public int BankBookNature { get; set; }
+            public int ProductIN { get; set; }
+            public int ProductOUT { get; set; }
 
         }
         #endregion
