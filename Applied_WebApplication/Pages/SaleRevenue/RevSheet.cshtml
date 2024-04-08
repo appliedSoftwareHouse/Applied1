@@ -41,7 +41,7 @@
             <div class="col-md-2 mb-1">
                 <select class="form-select" aria-label="Select a Sale Revenue sheet" asp-for="@Model.Variables.CashBookID">
                     <option selected>@TitleBook</option>
-                    @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.CashBookTitles))
+                    @foreach (KeyValuePair<int, string> _Title in MyTable.Rows)
                     {
                         <option value="@_Title.Key">@_Title.Value</option>
                     }
