@@ -5,6 +5,7 @@
     var UserName = User.Identity.Name;
     var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.Inventory);
     var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, Model.Variables.Project);
+    var CurrencyFormat = AppRegistry.FormatCurrency2;
 }
 
 <style>
@@ -79,7 +80,7 @@
             </div>
         </div>
         <div class="row mt-2">
-            <div class="col">
+            <div class="col mb-1">
                 <button type="submit" class="btn btn-success" asp-page-handler="Save"><i class="bi bi-save"></i> Save</button>
                 <button type="submit" class="btn btn-primary" asp-page-handler="Back"><i class="bi bi-arrow-left-short"></i> Back</button>
             </div>
@@ -108,18 +109,20 @@
                     {
                         var _TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Inventory"]);
                         var _TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, (int)Row["Project"]);
-                        var _Amount = (decimal)Row["Qty"] * (decimal)Row["Rate"];
+                        var _Qty = (decimal)Row["Qty"];
+                        var _Rate = (decimal)Row["Rate"];
+                        var _Amount = _Qty * _Rate;
 
                         <tr>
                             <td>@_TitleInventory</td>
                             <td>@_TitleProject</td>
                             <td>@Row["Batch"]</td>
-                            <td style="text-align:right">@Row["Qty"]</td>
-                            <td style="text-align:right">@Row["Rate"]</td>
-                            <td style="text-align:right">@_Amount</td>
+                            <td style="text-align:right">@_Qty.ToString(CurrencyFormat)</td>
+                            <td style="text-align:right">@_Rate.ToString(CurrencyFormat)</td>
+                            <td style="text-align:right">@_Amount.ToString(CurrencyFormat)</td>
                             <td>
                                 <a asp-page="OBStock" asp-route-ID="@Row["ID"]"><i class="bi bi-pencil-fill text-primary"></i></a>
-                                <button type="submit" id="ListbuttonRed" asp-route-ID="@Row["ID"]" asp-page-handler="Delete"><i class="bi bi-trash-fill text-danger"></i></button>
+                                <button type="submit" class="btn btn-link" id="ListbuttonRed" asp-route-ID="@Row["ID"]" asp-page-handler="Delete"><i class="bi bi-trash-fill text-danger"></i></button>
                             </td>
                         </tr>
                     }

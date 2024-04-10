@@ -11,31 +11,31 @@
 <div class="AppHeading-2">PRODUCTION LIST</div>
 
 <form method="post">
-    <div class="container">
+    <div class="container p-0">
         <div class="row filter">
-            <div class="col-md-2 date-width ps-1">
-                <div class="input-group date-group">
-                    <span class="input-group-text date-title" id="DateStart">Start</span>
-                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.Date1"
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-text" id="DateStart">Start</span>
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Date1"
                            placeholder="Start Date" aria-label="Start Date" aria-describedby="DateStart">
                 </div>
             </div>
-            <div class="col-md-2 date-width">
-                <div class="input-group date-group">
+            <div class="col-md-2">
+                <div class="input-group">
 
-                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.Date2"
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Date2"
                            placeholder="End Date" aria-label="End Date" aria-describedby="EndDate">
                     <span class="input-group-text date-title" id="DateEnd">End</span>
                 </div>
             </div>
-            <div class="col-md-3 tbox-width">
+            <div class="col-md-2">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtBatch">Batch</span>
                     <input type="text" class="form-control" asp-for="@Model.Variables.Batch"
                            placeholder="Batch" aria-label="Batch" aria-describedby="txtBatch">
                 </div>
             </div>
-            <div class="col-md-3 tbox-width">
+            <div class="col-md-2">
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="txtInOut">In OUT</label>
                     <select class="form-select" id="txtInOut" asp-for="@Model.Variables.InOut">
@@ -46,7 +46,7 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-3 tbox-width-2">
+            <div class="col-md-3 ">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="txtRemarks">Search</span>
                     <input type="text" class="form-control" asp-for="@Model.Variables.Search"
@@ -75,11 +75,11 @@
                 {
                     @foreach (DataRow Row in Model.tb_Production.Rows)
                     {
-                        
- 
+                        var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+
                         <tr>
                             <td>@Row["Vou_No"]</td>
-                            <td>@Row["Vou_Date"]</td>
+                            <td>@_Date</td>
                             <td>@Row["Batch"]</td>
                           <td>@Row["Remarks"]</td>
                             <td>
