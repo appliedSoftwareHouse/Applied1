@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Text;
 
 namespace Applied_WebApplication.Pages.Stock
 {
@@ -27,7 +28,18 @@ namespace Applied_WebApplication.Pages.Stock
             var Date1 = Variables.Rpt_Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Rpt_Date2.AddDays(1).ToString(AppRegistry.DateYMD);
             var _Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.StockInHand(_Filter));
+            //MyTable = DataTableClass.GetTable(UserName, SQLQuery.StockInHand(_Filter));
+
+            MyTable = GenerateStockInHand(_Filter);
+
+
+        }
+        #endregion
+
+        #region Generate Stock in Hand Data
+        public DataTable GenerateStockInHand(string _Filter)
+        {
+            return StockLedgers.GetStockInHand(UserName, _Filter);
         }
         #endregion
 

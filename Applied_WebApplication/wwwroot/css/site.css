@@ -41,7 +41,6 @@ body {
     border-block: double;
 }
 
-
     .AppHeading:hover {
         background-color: slateblue;
     }
@@ -62,6 +61,14 @@ body {
 AppHeading-2:hover {
     background-color: slateblue;
 }
+
+
+AppFooter {
+    position:fixed;
+    bottom:0px;
+    padding-left:100px;
+}
+
 
 .TextCenter {
     text-align: center;
