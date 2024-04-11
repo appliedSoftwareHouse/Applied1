@@ -139,14 +139,15 @@ namespace Applied_WebApplication.Data
             Text.Append("[S1].[Pay_Date],");
             Text.Append("[S2].[Batch],");
             Text.Append("[S2].[Inventory] AS [StockID],");
-            Text.Append("[S2].[Qty],");
+            Text.Append("([S2].[Qty] - [R].[Qty]) AS [Qty],");
             Text.Append("[S2].[Rate],");
             Text.Append("[T].[Rate] As [TaxRate],");
-            Text.Append("([S2].[Qty] * [S2].[Rate]) AS [Amount],");
-            Text.Append("([S2].[Qty] * [S2].[Rate]) * [T].[Rate] As [TaxAmount]");
+            Text.Append("(([S2].[Qty] - [R].[Qty]) * [S2].[Rate]) AS [Amount],");
+            Text.Append("(([S2].[Qty] - [R].[Qty]) * [S2].[Rate]) * [T].[Rate] As [TaxAmount]");
             Text.Append("FROM [BillReceivable2] [S2]");
             Text.Append("LEFT JOIN [BillReceivable] [S1] ON [S1].[ID] = [S2].[TranID]");
             Text.Append("LEFT JOIN [Taxes]          [T]  ON [T].[ID]  = [S2].[Tax]");
+            Text.Append("LEFT JOIN [SaleReturn]     [R]  ON [S2].[ID] = [R].[ID]");
             return Text.ToString();
         }
         public static string CombineSale(string _Filter)
@@ -216,7 +217,6 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-
         #region Ledger
 
         public static string StockLedger(string _Filter)
@@ -270,11 +270,56 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
 
-        public static DataTable tb_StockLedger(string UserName, string _Filter)
+        public static string SQL_StockLedger(string _Filter)
         {
-            return DataTableClass.GetTable(UserName, StockLedger(_Filter), "[COA],[Vou_Date],[Vou_Type]");
+            var _CombineOB = CombineOB(_Filter);
+            var _CombinePayable = CombinePayable(_Filter);
+            var _CombineSale = CombineSale(_Filter);
+            var _CombineProduction = CombineProduction(_Filter);
+
+            var Text = new StringBuilder();
+            Text.Append("SELECT * FROM (");
+            Text.Append(_CombineOB);
+            Text.Append(" UNION ");
+            Text.Append(_CombinePayable);
+            Text.Append(" UNION ");
+            Text.Append(_CombineSale);
+            Text.Append(" UNION ");
+            Text.Append(_CombineProduction);
+            Text.Append(") WHERE Vou_No not null ");
+            Text.Append(" ORDER BY [StockID],[Vou_Date],[No]");
+            return Text.ToString();
+
         }
 
+        public static DataTable GetStockLedger(string UserName, string _Filter)
+        {
+            var _StockQuery = SQL_StockLedger(_Filter);
+            var _StockTable = DataTableClass.GetTable(UserName, _StockQuery.ToString());
+
+            return _StockTable;
+        }
+
+        public static DataTable GetStockInHand(string UserName, string _Filter)
+        {
+
+            var Text = new StringBuilder();
+
+            Text.Append("SELECT ");
+            Text.Append("[S].[StockID], ");
+            Text.Append("[I].[Title], ");
+            Text.Append("SUM([S].[Qty]) AS [Qty], ");
+            Text.Append("SUM([S].[Amount]) AS [Amount], ");
+            Text.Append("SUM([S].[TaxAmount]) AS [TaxAmount], ");
+            Text.Append("SUM([S].[NetAmount]) AS [NetAmount] ");
+            Text.Append($"FROM ({SQL_StockLedger(_Filter)}");
+            Text.Append(") AS [S] ");
+            Text.Append("LEFT JOIN [Inventory] AS [I] ON [I].[ID] = [S].[StockID] ");
+            Text.Append("WHERE [S].[Qty] IS NOT NULL ");
+            Text.Append("GROUP BY [StockID]");
+            return DataTableClass.GetTable(UserName, Text.ToString());
+
+        }
 
 
         #endregion

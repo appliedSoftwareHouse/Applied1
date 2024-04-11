@@ -28,9 +28,9 @@ namespace Applied_WebApplication.Pages.Stock
             var Date1 = Variables.Rpt_Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Rpt_Date2.AddDays(1).ToString(AppRegistry.DateYMD);
             var _Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-            MyTable = DataTableClass.GetTable(UserName, SQLQuery.StockInHand(_Filter));
+            //MyTable = DataTableClass.GetTable(UserName, SQLQuery.StockInHand(_Filter));
 
-            GenerateStockInHand(_Filter);
+            MyTable = GenerateStockInHand(_Filter);
 
 
         }
@@ -39,27 +39,7 @@ namespace Applied_WebApplication.Pages.Stock
         #region Generate Stock in Hand Data
         public DataTable GenerateStockInHand(string _Filter)
         {
-            var _CombineOB = StockLedgers.CombineOB(_Filter);
-            var _CombinePayable = StockLedgers.CombinePayable(_Filter);
-            var _CombineSale = StockLedgers.CombineSale(_Filter);
-            var _CombineProduction = StockLedgers.CombineProduction(_Filter);
-
-            var Text = new StringBuilder();
-            Text.Append("SELECT * FROM (");
-            Text.Append(_CombineOB);
-            Text.Append(" UNION ");
-            Text.Append(_CombinePayable);
-            Text.Append(" UNION ");
-            Text.Append(_CombineSale);
-            Text.Append(" UNION ");
-            Text.Append(_CombineProduction);
-            Text.Append(") WHERE Vou_No not null ");
-            Text.Append(" ORDER BY [StockID],[Vou_Date],[No]");
-     
-            var _StockTable = DataTableClass.GetTable(UserName, Text.ToString());
-
-            return _StockTable;
-
+            return StockLedgers.GetStockInHand(UserName, _Filter);
         }
         #endregion
 

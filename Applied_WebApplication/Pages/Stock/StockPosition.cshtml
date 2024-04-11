@@ -7,21 +7,18 @@
     var NumberFormat = AppRegistry.FormatCurrency2;
     var IsDeailed = Model.Variables.ShowDetail;
     var ValueCheck = true;
-    var Tot_PQty = string.Empty;
-    var Tot_SQty = string.Empty;
-    var Tot_SRQty = string.Empty;
-    var Tot_PAmt = string.Empty;
-    var Tot_SAmt = string.Empty;
-    var Tot_SRAmt = string.Empty;
+    var Tot_Qty = string.Empty;
+    var Tot_Amount = string.Empty;
+    var Tot_TaxAmount = string.Empty;
+    var Tot_NetAmount = string.Empty;
+    var Old = false;
 
     if (Model.MyTable != null)
     {
-        Tot_PQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PQty)", "")).ToString(NumberFormat);
-        Tot_SQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SQty)", "")).ToString(NumberFormat);
-        Tot_SRQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRQty)", "")).ToString(NumberFormat);
-        Tot_PAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PNetAmount)", "")).ToString(NumberFormat);
-        Tot_SAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SNetAmount)", "")).ToString(NumberFormat);
-        Tot_SRAmt = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SRNetAmount)", "")).ToString(NumberFormat);
+        Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(NumberFormat);
+        Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(NumberFormat);
+        Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(NumberFormat);
+        Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(NumberFormat);
     }
 }
 
@@ -119,51 +116,36 @@
                         <tr>
                             <th>Code</th>
                             <th>Inventory Title</th>
-                            <th>Pur. Qty</th>
-                            <th>Pur. Amount</th>
-                            <th>Sold Qty</th>
-                            <th>Sold Amount</th>
-                            <th>S.Rtn Qty</th>
-                            <th>S.Rtn Qty</th>
-                            <th>Net Qty</th>
+                            <th>Quantity</th>
+                            <th>Amount</th>
+                            <th>Avg. Rate</th>
+                            <th>Tax Amount</th>
                             <th>Net Amount</th>
-                            <th>Details</th>
+                            <th>Avg. Rate</th>
+                            <th>..</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (DataRow Row in Model.MyTable.Rows)
                         {
-                            var _PQty = Conversion.ToDecimal(Row["PQty"]);
-                            var _SQty = Conversion.ToDecimal(Row["SQty"]);
-                            var _SRQty = Conversion.ToDecimal(Row["SRQty"]);
-                            var _NetQty = _PQty - _SQty + _SRQty;
 
-                            var __PQty = _PQty.ToString(NumberFormat);
-                            var __SQty = _SQty.ToString(NumberFormat);
-                            var __SRQty = _SRQty.ToString(NumberFormat);
-                            var __NetQty = _NetQty.ToString(NumberFormat);
+                            var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                            var _Amount = Conversion.ToDecimal(Row["Amount"]);
+                            var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                            var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
+                            var _AvgRate1 = _Amount / _Qty;
+                            var _AvgRate2 = _NetAmount / _Qty;
 
-                            var _PAmt = Conversion.ToDecimal(Row["PNetAmount"]);
-                            var _SAmt = Conversion.ToDecimal(Row["SNetAmount"]);
-                            var _SRAmt = Conversion.ToDecimal(Row["SRNetAmount"]);
-                            var _NetAmt = _PAmt - _SAmt + _SRAmt;
-
-                            var __PAmt = _PAmt.ToString(NumberFormat);
-                            var __SAmt = _SAmt.ToString(NumberFormat);
-                            var __SRAmt = _SRAmt.ToString(NumberFormat);
-                            var __NetAmt = _NetAmt.ToString(NumberFormat);
 
                             <tr>
-                                <td>@Row["Inventory"]</td>
+                                <td>@Row["StockID"]</td>
                                 <td class="bdr-right">@Row["Title"]</td>
-                                <td class="amount">@__PQty</td>
-                                <td class="amount">@__PAmt</td>
-                                <td class="amount">@__SQty</td>
-                                <td class="amount">@__SAmt</td>
-                                <td class="amount-red">@__SRQty</td>
-                                <td class="amount-red">@__SRAmt</td>
-                                <td class="amount">@__NetQty</td>
-                                <td class="amount">@__NetAmt</td>
+                                <td class="amount">@_Qty.ToString(NumberFormat)</td>
+                                <td class="amount">@_AvgRate1.ToString(NumberFormat)</td>
+                                <td class="amount">@_Amount.ToString(NumberFormat)</td>
+                                <td class="amount">@_TaxAmount.ToString(NumberFormat)</td>
+                                <td class="amount-red">@_AvgRate2.ToString(NumberFormat)</td>
+                                <td class="amount-red">@_NetAmount.ToString(NumberFormat)</td>
                                 <td>
                                     <button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button>
                                 </td>
@@ -174,60 +156,147 @@
                         <tr>
                             <td></td>
                             <td></td>
-                            <td>@Tot_PQty</td>
-                            <td>@Tot_PAmt</td>
-                            <td>@Tot_SQty</td>
-                            <td>@Tot_SAmt</td>
-                            <td>@Tot_SRQty</td>
-                            <td>@Tot_SRAmt</td>
+                            <td>@Tot_Qty</td>
                             <td></td>
+                            <td>@Tot_Amount</td>
+                            <td>@Tot_TaxAmount</td>
                             <td></td>
+                            <td>@Tot_NetAmount</td>
                             <td></td>
                         </tr>
                     </tfoot>
 
                     #endregion
                 }
-                else
-                {
-                    #region Stock in Hand only
-                    <thead>
-                        <tr>
-                            <th>Code</th>
-                            <th>Category</th>
-                            <th>Inventory Title</th>
-                            <th>Net Qty</th>
-                            <th>Net Amount</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (DataRow Row in Model.MyTable.Rows)
-                        {
-                            var _PQty = Conversion.ToDecimal(Row["PQty"]);
-                            var _SQty = Conversion.ToDecimal(Row["SQty"]);
-                            var _SRQty = Conversion.ToDecimal(Row["SRQty"]);
-                            var _NetQty = _PQty - _SQty + _SRQty;
-
-                            var _PAmt = Conversion.ToDecimal(Row["PNetAmount"]);
-                            var _SAmt = Conversion.ToDecimal(Row["SNetAmount"]);
-                            var _SRAmt = Conversion.ToDecimal(Row["SRNetAmount"]);
-                            var _NetAmt = _PAmt - _SAmt + _SRAmt;
-
-                            <tr>
-                                <td>@Row["Inventory"]</td>
-                                <td>@Row["Category"]</td>
-                                <td>@Row["Title"]</td>
-                                <td class="amount">@_NetQty.ToString(NumberFormat)</td>
-                                <td class="amount">@_NetAmt.ToString(NumberFormat)</td>
-                                <td><button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button></td>
-                            </tr>
-                        }
-                    </tbody>
-                    #endregion
-                }
-
             }
         </table>
     </div>
+
+    @*  @if (Old)
+    {
+    <div class="container">
+    <table class="table-list">
+    @if (Model.MyTable != null)
+    {
+
+    if (IsDeailed)
+    {
+    #region Details show
+    <thead style="background-color:antiquewhite;">
+    <tr>
+    <th>Code</th>
+    <th>Inventory Title</th>
+    <th>Pur. Qty</th>
+    <th>Pur. Amount</th>
+    <th>Sold Qty</th>
+    <th>Sold Amount</th>
+    <th>S.Rtn Qty</th>
+    <th>S.Rtn Qty</th>
+    <th>Net Qty</th>
+    <th>Net Amount</th>
+    <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (DataRow Row in Model.MyTable.Rows)
+    {
+    var _PQty = Conversion.ToDecimal(Row["PQty"]);
+    var _SQty = Conversion.ToDecimal(Row["SQty"]);
+    var _SRQty = Conversion.ToDecimal(Row["SRQty"]);
+    var _NetQty = _PQty - _SQty + _SRQty;
+
+    var __PQty = _PQty.ToString(NumberFormat);
+    var __SQty = _SQty.ToString(NumberFormat);
+    var __SRQty = _SRQty.ToString(NumberFormat);
+    var __NetQty = _NetQty.ToString(NumberFormat);
+
+    var _PAmt = Conversion.ToDecimal(Row["PNetAmount"]);
+    var _SAmt = Conversion.ToDecimal(Row["SNetAmount"]);
+    var _SRAmt = Conversion.ToDecimal(Row["SRNetAmount"]);
+    var _NetAmt = _PAmt - _SAmt + _SRAmt;
+
+    var __PAmt = _PAmt.ToString(NumberFormat);
+    var __SAmt = _SAmt.ToString(NumberFormat);
+    var __SRAmt = _SRAmt.ToString(NumberFormat);
+    var __NetAmt = _NetAmt.ToString(NumberFormat);
+
+    <tr>
+    <td>@Row["Inventory"]</td>
+    <td class="bdr-right">@Row["Title"]</td>
+    <td class="amount">@__PQty</td>
+    <td class="amount">@__PAmt</td>
+    <td class="amount">@__SQty</td>
+    <td class="amount">@__SAmt</td>
+    <td class="amount-red">@__SRQty</td>
+    <td class="amount-red">@__SRAmt</td>
+    <td class="amount">@__NetQty</td>
+    <td class="amount">@__NetAmt</td>
+    <td>
+    <button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button>
+    </td>
+    </tr>
+    }
+    </tbody>
+    <tfoot style="background-color:antiquewhite;">
+    <tr>
+    <td></td>
+    <td></td>
+    <td>@Tot_PQty</td>
+    <td>@Tot_PAmt</td>
+    <td>@Tot_SQty</td>
+    <td>@Tot_SAmt</td>
+    <td>@Tot_SRQty</td>
+    <td>@Tot_SRAmt</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    </tr>
+    </tfoot>
+
+    #endregion
+    }
+    else
+    {
+    #region Stock in Hand only
+    <thead>
+    <tr>
+    <th>Code</th>
+    <th>Category</th>
+    <th>Inventory Title</th>
+    <th>Net Qty</th>
+    <th>Net Amount</th>
+    <th>Details</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (DataRow Row in Model.MyTable.Rows)
+    {
+    var _PQty = Conversion.ToDecimal(Row["PQty"]);
+    var _SQty = Conversion.ToDecimal(Row["SQty"]);
+    var _SRQty = Conversion.ToDecimal(Row["SRQty"]);
+    var _NetQty = _PQty - _SQty + _SRQty;
+
+    var _PAmt = Conversion.ToDecimal(Row["PNetAmount"]);
+    var _SAmt = Conversion.ToDecimal(Row["SNetAmount"]);
+    var _SRAmt = Conversion.ToDecimal(Row["SRNetAmount"]);
+    var _NetAmt = _PAmt - _SAmt + _SRAmt;
+
+    <tr>
+    <td>@Row["Inventory"]</td>
+    <td>@Row["Category"]</td>
+    <td>@Row["Title"]</td>
+    <td class="amount">@_NetQty.ToString(NumberFormat)</td>
+    <td class="amount">@_NetAmt.ToString(NumberFormat)</td>
+    <td><button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button></td>
+    </tr>
+    }
+    </tbody>
+    #endregion
+    }
+
+    }
+    </table>
+    </div>
+    } *@
+
 </form>
