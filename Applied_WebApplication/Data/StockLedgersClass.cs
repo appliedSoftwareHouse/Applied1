@@ -1,28 +1,33 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using System.Data;
+﻿using System.Data;
 using System.Text;
-using System.Text.RegularExpressions;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Data
 {
-    public class StockLedgers
+    public class StockLedgersClass
     {
-        public StockLedgers() { }
+        public int StockID { get; set; }
+        public string StockCOA { get; set; }
+        public string Filter { get; set; }
+        public string UserName { get; set; }
 
+        #region Constructor
+        public StockLedgersClass(string _UserName)
+        {
+            UserName = _UserName;
+            StockCOA = AppRegistry.GetText(UserName, "Stock_COA");
+            Filter = AppRegistry.GetText(UserName, "sp-Filter");
+        }
+        #endregion
 
         #region Stock Opening Balance
-        public static string LedgerOB(string _Filter)
+        private string LedgerOB()
         {
-            var _StockAccounts = "6,7,8,43,44,45";
             var Text = new StringBuilder();
-           
             Text.Append("SELECT * FROM [Ledger] ");
-            Text.Append($"WHERE [Vou_Type] = 'OBalStock' AND [COA] IN ({_StockAccounts})");
+            Text.Append($"WHERE [Vou_Type] = 'OBalStock'");
             return Text.ToString();
         }
-
-        public static string StockOB()
+        private string StockOB()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
@@ -39,12 +44,11 @@ namespace Applied_WebApplication.Data
             Text.Append("FROM [OBalStock]");
             return Text.ToString();
         }
-
-        public static string CombineOB(string _Filter)
+        public string CombineOB()
         {
             var Text = new StringBuilder();
             Text.Append($"SELECT 1 AS [No], {ReportColumns()}");
-            Text.Append($"FROM ({LedgerOB(_Filter)}) AS [L]");
+            Text.Append($"FROM ({LedgerOB()}) AS [L]");
             Text.Append($"LEFT JOIN ({StockOB()}) [S] ON [S].[ID] = [L].[TranID]");
             return Text.ToString();
 
@@ -53,25 +57,16 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Stock from Bill Payable (Purchased)
-
-        public static string LedgerPayable(string _Filter)
+        private string LedgerPayable()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
-            Text.Append(StockLedger(_Filter));
-            Text.Append(") WHERE Vou_Type='Payable'");
+            Text.Append(StockLedger());
+            Text.Append($") WHERE Vou_Type='Payable'");
             return Text.ToString();
 
         }
-        public static string LedgerPayableReturn(string _Filter)
-        {
-            var Text = new StringBuilder();
-            Text.Append("SELECT * FROM (");
-            Text.Append(StockLedger(_Filter));
-            Text.Append(") WHERE Vou_Type='PurReturn'");
-            return Text.ToString();
-        }
-        public static string StockPayable()
+        private string StockPayable()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
@@ -96,35 +91,28 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [Taxes]       [T]  ON [T].[ID]  = [B2].[Tax]");
             return Text.ToString();
         }
-        public static string CombinePayable(string _Filter)
+        public string CombinePayable()
         {
             var Text = new StringBuilder();
             Text.Append($"SELECT 2 AS [No], {ReportColumns()}");
             Text.Append($"FROM ({StockPayable()}) AS [S]");
-            Text.Append($"LEFT JOIN ({LedgerPayable(_Filter)}) [L] ON [S].[TranID] = [L].[TranID]");
+            Text.Append($"LEFT JOIN ({LedgerPayable()}) [L] ON [S].[TranID] = [L].[TranID]");
             return Text.ToString();
         }
         #endregion
 
         #region Stock from Bill Receivable (Sale Invoice)
 
-        public static string LedgerSale(string _Filter)
+        public string LedgerSale()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
-            Text.Append(StockLedger(_Filter));
-            Text.Append(") WHERE Vou_Type='Receivable'");
+            Text.Append(StockLedger());
+            Text.Append($") WHERE Vou_Type='Receivable'");
             return Text.ToString();
         }
-        public static string LedgerSaleReturn(string _Filter)
-        {
-            var Text = new StringBuilder();
-            Text.Append("SELECT * FROM (");
-            Text.Append(StockLedger(_Filter));
-            Text.Append(") WHERE Vou_Type='SaleReturn'");
-            return Text.ToString();
-        }
-        public static string StockSale()
+
+        private string StockSale()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
@@ -139,7 +127,8 @@ namespace Applied_WebApplication.Data
             Text.Append("[S1].[Pay_Date],");
             Text.Append("[S2].[Batch],");
             Text.Append("[S2].[Inventory] AS [StockID],");
-            Text.Append("([S2].[Qty] - [R].[Qty]) AS [Qty],");
+            Text.Append("([S2].[Qty] - ");
+            Text.Append("CASE WHEN [R].[QTY] IS NOT NULL THEN [R].[QTY] ELSE 0 END) AS [Qty] ,");
             Text.Append("[S2].[Rate],");
             Text.Append("[T].[Rate] As [TaxRate],");
             Text.Append("(([S2].[Qty] - [R].[Qty]) * [S2].[Rate]) AS [Amount],");
@@ -150,12 +139,12 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [SaleReturn]     [R]  ON [S2].[ID] = [R].[ID]");
             return Text.ToString();
         }
-        public static string CombineSale(string _Filter)
+        public string CombineSale()
         {
             var Text = new StringBuilder();
             Text.Append($"SELECT 3 AS [No], {ReportColumns()}");
             Text.Append($"FROM ({StockSale()}) AS [S]");
-            Text.Append($"LEFT JOIN ({LedgerSale(_Filter)}) [L] ON [S].[TranID] = [L].[TranID]");
+            Text.Append($"LEFT JOIN ({LedgerSale()}) [L] ON [S].[TranID] = [L].[TranID]");
             return Text.ToString();
 
         }
@@ -164,15 +153,15 @@ namespace Applied_WebApplication.Data
 
         #region Stock from Production Process
 
-        public static string LedgerProduction(string _Filter)
+        public string LedgerProduction()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
-            Text.Append(StockLedger(_Filter));
-            Text.Append(") WHERE Vou_Type='Production'");
+            Text.Append(StockLedger());
+            Text.Append($") WHERE Vou_Type='Production'");
             return Text.ToString();
         }
-        public static string StockProduction()
+        public string StockProduction()
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
@@ -205,12 +194,12 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [Inv_UOM] [U] ON[U].[ID] = [I].[UOM]");
             return Text.ToString();
         }
-        public static string CombineProduction(string _Filter)
+        public string CombineProduction()
         {
             var Text = new StringBuilder();
             Text.Append($"SELECT 4 AS [No], {ReportColumns()}");
             Text.Append($"FROM ({StockProduction()}) AS [S]");
-            Text.Append($"LEFT JOIN ({LedgerProduction(_Filter)}) [L] ON [S].[TranID] = [L].[TranID]");
+            Text.Append($"LEFT JOIN ({LedgerProduction()}) [L] ON [S].[TranID] = [L].[TranID]");
             return Text.ToString();
 
         }
@@ -219,13 +208,17 @@ namespace Applied_WebApplication.Data
 
         #region Ledger
 
-        public static string StockLedger(string _Filter)
+        private string StockLedger()
         {
-            var _StockAccounts = "6,7,8,43,44,45";
-            return $"SELECT {LedgerColumns()} FROM [Ledger] [L] WHERE [L].[COA] IN ({_StockAccounts}) GROUP BY [L].[Vou_No]";
+            var Text = new StringBuilder();
+            Text.Append($"SELECT {LedgerColumns()}");
+            Text.Append("FROM (");
+            Text.Append($"SELECT * FROM [Ledger] WHERE {Filter}) AS [L] ");
+            Text.Append($"WHERE [L].[COA] IN ({StockCOA}) ");
+            Text.Append("GROUP BY [L].[Vou_No]");
+            return Text.ToString();
         }
-
-        public static string LedgerColumns()
+        private string LedgerColumns()
         {
             var Text = new StringBuilder();
 
@@ -246,8 +239,7 @@ namespace Applied_WebApplication.Data
 
             return Text.ToString();
         }
-
-        public static string ReportColumns()
+        private string ReportColumns()
         {
             var Text = new StringBuilder();
             Text.Append("[S].[ID],");
@@ -269,13 +261,12 @@ namespace Applied_WebApplication.Data
             Text.Append("[S].[Amount] + [S].[TaxAmount] AS [NetAmount]");
             return Text.ToString();
         }
-
-        public static string SQL_StockLedger(string _Filter)
+        public string SQL_StockLedger()
         {
-            var _CombineOB = CombineOB(_Filter);
-            var _CombinePayable = CombinePayable(_Filter);
-            var _CombineSale = CombineSale(_Filter);
-            var _CombineProduction = CombineProduction(_Filter);
+            var _CombineOB = CombineOB();
+            var _CombinePayable = CombinePayable();
+            var _CombineSale = CombineSale();
+            var _CombineProduction = CombineProduction();
 
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
@@ -292,15 +283,23 @@ namespace Applied_WebApplication.Data
 
         }
 
-        public static DataTable GetStockLedger(string UserName, string _Filter)
+        public DataTable GetStockLedger()
         {
-            var _StockQuery = SQL_StockLedger(_Filter);
-            var _StockTable = DataTableClass.GetTable(UserName, _StockQuery.ToString());
+            var Text = new StringBuilder();
+            Text.Append("SELECT [S].*,[I].[Title] AS [Title] FROM (");
+            Text.Append(SQL_StockLedger());
+            Text.Append(") AS [S]");
+            Text.Append($"LEFT JOIN [Inventory] [I] ");
+            Text.Append($"ON [I].[ID] = [S].[StockID] ");
+            Text.Append($"WHERE [S].[StockID] = {StockID} ");
+            Text.Append($"ORDER BY [Vou_Date],[No] ");
+
+            var _StockTable = DataTableClass.GetTable(UserName, Text.ToString());
 
             return _StockTable;
         }
 
-        public static DataTable GetStockInHand(string UserName, string _Filter)
+        public DataTable GetStockInHand()
         {
 
             var Text = new StringBuilder();
@@ -312,7 +311,7 @@ namespace Applied_WebApplication.Data
             Text.Append("SUM([S].[Amount]) AS [Amount], ");
             Text.Append("SUM([S].[TaxAmount]) AS [TaxAmount], ");
             Text.Append("SUM([S].[NetAmount]) AS [NetAmount] ");
-            Text.Append($"FROM ({SQL_StockLedger(_Filter)}");
+            Text.Append($"FROM ({SQL_StockLedger()}");
             Text.Append(") AS [S] ");
             Text.Append("LEFT JOIN [Inventory] AS [I] ON [I].[ID] = [S].[StockID] ");
             Text.Append("WHERE [S].[Qty] IS NOT NULL ");
@@ -320,8 +319,140 @@ namespace Applied_WebApplication.Data
             return DataTableClass.GetTable(UserName, Text.ToString());
 
         }
+        #endregion
+
+        #region Generate Stock Ledger
+        public DataTable CreateLedgerTable()
+        {
+            var _Table = new DataTable();
+            _Table.Columns.Add("StockID", typeof(int));
+            _Table.Columns.Add("Vou_No", typeof(string));
+            _Table.Columns.Add("Vou_Date", typeof(DateTime));
+            _Table.Columns.Add("Title", typeof(string));
+            _Table.Columns.Add("OBQty", typeof(decimal));
+            _Table.Columns.Add("OBAmount", typeof(decimal));
+            _Table.Columns.Add("PRQty", typeof(decimal));
+            _Table.Columns.Add("PRAmount", typeof(decimal));
+            _Table.Columns.Add("SLQty", typeof(decimal));
+            _Table.Columns.Add("SLAmount", typeof(decimal));
+            _Table.Columns.Add("PDQty", typeof(decimal));
+            _Table.Columns.Add("PDAmount", typeof(decimal));
+            _Table.Columns.Add("NetQty", typeof(decimal));
+            _Table.Columns.Add("NetAmount", typeof(decimal));
+            _Table.Columns.Add("AvgRate", typeof(decimal));
+            _Table.Columns.Add("SoldCost", typeof(decimal));
+
+            return _Table;
 
 
+
+        }
+        public DataTable GenerateLedgerTable()
+        {
+
+            var StockLedgerDetails = GetStockLedger();
+            var StockLedger = CreateLedgerTable();
+            var Tot_Qty = 0.00M;
+            var Tot_Amount = 0.00M;
+
+
+            foreach (DataRow Row in StockLedgerDetails.Rows)
+            {
+                var _Row = StockLedger.NewRow();
+                _Row["StockID"] = (int)Row["StockID"];
+                _Row["Vou_No"] = (string)Row["Vou_No"];
+                _Row["Vou_Date"] = (DateTime)Row["Vou_Date"];
+                _Row["Title"] = (string)Row["Title"];
+
+                if (Row["Qty"] == DBNull.Value) { Row["Qty"] = 0.00M; }
+                if (Row["Amount"] == DBNull.Value) { Row["Amount"] = 0.00M; }
+                
+                var _Qty = Math.Round(decimal.Parse(Row["Qty"].ToString()), 2);
+                var _Amount = Math.Round(decimal.Parse(Row["Amount"].ToString()), 2);
+
+                #region Quantity and Amount
+                if ((string)Row["Vou_Type"] == "OBStock")
+                {
+                    _Row["OBQty"] = _Qty;
+                    _Row["OBAmount"] = _Amount;
+
+                    Tot_Qty = Tot_Qty + _Qty;
+                    Tot_Amount = Tot_Amount + _Amount;
+
+                }
+
+                if ((string)Row["Vou_Type"] == "Payable")
+                {
+                    _Row["PRQty"] = _Qty;
+                    _Row["PRAmount"] = _Amount;
+
+                    Tot_Qty = Tot_Qty + _Qty;
+                    Tot_Amount = Tot_Amount + _Amount;
+
+                }
+
+                if ((string)Row["Vou_Type"] == "Receivable")
+                {
+                    _Row["SLQty"] = _Qty;
+                    _Row["SLAmount"] = _Amount;
+
+                    var _AvgRate = Tot_Amount / Tot_Qty;
+                    var _Cost = _AvgRate * _Qty;
+                    _Row["SoldCost"] = _Cost;
+
+                    Tot_Qty = Tot_Qty - _Qty;
+                    Tot_Amount = Tot_Amount - _Cost;
+
+                }
+
+                if ((string)Row["Vou_Type"] == "Production")
+                {
+                    _Row["PDQty"] = _Qty;
+                    _Row["PDAmount"] = _Amount;
+
+                    Tot_Qty = Tot_Qty + _Qty;
+                    Tot_Amount = Tot_Amount + _Amount;
+
+                }
+                #endregion
+
+                #region Remove DBNull.Vales
+                if (_Row["OBQty"] == DBNull.Value) { _Row["OBQty"] = 0.00M; }
+                if (_Row["PRQty"] == DBNull.Value) { _Row["PRQty"] = 0.00M; }
+                if (_Row["SLQty"] == DBNull.Value) { _Row["SLQty"] = 0.00M; }
+                if (_Row["PDQty"] == DBNull.Value) { _Row["PDQty"] = 0.00M; }
+                if (_Row["OBAmount"] == DBNull.Value) { _Row["OBAmount"] = 0.00M; }
+                if (_Row["PRAmount"] == DBNull.Value) { _Row["PRAmount"] = 0.00M; }
+                if (_Row["SLAmount"] == DBNull.Value) { _Row["SLAmount"] = 0.00M; }
+                if (_Row["PDAmount"] == DBNull.Value) { _Row["PDAmount"] = 0.00M; }
+                if (_Row["SoldCost"] == DBNull.Value) { _Row["SoldCost"] = 0.00M; }
+                #endregion
+
+
+
+
+                _Row["NetQty"] = Math.Round(((decimal)_Row["OBQty"] + (decimal)_Row["PRQty"] - (decimal)_Row["SLQty"] + (decimal)_Row["PDQty"]), 2);
+                _Row["NetAmount"] = Math.Round(((decimal)_Row["OBAmount"] + (decimal)_Row["PRAmount"] - (decimal)_Row["SLAmount"] + (decimal)_Row["PDAmount"]), 2);
+                 
+
+
+                if (Tot_Qty > 0 || Tot_Amount > 0)
+                {
+                    _Row["AvgRate"] = Math.Round(Tot_Amount / Tot_Qty, 2);
+                }
+                else
+                {
+                    _Row["AvgRate"] = 0.00M;
+                }
+
+
+
+                StockLedger.Rows.Add(_Row);
+
+            }
+            return StockLedger;
+
+        }
         #endregion
     }
 }

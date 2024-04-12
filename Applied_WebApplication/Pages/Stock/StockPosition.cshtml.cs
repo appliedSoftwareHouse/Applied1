@@ -12,6 +12,7 @@ namespace Applied_WebApplication.Pages.Stock
         [BindProperty]
         public Parameters Variables { get; set; }
         public DataTable MyTable { get; set; }
+        public string Filter { get; set; } = string.Empty;
         public string UserName => User.Identity.Name;
 
         #region GET
@@ -27,19 +28,21 @@ namespace Applied_WebApplication.Pages.Stock
 
             var Date1 = Variables.Rpt_Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Rpt_Date2.AddDays(1).ToString(AppRegistry.DateYMD);
-            var _Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
-            //MyTable = DataTableClass.GetTable(UserName, SQLQuery.StockInHand(_Filter));
+            //Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
+            Filter = $"Date(Vou_Date) < Date('{Date2}') ";
 
-            MyTable = GenerateStockInHand(_Filter);
+            AppRegistry.SetKey(UserName, "sp-Filter", Filter, KeyType.Text);
+            AppRegistry.SetKey(UserName, "Stock_COA", "6,7,8,43,44,45", KeyType.Text);
 
-
+            MyTable = GenerateStockInHand(Filter);
         }
         #endregion
 
         #region Generate Stock in Hand Data
         public DataTable GenerateStockInHand(string _Filter)
         {
-            return StockLedgers.GetStockInHand(UserName, _Filter);
+            var StockClass = new StockLedgersClass(UserName);
+            return StockClass.GetStockInHand();
         }
         #endregion
 
@@ -61,6 +64,15 @@ namespace Applied_WebApplication.Pages.Stock
             return Page();
         }
         #endregion
+
+        public IActionResult OnPostStockLed(int StockID)
+        {
+            AppRegistry.SetKey(UserName, "sp-StockID", StockID, KeyType.Number);
+            Filter = AppRegistry.GetText(UserName, "sp-Filter");   // sp=Stock Position
+            return RedirectToPage("./StkLedger");
+            
+        }
+
 
         #region Variables
         public class Parameters

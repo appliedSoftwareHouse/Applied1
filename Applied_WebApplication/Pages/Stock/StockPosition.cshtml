@@ -11,7 +11,7 @@
     var Tot_Amount = string.Empty;
     var Tot_TaxAmount = string.Empty;
     var Tot_NetAmount = string.Empty;
-    var Old = false;
+   
 
     if (Model.MyTable != null)
     {
@@ -117,11 +117,11 @@
                             <th>Code</th>
                             <th>Inventory Title</th>
                             <th>Quantity</th>
+                            <th>Avg. Rate</th>
                             <th>Amount</th>
-                            <th>Avg. Rate</th>
                             <th>Tax Amount</th>
-                            <th>Net Amount</th>
                             <th>Avg. Rate</th>
+                            <th>Net Amount</th>
                             <th>..</th>
                         </tr>
                     </thead>
@@ -147,7 +147,7 @@
                                 <td class="amount-red">@_AvgRate2.ToString(NumberFormat)</td>
                                 <td class="amount-red">@_NetAmount.ToString(NumberFormat)</td>
                                 <td>
-                                    <button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button>
+                                    <button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]"  ><i class="bi bi-chat-square-text"></i></button>
                                 </td>
                             </tr>
                         }

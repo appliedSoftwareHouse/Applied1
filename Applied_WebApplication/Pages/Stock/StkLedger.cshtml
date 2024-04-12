@@ -1,0 +1,56 @@
+﻿@page
+@using System.Data
+@model Applied_WebApplication.Pages.Stock.StkLedgerModel
+@{
+    var DateFormat = AppRegistry.FormatDate;
+    var CurrencyFormat = AppRegistry.FormatCurrency1;
+}
+
+<div class="AppHeading-2">
+    STOCK LEDGER
+</div>
+
+<div class="container">
+    <table>
+        <thead>
+        <td>Date</td>
+        <td>Voucher</td>
+        <td>OB Qty</td>
+        <td>OB Amount</td>
+        <td>PR Qty</td>
+        <td>PR Amount</td>
+        <td>SL Qty</td>
+        <td>SL Amount</td>
+        <td>PD Qty</td>
+        <td>PD Amount</td>
+        <td>Net Qty</td>
+        <td>Net Amount</td>
+        <td>Avg. Rate</td>
+        <td>Sold Cost</td>
+        </td>
+        </thead>
+        <tbody>
+            @foreach (DataRow Row in Model.StockLedger.Rows)
+            {
+                var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+
+                <tr>
+                    <td>@Row["Vou_Date"]</td>
+                    <td>@Row["Vou_No"]</td>
+                    <td class="amount">@(((decimal)Row["OBQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["OBAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PRQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["SLQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["SLAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PDQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PdAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["NetQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
