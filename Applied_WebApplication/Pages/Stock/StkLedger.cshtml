@@ -38,17 +38,17 @@
                     <td>@Row["Vou_Date"]</td>
                     <td>@Row["Vou_No"]</td>
                     <td class="amount">@(((decimal)Row["OBQty"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["OBAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["OBAmount"]).ToString(CurrencyFormat))|</td>
                     <td class="amount">@(((decimal)Row["PRQty"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))|</td>
                     <td class="amount">@(((decimal)Row["SLQty"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["SLAmount"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["SLAmount"]).ToString(CurrencyFormat))|</td>
                     <td class="amount">@(((decimal)Row["PDQty"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["PdAmount"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["NetQty"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
-                    <td class="amount">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))</td>
+                    <td class="amount">@(((decimal)Row["PdAmount"]).ToString(CurrencyFormat))|</td>
+                    <td class="amount-blue">@(((decimal)Row["NetQty"]).ToString(CurrencyFormat))</td>
+                    <td class="amount-blue">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))|</td>
+                    <td class="amount-red">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
+                    <td class="amount-red">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))|</td>
                 </tr>
             }
         </tbody>

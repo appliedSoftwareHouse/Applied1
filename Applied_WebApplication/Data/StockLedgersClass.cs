@@ -131,8 +131,8 @@ namespace Applied_WebApplication.Data
             Text.Append("CASE WHEN [R].[QTY] IS NOT NULL THEN [R].[QTY] ELSE 0 END) AS [Qty] ,");
             Text.Append("[S2].[Rate],");
             Text.Append("[T].[Rate] As [TaxRate],");
-            Text.Append("(([S2].[Qty] - [R].[Qty]) * [S2].[Rate]) AS [Amount],");
-            Text.Append("(([S2].[Qty] - [R].[Qty]) * [S2].[Rate]) * [T].[Rate] As [TaxAmount]");
+            Text.Append("((([S2].[Qty] - CASE WHEN [R].[QTY] IS NOT NULL THEN [R].[QTY] ELSE 0 END)) * [S2].[Rate]) AS [Amount],");
+            Text.Append("((([S2].[Qty] - CASE WHEN [R].[QTY] IS NOT NULL THEN [R].[QTY] ELSE 0 END)) * [S2].[Rate]) * [T].[Rate] As [TaxAmount]");
             Text.Append("FROM [BillReceivable2] [S2]");
             Text.Append("LEFT JOIN [BillReceivable] [S1] ON [S1].[ID] = [S2].[TranID]");
             Text.Append("LEFT JOIN [Taxes]          [T]  ON [T].[ID]  = [S2].[Tax]");
@@ -354,7 +354,8 @@ namespace Applied_WebApplication.Data
             var StockLedger = CreateLedgerTable();
             var Tot_Qty = 0.00M;
             var Tot_Amount = 0.00M;
-
+            var _AvgRate = 0.00M;
+            var _Cost = 0.00M;
 
             foreach (DataRow Row in StockLedgerDetails.Rows)
             {
@@ -393,11 +394,13 @@ namespace Applied_WebApplication.Data
 
                 if ((string)Row["Vou_Type"] == "Receivable")
                 {
+
                     _Row["SLQty"] = _Qty;
                     _Row["SLAmount"] = _Amount;
 
-                    var _AvgRate = Tot_Amount / Tot_Qty;
-                    var _Cost = _AvgRate * _Qty;
+                    _AvgRate = Tot_Amount / Tot_Qty;
+                    _Cost = _AvgRate * _Qty;
+
                     _Row["SoldCost"] = _Cost;
 
                     Tot_Qty = Tot_Qty - _Qty;
@@ -426,15 +429,15 @@ namespace Applied_WebApplication.Data
                 if (_Row["SLAmount"] == DBNull.Value) { _Row["SLAmount"] = 0.00M; }
                 if (_Row["PDAmount"] == DBNull.Value) { _Row["PDAmount"] = 0.00M; }
                 if (_Row["SoldCost"] == DBNull.Value) { _Row["SoldCost"] = 0.00M; }
+                if (_Row["NetQty"] == DBNull.Value) { _Row["NetQty"] = 0.00M; }
+                if (_Row["NetAmount"] == DBNull.Value) { _Row["NetAmount"] = 0.00M; }
                 #endregion
 
+                _Row["NetQty"] = Tot_Qty;
+                _Row["NetAmount"] = Tot_Amount;
 
-
-
-                _Row["NetQty"] = Math.Round(((decimal)_Row["OBQty"] + (decimal)_Row["PRQty"] - (decimal)_Row["SLQty"] + (decimal)_Row["PDQty"]), 2);
-                _Row["NetAmount"] = Math.Round(((decimal)_Row["OBAmount"] + (decimal)_Row["PRAmount"] - (decimal)_Row["SLAmount"] + (decimal)_Row["PDAmount"]), 2);
-                 
-
+                //_Row["NetQty"] = Math.Round(((decimal)_Row["NetQty"] + (decimal)_Row["OBQty"] + (decimal)_Row["PRQty"] - (decimal)_Row["SLQty"] + (decimal)_Row["PDQty"]), 2);
+                //_Row["NetAmount"] = Math.Round(((decimal)_Row["NetAmount"] + (decimal)_Row["OBAmount"] + (decimal)_Row["PRAmount"] - _Cost + (decimal)_Row["PDAmount"]), 2);
 
                 if (Tot_Qty > 0 || Tot_Amount > 0)
                 {
@@ -444,8 +447,6 @@ namespace Applied_WebApplication.Data
                 {
                     _Row["AvgRate"] = 0.00M;
                 }
-
-
 
                 StockLedger.Rows.Add(_Row);
 
