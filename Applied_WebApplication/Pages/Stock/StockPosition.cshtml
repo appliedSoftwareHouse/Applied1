@@ -11,16 +11,29 @@
     var Tot_Amount = string.Empty;
     var Tot_TaxAmount = string.Empty;
     var Tot_NetAmount = string.Empty;
-    var Old = false;
+    var IsError = false;
 
     if (Model.MyTable != null)
     {
-        Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(NumberFormat);
-        Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(NumberFormat);
-        Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(NumberFormat);
-        Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(NumberFormat);
+        try
+        {
+            Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(NumberFormat);
+            Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(NumberFormat);
+            Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(NumberFormat);
+            Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(NumberFormat);
+        }
+        catch (Exception)
+        {
+            IsError = true;
+        }
     }
 }
+
+@if(IsError)
+{
+    <h1>ERROR FOUND.....</h1>
+}
+
 
 <style>
     .col-wd {
@@ -117,11 +130,11 @@
                             <th>Code</th>
                             <th>Inventory Title</th>
                             <th>Quantity</th>
+                            <th>Avg. Rate</th>
                             <th>Amount</th>
-                            <th>Avg. Rate</th>
                             <th>Tax Amount</th>
-                            <th>Net Amount</th>
                             <th>Avg. Rate</th>
+                            <th>Net Amount</th>
                             <th>..</th>
                         </tr>
                     </thead>
@@ -147,7 +160,7 @@
                                 <td class="amount-red">@_AvgRate2.ToString(NumberFormat)</td>
                                 <td class="amount-red">@_NetAmount.ToString(NumberFormat)</td>
                                 <td>
-                                    <button class="btn btn-link"><i class="bi bi-chat-square-text"></i></button>
+                                    <button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]"><i class="bi bi-chat-square-text"></i></button>
                                 </td>
                             </tr>
                         }
