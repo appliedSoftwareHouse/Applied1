@@ -42,7 +42,9 @@ namespace Applied_WebApplication.Pages.Stock
         public DataTable GenerateStockInHand(string _Filter)
         {
             var StockClass = new StockLedgersClass(UserName);
-            return StockClass.GetStockInHand();
+            var _Table = StockClass.GetStockInHand2();
+            return _Table;
+            //return StockClass.GetStockInHand();
         }
         #endregion
 

@@ -179,10 +179,11 @@ namespace Applied_WebApplication.Data
             Text.Append("[P1].[Comments],");
             Text.Append("[P2].[ID] AS[ID2],");
             Text.Append("[P2].[Flow],");
-            Text.Append("[P2].[Qty],");
+            Text.Append("CASE WHEN [P2].[Flow]='In' THEN [P2].[Qty]*-1 ELSE [P2].[Qty] END AS [Qty],");
             Text.Append("[P2].[Rate],");
             Text.Append("0 AS [TaxRate],");
-            Text.Append("([P2].[Qty] * [P2].[Rate]) AS [Amount],");
+            Text.Append("(CASE WHEN [P2].[Flow]='In' THEN [P2].[Qty]*-1 ELSE [P2].[Qty] END");
+            Text.Append("* [P2].[Rate]) AS [Amount],");
             Text.Append("0 AS [TaxAmount], ");
             Text.Append("[P2].[Remarks] AS [Remarks2],");
             Text.Append("[I].[Title] AS [StockTitle],");
@@ -283,6 +284,37 @@ namespace Applied_WebApplication.Data
 
         }
 
+        public DataTable GetStockInHand2()
+        {
+            var TB_StockInHand = CreateLedgerTable();
+            var StockLedgers = DataTableClass.GetTable(UserName, SQL_StockLedger());                // All Transaction in the ledger form
+            var ListStockItems = new List<int>();                                                   // List of Item
+
+            foreach (DataRow Row in StockLedgers.Rows)
+            {
+                var ID = (int)Row["StockID"];
+                if(!ListStockItems.Contains(ID)) { ListStockItems.Add(ID); }
+            }
+
+            foreach (int ID in ListStockItems)
+            {
+                StockID = ID;
+                var _Stocktitle = "";
+                var _StockLedger = GenerateLedgerTable();
+                if(_StockLedger.Rows.Count > 0) { _Stocktitle = _StockLedger.Rows[0]["Title"].ToString(); }
+                _StockLedger.DefaultView.RowFilter = "Title='Total'";
+                if(_StockLedger.DefaultView.Count == 1)
+                {
+                    DataRow _Row = _StockLedger.DefaultView[0].Row;
+                    _Row["Title"] = _Stocktitle;
+                    var _RowArrays = _Row.ItemArray;
+                    TB_StockInHand.Rows.Add(_RowArrays);
+                }
+            }
+
+            return TB_StockInHand;
+        }
+
         public DataTable GetStockLedger()
         {
             var Text = new StringBuilder();
@@ -329,8 +361,6 @@ namespace Applied_WebApplication.Data
             _Table.Columns.Add("Vou_No", typeof(string));
             _Table.Columns.Add("Vou_Date", typeof(DateTime));
             _Table.Columns.Add("Title", typeof(string));
-            _Table.Columns.Add("OBQty", typeof(decimal));
-            _Table.Columns.Add("OBAmount", typeof(decimal));
             _Table.Columns.Add("PRQty", typeof(decimal));
             _Table.Columns.Add("PRAmount", typeof(decimal));
             _Table.Columns.Add("SLQty", typeof(decimal));
@@ -341,11 +371,7 @@ namespace Applied_WebApplication.Data
             _Table.Columns.Add("NetAmount", typeof(decimal));
             _Table.Columns.Add("AvgRate", typeof(decimal));
             _Table.Columns.Add("SoldCost", typeof(decimal));
-
             return _Table;
-
-
-
         }
         public DataTable GenerateLedgerTable()
         {
@@ -367,19 +393,18 @@ namespace Applied_WebApplication.Data
 
                 if (Row["Qty"] == DBNull.Value) { Row["Qty"] = 0.00M; }
                 if (Row["Amount"] == DBNull.Value) { Row["Amount"] = 0.00M; }
-                
+
                 var _Qty = Math.Round(decimal.Parse(Row["Qty"].ToString()), 2);
                 var _Amount = Math.Round(decimal.Parse(Row["Amount"].ToString()), 2);
 
                 #region Quantity and Amount
-                if ((string)Row["Vou_Type"] == "OBStock")
+                if ((string)Row["Vou_Type"] == "OBalStock")
                 {
-                    _Row["OBQty"] = _Qty;
-                    _Row["OBAmount"] = _Amount;
+                    _Row["PRQty"] = _Qty;
+                    _Row["PRAmount"] = _Amount;
 
                     Tot_Qty = Tot_Qty + _Qty;
                     Tot_Amount = Tot_Amount + _Amount;
-
                 }
 
                 if ((string)Row["Vou_Type"] == "Payable")
@@ -389,7 +414,6 @@ namespace Applied_WebApplication.Data
 
                     Tot_Qty = Tot_Qty + _Qty;
                     Tot_Amount = Tot_Amount + _Amount;
-
                 }
 
                 if ((string)Row["Vou_Type"] == "Receivable")
@@ -398,7 +422,6 @@ namespace Applied_WebApplication.Data
                     _Row["SLQty"] = _Qty;
                     _Row["SLAmount"] = _Amount;
 
-                    _AvgRate = Tot_Amount / Tot_Qty;
                     _Cost = _AvgRate * _Qty;
 
                     _Row["SoldCost"] = _Cost;
@@ -410,24 +433,35 @@ namespace Applied_WebApplication.Data
 
                 if ((string)Row["Vou_Type"] == "Production")
                 {
+
+
                     _Row["PDQty"] = _Qty;
                     _Row["PDAmount"] = _Amount;
 
                     Tot_Qty = Tot_Qty + _Qty;
-                    Tot_Amount = Tot_Amount + _Amount;
+
+                    if (_Qty < 0)
+                    {
+                        _Cost = (_AvgRate * _Qty) *-1;
+                        _Row["SoldCost"] = _Cost;
+                        Tot_Amount = Tot_Amount - _Cost;
+                    }
+                    else
+                    {
+                        Tot_Amount = Tot_Amount + _Amount;
+                    }
 
                 }
                 #endregion
 
                 #region Remove DBNull.Vales
-                if (_Row["OBQty"] == DBNull.Value) { _Row["OBQty"] = 0.00M; }
                 if (_Row["PRQty"] == DBNull.Value) { _Row["PRQty"] = 0.00M; }
                 if (_Row["SLQty"] == DBNull.Value) { _Row["SLQty"] = 0.00M; }
                 if (_Row["PDQty"] == DBNull.Value) { _Row["PDQty"] = 0.00M; }
-                if (_Row["OBAmount"] == DBNull.Value) { _Row["OBAmount"] = 0.00M; }
                 if (_Row["PRAmount"] == DBNull.Value) { _Row["PRAmount"] = 0.00M; }
                 if (_Row["SLAmount"] == DBNull.Value) { _Row["SLAmount"] = 0.00M; }
                 if (_Row["PDAmount"] == DBNull.Value) { _Row["PDAmount"] = 0.00M; }
+                if (_Row["AvgRate"] == DBNull.Value) { _Row["AvgRate"] = 0.00M; }
                 if (_Row["SoldCost"] == DBNull.Value) { _Row["SoldCost"] = 0.00M; }
                 if (_Row["NetQty"] == DBNull.Value) { _Row["NetQty"] = 0.00M; }
                 if (_Row["NetAmount"] == DBNull.Value) { _Row["NetAmount"] = 0.00M; }
@@ -436,21 +470,59 @@ namespace Applied_WebApplication.Data
                 _Row["NetQty"] = Tot_Qty;
                 _Row["NetAmount"] = Tot_Amount;
 
-                //_Row["NetQty"] = Math.Round(((decimal)_Row["NetQty"] + (decimal)_Row["OBQty"] + (decimal)_Row["PRQty"] - (decimal)_Row["SLQty"] + (decimal)_Row["PDQty"]), 2);
-                //_Row["NetAmount"] = Math.Round(((decimal)_Row["NetAmount"] + (decimal)_Row["OBAmount"] + (decimal)_Row["PRAmount"] - _Cost + (decimal)_Row["PDAmount"]), 2);
-
-                if (Tot_Qty > 0 || Tot_Amount > 0)
-                {
-                    _Row["AvgRate"] = Math.Round(Tot_Amount / Tot_Qty, 2);
-                }
-                else
-                {
-                    _Row["AvgRate"] = 0.00M;
-                }
+                if (Tot_Qty > 0 || Tot_Amount > 0) 
+                {_AvgRate = Math.Round(Tot_Amount / Tot_Qty, 2);} 
+                _Row["AvgRate"] = _AvgRate;
 
                 StockLedger.Rows.Add(_Row);
-
             }
+
+
+            //Footer
+            #region Footer
+
+            decimal Tot_PRQty = 0.00M, Tot_PRAmount = 0.00M;
+            decimal Tot_SLQty = 0.00M, Tot_SLAmount = 0.00M;
+            decimal Tot_PDQty = 0.00M, Tot_PDAmount = 0.00M;
+            decimal Tot_SoldCost = 0.00M, Tot_AvgRate = 0.00M; ;
+
+            foreach (DataRow Row in StockLedger.Rows)
+            {
+                Tot_PRQty += (decimal)Row["PRQty"]; Tot_PRAmount += (decimal)Row["PRAmount"];
+                Tot_SLQty += (decimal)Row["SLQty"]; Tot_SLAmount += (decimal)Row["SLAmount"];
+                Tot_PDQty += (decimal)Row["PDQty"]; Tot_PDAmount += (decimal)Row["PDAmount"];
+
+                if (Row["SoldCost"] != DBNull.Value) { Tot_SoldCost += (decimal)Row["SoldCost"]; }
+                if (Row["AvgRate"] != DBNull.Value) { Tot_AvgRate = (decimal)Row["AvgRate"]; }
+            }
+
+            DataRow Totals = StockLedger.NewRow();
+
+            Totals["StockID"] = StockID;
+            Totals["Vou_No"] = "";
+            Totals["Vou_Date"] = DateTime.Now;
+
+            Totals["Title"] = "TOTAL";
+            Totals["PRQty"] = Tot_PRQty;
+            Totals["PRAmount"] = Tot_PRAmount;
+
+            Totals["SLQty"] = Tot_SLQty;
+            Totals["SLAmount"] = Tot_SLAmount;
+
+            Totals["PDQty"] = Tot_PDQty;
+            Totals["PDAmount"] = Tot_PDAmount;
+
+            Totals["NetQty"] = Tot_PRQty + Tot_SLQty + Tot_PDQty;
+            Totals["NetAmount"] = Tot_PRAmount + Tot_SLAmount + Tot_PDAmount;
+
+            Totals["AvgRate"] = Tot_AvgRate;
+            Totals["SoldCost"] = Tot_SoldCost;
+
+            StockLedger.Rows.Add(Totals);
+
+            #endregion
+
+
             return StockLedger;
 
         }
