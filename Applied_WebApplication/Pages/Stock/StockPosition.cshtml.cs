@@ -44,7 +44,7 @@ namespace Applied_WebApplication.Pages.Stock
             var StockClass = new StockLedgersClass(UserName);
             var _Table = StockClass.GetStockInHand2();
             return _Table;
-            //return StockClass.GetStockInHand();
+            
         }
         #endregion
 
