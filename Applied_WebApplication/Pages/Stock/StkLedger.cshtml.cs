@@ -19,6 +19,7 @@ namespace Applied_WebApplication.Pages.Stock
             StockClass.Filter = Filter;
             StockClass.StockID = StockID;
             StockLedger = StockClass.GenerateLedgerTable();
+            
         }
     }
 }

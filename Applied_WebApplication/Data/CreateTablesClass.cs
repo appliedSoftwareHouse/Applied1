@@ -391,6 +391,27 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Stock Category View
+        private static void StockCategory(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [StockCategory] AS ");
+            Text.Append("SELECT ");
+            Text.Append("[S].[ID],");
+            Text.Append("[S].[Code],");
+            Text.Append("[S].[Title],");
+            Text.Append("[S].[Category],");
+            Text.Append("[C].[Code] [CatCode],");
+            Text.Append("[C].[Title] [CatTitle]");
+            Text.Append("FROM [Inv_SubCategory] [S]");
+            Text.Append("LEFT JOIN [Inv_Category] [C] ");
+            Text.Append("ON [C].[ID] = [S].[Category]");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
+        #endregion
+
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data
@@ -491,6 +512,9 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.Inv_UOM:
                     break;
+                case Tables.StockCategory:
+                    StockCategory(UserName);
+                    break;
                 case Tables.FinishedGoods:
                     break;
                 case Tables.OBALStock:
@@ -555,9 +579,9 @@ namespace Applied_WebApplication.Data
             }
         }
 
-       
-
 
         #endregion
+
+        
     }
 }

@@ -6,7 +6,7 @@ using static Applied_WebApplication.Data.MessageClass;
 namespace Applied_WebApplication.Data
 {
 
-    public class DataTableClass
+    public class DataTableClass : IDisposable
     {
         #region Initial
 
@@ -763,7 +763,20 @@ namespace Applied_WebApplication.Data
             return Row;
         }
 
+
+
         #endregion
+
+
+        public void Dispose()
+        {
+            MyDataTable = new();
+            MyDataView = new();
+            MyConnection = new();
+            TableValidation = new();
+            ErrorMessages.Clear();
+
+        }
         //======================================================== eof
     }
 }

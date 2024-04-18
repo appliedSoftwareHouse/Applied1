@@ -28,13 +28,13 @@ namespace Applied_WebApplication.Pages.Stock
 
             var Date1 = Variables.Rpt_Date1.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Rpt_Date2.AddDays(1).ToString(AppRegistry.DateYMD);
-            //Filter = $"Date(Vou_Date) > Date('{Date1}') AND Date(Vou_Date) < Date('{Date2}')";
             Filter = $"Date(Vou_Date) < Date('{Date2}') ";
 
             AppRegistry.SetKey(UserName, "sp-Filter", Filter, KeyType.Text);
             AppRegistry.SetKey(UserName, "Stock_COA", "6,7,8,43,44,45", KeyType.Text);
 
             MyTable = GenerateStockInHand(Filter);
+           
         }
         #endregion
 
@@ -43,6 +43,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
             var StockClass = new StockLedgersClass(UserName);
             var _Table = StockClass.GetStockInHand2();
+            StockClass.SavetoDBTable(_Table);
             return _Table;
             
         }

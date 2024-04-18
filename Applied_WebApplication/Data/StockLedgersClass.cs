@@ -24,7 +24,8 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM [Ledger] ");
-            Text.Append($"WHERE [Vou_Type] = 'OBalStock'");
+            Text.Append($"WHERE [Vou_Type] = 'OBalStock' ");
+            //Text.Append($" AND {Filter}");
             return Text.ToString();
         }
         private string StockOB()
@@ -62,7 +63,9 @@ namespace Applied_WebApplication.Data
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
             Text.Append(StockLedger());
-            Text.Append($") WHERE Vou_Type='Payable'");
+            Text.Append($") WHERE Vou_Type='Payable' ");
+            //Text.Append($" AND {Filter}");
+
             return Text.ToString();
 
         }
@@ -109,6 +112,8 @@ namespace Applied_WebApplication.Data
             Text.Append("SELECT * FROM (");
             Text.Append(StockLedger());
             Text.Append($") WHERE Vou_Type='Receivable'");
+            //Text.Append($" AND {Filter}");
+
             return Text.ToString();
         }
 
@@ -158,7 +163,9 @@ namespace Applied_WebApplication.Data
             var Text = new StringBuilder();
             Text.Append("SELECT * FROM (");
             Text.Append(StockLedger());
-            Text.Append($") WHERE Vou_Type='Production'");
+            Text.Append($") WHERE Vou_Type='Production' ");
+            //Text.Append($" AND {Filter}");
+
             return Text.ToString();
         }
         public string StockProduction()
@@ -279,6 +286,7 @@ namespace Applied_WebApplication.Data
             Text.Append(" UNION ");
             Text.Append(_CombineProduction);
             Text.Append(") WHERE Vou_No not null ");
+            Text.Append($"AND {Filter}");
             Text.Append(" ORDER BY [StockID],[Vou_Date],[No]");
             return Text.ToString();
 
@@ -293,7 +301,7 @@ namespace Applied_WebApplication.Data
             foreach (DataRow Row in StockLedgers.Rows)
             {
                 var ID = (int)Row["StockID"];
-                if(!ListStockItems.Contains(ID)) { ListStockItems.Add(ID); }
+                if (!ListStockItems.Contains(ID)) { ListStockItems.Add(ID); }
             }
 
             foreach (int ID in ListStockItems)
@@ -301,9 +309,9 @@ namespace Applied_WebApplication.Data
                 StockID = ID;
                 var _Stocktitle = "";
                 var _StockLedger = GenerateLedgerTable();
-                if(_StockLedger.Rows.Count > 0) { _Stocktitle = _StockLedger.Rows[0]["Title"].ToString(); }
+                if (_StockLedger.Rows.Count > 0) { _Stocktitle = _StockLedger.Rows[0]["Title"].ToString(); }
                 _StockLedger.DefaultView.RowFilter = "Title='Total'";
-                if(_StockLedger.DefaultView.Count == 1)
+                if (_StockLedger.DefaultView.Count == 1)
                 {
                     DataRow _Row = _StockLedger.DefaultView[0].Row;
                     _Row["Title"] = _Stocktitle;
@@ -318,11 +326,12 @@ namespace Applied_WebApplication.Data
         public DataTable GetStockLedger()
         {
             var Text = new StringBuilder();
-            Text.Append("SELECT [S].*,[I].[Title] AS [Title] FROM (");
+            Text.Append("SELECT [S].*, ");
+            Text.Append("[I].[Title] ");
+            Text.Append(" FROM (");
             Text.Append(SQL_StockLedger());
             Text.Append(") AS [S]");
-            Text.Append($"LEFT JOIN [Inventory] [I] ");
-            Text.Append($"ON [I].[ID] = [S].[StockID] ");
+            Text.Append($"LEFT JOIN [Inventory] [I] ON [I].[ID] = [S].[StockID] ");
             Text.Append($"WHERE [S].[StockID] = {StockID} ");
             Text.Append($"ORDER BY [Vou_Date],[No] ");
 
@@ -442,7 +451,7 @@ namespace Applied_WebApplication.Data
 
                     if (_Qty < 0)
                     {
-                        _Cost = (_AvgRate * _Qty) *-1;
+                        _Cost = (_AvgRate * _Qty) * -1;
                         _Row["SoldCost"] = _Cost;
                         Tot_Amount = Tot_Amount - _Cost;
                     }
@@ -470,8 +479,8 @@ namespace Applied_WebApplication.Data
                 _Row["NetQty"] = Tot_Qty;
                 _Row["NetAmount"] = Tot_Amount;
 
-                if (Tot_Qty > 0 || Tot_Amount > 0) 
-                {_AvgRate = Math.Round(Tot_Amount / Tot_Qty, 2);} 
+                if (Tot_Qty > 0 || Tot_Amount > 0)
+                { _AvgRate = Math.Round(Tot_Amount / Tot_Qty, 2); }
                 _Row["AvgRate"] = _AvgRate;
 
                 StockLedger.Rows.Add(_Row);
@@ -522,8 +531,44 @@ namespace Applied_WebApplication.Data
 
             #endregion
 
-
             return StockLedger;
+
+        }
+
+
+        // Create this method for Report builder data view only. 
+        // Not use in the code.... don not Delete.... 18-04-2024.
+        internal void SavetoDBTable(DataTable stockLedger)
+        {
+            DataTableClass StockTableClass = new DataTableClass(UserName, Tables.StockInHand);
+            StockTableClass.MyDataTable.Clear();
+
+            foreach (DataRow Row in stockLedger.Rows)
+            {
+                StockTableClass.NewRecord();
+                StockTableClass.CurrentRow["ID"] = 0;
+                StockTableClass.CurrentRow["StockID"] = Row["StockID"];
+                StockTableClass.CurrentRow["Vou_No"] = Row["Vou_No"];
+                StockTableClass.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                StockTableClass.CurrentRow["Title"] = Row["Title"];
+                StockTableClass.CurrentRow["PRQty"] = (decimal)Row["PRQty"];
+                StockTableClass.CurrentRow["PRAmount"] = (decimal)Row["PRAmount"];
+                StockTableClass.CurrentRow["SLQty"] = (decimal)Row["SLQty"];
+                StockTableClass.CurrentRow["SLAmount"] = (decimal)Row["SLAmount"];
+                StockTableClass.CurrentRow["PDQty"] = (decimal)Row["PDQty"];
+                StockTableClass.CurrentRow["PDAmount"] = (decimal)Row["PDAmount"];
+                StockTableClass.CurrentRow["NetQty"] = (decimal)Row["NetQty"];
+                StockTableClass.CurrentRow["NetAmount"] = (decimal)Row["NetAmount"];
+                StockTableClass.CurrentRow["AvgRate"] = (decimal)Row["AvgRate"];
+                StockTableClass.CurrentRow["SoldCost"] = (decimal)Row["SoldCost"];
+                StockTableClass.Save();
+
+
+            }
+
+            StockTableClass.Dispose();
+
+
 
         }
         #endregion
