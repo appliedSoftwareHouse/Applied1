@@ -812,7 +812,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Reportmodel.ReportData.DataSetName = "ds_ComBalance";
                 Reportmodel.ReportData.ReportTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(_RptQuery, _COA_List));
 
-                if (Reportmodel.Render)
+                if (Reportmodel.ReportRender())
                 {
                     if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
                     {
@@ -835,5 +835,59 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #endregion
 
+        #region Stock in Hand
+
+       
+
+        public IActionResult OnGetStockInHand(ReportType _ReportType)
+        {
+            try
+            {
+                
+                var _Heading1 = GetText(UserName, "cCIHHead1");
+                var _Heading2 = GetText(UserName, "cCIHHead2");
+
+                ReportModel Reportmodel = new ReportModel();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = "StockInHand";
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileName = "StockInHand";
+                Reportmodel.OutputReport.ReportType = _ReportType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                var StockClass = new StockLedgersClass(UserName);
+
+                Reportmodel.ReportData.DataSetName = "ds_StockInHand";
+                Reportmodel.ReportData.ReportTable = StockClass.GetStockInHand2(); // Data Filter will apply by registry variables. FYI
+
+                if (Reportmodel.ReportRender())         // Render a report for preview or download...
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        return RedirectToPage("HTMLViewer", "HTMLView", new { _HTMLFile = Reportmodel.OutputReport.FileFullName });
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+        }
+
+        #endregion
     }
 }

@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -61,10 +62,11 @@ namespace Applied_WebApplication.Pages.Stock
         #endregion
 
         #region Print
-        public IActionResult OnPostPrint()
+        public IActionResult OnPostPrint(ReportType Option)
         {
-
-            return Page();
+            AppRegistry.SetKey(UserName, "cCIHHead1", $"Stock in Hand", KeyType.Text);
+            AppRegistry.SetKey(UserName, "cCIHHead2", $"Position as on {Variables.Rpt_Date2.ToString(AppRegistry.FormatDate)}", KeyType.Text);
+            return RedirectToPage("../ReportPrint/PrintReport", "StockInHand", new { Option });
         }
         #endregion
 

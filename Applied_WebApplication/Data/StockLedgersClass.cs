@@ -307,14 +307,22 @@ namespace Applied_WebApplication.Data
             foreach (int ID in ListStockItems)
             {
                 StockID = ID;
-                var _Stocktitle = "";
+                
+                var _StockTitle = "";
+                var _GroupTitle = "";
+
                 var _StockLedger = GenerateLedgerTable();
-                if (_StockLedger.Rows.Count > 0) { _Stocktitle = _StockLedger.Rows[0]["Title"].ToString(); }
+                if (_StockLedger.Rows.Count > 0) 
+                { 
+                    _StockTitle = _StockLedger.Rows[0]["Title"].ToString(); 
+                    _GroupTitle = _StockLedger.Rows[0]["GTitle"].ToString();
+                }
                 _StockLedger.DefaultView.RowFilter = "Title='Total'";
                 if (_StockLedger.DefaultView.Count == 1)
                 {
                     DataRow _Row = _StockLedger.DefaultView[0].Row;
-                    _Row["Title"] = _Stocktitle;
+                    _Row["Title"] = _StockTitle;
+                    _Row["GTitle"] = _GroupTitle;
                     var _RowArrays = _Row.ItemArray;
                     TB_StockInHand.Rows.Add(_RowArrays);
                 }
@@ -327,11 +335,13 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT [S].*, ");
-            Text.Append("[I].[Title] ");
+            Text.Append("[I].[Title], ");
+            Text.Append("[C].[Title] AS [GTitle] ");
             Text.Append(" FROM (");
             Text.Append(SQL_StockLedger());
             Text.Append(") AS [S]");
             Text.Append($"LEFT JOIN [Inventory] [I] ON [I].[ID] = [S].[StockID] ");
+            Text.Append($"LEFT JOIN [StockCategory] [C] ON [C].[ID] = [I].[SubCategory] ");
             Text.Append($"WHERE [S].[StockID] = {StockID} ");
             Text.Append($"ORDER BY [Vou_Date],[No] ");
 
@@ -367,6 +377,7 @@ namespace Applied_WebApplication.Data
         {
             var _Table = new DataTable();
             _Table.Columns.Add("StockID", typeof(int));
+            _Table.Columns.Add("GTitle", typeof(string));
             _Table.Columns.Add("Vou_No", typeof(string));
             _Table.Columns.Add("Vou_Date", typeof(DateTime));
             _Table.Columns.Add("Title", typeof(string));
@@ -399,6 +410,7 @@ namespace Applied_WebApplication.Data
                 _Row["Vou_No"] = (string)Row["Vou_No"];
                 _Row["Vou_Date"] = (DateTime)Row["Vou_Date"];
                 _Row["Title"] = (string)Row["Title"];
+                _Row["GTitle"] = (string)Row["GTitle"];
 
                 if (Row["Qty"] == DBNull.Value) { Row["Qty"] = 0.00M; }
                 if (Row["Amount"] == DBNull.Value) { Row["Amount"] = 0.00M; }
@@ -551,6 +563,7 @@ namespace Applied_WebApplication.Data
                 StockTableClass.CurrentRow["Vou_No"] = Row["Vou_No"];
                 StockTableClass.CurrentRow["Vou_Date"] = Row["Vou_Date"];
                 StockTableClass.CurrentRow["Title"] = Row["Title"];
+                StockTableClass.CurrentRow["GTitle"] = Row["GTitle"];
                 StockTableClass.CurrentRow["PRQty"] = (decimal)Row["PRQty"];
                 StockTableClass.CurrentRow["PRAmount"] = (decimal)Row["PRAmount"];
                 StockTableClass.CurrentRow["SLQty"] = (decimal)Row["SLQty"];
