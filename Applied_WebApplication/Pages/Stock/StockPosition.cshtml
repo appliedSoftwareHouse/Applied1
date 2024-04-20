@@ -1,39 +1,38 @@
 ﻿@page
 @using System.Data;
+@using AppReportClass;
 @model Applied_WebApplication.Pages.Stock.StockPositionModel
 @{
     var UserName = User.Identity.Name;
     var UserRole = UserProfile.GetUserRole(User);
-    var NumberFormat = AppRegistry.FormatCurrency2;
     var IsDeailed = Model.Variables.ShowDetail;
     var ValueCheck = true;
     var Tot_Qty = string.Empty;
     var Tot_Amount = string.Empty;
     var Tot_TaxAmount = string.Empty;
     var Tot_NetAmount = string.Empty;
-    var IsError = false;
+    bool IsError = false;
+    string _Message = string.Empty;
+
+    var DateFormat = AppRegistry.FormatDate;
+    var CurrencyFormat = AppRegistry.FormatCurrency2;
 
     if (Model.MyTable != null)
     {
         try
         {
-            Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(NumberFormat);
-            Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(NumberFormat);
-            Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(NumberFormat);
-            Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(NumberFormat);
+            Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(CurrencyFormat);
+            Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(CurrencyFormat);
+            Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(CurrencyFormat);
+            Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(CurrencyFormat);
         }
-        catch (Exception)
+        catch (Exception e)
         {
             IsError = true;
+            _Message = e.Message;
         }
     }
 }
-
-@if(IsError)
-{
-    <h1>ERROR FOUND.....</h1>
-}
-
 
 <style>
     .col-wd {
@@ -77,6 +76,12 @@
 
 </style>
 
+
+@if(IsError)
+{
+    <h5>Error Found... @_Message</h5>
+}
+
 <div class="AppHeading-2">
     <h5 class="TextCenter">STOCK IN HAND POSITION</h5>
 </div>
@@ -114,6 +119,21 @@
             <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Refresh">Refresh</button></div>
             <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Detail">All</button></div>
             <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Print">Print</button></div>
+            <div class="col-wd">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                        <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Image">Image</button></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
     <br />
@@ -127,41 +147,40 @@
                     #region Details show
                     <thead style="background-color:antiquewhite;">
                         <tr>
-                            <th>Code</th>
-                            <th>Inventory Title</th>
-                            <th>Quantity</th>
-                            <th>Avg. Rate</th>
-                            <th>Amount</th>
-                            <th>Tax Amount</th>
-                            <th>Avg. Rate</th>
+                            <th>Voucher</th>
+                            <th>PR Qty</th>
+                            <th>PR Amount</th>
+                            <th>SL Qty</th>
+                            <th>SL Amount</th>
+                            <th>PD Qty</th>
+                            <th>PD Amount</th>
+                            <th>Net Qty</th>
                             <th>Net Amount</th>
+                            <th>Avg. Rate</th>
+                            <th>Sold Cost</th>
                             <th>..</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (DataRow Row in Model.MyTable.Rows)
                         {
-
-                            var _Qty = Conversion.ToDecimal(Row["Qty"]);
-                            var _Amount = Conversion.ToDecimal(Row["Amount"]);
-                            var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
-                            var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
-                            var _AvgRate1 = _Amount / _Qty;
-                            var _AvgRate2 = _NetAmount / _Qty;
-
+                            var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
 
                             <tr>
-                                <td>@Row["StockID"]</td>
-                                <td class="bdr-right">@Row["Title"]</td>
-                                <td class="amount">@_Qty.ToString(NumberFormat)</td>
-                                <td class="amount">@_AvgRate1.ToString(NumberFormat)</td>
-                                <td class="amount">@_Amount.ToString(NumberFormat)</td>
-                                <td class="amount">@_TaxAmount.ToString(NumberFormat)</td>
-                                <td class="amount-red">@_AvgRate2.ToString(NumberFormat)</td>
-                                <td class="amount-red">@_NetAmount.ToString(NumberFormat)</td>
-                                <td>
-                                    <button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]"><i class="bi bi-chat-square-text"></i></button>
-                                </td>
+                               <td>@Row["Title"]</td>
+                                <td class="amount">@(((decimal)Row["PRQty"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["SLQty"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["SLAmount"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["PDQty"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["PDAmount"]).ToString(CurrencyFormat))</td>
+                                <td class="amount-blue">@(((decimal)Row["NetQty"]).ToString(CurrencyFormat))</td>
+                                <td class="amount-blue">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))</td>
+                                <td class="amount-red">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
+                                <td class="amount-red">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))</td>
+                                <td><button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]">
+                                        <i class="bi bi-box-fill"></i>
+                                </button></td>
                             </tr>
                         }
                     </tbody>

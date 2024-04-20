@@ -14,7 +14,7 @@ namespace AppReportClass
         
 
         public List<ReportParameter> ReportParameters { get; set; }
-        public bool Render => ReportRender();
+        //public bool Render => ReportRender();
         private readonly string DateTimeFormat = "yyyy-MM-dd [hh:mm:ss]";
         private string DateTimeNow => DateTime.Now.ToString(DateTimeFormat);
         
@@ -33,7 +33,7 @@ namespace AppReportClass
 
         }
 
-        private bool ReportRender()
+        public bool ReportRender()
         {
             
             Messages.Add($"{DateTimeNow}: Report rendering started");
@@ -42,10 +42,16 @@ namespace AppReportClass
             if (InputReport.IsFileExist)
             {
                 Messages.Add($"{DateTimeNow}: Report file found {InputReport.FileFullName}");
+                
                 var _ReportType = OutputReport.ReportType;
+                Messages.Add($"{DateTimeNow}: Report Type is {OutputReport.ReportType}");
 
                 OutputReport.MimeType = GetReportMime(_ReportType);
+                Messages.Add($"{DateTimeNow}: Report MimeType is {OutputReport.MimeType}");
+
                 OutputReport.FileExtention = OutputReport.GetFileExtention(_ReportType);
+                Messages.Add($"{DateTimeNow}: Report File Extention is {OutputReport.FileExtention}");
+
                 var _ReportFile = InputReport.FileFullName;
                 var _FileType = GetRenderFormat(_ReportType);
                 var _ReportStream = new StreamReader(_ReportFile);
@@ -56,6 +62,7 @@ namespace AppReportClass
                 report.DataSources.Add(ReportData.DataSource);
                 report.SetParameters(ReportParameters);
                 ReportBytes = report.Render(_FileType);
+                Messages.Add($"{DateTimeNow}: Report Render bytes are {ReportBytes.Count()}");
 
                 if (ReportBytes.Length > 0) { SaveReport(); }
                 else
@@ -65,6 +72,10 @@ namespace AppReportClass
                 Messages.Add($"{DateTimeNow}: Report rendering completed at {DateTimeNow}");
                 return true;
 
+            }
+            else
+            {
+                Messages.Add($"{DateTimeNow}: Report file NOT found {InputReport.FileFullName}");
             }
             return false;
         }
@@ -171,6 +182,7 @@ namespace AppReportClass
     {
         public string FilePath { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
+        public string FileLink { get; set; } = string.Empty;
         public string FileExtention { get; set; } = string.Empty;
         public ReportType ReportType { get; set; } = ReportType.Preview;
         public string MimeType { get; set; } = string.Empty;
@@ -187,6 +199,12 @@ namespace AppReportClass
             }
             return string.Empty;
         }
+
+        public string GetFileLink()
+        {
+            return $"{FileLink}{FileName}{FileExtention}";
+        }
+
 
         public static string GetFileExtention(ReportType _ReportType)
         {

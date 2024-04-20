@@ -382,13 +382,34 @@ namespace Applied_WebApplication.Data
         private static void COA_Map(string UserName)
         {
             var Text = new StringBuilder();
-            Text.Append("CREATE TABLE[COA_Map](");
+            Text.Append("CREATE TABLE [COA_Map] (");
             Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
-            Text.Append("[COA] INT NOT NULL UNIQUE REFERENCES[COA]([ID]), ");
-            Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]));");
+            Text.Append("[COA] INT NOT NULL UNIQUE REFERENCES [COA] ([ID]), ");
+            Text.Append("[Stock] INT NOT NULL REFERENCES [Inventory] ([ID]));");
             var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
         }
+        #endregion
+
+        #region Stock Category View
+        private static void StockCategory(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE VIEW [StockCategory] AS ");
+            Text.Append("SELECT ");
+            Text.Append("[S].[ID],");
+            Text.Append("[S].[Code],");
+            Text.Append("[S].[Title],");
+            Text.Append("[S].[Category],");
+            Text.Append("[C].[Code] [CatCode],");
+            Text.Append("[C].[Title] [CatTitle]");
+            Text.Append("FROM [Inv_SubCategory] [S]");
+            Text.Append("LEFT JOIN [Inv_Category] [C] ");
+            Text.Append("ON [C].[ID] = [S].[Category]");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+
         #endregion
 
 
@@ -491,6 +512,9 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.Inv_UOM:
                     break;
+                case Tables.StockCategory:
+                    StockCategory(UserName);
+                    break;
                 case Tables.FinishedGoods:
                     break;
                 case Tables.OBALStock:
@@ -555,9 +579,13 @@ namespace Applied_WebApplication.Data
             }
         }
 
-       
-
 
         #endregion
+
+        
     }
+
+    
+
+
 }

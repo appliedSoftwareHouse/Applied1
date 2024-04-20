@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -39,13 +40,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             Inventory = DataTableClass.GetTable(UserName, Tables.Inventory, "", "[Title]");
             Cities = DataTableClass.GetTable(UserName, SQLQuery.Cities());
 
-
-
             var _Filter = GetFilter(Variables);
             var _OrderBy = "[Vou_Date],[Vou_No]";
             var _SQLQuery = SQLQuery.PurchaseRegister(_Filter,_OrderBy);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
 
+            TempDBClass.CreateTempTable(UserName, SourceTable, "pRptTemp");
 
         }
 
@@ -79,18 +79,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Text.ToString();
         }
 
-        public IActionResult OnPostPrint()
+        public IActionResult OnPostPrint(ReportType Option)
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister.rdl", KeyType.Text);
-            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister");
+            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister", KeyType.Text);
+            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister", new {RptType = Option});
         }
 
-        public IActionResult OnPostPrintList()
+        public IActionResult OnPostPrintList(ReportType Option)
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister3.rdl", KeyType.Text);
-            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister");
+            AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister3", KeyType.Text);
+            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister", new { RptOption = Option });
         }
 
 

@@ -10,11 +10,11 @@
     var TitleOBCompany = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBCompany);
     var TitleOBStock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.OBStock);
     var TitleBPay_Stock = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Stock);
-    
+
     // Bill Payable
     var TitleBPay_Tax = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Tax);
     var TitleBPay_Payable = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.BPay_Payable);
-    
+
     //Productuion
     var TitlePriductIN = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.ProductIN);
     var TitleProductOut = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.ProductOUT);
@@ -126,8 +126,8 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
-                                    <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.CompanyGLs">
-                                    <label for="SalesReport">Coampnay GL Accounts</label>
+                                    <input type="text" class="form-control" id="COALedgers" placeholder="COA for Party Ledgers" asp-for="@Model.Variables.CompanyGLs">
+                                    <label for="COALedgers">Companay GL Accounts</label>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -156,6 +156,15 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="COAStocks" placeholder="COA of Stocks" asp-for="@Model.Variables.COAStocks">
+                                    <label for="COAStock">COA for Stock in Hand</label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -291,16 +300,16 @@
                                 </div>
                             </div>
                             @* <div class="col-4">
-                                <div class="form-floating mb-1">
-                                    <select class="form-select" id="SelectReceivable" aria-label="Selection of Receivable Account" asp-for="@Model.Variables.BRec_Receivable">
-                                        <option selected>@TitleBPay_Payable</option>
-                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
-                                        {
-                                            <option value="@Item.Key">@Item.Value</option>
-                                        }
-                                    </select>
-                                    <label for="SelectReceivable">Receivable Account</label>
-                                </div>
+                            <div class="form-floating mb-1">
+                            <select class="form-select" id="SelectReceivable" aria-label="Selection of Receivable Account" asp-for="@Model.Variables.BRec_Receivable">
+                            <option selected>@TitleBPay_Payable</option>
+                            @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA))
+                            {
+                            <option value="@Item.Key">@Item.Value</option>
+                            }
+                            </select>
+                            <label for="SelectReceivable">Receivable Account</label>
+                            </div>
                             </div> *@
                         </div>
                     </div>

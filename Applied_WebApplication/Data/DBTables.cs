@@ -39,6 +39,7 @@ public enum Tables
     Inv_SubCategory = 303,
     Inv_Packing = 304,
     Inv_UOM = 305,
+    StockCategory = 319,
     FinishedGoods = 306,
     OBALStock = 308,
     BOMProfile = 309,
@@ -46,6 +47,7 @@ public enum Tables
     StockPositionData = 311,
     StockPosition = 312,
     StockPositionSUM = 313,
+    StockInHand = 320,
     view_Purchased = 314,
     view_Sold = 315,
     Production = 316,
@@ -75,7 +77,8 @@ public enum Tables
     Chk_BillReceivable2 = 702,
 
     TempLedger = 9999,
-
+    
+    
 }
 public enum CommandAction
 {
