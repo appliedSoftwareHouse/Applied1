@@ -14,7 +14,7 @@ namespace Applied_WebApplication.Data
         public StockLedgersClass(string _UserName)
         {
             UserName = _UserName;
-            StockCOA = AppRegistry.GetText(UserName, "Stock_COA");
+            StockCOA = AppRegistry.GetText(UserName, "COAStocks");
             Filter = AppRegistry.GetText(UserName, "sp-Filter");
         }
         #endregion
@@ -307,14 +307,14 @@ namespace Applied_WebApplication.Data
             foreach (int ID in ListStockItems)
             {
                 StockID = ID;
-                
+
                 var _StockTitle = "";
                 var _GroupTitle = "";
 
                 var _StockLedger = GenerateLedgerTable();
-                if (_StockLedger.Rows.Count > 0) 
-                { 
-                    _StockTitle = _StockLedger.Rows[0]["Title"].ToString(); 
+                if (_StockLedger.Rows.Count > 0)
+                {
+                    _StockTitle = _StockLedger.Rows[0]["Title"].ToString();
                     _GroupTitle = _StockLedger.Rows[0]["GTitle"].ToString();
                 }
                 _StockLedger.DefaultView.RowFilter = "Title='Total'";
@@ -553,36 +553,33 @@ namespace Applied_WebApplication.Data
         internal void SavetoDBTable(DataTable stockLedger)
         {
             DataTableClass StockTableClass = new DataTableClass(UserName, Tables.StockInHand);
-            StockTableClass.MyDataTable.Clear();
-
-            foreach (DataRow Row in stockLedger.Rows)
+            if (StockTableClass.MyDataTable != null)
             {
-                StockTableClass.NewRecord();
-                StockTableClass.CurrentRow["ID"] = 0;
-                StockTableClass.CurrentRow["StockID"] = Row["StockID"];
-                StockTableClass.CurrentRow["Vou_No"] = Row["Vou_No"];
-                StockTableClass.CurrentRow["Vou_Date"] = Row["Vou_Date"];
-                StockTableClass.CurrentRow["Title"] = Row["Title"];
-                StockTableClass.CurrentRow["GTitle"] = Row["GTitle"];
-                StockTableClass.CurrentRow["PRQty"] = (decimal)Row["PRQty"];
-                StockTableClass.CurrentRow["PRAmount"] = (decimal)Row["PRAmount"];
-                StockTableClass.CurrentRow["SLQty"] = (decimal)Row["SLQty"];
-                StockTableClass.CurrentRow["SLAmount"] = (decimal)Row["SLAmount"];
-                StockTableClass.CurrentRow["PDQty"] = (decimal)Row["PDQty"];
-                StockTableClass.CurrentRow["PDAmount"] = (decimal)Row["PDAmount"];
-                StockTableClass.CurrentRow["NetQty"] = (decimal)Row["NetQty"];
-                StockTableClass.CurrentRow["NetAmount"] = (decimal)Row["NetAmount"];
-                StockTableClass.CurrentRow["AvgRate"] = (decimal)Row["AvgRate"];
-                StockTableClass.CurrentRow["SoldCost"] = (decimal)Row["SoldCost"];
-                StockTableClass.Save();
+                StockTableClass.MyDataTable.Clear();
 
-
+                foreach (DataRow Row in stockLedger.Rows)
+                {
+                    StockTableClass.NewRecord();
+                    StockTableClass.CurrentRow["ID"] = 0;
+                    StockTableClass.CurrentRow["StockID"] = Row["StockID"];
+                    StockTableClass.CurrentRow["Vou_No"] = Row["Vou_No"];
+                    StockTableClass.CurrentRow["Vou_Date"] = Row["Vou_Date"];
+                    StockTableClass.CurrentRow["Title"] = Row["Title"];
+                    StockTableClass.CurrentRow["GTitle"] = Row["GTitle"];
+                    StockTableClass.CurrentRow["PRQty"] = (decimal)Row["PRQty"];
+                    StockTableClass.CurrentRow["PRAmount"] = (decimal)Row["PRAmount"];
+                    StockTableClass.CurrentRow["SLQty"] = (decimal)Row["SLQty"];
+                    StockTableClass.CurrentRow["SLAmount"] = (decimal)Row["SLAmount"];
+                    StockTableClass.CurrentRow["PDQty"] = (decimal)Row["PDQty"];
+                    StockTableClass.CurrentRow["PDAmount"] = (decimal)Row["PDAmount"];
+                    StockTableClass.CurrentRow["NetQty"] = (decimal)Row["NetQty"];
+                    StockTableClass.CurrentRow["NetAmount"] = (decimal)Row["NetAmount"];
+                    StockTableClass.CurrentRow["AvgRate"] = (decimal)Row["AvgRate"];
+                    StockTableClass.CurrentRow["SoldCost"] = (decimal)Row["SoldCost"];
+                    StockTableClass.Save();
+                }
+                StockTableClass.Dispose();
             }
-
-            StockTableClass.Dispose();
-
-
-
         }
         #endregion
     }

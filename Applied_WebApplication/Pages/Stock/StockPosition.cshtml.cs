@@ -32,7 +32,6 @@ namespace Applied_WebApplication.Pages.Stock
             Filter = $"Date(Vou_Date) < Date('{Date2}') ";
 
             AppRegistry.SetKey(UserName, "sp-Filter", Filter, KeyType.Text);
-            AppRegistry.SetKey(UserName, "Stock_COA", "6,7,8,43,44,45", KeyType.Text);
 
             MyTable = GenerateStockInHand(Filter);
            
@@ -44,7 +43,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
             var StockClass = new StockLedgersClass(UserName);
             var _Table = StockClass.GetStockInHand2();
-            StockClass.SavetoDBTable(_Table);
+            //StockClass.SavetoDBTable(_Table);
             return _Table;
             
         }
@@ -64,9 +63,10 @@ namespace Applied_WebApplication.Pages.Stock
         #region Print
         public IActionResult OnPostPrint(ReportType Option)
         {
-            AppRegistry.SetKey(UserName, "cCIHHead1", $"Stock in Hand", KeyType.Text);
-            AppRegistry.SetKey(UserName, "cCIHHead2", $"Position as on {Variables.Rpt_Date2.ToString(AppRegistry.FormatDate)}", KeyType.Text);
-            return RedirectToPage("../ReportPrint/PrintReport", "StockInHand", new { Option });
+            AppRegistry.SetKey(UserName, "cSIHHead1", $"Stock in Hand", KeyType.Text);
+            AppRegistry.SetKey(UserName, "cSIHHead2", $"Position as on {Variables.Rpt_Date2.ToString(AppRegistry.FormatDate)}", KeyType.Text);
+           //pRegisty.SetKey(UserName, "cSIHRptType", (int)Option, KeyType.Number);
+            return RedirectToPage("../ReportPrint/PrintReport", "StockInHand", new { RptOption = Option});
         }
         #endregion
 

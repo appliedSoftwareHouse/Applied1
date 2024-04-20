@@ -182,6 +182,7 @@ namespace AppReportClass
     {
         public string FilePath { get; set; } = string.Empty;
         public string FileName { get; set; } = string.Empty;
+        public string FileLink { get; set; } = string.Empty;
         public string FileExtention { get; set; } = string.Empty;
         public ReportType ReportType { get; set; } = ReportType.Preview;
         public string MimeType { get; set; } = string.Empty;
@@ -198,6 +199,12 @@ namespace AppReportClass
             }
             return string.Empty;
         }
+
+        public string GetFileLink()
+        {
+            return $"{FileLink}{FileName}{FileExtention}";
+        }
+
 
         public static string GetFileExtention(ReportType _ReportType)
         {

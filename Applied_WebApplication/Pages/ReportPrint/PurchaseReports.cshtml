@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Data;
+@using AppReportClass;
 @model Applied_WebApplication.Pages.ReportPrint.PurchaseReportsModel
 @{
     var UserName = User.Identity.Name;
@@ -11,6 +12,7 @@
     var TotAmount = 0.00M;
     var TotTaxAmount = 0.00M;
     var TotNetAmount = 0.00M;
+    
 
 }
 
@@ -52,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3  filter-select" style="background-color:aqua">
+            <div class="col-md-3  filter-select">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -62,7 +64,7 @@
                 </select>
             </div>
 
-            <div class="col-md-3  filter-select" style="background-color:lightblue">
+            <div class="col-md-3  filter-select">
                 <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Cities.Rows)
@@ -73,7 +75,7 @@
             </div>
 
 
-            <div class="col-md-3  filter-select" style="background-color:aliceblue">
+            <div class="col-md-3  filter-select">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Inventory.Rows)
@@ -83,7 +85,7 @@
                 </select>
             </div>
 
-            <div class="col-md-2" style="background-color:darkkhaki">
+            <div class="col-md-2">
                 <button type="submit" class="btn btn-primary justify-content-end">REFRESH</button>
             </div>
             
@@ -97,17 +99,35 @@
         {
             <div class="container">
                 <div class="row mb-2">
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm btn-w1" type="submit"
-                                asp-page-handler="Print">
-                            <i class="bi bi-printer"> Print</i>
-                        </button>
+                    <div class="col-1 col-width">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                                Print <i class="bi bi-printer"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Image">Image</button></li>
+                            </ul>
+                        </div>
                     </div>
-                    <div class="col-2">
-                        <button class="btn btn-primary btn-sm btn-w1" type="submit"
-                                asp-page-handler="PrintList">
-                            <i class="bi bi-printer"> List</i>
-                        </button>
+                    <div class="col-1 col-width">
+                        <div class="dropdown">
+                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                                Print List <i class="bi bi-printer"></i>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Word">Word</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Image">Image</button></li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

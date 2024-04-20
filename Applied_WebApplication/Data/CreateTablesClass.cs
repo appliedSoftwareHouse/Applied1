@@ -382,10 +382,10 @@ namespace Applied_WebApplication.Data
         private static void COA_Map(string UserName)
         {
             var Text = new StringBuilder();
-            Text.Append("CREATE TABLE[COA_Map](");
+            Text.Append("CREATE TABLE [COA_Map] (");
             Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
-            Text.Append("[COA] INT NOT NULL UNIQUE REFERENCES[COA]([ID]), ");
-            Text.Append("[Stock] INT NOT NULL REFERENCES[Inventory]([ID]));");
+            Text.Append("[COA] INT NOT NULL UNIQUE REFERENCES [COA] ([ID]), ");
+            Text.Append("[Stock] INT NOT NULL REFERENCES [Inventory] ([ID]));");
             var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
         }
@@ -584,4 +584,8 @@ namespace Applied_WebApplication.Data
 
         
     }
+
+    
+
+
 }
