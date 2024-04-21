@@ -423,69 +423,70 @@ namespace Applied_WebApplication.Data
         #endregion
 
 
-        public static bool CreateTempTable(string UserName, DataTable _Table, string RegistryKey)
+        public static async void CreateTempTable(string UserName, DataTable _Table, string RegistryKey)
         {
-            bool _IsCreatedTempTable;
-            if(_Table == null) { return false; }
-            try
+            await Task.Run(() =>
             {
-                _IsCreatedTempTable = false;
-                var _GUID = Guid.NewGuid(); ;
-                
-                AppRegistry.SetKey(UserName, RegistryKey, _GUID.ToString(), KeyType.Text);
-
-                var _Columns = _Table.Columns;
-                var _LastColumn = _Columns[_Columns.Count-1];
-                var _Text = new StringBuilder();
-                _Text.Append($"CREATE TABLE [{_GUID.ToString()}] (");
-
-                foreach (DataColumn _Column in _Columns)
+                if (_Table == null)
                 {
-                    var _Name = _Column.ColumnName;
-                    var _Type = _Column.DataType;
-                    var _ColumnType = string.Empty;
-
-                    if(_Type.Equals(typeof(int))) { _ColumnType = "INTEGER"; }
-                    if(_Type.Equals(typeof(string))) { _ColumnType = "NVARCHAR"; }
-                    if(_Type.Equals(typeof(DateTime))) { _ColumnType = "DATETIME"; }
-                    if(_Type.Equals(typeof(decimal))) { _ColumnType = "DECIMAL"; }
-                    if(_Type.Equals(typeof(double))) { _ColumnType = "DOUBLE"; }
-
-                    _Text.Append($"{_Name} {_ColumnType}");
-
-                    if(_Column != _LastColumn) { _Text.Append(", "); } else { _Text.Append(") "); }
-
-                }
-
-                _Text.Append(";");
-
-                var _Connection = ConnectionClass.AppConnection(UserName);
-                var _Command = new SQLiteCommand(_Text.ToString(),_Connection);
-                var _effacted = _Command.ExecuteNonQuery();
-                var _TempTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{_GUID}]");
-                var _Colummns = _Table.Columns;               
-
-
-                foreach(DataRow Row in _Table.Rows) 
-                {
-                    var _NewRow = _TempTable.NewRow();
-                    foreach(DataColumn _Column in _Columns)
+                    try
                     {
-                        _NewRow[_Column.ColumnName] = Row[_Column.ColumnName];
+                        var _GUID = Guid.NewGuid(); ;
+
+                        AppRegistry.SetKey(UserName, RegistryKey, _GUID.ToString(), KeyType.Text);
+
+                        var _Columns = _Table.Columns;
+                        var _LastColumn = _Columns[_Columns.Count - 1];
+                        var _Text = new StringBuilder();
+                        _Text.Append($"CREATE TABLE [{_GUID.ToString()}] (");
+
+                        foreach (DataColumn _Column in _Columns)
+                        {
+                            var _Name = _Column.ColumnName;
+                            var _Type = _Column.DataType;
+                            var _ColumnType = string.Empty;
+
+                            if (_Type.Equals(typeof(int))) { _ColumnType = "INTEGER"; }
+                            if (_Type.Equals(typeof(string))) { _ColumnType = "NVARCHAR"; }
+                            if (_Type.Equals(typeof(DateTime))) { _ColumnType = "DATETIME"; }
+                            if (_Type.Equals(typeof(decimal))) { _ColumnType = "DECIMAL"; }
+                            if (_Type.Equals(typeof(double))) { _ColumnType = "DOUBLE"; }
+
+                            _Text.Append($"{_Name} {_ColumnType}");
+
+                            if (_Column != _LastColumn) { _Text.Append(", "); } else { _Text.Append(") "); }
+
+                        }
+
+                        _Text.Append(";");
+
+                        var _Connection = ConnectionClass.AppConnection(UserName);
+                        var _Command = new SQLiteCommand(_Text.ToString(), _Connection);
+                        var _effacted = _Command.ExecuteNonQuery();
+                        var _TempTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{_GUID}]");
+                        var _Colummns = _Table.Columns;
+
+
+                        foreach (DataRow Row in _Table.Rows)
+                        {
+                            var _NewRow = _TempTable.NewRow();
+                            foreach (DataColumn _Column in _Columns)
+                            {
+                                _NewRow[_Column.ColumnName] = Row[_Column.ColumnName];
+                            }
+
+                            _Command = CreateInsertCommand(UserName, _NewRow, _GUID.ToString());
+                            var _Effected = _Command.ExecuteNonQuery();
+                        }
+
                     }
+                    catch (Exception)
+                    {
 
-                    _Command = CreateInsertCommand(UserName, _NewRow, _GUID.ToString());
-                    var _Effected = _Command.ExecuteNonQuery();
+                    }
                 }
+            });
 
-                _IsCreatedTempTable = true;
-            }
-            catch (Exception)
-            {
-                _IsCreatedTempTable = false;
-            }
-
-            return _IsCreatedTempTable;
         }
 
         public static SQLiteCommand CreateInsertCommand(string UserName, DataRow _Row, string _TableName)
@@ -523,9 +524,9 @@ namespace Applied_WebApplication.Data
 
         internal static void DropTempTable(string UserName, string TempTable)
         {
-            var _Command = new SQLiteCommand($"DROP TABLE [{TempTable}]",ConnectionClass.AppConnection(UserName));
+            var _Command = new SQLiteCommand($"DROP TABLE [{TempTable}]", ConnectionClass.AppConnection(UserName));
             _Command.ExecuteNonQuery();
-            
+
         }
 
 

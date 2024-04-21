@@ -66,7 +66,7 @@
                 {
                     string _Title = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Row["Product"]);
                     string _Date = AppFunctions.GetDate(Row["MFDate"], AppRegistry.FormatDate);
-
+                    
                     <tr>
                         <td>@Row["Batch"]</td>
                         <td>@_Date</td>

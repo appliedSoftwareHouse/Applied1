@@ -175,11 +175,11 @@ namespace Applied_WebApplication.Data
         }
 
 
-        public static DataRow NewRecord(string UserName, Tables _TableName)
-        {
-            DataTableClass _Table = new(UserName, _TableName);
-            return _Table.NewRecord();
-        }
+        //public static DataRow NewRecord(string UserName, Tables _TableName)
+        //{
+        //    DataTableClass _Table = new(UserName, _TableName);
+        //    return _Table.NewRecord();
+        //}
 
         // Get ID and title from Datatable without Filter
         public static Dictionary<int, string> Titles(string UserName, Tables _TableName)
@@ -202,7 +202,7 @@ namespace Applied_WebApplication.Data
 
             var Query = $"SELECT ID,Title FROM {_TableName} WHERE {_Filter} Order by Title ";
             var _Table = DataTableClass.GetTable(UserName, Query);
-            foreach(DataRow _Row in _Table.Rows)
+            foreach (DataRow _Row in _Table.Rows)
             {
                 Titles.Add((int)_Row["ID"], (string)_Row["Title"]);
             }
@@ -253,6 +253,22 @@ namespace Applied_WebApplication.Data
             return _List;
         }
 
+        public static async Task<Dictionary<int, string>> GetListAsync(string UserName, Tables _TableName, string Filter)
+        {
+            Dictionary<int, string> _List = new();
+            await Task.Run(() =>
+            {
+                DataTableClass _Table = new(UserName, _TableName);
+                _Table.MyDataView.RowFilter = Filter;
+                DataTable _TempTable = _Table.MyDataView.ToTable();
+
+                foreach (DataRow Row in _TempTable.Rows)
+                {
+                    _List.Add((int)Row["ID"], Row["Title"].ToString());
+                }
+            });
+            return _List;
+        }
 
         // Get Singal Title from DataTable by ID=??
         public static string GetTitle(string UserName, Tables _TableName, int ID)
@@ -276,14 +292,7 @@ namespace Applied_WebApplication.Data
 
         #region Compute
 
-        //public static int GetMax(string UserName, Tables _Table, string _Column, string _Filter)
-        //{
-        //    DataTableClass Table = new(UserName, _Table);
-        //    Table.MyDataView.RowFilter = _Filter;
-        //    if (Table.MyDataView.Count == 0) { return 0; }
-        //    else { return (int)Table.MyDataTable.Compute("Max(" + _Column + ")", _Filter); }
-        //}
-
+       
         public static object GetSum(string UserName, Tables _Table, string _Column, string _Filter)
         {
             DataTableClass Table = new(UserName, _Table);
