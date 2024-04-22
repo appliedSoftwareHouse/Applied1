@@ -22,7 +22,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DataTable SourceTable { get; set; }
         public DataTable Cities { get; set; }
 
-
         public void OnGet()
         {
             Variables = new()

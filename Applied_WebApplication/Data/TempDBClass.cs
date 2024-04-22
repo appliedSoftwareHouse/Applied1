@@ -231,6 +231,7 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Temp Table Flash / Clear / Delete All Records
         internal void TempTableFlash()
         {
             if (TempTable != null)
@@ -240,6 +241,7 @@ namespace Applied_WebApplication.Data
                 _Command.ExecuteNonQuery();
             }
         }
+        #endregion
 
         #region Delete
         public bool Delete()
@@ -423,15 +425,22 @@ namespace Applied_WebApplication.Data
         #endregion
 
 
+        #region Create & Load -  a GUID Temp Table / Insert Command / Drop GUID Temp Table.
+
         public static async void CreateTempTable(string UserName, DataTable _Table, string RegistryKey)
         {
+            // Delete GUID Temp Table is already exist....
+            var _GUIDTable = AppRegistry.GetText(UserName, RegistryKey);
+            DropTempTableAsync(UserName, _GUIDTable);
+            // End deletion of Temp Table....
+
             await Task.Run(() =>
             {
-                if (_Table == null)
+                if (_Table is not null)
                 {
                     try
                     {
-                        var _GUID = Guid.NewGuid(); ;
+                        var _GUID = Guid.NewGuid(); 
 
                         AppRegistry.SetKey(UserName, RegistryKey, _GUID.ToString(), KeyType.Text);
 
@@ -479,6 +488,24 @@ namespace Applied_WebApplication.Data
                             var _Effected = _Command.ExecuteNonQuery();
                         }
 
+                        _TempTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{_GUID}]");
+
+                        var Equal = true;
+                        if (_TempTable.Rows.Count.Equals(_Table.Rows.Count))
+                        {
+                            Equal = true;
+                        }
+                        else
+                        {
+                            Equal = false;
+                        }
+
+                        if(!Equal)
+                        {
+                            var Message = "Table is not equal....";
+                        }
+
+
                     }
                     catch (Exception)
                     {
@@ -522,10 +549,36 @@ namespace Applied_WebApplication.Data
             return _Command;
         }
 
-        internal static void DropTempTable(string UserName, string TempTable)
+        public static async void DropTempTableAsync(string UserName, string TempTable)
         {
-            var _Command = new SQLiteCommand($"DROP TABLE [{TempTable}]", ConnectionClass.AppConnection(UserName));
-            _Command.ExecuteNonQuery();
+            await Task.Run(() =>
+            {
+                var _Command = new SQLiteCommand(ConnectionClass.AppConnection(UserName));
+
+                _Command.CommandText = $"SELECT name FROM [sqlite_master] WHERE type='table' AND name = '{TempTable}'";
+                var _TempTableIsExist = _Command.ExecuteScalarAsync().Result;
+
+                if (_TempTableIsExist != null)
+                {
+                    _Command.CommandText = $"DROP TABLE [{TempTable}]";
+                    _Command.ExecuteNonQuery();
+                }
+            });
+        }
+        #endregion
+
+        public static async Task<DataTable> LoadTempTableAsync(string UserName, string TempTable)
+        {
+            var _DataTable = new DataTable();
+            await Task.Run(() =>
+            {
+                _DataTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{TempTable}]");
+                DropTempTableAsync(UserName, TempTable);
+
+            }) ;
+
+            
+            return _DataTable;
 
         }
 

@@ -11,7 +11,8 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
-    public class COAListModel : PageModel
+    //public class COAListModel : PageModel
+    public class ReportPrintModel : PageModel
     {
         #region Setup
         [BindProperty]
@@ -32,7 +33,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #endregion
 
-        #region Get Reports.
+        #region Get
 
         public void OnGet()
         {
@@ -491,7 +492,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 // Generate / Obtain Report Data from Temp Table....
                 var _TempTable = GetText(UserName, "pRptTemp");
                 var _SourceTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{_TempTable}]");
-                TempDBClass.DropTempTable(UserName,_TempTable);   // Drop / Delete Temp Table from DB.
+                if(_SourceTable == null) { return Page(); }
+
+
+                TempDBClass.DropTempTableAsync(UserName,_TempTable);   // Drop / Delete Temp Table from DB.
                 // End Generate Report Data
 
                 var _Heading1 = GetText(UserName, "pRptHeading1");
@@ -541,53 +545,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             return Page();
         }
-
-        public IActionResult xOnGetPurchaseRegister(ReportType RptType)
-        {
-            PurchaseReportsModel model = new();
-            model.Variables = new()
-            {
-                StartDate = GetDate(UserName, "pRptDate1"),
-                EndDate = GetDate(UserName, "pRptDate2"),
-                AllCompany = GetBool(UserName, "pRptComAll"),
-                AllInventory = GetBool(UserName, "pRptStockAll"),
-                CompanyID = GetNumber(UserName, "pRptCompany"),
-                City = GetText(UserName, "pRptCity"),
-                InventoryID = GetNumber(UserName, "pRptInventory"),
-                Heading1 = GetText(UserName, "pRptHeading1"),
-                Heading2 = GetText(UserName, "pRptHeading2"),
-                ReportFile = GetText(UserName, "pRptName"),
-            };
-
-            var _Filter = model.GetFilter(model.Variables);
-            var _OrderBy = "[Vou_Date],[Vou_No]";
-            var _SQLQuery = SQLQuery.PurchaseRegister(_Filter);
-            var _SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, _OrderBy);
-            var PurchaseRegister = new ReportClass
-            {
-                AppUser = User,
-                ReportFilePath = AppGlobals.ReportPath,
-                ReportFile = model.Variables.ReportFile,
-                ReportDataSet = "ds_PurchaseRegister",
-                ReportSourceData = _SourceTable,
-                RecordSort = "[Company], [Vou_Date], [Vou_No]",
-
-                OutputFilePath = AppGlobals.PrintedReportPath,
-                OutputFile = "PurchaseRegister",
-                OutputFileLinkPath = AppGlobals.PrintedReportPathLink
-            };
-
-            PurchaseRegister.RptParameters.Add("CompanyName", CompanyName);
-            PurchaseRegister.RptParameters.Add("Heading1", model.Variables.Heading1);
-            PurchaseRegister.RptParameters.Add("Heading2", model.Variables.Heading2);
-            PurchaseRegister.RptParameters.Add("Footer", AppGlobals.ReportFooter);
-            ReportLink = PurchaseRegister.GetReportLink();
-            IsShowPdf = !PurchaseRegister.IsError;
-            if (!IsShowPdf) { ErrorMessages.Add(SetMessage(PurchaseRegister.MyMessage)); }
-            return Page();
-
-
-        }
+       
         #endregion
 
         #region ExpenseSheet
@@ -895,9 +853,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Stock in Hand
-
-       
-
         public IActionResult OnGetStockInHand(ReportType RptOption)
         {
             try
@@ -922,12 +877,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Reportmodel.AddReportParameter("Heading2", _Heading2);
                 Reportmodel.AddReportParameter("Footer", ReportFooter);
 
-                var StockClass = new StockLedgersClass(UserName);
+                var _SourceData = TempDBClass.LoadTempTableAsync(UserName, GetText(UserName, "stkInHand")).Result;
 
                 Reportmodel.ReportData.DataSetName = "ds_StockInHand";
-                Reportmodel.ReportData.ReportTable = StockClass.GetStockInHand2(); // Data Filter will apply by registry variables. FYI
+                Reportmodel.ReportData.ReportTable = _SourceData;
 
-                if (Reportmodel.ReportRender())         // Render a report for preview or download...
+                if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
                 {
                     if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
                     {
@@ -951,5 +906,64 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
         #endregion
+
+        #region Stock Ledger
+        public IActionResult OnGetStockLedger(ReportType RptOption)
+        {
+            try
+            {
+                // Generate / Obtain Report Data from Temp Table....
+                var _TempTable = GetText(UserName, "stkLedData");
+                var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
+                var _ReportFile = GetText(UserName, "stkLedger");
+                if (_SourceTable == null) { return Page(); }
+
+                var _Heading1 = GetText(UserName, "stkLedHead1");
+                var _Heading2 = GetText(UserName, "stkLedHead2");
+
+                ReportModel Reportmodel = new ReportModel();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = _ReportFile;
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                Reportmodel.OutputReport.FileName = _ReportFile;
+                Reportmodel.OutputReport.ReportType = RptOption;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_StockLedger";
+                Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI
+
+                if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        ReportLink = Reportmodel.OutputReport.GetFileLink();
+                        IsShowPdf = true;
+                        return Page();
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+        }
+
+        #endregion
+
     }
 }

@@ -118,14 +118,14 @@
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text hd-w30" id="txtRate">Rate</span>
-                        <input type="number" step=".01" id="_Rate" class="form-control" asp-for="@Model.Variables.Rate"
+                        <input type="number" step=".000001" id="_Rate" class="form-control" asp-for="@Model.Variables.Rate"
                                placeholder="Rate" aria-label="Rate" aria-describedby="Rate">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text hd-w30" id="txtAmount">Amount</span>
-                        <input type="number" step=".01" class="form-control" id="_Amount" asp-for="@Model.Variables.Amount"
+                        <input type="number" step=".000001" class="form-control" id="_Amount" asp-for="@Model.Variables.Amount"
                                placeholder="Amount" aria-label="Amount" aria-describedby="Amount">
                     </div>
                 </div>
@@ -169,6 +169,7 @@
                             var _Qty = Conversion.ToDecimal(Row["Qty"]).ToString(NumberFormat);
                             var _Rate = Conversion.ToDecimal(Row["Rate"]).ToString(NumberFormat);
                             var _Amount = Conversion.ToDecimal(Row["Amount"]).ToString(NumberFormat);
+                            var _Posted = Row["Status"].ToString();
 
                             <tr>
                                 <td>@Row["Batch"]</td>
@@ -178,10 +179,23 @@
                                 <td>@_Rate</td>
                                 <td>@_Amount</td>
                                 <td>@Row["Remarks2"]</td>
-                                <td>
-                                    <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-ID2="@Row["ID2"]"><i class="bi bi-pencil-fill"></i></button>                            |
-                                    <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-ID2="@Row["ID2"]"><i class="bi bi-trash-fill"></i></button>
-                                </td>
+
+                                @if(_Posted == "Posted")
+                                {
+                                    <td class="lbl-posted">
+                                        Posted
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>
+                                        <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-ID2="@Row["ID2"]"><i class="bi bi-pencil-fill"></i></button>                            |
+                                        <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-ID2="@Row["ID2"]"><i class="bi bi-trash-fill"></i></button>
+                                    </td>
+                                }
+
+
+                                
                             </tr>
                         }
                     }

@@ -270,6 +270,7 @@ namespace Applied_WebApplication.Pages.Stock
         public decimal Qty { get; set; }
         public int UOM { get; set; }
         public decimal Rate { get; set; }
+        public string Status { get; set; }
         public decimal Amount => Qty * Rate;
 
 
