@@ -8,14 +8,10 @@
     string NumberFormat = AppRegistry.GetFormatCurrency(UserName);
     string DateFormat = AppRegistry.GetFormatDate(UserName);
 
-    
-
     string TitleStock = "";
     string TitleInOut = "";
-
+    decimal Tot_Amount = 0.00M;
 }
-
-
 
 @if (Model.IsError)
 {
@@ -159,8 +155,8 @@
                         <th style="width:10%">Qty</th>
                         <th style="width:10%">Rate</th>
                         <th style="width:10%">Amount</th>
-                        <th style="width:30%">Remarks</th>
-                        <th style="width:5%">..</th>
+                        <th style="width:25%">Remarks</th>
+                        <th style="width:10%">..</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -171,7 +167,13 @@
                             var _Qty = Conversion.ToDecimal(Row["Qty"]).ToString(NumberFormat);
                             var _Rate = Conversion.ToDecimal(Row["Rate"]).ToString(NumberFormat);
                             var _Amount = Conversion.ToDecimal(Row["Amount"]).ToString(NumberFormat);
-                            var _Posted = Row["Status"].ToString();
+                            var _Flow = Row["Flow"].ToString();
+
+                            if (_Flow == "In") { Tot_Amount -= Conversion.ToDecimal(Row["Amount"]); }
+                            if (_Flow == "Out") { Tot_Amount += Conversion.ToDecimal(Row["Amount"]); }
+
+
+                            //var _Posted = Row["Status"].ToString();
 
                             <tr>
                                 <td>@Row["Batch"]</td>
@@ -181,27 +183,36 @@
                                 <td>@_Rate</td>
                                 <td>@_Amount</td>
                                 <td>@Row["Remarks2"]</td>
+                                <td>
+                                    @if (_Flow == "Out")
+                                    {
+                                        <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Equal" asp-route-ID2="@Row["ID2"]"><i class="bi bi-sort-numeric-down-alt"></i>
+                                        </button>
+                                    }
+                                    else
+                                    {
+                                        <label><i class="bi bi-record"></i></label>
+                                    }
 
-                                @if(_Posted == "Posted")
-                                {
-                                    <td class="lbl-posted">
-                                        Posted
-                                    </td>
-                                }
-                                else
-                                {
-                                    <td>
-                                        <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-ID2="@Row["ID2"]"><i class="bi bi-pencil-fill"></i></button>                            |
-                                        <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-ID2="@Row["ID2"]"><i class="bi bi-trash-fill"></i></button>
-                                    </td>
-                                }
-
-
-                                
+                                    <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-ID2="@Row["ID2"]"><i class="bi bi-pencil-fill"></i></button>
+                                    <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-ID2="@Row["ID2"]"><i class="bi bi-trash-fill"></i></button>
+                                </td>
                             </tr>
                         }
                     }
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td>@Tot_Amount.ToString(NumberFormat)</td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </form>
