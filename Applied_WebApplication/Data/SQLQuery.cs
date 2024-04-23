@@ -1089,15 +1089,29 @@ namespace Applied_WebApplication.Data
             Text.Append("([P2].[Qty] * [P2].[Rate]) AS [Amount],");
             Text.Append("[P2].[Remarks] AS [Remarks2], ");
             Text.Append("[I].[Title] AS [StockTitle], ");
-            Text.Append("[U].[Code] As [UnitTag], [U].[Title] As [UnitTitle] ");
+            Text.Append("[U].[Code] As [UnitTag], [U].[Title] As [UnitTitle], ");
+            Text.Append("IIF (LENGTH ([L].[Vou_No]) > 0, 'Posted', 'Submitted') AS [Status] ");
             Text.Append("FROM [Production2] [P2]");
-            Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID]");
-            Text.Append("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
-            Text.Append("LEFT JOIN [Inv_UOM] [U] ON [U].[ID] = [I].[UOM]");
-            
+            Text.Append("LEFT JOIN [Production] [P1] ON [P2].[TranID] = [P1].[ID] ");
+            Text.Append("LEFT JOIN [Inventory]  [I]  ON [I].[ID]      = [P2].[Stock] ");
+            Text.Append("LEFT JOIN [Inv_UOM]    [U]  ON [U].[ID]      = [I].[UOM] ");
+            Text.Append("LEFT JOIN [Ledger]     [L]  ON [L].[Vou_No]  = [P1].[Vou_No] ");
+
             return Text.ToString();
         }
 
+        public static string List_Production()
+        {
+            {
+                var Text = new StringBuilder();
+                Text.Append("SELECT [Vou_Date],[Vou_No],[Batch],[Remarks],[Status],");
+                Text.Append("SUM(IIF(Flow = 'In', Qty, 0))[QtyIn],");
+                Text.Append("SUM(IIF(Flow = 'Out', Qty, 0))[QtyOut] ");
+                Text.Append($"FROM ({View_Production()})");
+                Text.Append("GROUP BY [Vou_No]");
+                return Text.ToString();
+            }
+        }
         #endregion
 
         #region Posting Production list
@@ -1192,12 +1206,12 @@ namespace Applied_WebApplication.Data
             Text.Append("LEFT JOIN [COA] [A] ON [A].[ID] = [L].[COA] ");
             Text.Append("GROUP BY [Customer],[COA] ");
             Text.Append("ORDER BY [CustomerName],[Account] ) AS [TBCustomer] ");
-            
+
             return Text.ToString();
         }
         #endregion
 
-       
+
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

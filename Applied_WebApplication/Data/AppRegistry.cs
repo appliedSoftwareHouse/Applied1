@@ -63,7 +63,9 @@ namespace Applied_WebApplication.Data
         public static string GetFormatCurrency(string UserName)
         {
             if (UserName == null || UserName == string.Empty) { return string.Empty; }
-            return GetText(UserName, "FMTCurrency");
+            var _Format = GetText(UserName, "FMTCurrency");
+            if(_Format.Length==0) { _Format = FormatCurrency1; }
+            return _Format;
         }
         public static string GetFormatDate(string UserName)
         {

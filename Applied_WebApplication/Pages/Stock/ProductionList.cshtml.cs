@@ -17,7 +17,7 @@ namespace Applied_WebApplication.Pages.Stock
         public void OnGet()
         {
             GetVariables();
-            tb_Production = DataTableClass.GetTable(UserName, Tables.Production);
+            tb_Production = DataTableClass.GetTable(UserName, SQLQuery.List_Production());
         }
 
         #region Set & Get Variables Values
@@ -39,7 +39,6 @@ namespace Applied_WebApplication.Pages.Stock
             Variables.Search = AppRegistry.GetText(UserName, "prdSearch");
         }
         #endregion
-
 
         #region POST Method
         public void OnPostFilter()

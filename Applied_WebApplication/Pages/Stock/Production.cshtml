@@ -8,6 +8,8 @@
     string NumberFormat = AppRegistry.GetFormatCurrency(UserName);
     string DateFormat = AppRegistry.GetFormatDate(UserName);
 
+    
+
     string TitleStock = "";
     string TitleInOut = "";
 
@@ -125,7 +127,7 @@
                 <div class="col-md-4">
                     <div class="input-group mb-3">
                         <span class="input-group-text hd-w30" id="txtAmount">Amount</span>
-                        <input type="number" step=".000001" class="form-control" id="_Amount" asp-for="@Model.Variables.Amount"
+                        <input type="number" step=".01" class="form-control" id="_Amount" asp-for="@Model.Variables.Amount"
                                placeholder="Amount" aria-label="Amount" aria-describedby="Amount">
                     </div>
                 </div>
