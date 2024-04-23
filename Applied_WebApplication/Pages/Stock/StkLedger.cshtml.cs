@@ -13,7 +13,9 @@ namespace Applied_WebApplication.Pages.Stock
         public string UserName => User.Identity.Name;
         public string Filter => AppRegistry.GetText(UserName, "sp-Filter");   // sp=Stock Position
         public int StockID => AppRegistry.GetNumber(UserName, "sp-StockID");   // sp=Stock Position
-        public DataTable StockLedger { get; set; }
+        public DataTable StockLedger {  get; set; }
+        public string StockTitle { get; set; } = string.Empty;
+        public string Heading { get; set; } = string.Empty;
 
 
         public void OnGet()
@@ -22,6 +24,8 @@ namespace Applied_WebApplication.Pages.Stock
             StockClass.Filter = Filter;
             StockClass.StockID = StockID;
             StockLedger = StockClass.GenerateLedgerTable();
+            StockTitle = AppFunctions.GetTitle(UserName, Tables.Inventory, StockID);
+            Heading = AppRegistry.GetText(UserName, "stkLedHead2");
         }
 
 

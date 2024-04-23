@@ -44,7 +44,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _SQLQuery = SQLQuery.PurchaseRegister(_Filter,_OrderBy);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery);
 
-            TempDBClass.CreateTempTable(UserName, SourceTable, "pRptTemp");
+            
 
         }
 
@@ -89,7 +89,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
             SetKeys();
             AppRegistry.SetKey(UserName, "pRptName", "PurchaseRegister3", KeyType.Text);
-            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister", new { RptOption = Option });
+            return RedirectToPage("/ReportPrint/PrintReport", "PurchaseRegister", new { RptType = Option });
         }
 
 

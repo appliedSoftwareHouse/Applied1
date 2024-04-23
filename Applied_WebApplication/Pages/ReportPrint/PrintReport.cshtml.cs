@@ -491,11 +491,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 
                 // Generate / Obtain Report Data from Temp Table....
                 var _TempTable = GetText(UserName, "pRptTemp");
-                var _SourceTable = DataTableClass.GetTable(UserName, $"SELECT * FROM [{_TempTable}]");
-                if(_SourceTable == null) { return Page(); }
-
-
-                TempDBClass.DropTempTableAsync(UserName,_TempTable);   // Drop / Delete Temp Table from DB.
+                var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
+                if(_SourceTable.DataSet == null) {return Page();}
                 // End Generate Report Data
 
                 var _Heading1 = GetText(UserName, "pRptHeading1");
