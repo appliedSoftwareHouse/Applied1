@@ -173,10 +173,66 @@ namespace Applied_WebApplication.Data
                 _Result = true;
             }
 
+            return _Result;
 
+        }
+
+        internal static bool UnpostProduction(string UserName, int ID)
+        {
+            var _Result = false;
+            var _VouType = VoucherType.Production.ToString();
+            var _Filter = $"[Vou_Type] = '{_VouType}' AND [TranID] = {ID}";
+            var _LedgerClass = new DataTableClass(UserName, Tables.Ledger, _Filter);
+            var _LedgerTable = _LedgerClass.MyDataTable;
+
+            if (_LedgerTable.Rows.Count >= 2)
+            {
+                var _VouNo = _LedgerTable.Rows[0]["Vou_No"].ToString();
+                foreach(DataRow Row in _LedgerTable.Rows)
+                {
+                    if (Row["Vou_No"].ToString() == _VouNo)
+                    {
+                        _LedgerClass.CurrentRow = Row;
+                        _LedgerClass.Delete();
+                        
+                    }
+                    _Result = true;
+                }
+            }
 
             return _Result;
 
+            //try
+            //{
+            //    if (BillReceivable.CountView == 1)
+            //    {
+            //        if (tb_Ledger.Rows.Count > 0)
+            //        {
+            //            foreach (DataRow Row in tb_Ledger.Rows)
+            //            {
+            //                if (Ledger.Seek((int)Row["ID"]))
+            //                {
+            //                    Ledger.SeekRecord((int)Row["ID"]);
+            //                    Ledger.Delete();
+            //                }
+            //            }
+            //            if (BillReceivable.Seek(ID))
+            //            {
+            //                BillReceivable.SeekRecord(ID);
+            //                BillReceivable.Replace(ID, "Status", VoucherStatus.Submitted);
+            //            }
+            //            _Result = true;
+            //        }
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    _Result = true;
+            //}
+
+
+
+            //return _Result;
         }
         #endregion
     }

@@ -1127,7 +1127,7 @@ namespace Applied_WebApplication.Data
 
         #region Posting Production list
 
-        public static string PostProductionList(string _Filter)
+        public static string PostProductionList(string _Filter, string PostType)
         {
             var Text = new StringBuilder();
 
@@ -1141,7 +1141,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[Status] ");
             Text.Append($"FROM ({View_Production()} ");
             Text.Append($"WHERE {_Filter}) AS [PD]");
-            Text.Append("WHERE [Status] = 'Submitted'");
+            Text.Append($"WHERE [Status] = '{PostType}'");
             Text.Append("GROUP BY [Vou_No]");
             return Text.ToString();
         }

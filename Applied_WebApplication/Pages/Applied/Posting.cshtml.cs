@@ -78,7 +78,7 @@ namespace Applied_WebApplication.Pages.Applied
                 case 10:
                          // Production Process
                     Filter = $"Date([P1].[Vou_Date]) > Date('{Date1}') AND Date([P1].[Vou_Date]) < Date('{Date2}')";
-                    PostTable = GetTable(UserName, SQLQuery.PostProductionList(Filter));
+                    PostTable = GetTable(UserName, SQLQuery.PostProductionList(Filter, "Submitted"));
 
                     break;
 

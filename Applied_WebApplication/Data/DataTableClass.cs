@@ -544,7 +544,7 @@ namespace Applied_WebApplication.Data
             MyDataView.RowFilter = Filter;                              // Restore Filter values to Data View.
             return row;
         }
-        internal bool Seek(string _Column, string _ColumnValue)                     // Search a specific colum by specific valu.
+        public bool Seek(string _Column, string _ColumnValue)                     // Search a specific colum by specific valu.
         {
             bool _result = true;
             string _Filter = MyDataView.RowFilter;
