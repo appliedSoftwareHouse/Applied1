@@ -32,6 +32,7 @@ namespace Applied_WebApplication.Pages.Stock
             Filter = $"Date(Vou_Date) < Date('{Date2}') ";
 
             AppRegistry.SetKey(UserName, "sp-Filter", Filter, KeyType.Text);
+            AppRegistry.SetKey(UserName, "stkLedData", Date2, KeyType.Date);
 
             MyTable = GenerateStockInHand(Filter);
            
@@ -43,7 +44,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
             var StockClass = new StockLedgersClass(UserName);
             var _Table = StockClass.GetStockInHand2();
-            //StockClass.SavetoDBTable(_Table);
+            //StockClass.SavetoDBTable(_Table);   Do not Delete.   Testing purpose.
             return _Table;
             
         }

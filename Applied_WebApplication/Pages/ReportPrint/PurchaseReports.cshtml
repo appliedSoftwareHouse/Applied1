@@ -12,18 +12,25 @@
     var TotAmount = 0.00M;
     var TotTaxAmount = 0.00M;
     var TotNetAmount = 0.00M;
-    
 
+    TempDBClass.CreateTempTable(UserName, Model.SourceTable, "pRptTemp");
 }
 
 <style>
-    .input-group mb-3 {
-        width: 80%
-    }
+.col-md-3{
+    width:20%
+}    
 
-    .form-control {
-        width: 20%
-    }
+.col-md-2{
+    width:15%
+}
+
+.col-md-1{
+    width:10%
+}
+.btn-print-width{
+    width:100px;
+}
 
 </style>
 
@@ -32,21 +39,17 @@
 </div>
 
 <form method="post">
-
-
-
     <div class="container">
-        <div class="row d-flex mb-2">
+        <div class="row mb-2">
 
-            <div class="col-md-3 date-width">
+            <div class="col-md-3">
                 <div class="input-group date-group">
                     <span class="input-group-text date-title" id="StartDate">Start</span>
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
                            placeholder="Start Date" aria-label="Start Date" aria-describedby="StartDate">
                 </div>
             </div>
-
-            <div class="col-md-3 date-width">
+            <div class="col-md-3">
                 <div class="input-group date-group">
                     <input type="date" class="form-control date-date" asp-for="@Model.Variables.EndDate"
                            placeholder="End Date" aria-label="End Date" aria-describedby="Enddate">
@@ -54,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="col-md-3  filter-select">
+            <div class="col-md-2">
                 <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Customers.Rows)
@@ -64,7 +67,7 @@
                 </select>
             </div>
 
-            <div class="col-md-3  filter-select">
+            <div class="col-md-2">
                 <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Cities.Rows)
@@ -74,8 +77,7 @@
                 </select>
             </div>
 
-
-            <div class="col-md-3  filter-select">
+            <div class="col-md-2">
                 <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
                     <option selected>Select All</option>
                     @foreach (DataRow Row in Model.Inventory.Rows)
@@ -85,11 +87,44 @@
                 </select>
             </div>
 
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary justify-content-end">REFRESH</button>
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary">REFRESH</button>
             </div>
-            
 
+        </div>
+
+        <div class="row mb-2" >
+            <div class="col-1 btn-print-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Image">Image</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="col-1 btn-print-width">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                        Print List <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Word">Word</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                        <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Image">Image</button></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -97,40 +132,7 @@
     {
         if (Model.SourceTable.Rows.Count > 0)
         {
-            <div class="container">
-                <div class="row mb-2">
-                    <div class="col-1 col-width">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
-                                Print <i class="bi bi-printer"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Image">Image</button></li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-1 col-width">
-                        <div class="dropdown">
-                            <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
-                                Print List <i class="bi bi-printer"></i>
-                            </button>
-                            <ul class="dropdown-menu">
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Preview">Preview</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.PDF">PDF</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Excel">Excel</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Word">Word</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.HTML">HTML</button></li>
-                                <li><button class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Image">Image</button></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+
 
 
             <table>

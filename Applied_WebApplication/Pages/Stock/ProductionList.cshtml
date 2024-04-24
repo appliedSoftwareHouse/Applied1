@@ -63,11 +63,13 @@
         <table class="table-list">
             <thead>
                 <tr>
-                    <th>Vou No</th>
-                    <th>Date</th>
-                    <th>Batch</th>
-                    <th>Remarks</th>
-                    <th><button type="submit" asp-page-handler="New"><i class="bi bi-database-fill-add"></i></button></th>
+                    <th style="width:12%">Vou No</th>
+                    <th style="width:12%">Date</th>
+                    <th style="width:12%">Batch</th>
+                    <th style="width:10%">Qty In</th>
+                    <th style="width:10%">Qty Out</th>
+                    <th style="width:30%">Remarks</th>
+                    <th style="width:14%"><button type="submit" asp-page-handler="New"><i class="bi bi-database-fill-add"></i></button></th>
                 </tr>
             </thead>
             <tbody>
@@ -76,16 +78,29 @@
                     @foreach (DataRow Row in Model.tb_Production.Rows)
                     {
                         var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                        var _In = decimal.TryParse(Row["QtyIn"].ToString(), out decimal _QtyIn);
+                        var _Out = decimal.TryParse(Row["QtyOut"].ToString(), out decimal _QtyOut);
+                        var _Posted = Row["Status"].ToString();
 
                         <tr>
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
                             <td>@Row["Batch"]</td>
-                          <td>@Row["Remarks"]</td>
-                            <td>
-                                <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button>                            |
-                                <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>
-                            </td>
+                            <td>@_QtyIn.ToString(NumberFormat)</td>
+                            <td>@_QtyOut.ToString(NumberFormat)</td>
+                            <td>@Row["Remarks"]</td>
+
+                            @if (_Posted == "Posted")
+                            {
+                                <Label>Posted</Label>
+                            }
+                            else
+                            {
+                                <td>
+                                    <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button>                            |
+                                    <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>
+                                </td>
+                            }
                         </tr>
                     }
                 }

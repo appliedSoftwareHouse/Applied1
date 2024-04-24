@@ -1,14 +1,10 @@
-﻿using Applied_WebApplication.Pages.Stock;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.Reporting.Map.WebForms.BingMaps;
+﻿using Applied_WebApplication.Pages.Accounts;
 using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
-using System.Xml.Linq;
 using static Applied_WebApplication.Data.MessageClass;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Data
 {
@@ -412,6 +408,35 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Stock in Hand
+        private static void StockInHand(string UserName)
+        {
+            var Text = new StringBuilder();
+            Text.Append("CREATE TABLE [StockInHand] (");
+            Text.Append("[StockID] INT, ");
+            Text.Append("[GTitle]  NVARCHAR(100),");
+            Text.Append("[Vou_No]  NVARCHAR(15),");
+            Text.Append("[Vou_Date] DATETIME,");
+            Text.Append("[Title] NVARCHAR(100),");
+            Text.Append("[PRQty] DECIMAL,");
+            Text.Append("[PRAmount] DECIMAL,");
+            Text.Append("[SLQty] DECIMAL,");
+            Text.Append("[SLAmount] DECIMAL,");
+            Text.Append("[PDQty] DECIMAL,");
+            Text.Append("[PQAmount] DECIMAL,");
+            Text.Append("[NetQty] DECIMAL,");
+            Text.Append("[NetAmount] DECIMAL,");
+            Text.Append("[AvgRate] DECIMAL,");
+            Text.Append("[SoldCost] DECIMAL)");
+            var Command = new SQLiteCommand(Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+
+        }
+
+        #endregion
+
+
+
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data
@@ -514,6 +539,9 @@ namespace Applied_WebApplication.Data
                     break;
                 case Tables.StockCategory:
                     StockCategory(UserName);
+                    break;
+                case Tables.StockInHand:
+                    StockInHand(UserName);
                     break;
                 case Tables.FinishedGoods:
                     break;

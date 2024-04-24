@@ -30,6 +30,8 @@
         Model.Cheque.TaxRate2 = (decimal.Parse(GetColumnValue(UserName, Tables.Taxes, "Rate", Model.Cheque.TaxID2)));
         Model.Cheque.TaxAmount2 = Model.Cheque.TaxableAmount2 * (Model.Cheque.TaxRate2 / 100.00M);
     }
+
+    Dictionary<int, string> BankList = GetListAsync(UserName, Tables.COA, $"Nature={BankNatureID}").Result;
 }
 
 <style>
@@ -93,7 +95,7 @@
                     </div>
                     <select class="form-select" id="ChequeBank" name="Bank" asp-for="@Model.Cheque.Bank">
                         <option selected>@TitleBank</option>
-                        @foreach (KeyValuePair<int, string> item in GetList(UserName, Tables.COA, "Nature=" + BankNatureID.ToString()))
+                        @foreach (KeyValuePair<int, string> item in  GetList(UserName, Tables.COA, "Nature=" + BankNatureID.ToString()))
                         {
                             <option value=@item.Key>@item.Value</option>
                         }

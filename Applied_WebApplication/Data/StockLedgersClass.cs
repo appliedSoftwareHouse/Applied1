@@ -6,16 +6,24 @@ namespace Applied_WebApplication.Data
     public class StockLedgersClass
     {
         public int StockID { get; set; }
-        public string StockCOA { get; set; }
-        public string Filter { get; set; }
-        public string UserName { get; set; }
+        public string StockCOA { get; set; } = string.Empty;
+        public string Filter { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public DateTime UptoDate { get; set; } = DateTime.Now;
+        public List<Message> Messages { get; set; } = new();
 
         #region Constructor
         public StockLedgersClass(string _UserName)
         {
+            Messages = new();
             UserName = _UserName;
             StockCOA = AppRegistry.GetText(UserName, "COAStocks");
             Filter = AppRegistry.GetText(UserName, "sp-Filter");
+
+            if(UserName.Length==0) { Messages.Add(MessageClass.SetMessage("User is not proper define for report."));}
+            if(StockCOA.Length==0) { Messages.Add(MessageClass.SetMessage("Chart of accounts for stock reporting not assigned.")); }
+            if(Filter.Length==0) { Messages.Add(MessageClass.SetMessage("Report Filter is empty...")); }
+
         }
         #endregion
 

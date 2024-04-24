@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Data.SQLite;
 
 namespace Applied_WebApplication.Pages.Stock
 {
@@ -94,15 +95,15 @@ namespace Applied_WebApplication.Pages.Stock
             if (ID2 > 0)
             {
                 Class_Products2 = new DataTableClass(UserName, Tables.Production2, $"ID = {ID2}");
-                if(Class_Products2.CountTable > 0)
+                if (Class_Products2.CountTable > 0)
                 {
                     _ID1 = (int)Class_Products2.CurrentRow["TranID"];
                     Class_Products2.SeekRecord(ID2);
-                    if(Class_Products2.IsFound)
+                    if (Class_Products2.IsFound)
                     {
                         Class_Products2.Delete();
                         Class_Products2 = new DataTableClass(UserName, Tables.Production2, $"TranID = {_ID1}");              // Refresh Data after Delete 
-                        if(Class_Products2.CountTable == 0 )
+                        if (Class_Products2.CountTable == 0)
                         {
                             ErrorMessages.Add(MessageClass.SetMessage("Record Deleted Sucessfully.", ConsoleColor.Green));
                             Class_Products = new DataTableClass(UserName, Tables.Production, $"ID = {_ID1}");
@@ -113,7 +114,7 @@ namespace Applied_WebApplication.Pages.Stock
                                 return RedirectToPage("ProductionList");
                             }
                         }
-                        
+
                     }
                     else
                     {
@@ -162,7 +163,7 @@ namespace Applied_WebApplication.Pages.Stock
 
             }
             {
-                
+
                 ErrorMessages.AddRange(Class_Products.ErrorMessages);
                 ErrorMessages.AddRange(Class_Products2.ErrorMessages);
             }
@@ -175,6 +176,55 @@ namespace Applied_WebApplication.Pages.Stock
 
         }
 
+        public IActionResult OnPostEqual(int ID2)
+        {
+
+            bool IsUpdated = false;
+            var _Filter = $"Vou_No='{Variables.Vou_No}'";
+            Class_ProductsView = new DataTableClass(UserName, Tables.view_Production, _Filter);
+            tb_Products = Class_ProductsView.MyDataTable;
+
+            decimal Tot_In_Amount = 0.00M;
+            decimal Tot_Out_Amount = 0.00M;
+
+            foreach (DataRow Row in tb_Products.Rows)
+            {
+                var _Flow = Row["Flow"].ToString();
+                var _true = decimal.TryParse(Row["Amount"].ToString(), out decimal _Amount);
+
+                if (_Flow == "In") { Tot_In_Amount += _Amount; }
+                if (_Flow == "Out") {if ((int)Row["ID2"] != ID2) { Tot_Out_Amount += _Amount; }; }
+            }
+
+            decimal _Difference = Math.Round(Tot_In_Amount, 2) - Math.Round(Tot_Out_Amount, 2);
+            if (_Difference != 0)
+            {
+
+                foreach (DataRow Row in tb_Products.Rows)
+                {
+                    if ((int)Row["ID2"] == ID2)
+                    {
+                        decimal _Qty = (decimal)Row["Qty"];
+                        decimal _Rate = Math.Round(_Difference / _Qty, 6);
+                        SQLiteCommand _Command = new(ConnectionClass.AppConnection(UserName));
+                        _Command.CommandText = "UPDATE [Production2] SET [Rate] = @Rate WHERE [ID] = @ID;";
+                        _Command.Parameters.AddWithValue("@Rate", _Rate);
+                        _Command.Parameters.AddWithValue("@ID", ID2);
+                        int Effacted = _Command.ExecuteNonQuery();
+                        if (Effacted > 0) { IsUpdated = true; }
+                    }
+                }
+                if (!IsUpdated)
+                {
+                    ErrorMessages = new()
+                    {
+                        MessageClass.SetMessage("Rate not saved due to some error.")
+                    };
+                    return Page();
+                }
+            }
+            return RedirectToPage("Production", "Refresh", new { Variables.Vou_No, ID2 });
+        }
 
         #endregion
 
@@ -270,6 +320,7 @@ namespace Applied_WebApplication.Pages.Stock
         public decimal Qty { get; set; }
         public int UOM { get; set; }
         public decimal Rate { get; set; }
+        public string Status { get; set; }
         public decimal Amount => Qty * Rate;
 
 

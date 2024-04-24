@@ -609,19 +609,23 @@ namespace Applied_WebApplication.Data
         public static List<Message> PostProduction(string UserName, int id)
         {
             var ErrorMessages = new List<Message>();
-            var COA_DR = AppRegistry.GetNumber(UserName, "ProductIN");
-            var COA_CR = AppRegistry.GetNumber(UserName, "ProductOUT");
+            var COA_DR = AppRegistry.GetNumber(UserName, "ProductOUT");
+            var COA_CR = AppRegistry.GetNumber(UserName, "ProductIN");
 
             if (COA_DR > 0 && COA_CR > 0)                   // if Chart of account is valid.
             {
-                var _Filter = $"[P1].[ID]={id}";
+                var _Filter = $"[TranID]={id}";
 
                 DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
                 List<DataRow> VoucherRows = new();
-                DataTable Production = DataTableClass.GetTable(UserName, SQLQuery.PostProduction(_Filter));
+                DataTable Production = DataTableClass.GetTable(UserName, SQLQuery.View_Production(_Filter));
 
-                var Tot_DR = Production.Compute("SUM(Amount)", "Flow='In'");
-                var Tot_CR = Production.Compute("SUM(Amount)", "Flow='Out'");
+                decimal Tot_DR = Conversion.ToDecimal(Production.Compute("SUM(Amount)", "Flow='In'"));
+                decimal Tot_CR = Conversion.ToDecimal(Production.Compute("SUM(Amount)", "Flow='Out'"));
+
+                Tot_DR = Math.Round(Tot_DR, 2);
+                Tot_CR = Math.Round(Tot_CR, 2);
+
 
                 #region Validation
                 if (Production == null)
@@ -672,7 +676,9 @@ namespace Applied_WebApplication.Data
                     IsValidated = true;         //  Default value.
                     if (Vou_No == Row["Vou_No"].ToString())
                     {
-                        var _Description = $"{Row["Title"]}:{Row["Qty"]}/{Row["UOM"]} {Row["Flow"]}| {(string)Row["Remarks2"]} ";
+                        //var _Description = $"{Row["StockTitle"]}:{Row["Qty"]}/{Row["UOM"]} {Row["Flow"]}| {(string)Row["Remarks2"]} ";
+                        var _Description = $"{Row["StockTitle"]}:{Row["Qty"]} | {(string)Row["Remarks2"]} ";
+                        var _Amount = Math.Round(Conversion.ToDecimal(Row["Amount"]), 2);
                         #region Debit Entry
                         if ((string)Row["Flow"] == "Out")               // Stock Out from Productuon Process (Finish / Sami Finish Goods)
                         {
@@ -686,7 +692,7 @@ namespace Applied_WebApplication.Data
                             tb_Ledger.CurrentRow["Ref_No"] = DBNull.Value;
                             tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
                             tb_Ledger.CurrentRow["COA"] = COA_DR;
-                            tb_Ledger.CurrentRow["DR"] = Row["Amount"];
+                            tb_Ledger.CurrentRow["DR"] = _Amount;
                             tb_Ledger.CurrentRow["CR"] = 0;
                             tb_Ledger.CurrentRow["Inventory"] = Row["Stock"];
                             tb_Ledger.CurrentRow["Customer"] = 0;
@@ -714,7 +720,7 @@ namespace Applied_WebApplication.Data
                             tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
                             tb_Ledger.CurrentRow["COA"] = COA_CR;
                             tb_Ledger.CurrentRow["DR"] = 0;
-                            tb_Ledger.CurrentRow["CR"] = Row["Amount"];
+                            tb_Ledger.CurrentRow["CR"] = _Amount;
                             tb_Ledger.CurrentRow["Inventory"] = Row["Stock"];
                             tb_Ledger.CurrentRow["Customer"] = 0;
                             tb_Ledger.CurrentRow["Project"] = 0;
@@ -742,7 +748,7 @@ namespace Applied_WebApplication.Data
                         tb_Ledger.Save(NoValidateAgain);
                         ErrorMessages.AddRange(tb_Ledger.ErrorMessages);
                     }
-                    DataTableClass.Replace(UserName, Tables.Production, id, "Status", VoucherStatus.Posted);
+                    //DataTableClass.Replace(UserName, Tables.Production, id, "Status", VoucherStatus.Posted);
                     ErrorMessages.Add(SetMessage($"Voucher No {Vou_No}  has been posted sucessfully.", Color.Green));
 
                 }

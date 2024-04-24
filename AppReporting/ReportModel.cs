@@ -6,18 +6,19 @@ namespace AppReportClass
 {
     public class ReportModel
     {
-        public List<string> Messages { get; set; }
+        public List<string> Messages { get; set; } = new();
         public InputReport InputReport { get; set; }
         public OutputReport OutputReport { get; set; }
         public ReportData ReportData { get; set; }
         public byte[] ReportBytes { get; set; }
-        
+        public bool IsReportRendered { get; set; } = false;
+
 
         public List<ReportParameter> ReportParameters { get; set; }
         //public bool Render => ReportRender();
         private readonly string DateTimeFormat = "yyyy-MM-dd [hh:mm:ss]";
         private string DateTimeNow => DateTime.Now.ToString(DateTimeFormat);
-        
+
 
 
         public ReportModel()
@@ -28,21 +29,21 @@ namespace AppReportClass
             ReportData = new ReportData();
             ReportParameters = new List<ReportParameter>();
             ReportBytes = Array.Empty<byte>();
-            
+
             Messages.Add($"{DateTimeNow}: Report Class Started.");
 
         }
 
         public bool ReportRender()
         {
-            
+            IsReportRendered = false;
             Messages.Add($"{DateTimeNow}: Report rendering started");
 
             if (ReportParameters.Count == 0) { GetDefaultParameters(); }
             if (InputReport.IsFileExist)
             {
                 Messages.Add($"{DateTimeNow}: Report file found {InputReport.FileFullName}");
-                
+
                 var _ReportType = OutputReport.ReportType;
                 Messages.Add($"{DateTimeNow}: Report Type is {OutputReport.ReportType}");
 
@@ -70,16 +71,66 @@ namespace AppReportClass
                     Messages.Add($"{DateTimeNow}: ERROR: Report length is reporting zero");
                 }
                 Messages.Add($"{DateTimeNow}: Report rendering completed at {DateTimeNow}");
-                return true;
+                IsReportRendered = true;
 
             }
             else
             {
                 Messages.Add($"{DateTimeNow}: Report file NOT found {InputReport.FileFullName}");
             }
-            return false;
+            return IsReportRendered;
         }
 
+        public async Task<bool> ReportRenderAsync()
+        {
+            IsReportRendered = false;
+            await Task.Run(() =>
+            {
+                IsReportRendered = false;
+                Messages.Add($"{DateTimeNow}: Report rendering started");
+
+                if (ReportParameters.Count == 0) { GetDefaultParameters(); }
+                if (InputReport.IsFileExist)
+                {
+                    Messages.Add($"{DateTimeNow}: Report file found {InputReport.FileFullName}");
+
+                    var _ReportType = OutputReport.ReportType;
+                    Messages.Add($"{DateTimeNow}: Report Type is {OutputReport.ReportType}");
+
+                    OutputReport.MimeType = GetReportMime(_ReportType);
+                    Messages.Add($"{DateTimeNow}: Report MimeType is {OutputReport.MimeType}");
+
+                    OutputReport.FileExtention = OutputReport.GetFileExtention(_ReportType);
+                    Messages.Add($"{DateTimeNow}: Report File Extention is {OutputReport.FileExtention}");
+
+                    var _ReportFile = InputReport.FileFullName;
+                    var _FileType = GetRenderFormat(_ReportType);
+                    var _ReportStream = new StreamReader(_ReportFile);
+                    Messages.Add($"{DateTimeNow}: {_ReportFile} is read as stream.");
+
+                    LocalReport report = new();
+                    report.LoadReportDefinition(_ReportStream);
+                    report.DataSources.Add(ReportData.DataSource);
+                    report.SetParameters(ReportParameters);
+                    ReportBytes = report.Render(_FileType);
+                    Messages.Add($"{DateTimeNow}: Report Render bytes are {ReportBytes.Count()}");
+
+                    if (ReportBytes.Length > 0) { SaveReport(); }
+                    else
+                    {
+                        Messages.Add($"{DateTimeNow}: ERROR: Report length is reporting zero");
+                    }
+                    Messages.Add($"{DateTimeNow}: Report rendering completed at {DateTimeNow}");
+                    IsReportRendered = true;
+                }
+                else
+                {
+                    Messages.Add($"{DateTimeNow}: Report file NOT found {InputReport.FileFullName}");
+                }
+
+            });
+            return IsReportRendered;
+        }
 
         private static string GetRenderFormat(ReportType _ReportType)
         {

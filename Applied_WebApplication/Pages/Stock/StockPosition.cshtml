@@ -7,30 +7,50 @@
     var UserRole = UserProfile.GetUserRole(User);
     var IsDeailed = Model.Variables.ShowDetail;
     var ValueCheck = true;
-    var Tot_Qty = string.Empty;
-    var Tot_Amount = string.Empty;
-    var Tot_TaxAmount = string.Empty;
+    var Tot_PRQty = string.Empty;
+    var Tot_SLQty = string.Empty;
+    var Tot_PDQty = string.Empty;
+    var Tot_NetQty = string.Empty;
+    var Tot_PRAmount = string.Empty;
+    var Tot_SLAmount = string.Empty;
+    var Tot_PDAmount = string.Empty;
     var Tot_NetAmount = string.Empty;
-    bool IsError = false;
+    var Tot_SoldCost = string.Empty;
+    bool IsError;
     string _Message = string.Empty;
 
     var DateFormat = AppRegistry.FormatDate;
     var CurrencyFormat = AppRegistry.FormatCurrency2;
+    IsError = false;
 
     if (Model.MyTable != null)
     {
+        IsError = false;
         try
         {
-            Tot_Qty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Qty)", "")).ToString(CurrencyFormat);
-            Tot_Amount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(Amount)", "")).ToString(CurrencyFormat);
-            Tot_TaxAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(TaxAmount)", "")).ToString(CurrencyFormat);
+            Tot_PRQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PRQty)", "")).ToString(CurrencyFormat);
+            Tot_PRAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PRAmount)", "")).ToString(CurrencyFormat);
+
+            Tot_SLQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SLQty)", "")).ToString(CurrencyFormat);
+            Tot_SLAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SLAmount)", "")).ToString(CurrencyFormat);
+
+            Tot_PDQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PDQty)", "")).ToString(CurrencyFormat);
+            Tot_PDAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(PDAmount)", "")).ToString(CurrencyFormat);
+
+            Tot_NetQty = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetQty)", "")).ToString(CurrencyFormat);
             Tot_NetAmount = Conversion.ToDecimal(Model.MyTable.Compute("SUM(NetAmount)", "")).ToString(CurrencyFormat);
+            Tot_SoldCost = Conversion.ToDecimal(Model.MyTable.Compute("SUM(SoldCost)", "")).ToString(CurrencyFormat);
+
+
         }
         catch (Exception e)
         {
             IsError = true;
             _Message = e.Message;
         }
+
+        if(!IsError) { TempDBClass.CreateTempTable(UserName, Model.MyTable, "stkInHand"); }     // Create Temp Table for Report Data
+
     }
 }
 
@@ -77,11 +97,6 @@
 </style>
 
 
-@if(IsError)
-{
-    <h5>Error Found... @_Message</h5>
-}
-
 <div class="AppHeading-2">
     <h5 class="TextCenter">STOCK IN HAND POSITION</h5>
 </div>
@@ -118,7 +133,7 @@
             </div>
             <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Refresh">Refresh</button></div>
             <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Detail">All</button></div>
-            <div class="col-wd"><button class="btn btn-primary btn-sm" asp-page-handler="Print">Print</button></div>
+
             <div class="col-wd">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
@@ -147,7 +162,7 @@
                     #region Details show
                     <thead style="background-color:antiquewhite;">
                         <tr>
-                            <th>Voucher</th>
+                            <th>Stock Title</th>
                             <th>PR Qty</th>
                             <th>PR Amount</th>
                             <th>SL Qty</th>
@@ -167,7 +182,7 @@
                             var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
 
                             <tr>
-                               <td>@Row["Title"]</td>
+                                <td>@Row["Title"]</td>
                                 <td class="amount">@(((decimal)Row["PRQty"]).ToString(CurrencyFormat))</td>
                                 <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))</td>
                                 <td class="amount">@(((decimal)Row["SLQty"]).ToString(CurrencyFormat))</td>
@@ -178,22 +193,26 @@
                                 <td class="amount-blue">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))</td>
                                 <td class="amount-red">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
                                 <td class="amount-red">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))</td>
-                                <td><button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]">
+                                <td>
+                                    <button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]">
                                         <i class="bi bi-box-fill"></i>
-                                </button></td>
+                                    </button>
+                                </td>
                             </tr>
                         }
                     </tbody>
                     <tfoot style="background-color:antiquewhite;">
                         <tr>
                             <td></td>
-                            <td></td>
-                            <td>@Tot_Qty</td>
-                            <td></td>
-                            <td>@Tot_Amount</td>
-                            <td>@Tot_TaxAmount</td>
-                            <td></td>
+                            <td>@Tot_PRQty</td>
+                            <td>@Tot_PRAmount</td>
+                            <td>@Tot_SLQty</td>
+                            <td>@Tot_SLAmount</td>
+                            <td>@Tot_PDQty</td>
+                            <td>@Tot_PDAmount</td>
+                            <td>@Tot_NetQty</td>
                             <td>@Tot_NetAmount</td>
+                            <td></td>
                             <td></td>
                         </tr>
                     </tfoot>

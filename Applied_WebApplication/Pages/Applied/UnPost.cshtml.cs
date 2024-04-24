@@ -76,6 +76,8 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
 
                 case 10:            // BOM
+                    Filter = $"Date([P1].[Vou_Date]) > Date('{Date1}') AND Date([P1].[Vou_Date]) < Date('{Date2}')";
+                    UnpostTable = GetTable(UserName, SQLQuery.PostProductionList(Filter, "Posted"));
                     break;
 
                 default:
@@ -90,6 +92,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BankBook) { IsError = UnpostClass.Unpost_BankBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { IsError = UnpostClass.UnpostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { IsError = UnpostClass.UnpostBillReceivable(UserName, id); }
+            if (PostingType == (int)PostType.Production) { IsError = UnpostClass.UnpostProduction(UserName, id); }
             if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("UnPost", "Refresh");
         }

@@ -162,3 +162,9 @@ AppFooter {
     margin-right: 3px;
     margin-left: 3px;
 }
+
+.lbl-posted{
+    font-size:small;
+    font-family:Calibri;
+    color:blue;
+}
