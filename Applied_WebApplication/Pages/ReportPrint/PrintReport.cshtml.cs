@@ -483,7 +483,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Purchase Register
-        public IActionResult OnGetPurchaseRegister(ReportType RptOption)
+        public IActionResult OnGetPurchaseRegister(ReportType RptType)
         {
             try
             {
@@ -508,7 +508,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Reportmodel.OutputReport.FilePath = PrintedReportsPath;
                 Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
                 Reportmodel.OutputReport.FileName = "PurchaseRegister";
-                Reportmodel.OutputReport.ReportType = RptOption;
+                Reportmodel.OutputReport.ReportType = RptType;
                 // Reports Parameters
                 Reportmodel.AddReportParameter("CompanyName", CompanyName);
                 Reportmodel.AddReportParameter("Heading1", _Heading1);
