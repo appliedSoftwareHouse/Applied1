@@ -16,6 +16,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExcelClass", "ExcelClass\Ex
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppReportClass", "AppReporting\AppReportClass.csproj", "{384D756C-0B41-4A63-B7B4-038DE370FF82}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppliedTemp", "AppliedTempDB\AppliedTemp\AppliedTemp.csproj", "{88A5AC16-A3EF-4811-953E-DF753945C488}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,12 @@ Global
 		{384D756C-0B41-4A63-B7B4-038DE370FF82}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
 		{384D756C-0B41-4A63-B7B4-038DE370FF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{384D756C-0B41-4A63-B7B4-038DE370FF82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.DebugLocal|Any CPU.ActiveCfg = Debug|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.DebugLocal|Any CPU.Build.0 = Debug|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88A5AC16-A3EF-4811-953E-DF753945C488}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

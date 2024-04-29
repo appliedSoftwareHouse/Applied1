@@ -20,7 +20,8 @@
     string _Message = string.Empty;
 
     var DateFormat = AppRegistry.FormatDate;
-    var CurrencyFormat = AppRegistry.FormatCurrency2;
+    var NumberFormat = AppRegistry.FormatCurrency2;
+    var CurrencyFormat = AppRegistry.FormatCurrency1;
     IsError = false;
 
     if (Model.MyTable != null)
@@ -183,16 +184,16 @@
 
                             <tr>
                                 <td>@Row["Title"]</td>
-                                <td class="amount">@(((decimal)Row["PRQty"]).ToString(CurrencyFormat))</td>
-                                <td class="amount">@(((decimal)Row["PRAmount"]).ToString(CurrencyFormat))</td>
-                                <td class="amount">@(((decimal)Row["SLQty"]).ToString(CurrencyFormat))</td>
-                                <td class="amount">@(((decimal)Row["SLAmount"]).ToString(CurrencyFormat))</td>
-                                <td class="amount">@(((decimal)Row["PDQty"]).ToString(CurrencyFormat))</td>
-                                <td class="amount">@(((decimal)Row["PDAmount"]).ToString(CurrencyFormat))</td>
-                                <td class="amount-blue">@(((decimal)Row["NetQty"]).ToString(CurrencyFormat))</td>
-                                <td class="amount-blue">@(((decimal)Row["NetAmount"]).ToString(CurrencyFormat))</td>
+                                <td class="amount">@(((decimal)Row["PRQty"]).ToString(NumberFormat))</td>
+                                <td class="amount">@(((decimal)Row["PRAmount"]).ToString(NumberFormat))</td>
+                                <td class="amount">@(((decimal)Row["SLQty"]).ToString(NumberFormat))</td>
+                                <td class="amount">@(((decimal)Row["SLAmount"]).ToString(NumberFormat))</td>
+                                <td class="amount">@(((decimal)Row["PDQty"]).ToString(NumberFormat))</td>
+                                <td class="amount">@(((decimal)Row["PDAmount"]).ToString(NumberFormat))</td>
+                                <td class="amount-blue">@(((decimal)Row["NetQty"]).ToString(NumberFormat))</td>
+                                <td class="amount-blue">@(((decimal)Row["NetAmount"]).ToString(NumberFormat))</td>
                                 <td class="amount-red">@(((decimal)Row["AvgRate"]).ToString(CurrencyFormat))</td>
-                                <td class="amount-red">@(((decimal)Row["SoldCost"]).ToString(CurrencyFormat))</td>
+                                <td class="amount-red">@(((decimal)Row["SoldCost"]).ToString(NumberFormat))</td>
                                 <td>
                                     <button type="submit" class="btn btn-link" asp-page-handler="StockLed" asp-route-StockID="@Row["StockID"]">
                                         <i class="bi bi-box-fill"></i>

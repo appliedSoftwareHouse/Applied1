@@ -905,7 +905,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Stock Ledger
-        public IActionResult OnGetStockLedger(ReportType RptOption)
+        public IActionResult OnGetStockLedger(ReportType RptType)
         {
             try
             {
@@ -927,7 +927,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Reportmodel.OutputReport.FilePath = PrintedReportsPath;
                 Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
                 Reportmodel.OutputReport.FileName = _ReportFile;
-                Reportmodel.OutputReport.ReportType = RptOption;
+                Reportmodel.OutputReport.ReportType = RptType;
                 // Reports Parameters
                 Reportmodel.AddReportParameter("CompanyName", CompanyName);
                 Reportmodel.AddReportParameter("Heading1", _Heading1);

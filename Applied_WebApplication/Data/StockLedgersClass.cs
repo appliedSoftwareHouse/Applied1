@@ -537,15 +537,16 @@ namespace Applied_WebApplication.Data
 
             Totals["SLQty"] = Tot_SLQty;
             Totals["SLAmount"] = Tot_SLAmount;
+            
+            Totals["SoldCost"] = Tot_SoldCost;
+            Totals["AvgRate"] = Tot_AvgRate;
 
             Totals["PDQty"] = Tot_PDQty;
             Totals["PDAmount"] = Tot_PDAmount;
 
-            Totals["NetQty"] = Tot_PRQty + Tot_SLQty + Tot_PDQty;
-            Totals["NetAmount"] = Tot_PRAmount + Tot_SLAmount + Tot_PDAmount;
+            Totals["NetQty"] = Tot_PRQty - Tot_SLQty + Tot_PDQty;
+            Totals["NetAmount"] = Tot_PRAmount - Tot_SoldCost + Tot_PDAmount;
 
-            Totals["AvgRate"] = Tot_AvgRate;
-            Totals["SoldCost"] = Tot_SoldCost;
 
             StockLedger.Rows.Add(Totals);
 

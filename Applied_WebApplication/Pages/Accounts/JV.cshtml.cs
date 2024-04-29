@@ -17,7 +17,16 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public string UserName => User.Identity.Name;
         public DataTable Voucher { get; set; }
-        public Boolean IsBalance { get; set; }
+        public bool IsBalance => VoucherBalance();
+
+        private bool VoucherBalance()
+        {
+            var Tot_DR = Voucher.Compute("SUM(DR)", "");
+            var Tot_CR = Voucher.Compute("SUM(CR)", "");
+
+            if(Tot_DR.Equals(Tot_CR)) { return true; }
+            return false;
+        }
 
 
         #region GET
@@ -30,17 +39,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             Voucher = TempClass.TempTable;
 
-            //TempClass = new TempDBClass(UserName, Tables.Ledger);
-            //if (TempClass.TempTable.Rows.Count > 0)
-            //{
-            //    //TempClass.TableValidate = new();
-            //    foreach (DataRow Row in TempClass.TempTable.Rows)
-            //    {
-            //        TempClass.CurrentRow = Row;
-            //        TempClass.Delete();
-            //    }
-            //    TempClass = new xTempTableClass(UserName, Tables.Ledger);
-            //}
+           
 
 
             if (TempClass.TempTable.Rows.Count == 0)
@@ -124,17 +123,17 @@ namespace Applied_WebApplication.Pages.Accounts
                 }
 
                 Voucher = TempClass.TempTable;
-                if (Voucher.Rows.Count > 0)
-                {
-                    var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
-                    var _CR = (decimal)Voucher.Compute("SUM(CR)", "");
-                    if (_DR == _CR) { IsBalance = true; } else { IsBalance = false; }
-                }
+                //if (Voucher.Rows.Count > 0)
+                //{
+                //    var _DR = (decimal)Voucher.Compute("SUM(DR)", "");
+                //    var _CR = (decimal)Voucher.Compute("SUM(CR)", "");
+                //    //if (_DR == _CR) { IsBalance = true; } else { IsBalance = false; }
+                //}
 
             }
             catch (Exception e)
             {
-                ErrorMessages.Add(MessageClass.SetMessage(e.Message));
+                ErrorMessages.Add(SetMessage(e.Message));
             }
 
         }

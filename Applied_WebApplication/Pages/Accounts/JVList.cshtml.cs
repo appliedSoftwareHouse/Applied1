@@ -46,6 +46,12 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("JV", routeValues: new { Vou_No, Sr_No, Refresh });
         }
 
+        public IActionResult OnPostJV2(string Vou_No)
+        {
+            AppRegistry.SetKey(UserName, "JV2VouNo", Vou_No, KeyType.Text);
+            return RedirectToPage("JV2");
+        }
+
         public IActionResult OnPostNew()
         {
             return RedirectToPage("JV", "New");
