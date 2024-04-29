@@ -40,7 +40,11 @@ namespace Applied_WebApplication.Data
                 UserProfileTemp = GetUserProfile();
                 TempConnectionClass = new(UserProfileTemp);
                 RegistryKey = _RegistryKey;
-                TempGUID = new(AppRegistry.GetText(UserProfileTemp.UserName, RegistryKey));
+                TempGUID = new Guid();
+
+                var _KeyValue = AppRegistry.GetText(UserProfileTemp.UserName, RegistryKey);
+                if(_KeyValue.Length==0) { TempGUID = Guid.NewGuid(); } 
+                else {  TempGUID = new Guid(_KeyValue); }
 
                 CreateTempTable();
 
@@ -408,6 +412,7 @@ namespace Applied_WebApplication.Data
 
         public void RemoveDBNull()
         {
+            if(CurrentRow == null) { return; }
             foreach (DataColumn _Column in CurrentRow.Table.Columns)                                                                // DBNull remove and assign a Data Type Empty Value.
             {
                 if (CurrentRow[_Column.ColumnName] == DBNull.Value)

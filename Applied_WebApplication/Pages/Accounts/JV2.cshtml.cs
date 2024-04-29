@@ -19,9 +19,9 @@ namespace Applied_WebApplication.Pages.Accounts
         public void OnGet()
         {
             var _Vou_No = AppRegistry.GetText(UserName, "JV2VouNo");
-            var _TempGUID = AppRegistry.GetText(UserName, "JV2Temp");
             var _Filter = $"Vou_No='{_Vou_No}'";
             var _VoucherTable = DataTableClass.GetTable(UserName, Tables.Ledger, _Filter, "Sr_No");
+            
             TempVoucher = new TempDBClass2(User, _VoucherTable, "JV2Temp");
             Voucher = TempVoucher.TempTable;
             GetVariables();
