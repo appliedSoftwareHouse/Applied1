@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using System.Net;
-using System.Xml.Linq;
+using System.Data.SQLite;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -10,10 +9,11 @@ namespace Applied_WebApplication.Pages.Accounts
     {
         [BindProperty]
         public MyParameters Variables { get; set; } = new();
-        public List<Message> ErrorMessages { get; set; } = new();
+        public List<Message> Messages { get; set; } = new();
         public string UserName => User.Identity.Name;
         public DataTable Voucher { get; set; }
         public TempDBClass2 TempVoucher { get; set; }
+
 
         #region Get
         public void OnGet()
@@ -44,13 +44,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
 
         }
-
         public void OnGetAdd()
         {
             TempVoucher = new TempDBClass2(User, "JV2Temp");
             var _FirstRow = TempVoucher.CurrentRow;
             var _SrNo = (int)TempVoucher.TempTable.Compute("MAX(Sr_No)", "");
-            
+
             TempVoucher.NewRow();
             TempVoucher.CurrentRow["ID"] = 0;
             TempVoucher.CurrentRow["Vou_No"] = _FirstRow["Vou_No"]; ;
@@ -72,10 +71,6 @@ namespace Applied_WebApplication.Pages.Accounts
             Voucher = TempVoucher.TempTable;
 
         }
-
-
-
-
         #endregion
 
         private void GetVariables()
@@ -105,7 +100,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     Variables.Description = (string)Row["Description"];
                     Variables.Comments = (string)Row["Comments"];
                     Variables.Status = (string)Row["Status"];
-                    Variables.IsBalance = TempVoucher.Totals();
+
                 };
                 TempVoucher.CurrentRow = Row;
             }
@@ -113,8 +108,8 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public void GetCurrentRow()
         {
-            if(TempVoucher is null) { return; }
-            if(TempVoucher.CurrentRow  is null) { return; }
+            if (TempVoucher is null) { return; }
+            if (TempVoucher.CurrentRow is null) { return; }
 
             TempVoucher.CurrentRow = TempVoucher.TempTable.NewRow();
             TempVoucher.CurrentRow["ID"] = Variables.ID;
@@ -136,9 +131,9 @@ namespace Applied_WebApplication.Pages.Accounts
             TempVoucher.CurrentRow["Status"] = Variables.Status;
         }
 
-        
 
-        #region Post Insert / Edit / Delete
+
+        #region Post Insert / Edit / Delete / UnDelete
         public IActionResult OnPostInsert()
         {
             return RedirectToPage("JV2", "Add");
@@ -151,12 +146,146 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostDelete(int ID)
         {
-            // Record will marked as delete here only. finally will be deleted from Source.
+            TempVoucher = new(User, "JV2Temp");
             GetCurrentRow();
-            TempVoucher.Delete();
+            SQLiteCommand? _Command;
+            var _GUID = TempVoucher.TempGUID.ToString();
+            var _RowFound = TempVoucher.GetRow(ID);
+
+            if (_RowFound)
+            {
+                var _Row = TempVoucher.CurrentRow;
+                var _VouNo = _Row["Vou_No"].ToString();
+                var _SR_No = _Row["Sr_No"].ToString();
+
+                if (ID > 0)
+                {
+                    _Row["Status"] = "Deleted";
+
+                    _Command = TempVoucher.CreateUpdateCommand(_Row, _GUID);
+                    var _Effacted = _Command.ExecuteNonQuery();
+                    if (_Effacted > 0)
+                    {
+                        Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} has been marked deleted."));
+                    }
+                    else
+                    {
+                        Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} NOT marked deleted."));
+                        return Page();
+                    }
+                }
+
+                if (ID <= 0)
+                {
+                    _Command = TempVoucher.CreateDeleteCommand(_Row, _GUID);
+                    var _Effacted = _Command.ExecuteNonQuery();
+                    if (_Effacted > 0)
+                    {
+                        Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} has been marked deleted."));
+                    }
+                    else
+                    {
+                        Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} NOT marked deleted."));
+                        return Page();
+                    }
+                }
+            }
+
             return RedirectToPage("JV2", "Edit", new { ID });
         }
+
+        public IActionResult OnPostUnDelete(int ID)
+        {
+            TempVoucher = new(User, "JV2Temp");
+            GetCurrentRow();
+            SQLiteCommand? _Command;
+            var _GUID = TempVoucher.TempGUID.ToString();
+            var _RowFound = TempVoucher.GetRow(ID);
+            if (_RowFound)
+            {
+                var _Row = TempVoucher.CurrentRow;
+                var _VouNo = _Row["Vou_No"].ToString();
+                var _SR_No = _Row["Sr_No"].ToString();
+                _Row["Status"] = "Updated";
+
+                _Command = TempVoucher.CreateUpdateCommand(_Row, _GUID);
+                var _Effacted = _Command.ExecuteNonQuery();
+                if (_Effacted > 0)
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} has been Recovered."));
+                }
+                else
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} NOT Recovered."));
+                }
+
+            }
+
+            return RedirectToPage("JV2", "Edit", new { ID });
+
+        }
+
         #endregion
+
+        #region Save
+        public IActionResult OnPostSave()
+        {
+            Messages = new();
+            TempVoucher = new TempDBClass2(User, "JV2Temp");
+            GetCurrentRow();
+
+            var _Row = TempVoucher.CurrentRow;
+            var _VouNo = _Row["Vou_No"].ToString();
+            var _SR_No = _Row["Sr_No"].ToString();
+
+            var _GUID = TempVoucher.TempGUID.ToString();
+            if (_Row["Status"].ToString() == "Insert")
+            {
+                var _Command = TempVoucher.CreateInsertCommand(_Row, _GUID);
+                var _Effacted = _Command.ExecuteNonQuery();
+                if (_Effacted > 0)
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} has been saved."));
+                }
+                else
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} NOT saved."));
+                }
+            }
+
+            if (_Row["Status"].ToString() == "Submitted" || _Row["Status"].ToString() == "Updated")
+            {
+                var _Command = TempVoucher.CreateUpdateCommand(_Row, _GUID);
+                var _Effacted = _Command.ExecuteNonQuery();
+                if (_Effacted > 0)
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} has been Updated."));
+                }
+                else
+                {
+                    Messages.Add(MessageClass.SetMessage($"{_VouNo} Sr. No. {_SR_No} NOT Updated."));
+                }
+            }
+
+
+            Voucher = TempVoucher.LoadTempTable();
+            return Page();
+        }
+
+        public IActionResult OnPostSaveVoucher()
+        {
+            TempVoucher = new TempDBClass2(User, "JV2Temp");
+            TempVoucher.SourceTableID = Tables.Ledger;
+
+
+            Voucher = TempVoucher.TempTable;
+            var IsSaved = TempVoucher.SaveToSource();
+
+            return Page();
+        }
+
+        #endregion
+
 
         #region Back
         public IActionResult OnPostBack()
@@ -185,7 +314,7 @@ namespace Applied_WebApplication.Pages.Accounts
             public string Description { get; set; }
             public string Comments { get; set; }
             public string Status { get; set; }
-            public bool IsBalance { get; set; }
+
         }
 
     }

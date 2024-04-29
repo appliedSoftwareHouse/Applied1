@@ -14,6 +14,7 @@ namespace Applied_WebApplication.Data
         public AppliedTemp.UserProfileModel UserProfileTemp { get; set; }
         public ClaimsPrincipal AppUser { get; set; }
         public DataTable SourceTable { get; set; } = new();
+        public Tables SourceTableID { get; set; }
         public DataTable TempTable { get; set; } = new();
         public DataRow CurrentRow { get; set; }
         public Guid TempGUID { get; set; }
@@ -204,7 +205,6 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-
         #region Insert / Update / Delete
         public SQLiteCommand CreateInsertCommand(DataRow _Row, string _GUID)
         {
@@ -258,13 +258,14 @@ namespace Applied_WebApplication.Data
             foreach (DataColumn _Column in _Columns)
             {
                 string _ColumnName = _Column.ColumnName.ToString();
+                if (_ColumnName == "ID") { continue; }                 // Skip, if Column Name is 'ID'
+                _CommandString.Append($"{_Column.ColumnName}=");
                 _CommandString.Append(string.Concat('@', _Column.ColumnName));
                 if (_ColumnName != _LastColumn)
                 { _CommandString.Append(','); }
-                //else
-                //{ _CommandString.Append(" "); }
             }
 
+            _CommandString.Append(" WHERE ID=@ID");
             _Command.CommandText = _CommandString.ToString();
 
             foreach (DataColumn _Column in _Columns)
@@ -276,20 +277,18 @@ namespace Applied_WebApplication.Data
             return _Command;
         }
 
-        //public SQLiteCommand CreateDeleteCommand(DataRow _Row, string _GUID)
-        //{
-        //    if (TempTable is null) { return null; }
+        public SQLiteCommand CreateDeleteCommand(DataRow _Row, string _GUID)
+        {
+            if (TempTable is null) { return null; }
+            SQLiteCommand _Command = new SQLiteCommand(TempConnection);
 
-        //    DataColumnCollection _Columns = TempTable.Columns;
-        //    SQLiteCommand _Command = new SQLiteCommand(TempConnection);
+            _Command.CommandText = $"DELETE FROM [{_GUID}] WHERE ID=@ID;";
+            _Command.Parameters.AddWithValue("@ID", _Row["ID"]);
 
-        //    _Command.CommandText = $"DELETE FROM [{_GUID}] WHERE ID=@ID;";
-        //    _Command.Parameters.AddWithValue("@ID", _Row["ID"]);
-
-        //}
+            return _Command;
+        }
 
         #endregion
-
 
         #region Load / Get Temp Table
         public DataTable LoadTempTable()
@@ -321,6 +320,8 @@ namespace Applied_WebApplication.Data
         #region Voucher DR & CR Total
         public bool Totals()
         {
+            //[Status]<>'Deleted'
+
             var IsDR = decimal.TryParse(TempTable.Compute("SUM(DR)", "").ToString(), out decimal Tot_DR);
             var IsCR = decimal.TryParse(TempTable.Compute("SUM(CR)", "").ToString(), out decimal Tot_CR);
             if (Tot_DR.Equals(Tot_CR)) { return true; }
@@ -421,6 +422,50 @@ namespace Applied_WebApplication.Data
             }
 
         }
+
+
+        #region Save / Update Temp Table to Source Table
+        public bool SaveToSource()
+        {
+            if (TempTable is null) { return false; }
+            if (UserName is null) { return false; }
+            if (UserName.Length == 0) { return false; }
+
+            var SourceClass = new DataTableClass(UserName, SourceTableID);
+
+            foreach (DataRow Row in TempTable.Rows)
+            {
+                var _Status = Row["Status"].ToString();
+
+                if (_Status != "Deleted")
+                {
+                    if ((int)Row["ID"] < 0) { Row["ID"] = 0; }
+                    Row["Status"] = "Submitted";
+                    var _Columns = Row.Table.Columns;
+                    SourceClass.NewRecord();
+                    foreach (DataColumn _Column in _Columns)
+                    {
+                        SourceClass.CurrentRow[_Column.ColumnName] = Row[_Column.ColumnName];
+                    }
+
+                    SourceClass.Save();
+                }
+
+                if((_Status=="Deleted"))
+                {
+                    var _Columns = Row.Table.Columns;
+                    SourceClass.NewRecord();
+                    foreach (DataColumn _Column in _Columns)
+                    {
+                        SourceClass.CurrentRow[_Column.ColumnName] = Row[_Column.ColumnName];
+                    }
+                    SourceClass.Delete();
+                }
+            }
+
+            return false;
+        }
+        #endregion
 
     }
 }

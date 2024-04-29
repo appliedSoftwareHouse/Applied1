@@ -8,14 +8,19 @@
     var TitleProject = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Project);
     var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Employee);
     var TitleInventory = AppFunctions.GetTitle(UserName, Tables.COA, Model.Variables.Inventory);
-   
+
+    var _Filter = "[Status] <> 'Deleted'";
+    var Total_DR = Model.Voucher.Compute("SUM(DR)", _Filter);
+    var Total_CR = Model.Voucher.Compute("SUM(CR)", _Filter);
+    var IsBalance = Total_DR.Equals(Total_CR);
+
 }
 
 
 
-@if (Model.ErrorMessages.Count > 0)
+@if (Model.Messages.Count > 0)
 {
-    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.Messages"></component>
 }
 
 
@@ -151,39 +156,44 @@
 
         </div>
         <div class="row mb-1">
-            <div class="col-4">
-                <button type="submit"
-                        class="btn btn-primary"
+            <div class="col-2">
+                <button type="submit" id="btnInsert"
+                        class="btn btn-primary d-block"
                         asp-page-handler="Insert">
                     <i class="bi bi-save text-white"></i>
                     Add
                 </button>
+            </div>
 
-                <button type="submit"
+            <div class="col-2">
+                <button type="submit" id="btnSave"
                         class="btn btn-primary"
                         asp-page-handler="Save">
                     <i class="bi bi-save text-white"></i>
                     SAVE
                 </button>
-                <button type="submit"
+            </div>
+
+            <div class="col-2">
+
+                <button type="submit" id="btnBack"
                         class="btn btn-primary"
                         asp-page-handler="Back">
                     <i class="bi bi-arrow-left-square text-white"></i>
                     BACK
                 </button>
             </div>
-            <div class="col-2">
-            </div>
-            @if (Model.Variables.IsBalance)
+            @if (IsBalance)
             {
-                <div class="col-3">
-                    <button type="submit"
+                <div class="col-4">
+                    <button type="submit" id="btnSaveVoucher"
                             class="btn btn-primary"
                             asp-page-handler="SaveVoucher"
                             asp-route-Vou_No="@Model.Variables.Vou_No">
                         <i class="bi bi-save text-white"></i>
                         SAVE VOUCHER
                     </button>
+
                 </div>
             }
         </div>
@@ -200,7 +210,8 @@
                     <th style="width:20%">Description</th>
                     <th style="width:10%">
                         <button type="submit" class="listbutton-green text-center"
-                                asp-page-handler="Add">Add
+                                asp-page-handler="Add">
+                            Add
                             <i class="bi bi-database-add"></i>
                         </button>
                     </th>
@@ -212,31 +223,70 @@
                     @foreach (DataRow Row in Model.Voucher.Rows)
                     {
                         string _TitleCOA = (string)AppFunctions.GetTitle(UserName, Tables.COA, (int)Row["COA"]);
+                        string _Status = Row["Status"].ToString();
 
-                        <tr>
-                            <td>@Row["Sr_No"]</td>
-                            <td>@Row["Ref_No"]</td>
-                            <td>@_TitleCOA</td>
-                            <td class="amount">@Row["DR"]</td>
-                            <td class="amount">@Row["CR"]</td>
-                            <td>@Row["Description"]</td>
-                            <td class="text-center">
-                                <button type="submit" class="listbutton-blue"
-                                        asp-page-handler="Edit"
-                                        asp-route-ID="@Row["ID"]">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
-                                <button type="submit" class="listbutton-red"
-                                        asp-page-handler="Delete"
-                                        asp-route-ID="@Row["ID"]">
-                                    <i class="bi bi-trash-fill"></i>
-                                </button>
-                            </td>
-                        </tr>
+                        if (_Status != "Deleted")
+                        {
+                            <tr>
+                                <td>@Row["Sr_No"]</td>
+                                <td>@Row["Ref_No"]</td>
+                                <td>@_TitleCOA</td>
+                                <td class="amount">@Row["DR"]</td>
+                                <td class="amount">@Row["CR"]</td>
+                                <td>@Row["Description"]</td>
+                                <td class="text-center">
+                                    <button type="submit" class="listbutton-blue"
+                                            asp-page-handler="Edit"
+                                            asp-route-ID="@Row["ID"]">
+                                        <i class="bi bi-pencil-fill"></i>
+                                    </button>
+                                    <button type="submit" class="listbutton-red"
+                                            style="padding-left:5px"
+                                            asp-page-handler="Delete"
+                                            asp-route-ID="@Row["ID"]">
+                                        <i class="bi bi-trash-fill"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td style="color:darkgray">@Row["Sr_No"]</td>
+                                <td style="color:darkgray">@Row["Ref_No"]</td>
+                                <td style="color:darkgray">@_TitleCOA</td>
+                                <td style="color:darkgray" class="amount">@Row["DR"]</td>
+                                <td style="color:darkgray" class="amount">@Row["CR"]</td>
+                                <td style="color:darkgray">@Row["Description"]</td>
+                                <td style="color:red">
+                                    @_Status
+                                    <button type="submit" id="btnUnDelete"
+                                            style="padding-left:2px"
+                                            class="listbutton-red"
+                                            asp-page-handler="UnDelete"
+                                            asp-route-ID="@Row["ID"]">
+                                        <i class="bi bi-repeat"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        }
+
                     }
                 }
 
             </tbody>
+            <tfoot>
+                <tr style="background-color:burlywood">
+                    <td></td>
+                    <td></td>
+                    <td>TOTAL</td>
+
+                    <td class="amount">@Total_DR</td>
+                    <td class="amount">@Total_CR</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tfoot>
         </table>
     </div>
 </form>
