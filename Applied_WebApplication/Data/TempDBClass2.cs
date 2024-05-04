@@ -404,6 +404,8 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+
+        #region New Row and Removal Null Vales
         public void NewRow()
         {
             CurrentRow = TempTable.NewRow();
@@ -427,7 +429,7 @@ namespace Applied_WebApplication.Data
             }
 
         }
-
+        #endregion
 
         #region Save / Update Temp Table to Source Table
         public bool SaveToSource()

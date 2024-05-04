@@ -87,7 +87,7 @@ namespace Applied_WebApplication.Data
 
         public AppliedUsersClass()
         {
-            AppliedUserConnection = new SQLiteConnection("Data Source=" + AppliedUsersFile);
+            AppliedUserConnection = new SQLiteConnection($"Data Source={AppliedUsersFile}");
             AppliedUserConnection.Open();
             AppliedUserCommand = new SQLiteCommand();
             UsersTable = UsersDataTable();
