@@ -480,13 +480,27 @@ namespace Applied_WebApplication.Data
                 if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30601, Msg = "Record ID is already assigned. Duplicate value not allowed." }); }
 
             }
-            if ((int)Row["Sr_No"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Serial Number is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Sr_No"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Serial Number is Zero, not allowed." }); }
             //if ((int)Row["TranID"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Transaction ID is Zero, not allowed." }); }
-            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Product ID is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Inventory"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Product ID is Zero, not allowed." }); }
             if (string.IsNullOrEmpty(Row["Batch"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch Number is zero, not allowed." }); }
-            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is Zero, not allowed." }); }
-            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Qty"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Rate"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Tax"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
+            if (string.IsNullOrEmpty(Row["Tax_Rate"].ToString())) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
 
+            if ((decimal)Row["Qty"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity is Zero, not allowed." }); }
+            if ((int)Row["Tax"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Tax ID is Zero, not allowed." }); }
+            if ((decimal)Row["Rate"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate is Zero, not allowed." }); }
+            if ((int)Row["Inventory"] == 0) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Stock Item is not selected." }); }
+
+            if (Row["Sr_No"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Serial # value is null, not allowed." }); }
+            if (Row["Qty"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Quantity value is null, not allowed." }); }
+            if (Row["Tax"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Tax value is null, not allowed." }); }
+            if (Row["Tax_Rate"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Tax Rate value is null, not allowed." }); }
+            if (Row["Rate"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Rate value is null, not allowed." }); }
+            if (Row["Batch"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Batch value is null, not allowed." }); }
+            if (Row["Inventory"] == DBNull.Value) { MyMessages.Add(new Message() { Success = false, ErrorID = 30602, Msg = "Stock Item value is null." }); }
 
         }
         private void ValidateTable_view_BillReceivable(DataRow Row)
