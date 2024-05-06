@@ -123,7 +123,18 @@ namespace Applied_WebApplication.Pages.Accounts
                             }
                         }
                     }
+                    if (_Receivable1.Count == 1 && _Receivable2.Count == 0)
+                    {
+                        var _ID = (int)_Receivable1.Rows[0]["ID"];
+                        
+                        _Receivable1.SeekRecord(_ID);
+                        if ((int)_Receivable1.CurrentRow["ID"] == _ID)
+                        {
+                            _Receivable1.Delete();
+                        }
+                    }
                 }
+
             }
             catch (Exception e)
             {
@@ -160,25 +171,25 @@ namespace Applied_WebApplication.Pages.Accounts
             #endregion
 
             return Page();
-}
-#endregion
+        }
+        #endregion
 
-#region Print
+        #region Print
 
-public IActionResult OnPostPrint(int ID)
-{
-    var TranID = ID;
-    return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
-}
-#endregion
+        public IActionResult OnPostPrint(int ID)
+        {
+            var TranID = ID;
+            return RedirectToPage("../ReportPrint/PrintReport", pageHandler: "SaleInvoice", routeValues: new { TranID });
+        }
+        #endregion
 
-#region Variables
-public class Parameters
-{
-    public DateTime MinDate { get; set; }
-    public DateTime MaxDate { get; set; }
-    public int Company { get; set; }
-}
+        #region Variables
+        public class Parameters
+        {
+            public DateTime MinDate { get; set; }
+            public DateTime MaxDate { get; set; }
+            public int Company { get; set; }
+        }
         #endregion
     }
 }

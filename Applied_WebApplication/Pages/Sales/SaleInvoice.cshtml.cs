@@ -338,8 +338,18 @@ namespace Applied_WebApplication.Pages.Sales
 
             if (_ValidforDelete1 && _ValidforDelete2)
             {
+                var _ID = (int)_Receivable2.MyDataView[0]["ID"];
+                var _BillReceivable2 = new DataTableClass(UserName, Tables.BillReceivable2);
+                _BillReceivable2.CurrentRow = _BillReceivable2.SeekRecord(_ID);
 
-
+                if ((int)_BillReceivable2.CurrentRow["ID"] == _ID)
+                {
+                    _BillReceivable2.Delete();
+                    Sr_No = 1;
+                    TempInvoice11 = null;
+                    TempInvoice22 = null;
+                }
+                _BillReceivable2.Dispose();
             }
 
 
