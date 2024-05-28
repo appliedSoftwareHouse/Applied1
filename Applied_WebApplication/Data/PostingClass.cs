@@ -486,7 +486,7 @@ namespace Applied_WebApplication.Data
             var IsValidated = true;
             var SRNO = 1;
             var Vou_No = SaleReturn.Rows[0]["Vou_No"].ToString();
-            var Vou_Type = VoucherType.Production;
+            var Vou_Type = VoucherType.SaleReturn;
 
             #region Check the voher is already exist in the ledger ? or not exist.
             tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
