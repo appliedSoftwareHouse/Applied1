@@ -10,12 +10,12 @@ namespace Applied_WebApplication.Pages.Sales
 {
     public class SaleInvoiceModel : PageModel
     {
-
         #region Setup
         [BindProperty]
         public MyParameters Variables { get; set; }
         public List<Message> ErrorMessages { get; set; } = new();
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public DataTable Invoice { get; set; }
         public DataRow Row1 { get; set; }
         public DataRow Row2 { get; set; }
@@ -35,11 +35,6 @@ namespace Applied_WebApplication.Pages.Sales
         #endregion
 
         #region GET
-
-        //public void OnGet()
-        //{
-        //}
-
 
         public void OnGetNew()
         {
@@ -257,6 +252,8 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostAdd()
         {
+            
+
             Vou_No = Variables.Vou_No;
             TranID = Variables.TranID;
 
@@ -389,6 +386,8 @@ namespace Applied_WebApplication.Pages.Sales
 
         private bool Save_Voucher()
         {
+            if(UserRole=="Viewer") { return false; }
+
             _Filter1 = $"Vou_No = '{Variables.Vou_No}'";
             TempInvoice11 = new(UserName, Tables.BillReceivable, _Filter1, IsRefresh);
             _Filter2 = $"TranID = {TempInvoice11.TempTable.Rows[0]["ID"]}";
@@ -498,6 +497,7 @@ namespace Applied_WebApplication.Pages.Sales
         }
         private bool Save_VoucherNew()
         {
+            if (UserRole == "Viewer") { return false; }
             var TempTable1 = xTempTableClass.GetTable(UserName, Tables.BillReceivable, $"Vou_No = 'NEW'");
             var TempTable2 = xTempTableClass.GetTable(UserName, Tables.BillReceivable2, $"TranID = {TempTable1.Rows[0]["ID"]}");
 

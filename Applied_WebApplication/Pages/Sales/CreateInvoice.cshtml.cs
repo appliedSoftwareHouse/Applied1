@@ -9,6 +9,7 @@ namespace Applied_WebApplication.Pages.Sales
         public DataTable Tb_Expense { get; set; }
         public DataTable Tb_Stock { get; set; }
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public string ExpenseSheet { get; set; }
         private string Filter { get; set; }
 
@@ -26,7 +27,6 @@ namespace Applied_WebApplication.Pages.Sales
                 Tb_Stock = DataTableClass.GetTable(UserName, Tables.Inventory);
             }
         }
-
 
         public class Parameters
         {

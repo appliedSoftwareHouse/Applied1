@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Identity;
+using System.Data;
 using System.Data.SQLite;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
@@ -11,6 +12,7 @@ namespace Applied_WebApplication.Data
         #region Initial
 
         public string UserName { get; set; }
+        public string UserRole { get; set; }
         public DataTable MyDataTable { get; set; }
         public DataView MyDataView { get; set; }
         public SQLiteConnection MyConnection { get; set; }
@@ -23,6 +25,7 @@ namespace Applied_WebApplication.Data
         public string MyTableName { get; set; }
         public bool IsError { get; set; } = false;
         public bool IsFound { get; set; } = false;
+        public bool IsSave { get; set; } = true;
         public string MyMessage { get; set; }
         public string View_Filter { get; set; }
         public DataRow CurrentRow { get; set; }
@@ -406,6 +409,8 @@ namespace Applied_WebApplication.Data
         #region Commands INSERT / UPDATE / DELETE
         private void CommandInsert()
         {
+            if(!IsSave) { return; }
+
             DataColumnCollection _Columns = MyDataTable.Columns;
             SQLiteCommand _Command = new SQLiteCommand(MyConnection);
 
@@ -443,6 +448,8 @@ namespace Applied_WebApplication.Data
         }
         private void CommandUpdate()
         {
+            if (!IsSave) { return; }
+
             var _Columns = CurrentRow.Table.Columns;
             var _Command = new SQLiteCommand(MyConnection);
             var _CommandString = new StringBuilder();
@@ -481,6 +488,8 @@ namespace Applied_WebApplication.Data
         }
         private void CommandDelete()
         {
+            if (!IsSave) { return; }
+
             if ((int)CurrentRow["ID"] > 0)
             {
                 Command_Delete.Parameters.AddWithValue("@ID", CurrentRow["ID"]);
@@ -611,6 +620,8 @@ namespace Applied_WebApplication.Data
 
         public void Save(bool? Validate)
         {
+            if(UserRole=="Viewer") { MyMessage = "Not Authorized to Save";  return; }          // Viewer User can not save the data. 
+
             Validate ??= true;
             IsError = false;
 
@@ -667,6 +678,7 @@ namespace Applied_WebApplication.Data
 
         public bool Delete()
         {
+            if (UserRole == "Viewer") { MyMessage = "Not Authorized to Delete"; return false; }          // Viewer User can not save the data. 
             IsError = true;
             TableValidation.MyMessages = new List<Message>();
             CommandDelete();

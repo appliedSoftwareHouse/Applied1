@@ -5,6 +5,7 @@ using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using static Applied_WebApplication.Pages.Accounts.CashBookModel;
+using Applied_WebApplication.Data;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -18,11 +19,13 @@ namespace Applied_WebApplication.Pages.Accounts
         public bool IsError = false;
         public List<Message> ErrorMessages = new();
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public int BookID { get; set; }
         public void OnGet(int ID, int _BookID)
         {
             BookID = _BookID;
             DataTableClass _Table = new(UserName, Tables.CashBook);
+            _Table.UserRole = UserRole;
             DataRow Row = _Table.NewRecord();
             BookRecord = new();
 
@@ -65,6 +68,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostSave()
         {
             DataTableClass Table = new(UserName, Tables.CashBook);
+            Table.UserRole = UserRole;
             DataRow Row = Table.NewRecord();
 
             Row["ID"] = BookRecord.ID;

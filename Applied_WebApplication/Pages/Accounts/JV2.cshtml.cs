@@ -11,6 +11,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public MyParameters Variables { get; set; } = new();
         public List<Message> Messages { get; set; } = new();
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public DataTable Voucher { get; set; }
         public TempDBClass2 TempVoucher { get; set; }
 
@@ -146,6 +147,8 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostDelete(int ID)
         {
+            if(UserRole=="Viewer") { return Page(); }
+
             TempVoucher = new(User, "JV2Temp");
             GetCurrentRow();
             SQLiteCommand? _Command;
@@ -196,6 +199,8 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostUnDelete(int ID)
         {
+            if (UserRole == "Viewer") { return Page(); }
+
             TempVoucher = new(User, "JV2Temp");
             GetCurrentRow();
             SQLiteCommand? _Command;
@@ -230,6 +235,7 @@ namespace Applied_WebApplication.Pages.Accounts
         #region Save
         public IActionResult OnPostSave()
         {
+            if (UserRole == "Viewer") { return Page(); }
             Messages = new();
             TempVoucher = new TempDBClass2(User, "JV2Temp");
             GetCurrentRow();

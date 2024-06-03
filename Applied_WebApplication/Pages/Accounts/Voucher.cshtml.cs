@@ -14,8 +14,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public List<Message> ErrorMessages { get; set; } = new();
         public DataTable tb_Voucher { get; set; } = new();
         public string UserName => User.Identity.Name;
-
-
+        public string UserRole => UserProfile.GetUserRole(User);
 
 
         public void OnGet(int? ID)
@@ -66,7 +65,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSave(int id)
         {
-
+            if (UserRole == "Viewer") { return Page(); }
             DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
             tb_Ledger.SeekRecord(id);
 

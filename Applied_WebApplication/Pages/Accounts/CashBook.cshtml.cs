@@ -19,9 +19,10 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public List<Message> ErrorMessages = new();
         public string FMTNumber { get; set; }
-        public string FMTCurrency  { get; set; }
+        public string FMTCurrency { get; set; }
         public string FMTDate { get; set; }
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
 
         #region Get / POST
 
@@ -35,7 +36,7 @@ namespace Applied_WebApplication.Pages.Accounts
                 MaxDate = (DateTime)GetKey(UserName, "CashBookTo", KeyType.Date),
                 IsPosted1 = (int)GetKey(UserName, "CashBookPost", KeyType.Number),
             };
-            
+
             id ??= Variables.CashBookID;
             if (id == 0) { id = GetNumber(UserName, "CashBookID"); }
 
@@ -47,6 +48,7 @@ namespace Applied_WebApplication.Pages.Accounts
             var _Book = "Cash";
 
             Cashbook = DataTableClass.GetTable(UserName, SQLQuery.BookLedger(_Filter, _Dates, _Book));
+            
 
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {
@@ -69,7 +71,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
             FMTNumber = GetText(UserName, "FMT");
         }
-    
+
         #endregion
 
         public IActionResult OnPostEdit(int ID)
@@ -90,10 +92,14 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostAdd()
         {
+           
+
             return RedirectToPage("CashBookRecord", new { ID = 0, _BookID = Variables.CashBookID });
+
         }
         public IActionResult OnPostSave(int ID)
         {
+            if (UserRole == "Viewer") { return Page(); }
             DataTableClass CashBook = new(UserName, Tables.CashBook);
             CashBook.MyDataView.RowFilter = $"ID={ID}";
             if (CashBook.MyDataView.Count == 0) { CashBook.NewRecord(); }                  // Create a new record.
@@ -116,7 +122,7 @@ namespace Applied_WebApplication.Pages.Accounts
             CashBook.Save();
 
 
-            
+
 
             ErrorMessages = CashBook.TableValidation.MyMessages;
             if (ErrorMessages.Count == 0)
@@ -135,6 +141,7 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostDelete(int ID)
         {
+            if (UserRole == "Viewer") { return Page(); }
             ErrorMessages = new();
             DataTableClass _Table = new(UserName, Tables.CashBook);
             _Table.MyDataView.RowFilter = string.Format("ID={0}", ID);

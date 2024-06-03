@@ -12,6 +12,7 @@ namespace Applied_WebApplication.Pages.Sales
         public Parameters Variables { get; set; }
         public List<Message> MyMessages { get; set; }
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public DataTable Receivable1 { get; set; }
         public DataTable Receivable2 { get; set; }
 
@@ -82,6 +83,7 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostSave(int TranID)
         {
+            if(UserRole=="Viewer") { return Page(); }
             MyMessages = new();
             var tb_SaleReturn = new DataTableClass(UserName, Tables.SaleReturn);
             Receivable1 = tb_SaleReturn.MyDataTable;

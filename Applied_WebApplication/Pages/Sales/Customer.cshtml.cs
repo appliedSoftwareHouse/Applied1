@@ -12,6 +12,7 @@ namespace Applied_WebApplication.Pages.Sales
         public bool IsError = false;
         public List<Message> ErrorMessages;
         public string UserName => User.Identity.Name;
+        public string UserRole => UserProfile.GetUserRole(User);
         public string MyPageAction { get; set; } = "Add";
 
         public void OnGetEdit(int id)
@@ -63,9 +64,10 @@ namespace Applied_WebApplication.Pages.Sales
 
         public IActionResult OnPostSave(Customer _Record)
         {
+            if (UserRole == "Viewer") { return Page(); }
 
             DataTableClass Customers = new(UserName, Tables.Customers);
-
+            Customers.UserRole = UserRole;
 
             if (Customers.Seek(_Record.ID))
             {
