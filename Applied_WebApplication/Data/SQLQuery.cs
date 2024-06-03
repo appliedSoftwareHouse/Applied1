@@ -1,10 +1,4 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using System.Data;
-using System.Data.SQLite;
-using System.Text;
-using System.Text.RegularExpressions;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
-using System.Xml.Linq;
+﻿using System.Text;
 
 namespace Applied_WebApplication.Data
 {

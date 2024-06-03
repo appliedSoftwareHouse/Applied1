@@ -33,6 +33,7 @@ namespace Applied_WebApplication.Data
         public string PrintedReportPath { get; set; }
         public string PrintedReportPathLink { get; set; }
         public string DataBasePath { get; set; }
+        public string TempDataBasePath { get; set; }
         public string UserDBPath { get; set; }
         public string GuestDBPath { get; set; }
         public CultureInfo AppCurture { get; set; }
@@ -56,6 +57,7 @@ namespace Applied_WebApplication.Data
             PrintedReportPath = $".{AppRoot}PrintedReports\\";
             PrintedReportPathLink = "~/PrintedReports/";
             DataBasePath = $".{AppRoot}SQLiteDB\\";
+            TempDataBasePath = $"~{AppRoot}DBTemp\\";
             UserDBPath = string.Concat(DataBasePath, "AppliedUsers.db");
             GuestDBPath = string.Concat(DataBasePath, "Applied.db");
             CultureString = "en-US";

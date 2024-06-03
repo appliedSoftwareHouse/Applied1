@@ -373,3 +373,5 @@ FodyWeavers.xsd
 /Applied_WebApplication/wwwroot/SQLiteDB/Alpha.db
 /Applied_WebApplication/wwwroot/SQLiteDB/AppliedUsers.db
 *.rdl
+*.db
+/Applied_WebApplication/wwwroot/DBTemp/AppliedTemp.db

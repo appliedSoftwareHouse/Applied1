@@ -87,7 +87,7 @@ namespace Applied_WebApplication.Data
 
         public AppliedUsersClass()
         {
-            AppliedUserConnection = new SQLiteConnection("Data Source=" + AppliedUsersFile);
+            AppliedUserConnection = new SQLiteConnection($"Data Source={AppliedUsersFile}");
             AppliedUserConnection.Open();
             AppliedUserCommand = new SQLiteCommand();
             UsersTable = UsersDataTable();
@@ -96,7 +96,7 @@ namespace Applied_WebApplication.Data
 
         public DataRow UserRecord(string _UserName)
         {
-            UserView.RowFilter = "UserID='" + _UserName + "'";
+            UserView.RowFilter = $"UserID='{_UserName}'";
             if (UserView.Count == 1)
             {
                 return UserView[0].Row;

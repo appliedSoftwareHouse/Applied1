@@ -58,11 +58,12 @@
 
   <ItemGroup>
     <None Remove="Pages\Accounts\2nisb1sl.stp~" />
+    <None Remove="Pages\Accounts\JV2.cshtml.cs~RF1d2addb3.TMP" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="System.Data.SQLite" Version="1.0.117" />
-    <PackageReference Include="System.Security.Permissions" Version="6.0.0" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="System.Security.Permissions" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -82,6 +83,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AppliedTempDB\AppliedTemp\AppliedTemp.csproj" />
     <ProjectReference Include="..\AppReporting\AppReportClass.csproj" />
   </ItemGroup>
 

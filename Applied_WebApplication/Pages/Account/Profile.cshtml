@@ -21,7 +21,27 @@
     <div class="p-2 bg-light border rounded">Company : @MyUserProfile.Company</div>
     <div class="p-2 bg-light border rounded">Email : @MyUserProfile.Email</div>
     @*
-     <div class="p-2 bg-light border rounded">Date Format : @DateTime.Now.ToString(MyUserProfile.DateFormat)</div>
+    <div class="p-2 bg-light border rounded">Date Format : @DateTime.Now.ToString(MyUserProfile.DateFormat)</div>
     <div class="p-2 bg-light border rounded">Currency Format : @CurrencyAmount.ToString(MyUserProfile.CurrencyFormat)</div>
     *@
 </div>
+
+<p>
+    <button class="btn btn-primary mt-3 btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+        Reset Password
+    </button>
+</p>
+<div class="collapse" id="collapseExample">
+    <div class="card card-body">
+        <form method="post">
+            <input type="password" id="pwd1" asp-for="@Model.Variables.Psw1" />
+            <input type="password" id="pwd2" asp-for="@Model.Variables.Psw2" />
+            <button type="submit" class="btn btn-danger btn-sm"
+                    asp-page-handler="UpdatePwd">
+                Update
+            </button>
+        </form>
+    </div>
+</div>
+
+

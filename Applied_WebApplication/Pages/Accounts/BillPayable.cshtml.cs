@@ -1,4 +1,5 @@
 
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -11,6 +12,7 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public MyParameters Variables { get; set; } = new();
         public DataTable BillRecords { get; set; }
+        public string UserRole => UserProfile.GetUserRole(User);
         public int ErrorCount { get => ErrorMessages.Count; }
         public bool IsPosted = false;
         public List<Message> ErrorMessages = new();
@@ -83,12 +85,17 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSave()
         {
+            if(UserRole == "Viewer") { return Page(); }
+
             string UserName = User.Identity.Name;
             DataTableClass BillPay1 = new DataTableClass(UserName, Tables.BillPayable);
             DataTableClass BillPay2 = new DataTableClass(UserName, Tables.BillPayable2);
 
             DataRow Row1 = BillPay1.NewRecord();
             DataRow Row2 = BillPay2.NewRecord();
+
+            BillPay1.UserRole = UserRole;
+            BillPay2.UserRole = UserRole;
 
             Variables.Status = VoucherStatus.Submitted.ToString();
 
@@ -152,11 +159,10 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         public IActionResult OnPostDelete(int id, int id2)
         {
+            if (UserRole == "Viewer") { return Page(); }
             string UserName = User.Identity.Name;
             DataTableClass BillPay2 = new(UserName, Tables.BillPayable2);
-
-
-
+            BillPay2.UserRole = UserRole;
             return Page();
         }
 

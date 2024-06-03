@@ -13,6 +13,7 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDate;
         public static readonly string FormatDateY2;
         public static readonly string FormatDateM2;
+        public static readonly string Two_digits;
 
     }
 
@@ -35,6 +36,7 @@ namespace Applied_WebApplication.Data
         }
 
         public static readonly string DateYMD = "yyyy-MM-dd";
+        public static readonly string Two_digits = "#,##0.00";
         public static readonly string FormatCurrency1 = "#,##0.00";
         public static readonly string FormatCurrency2 = "#,##0";
         public static readonly string FormatDate = "dd-MMM-yyyy";
