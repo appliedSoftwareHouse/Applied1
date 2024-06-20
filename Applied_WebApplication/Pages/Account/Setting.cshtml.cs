@@ -29,6 +29,7 @@ namespace Applied_WebApplication.Pages.Account
             {
                 OBCompany = AppRegistry.GetNumber(UserName, "OBCompany"),
                 OBStock = AppRegistry.GetNumber(UserName, "OBStock"),
+
                 FiscalStart = AppRegistry.GetDate(UserName, "FiscalStart"),
                 FiscalEnd = AppRegistry.GetDate(UserName, "FiscalEnd"),
                 StockExpiry = AppRegistry.GetNumber(UserName, "StockExpiry"),
@@ -53,8 +54,10 @@ namespace Applied_WebApplication.Pages.Account
                 BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature"),
 
                 ProductIN = AppRegistry.GetNumber(UserName, "ProductIN"),
-                ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT")
+                ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT"),
 
+                ImagePath = AppRegistry.GetText(UserName, "ImagePath"),
+                ReportPath = AppRegistry.GetText(UserName, "ReportPath"),
 
             };
         }
@@ -90,6 +93,8 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "ProductIN", Variables.ProductIN, KeyType.Number);
             AppRegistry.SetKey(UserName, "ProductOUT", Variables.ProductOUT, KeyType.Number);
 
+            AppRegistry.SetKey(UserName, "ImagePath", Variables.ImagePath, KeyType.Text); 
+            AppRegistry.SetKey(UserName, "ReportPath", Variables.ReportPath, KeyType.Text);
             return RedirectToPage();
         }
         #endregion
@@ -120,7 +125,8 @@ namespace Applied_WebApplication.Pages.Account
             public int BankBookNature { get; set; }
             public int ProductIN { get; set; }
             public int ProductOUT { get; set; }
-
+            public string ImagePath {  get; set; }
+            public string ReportPath {  get; set; }
         }
         #endregion
         #region SQL Query

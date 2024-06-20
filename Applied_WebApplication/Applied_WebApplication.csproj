@@ -15,6 +15,7 @@
     <PackageTags>Accounts; Accounting, Accounting Software, Stock, Inventory, Payroll</PackageTags>
     <PackageReleaseNotes>Beta Version (Under Development)</PackageReleaseNotes>
     <NeutralLanguage>en-US</NeutralLanguage>
+    <BaseOutputPath></BaseOutputPath>
   </PropertyGroup>
 
   <ItemGroup>
