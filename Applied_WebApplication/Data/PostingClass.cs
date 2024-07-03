@@ -548,7 +548,7 @@ namespace Applied_WebApplication.Data
                     tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                     tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
                     tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
-                    tb_Ledger.CurrentRow["Description"] = string.Concat(Row["Tax"], ": ", Row["Description"]);
+                    tb_Ledger.CurrentRow["Description"] = string.Concat(Row["Tax"], ": ", _Description);
                     tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
                     tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
                     if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }
@@ -572,7 +572,7 @@ namespace Applied_WebApplication.Data
                 tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                 tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
                 tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
-                tb_Ledger.CurrentRow["Description"] = Row["Description"];
+                tb_Ledger.CurrentRow["Description"] = _Description;
                 tb_Ledger.CurrentRow["Comments"] = Row["Remarks"];
                 tb_Ledger.TableValidation.Validation(tb_Ledger.CurrentRow, CommandAction.Insert);
                 if (tb_Ledger.ErrorCount > 0) { IsValidated = false; ErrorMessages.AddRange(tb_Ledger.TableValidation.MyMessages); }

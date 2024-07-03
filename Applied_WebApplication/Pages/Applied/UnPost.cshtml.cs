@@ -53,12 +53,12 @@ namespace Applied_WebApplication.Pages.Applied
 
                 case 4:                                                                                                                                 // Bill Payable
                     Filter = $"Date([B].[Vou_Date])>Date('{Date1}') AND Date([B].[Vou_Date]) < Date('{Date2}') AND [B].[Status]='{VoucherStatus.Posted}'";
-                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillPayable(Filter));
+                    UnpostTable = GetTable(UserName, SQLQuery.UnpostBillPayable(Filter));
                     break;
 
                 case 5:                                                                                                                                 // Bill Receivable (Sales Invoices) 
                     Filter = $"Date([B].[Vou_Date])>Date('{Date1}') AND Date([B].[Vou_Date]) <Date('{Date2}') AND [B].[Status]='{VoucherStatus.Posted}'";
-                    UnpostTable = DataTableClass.GetTable(UserName, SQLQuery.UnpostBillReceivable(Filter));
+                    UnpostTable = GetTable(UserName, SQLQuery.UnpostBillReceivable(Filter));
                     break;
 
                 case 6:             // Payment
@@ -71,9 +71,13 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
 
                 case 9:             // Sale Return
-                    Filter = $"Date([SR].[Vou_Date])>Date('{Date1}') AND Date([SR].[Vou_Date]) <Date('{Date2}') AND [SR].[Status]='{VoucherStatus.Posted}'";
+                    Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') AND [SR].[Status]='{VoucherStatus.Posted}'";
                     UnpostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
                     break;
+
+                    //Filter = $"Date([SR].[Vou_Date])>Date('{Date1}') AND Date([SR].[Vou_Date]) <Date('{Date2}') AND [SR].[Status]='{VoucherStatus.Posted}'";
+                    //UnpostTable = GetTable(UserName, SQLQuery.UnpostSaleReturn(Filter));
+                    //break;
 
                 case 10:            // BOM
                     Filter = $"Date([P1].[Vou_Date]) > Date('{Date1}') AND Date([P1].[Vou_Date]) < Date('{Date2}')";
@@ -92,6 +96,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BankBook) { IsError = UnpostClass.Unpost_BankBook(UserName, id); }
             if (PostingType == (int)PostType.BillPayable) { IsError = UnpostClass.UnpostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { IsError = UnpostClass.UnpostBillReceivable(UserName, id); }
+            if (PostingType == (int)PostType.SaleReturn) { IsError = UnpostClass.UnpostSaleReturn(UserName, id); }
             if (PostingType == (int)PostType.Production) { IsError = UnpostClass.UnpostProduction(UserName, id); }
             if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("UnPost", "Refresh");

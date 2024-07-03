@@ -86,21 +86,21 @@
                             <td>@Row["Vou_No"]</td>
                             <td>@_Date</td>
                             <td>@Row["Batch"]</td>
-                            <td>@_QtyIn.ToString(NumberFormat)</td>
-                            <td>@_QtyOut.ToString(NumberFormat)</td>
+                            <td class="amount">@_QtyIn.ToString(NumberFormat)</td>
+                            <td class="amount">@_QtyOut.ToString(NumberFormat)</td>
                             <td>@Row["Remarks"]</td>
+                            <td>
+                                @if (_Posted.Equals("Posted"))
+                                {
+                                    <label>Posted</label>
+                                }
+                                else
+                                {
+                                    <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button><label> | </label>
+                                    <button type = "submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>
+                                }
 
-                            @if (_Posted == "Posted")
-                            {
-                                <Label>Posted</Label>
-                            }
-                            else
-                            {
-                                <td>
-                                    <button type="submit" class="btn btn-link listbutton-blue" asp-page-handler="Edit" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-pencil-fill"></i></button>                            |
-                                    <button type="submit" class="btn btn-link listbutton-red" asp-page-handler="Delete" asp-route-Vou_No="@Row["Vou_No"]"><i class="bi bi-trash-fill"></i></button>
-                                </td>
-                            }
+                            </td>
                         </tr>
                     }
                 }

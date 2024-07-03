@@ -321,7 +321,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[P].[TITLE] AS [ProjectTitle],");
             Text.Append("[I].[TITLE] AS [StockTitle]");
             Text.Append("FROM(");
-            Text.Append("SELECT * FROM[Ledger] [L] ");
+            Text.Append("SELECT * FROM [Ledger] [L] ");
             Text.Append($"WHERE (Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}')) ");
             Text.Append($"AND {_Filter}");
             Text.Append(" ) AS[L]");
@@ -1105,7 +1105,7 @@ namespace Applied_WebApplication.Data
             return Text.ToString();
         }
 
-        public static string List_Production()
+        public static string List_Production(string Filtert)
         {
             {
                 var Text = new StringBuilder();
@@ -1113,6 +1113,10 @@ namespace Applied_WebApplication.Data
                 Text.Append("SUM(IIF(Flow = 'In', Qty, 0))[QtyIn],");
                 Text.Append("SUM(IIF(Flow = 'Out', Qty, 0))[QtyOut] ");
                 Text.Append($"FROM ({View_Production()})");
+                if (Filtert.Length > 0)
+                {
+                    Text.Append($"WHERE {Filtert} ");
+                }
                 Text.Append("GROUP BY [Vou_No]");
                 return Text.ToString();
             }

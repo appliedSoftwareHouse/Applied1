@@ -1,5 +1,6 @@
 global using Applied_WebApplication.Data;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 

@@ -76,6 +76,8 @@
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
     <None Include="wwwroot\Reports\SalesInvoice.rdl" />
+    <None Include="wwwroot\SQLiteDB\Alpha.db.Backup" />
+    <None Include="wwwroot\SQLiteDB\Altamash.db" />
   </ItemGroup>
 
   <ItemGroup>

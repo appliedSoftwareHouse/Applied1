@@ -1,9 +1,15 @@
 ﻿@page
+@model LoginModel
+@inject IConfiguration Config;
+
 @using System.Data
 @using Applied_WebApplication.Data
-@model LoginModel
-@{
 
+
+
+
+@{
+    //var Model = Model.MyCredential;
 }
 
 <style>
@@ -14,33 +20,34 @@
         border: thin;
         margin-bottom: 3px
     }
-
 </style>
 
 
 <form method="post">
-    <div class="text-danger" asp-validation-summary="ModelOnly"></div>
-    <div class="container Login-Container rounded ">
-        <div class="row align-items-center">
-            <div class='col-1'><label asp-for="MyCredential.Username"> User ID </label></div>
-            <div class='col-4'>
-                <input type="text" asp-for="MyCredential.Username" class="form-control" />
-                <span class="text-danger" asp-validation-for="MyCredential.Username"></span>
-            </div>
-            <div class='col-1'><label asp-for="MyCredential.Password"> Password </label></div>
-            <div class='col-4'>
-                <input type="password" asp-for="MyCredential.Password" class="form-control" />
-                <span class="text-danger" asp-validation-for="MyCredential.Password"></span>
-            </div>
-            <div class='col-2 d-grid'>
-                <input class="btn btn-primary " type="submit" value="Login">
+    @* <div class="text-danger" asp-validation-summary="ModelOnly"></div> *@
+
+        <div class="container Login-Container rounded">
+            <div class="row align-items-center">
+                <div class='col-1'><label asp-for="MyCredential.Username"> User ID </label></div>
+                <div class='col-4'>
+                    <input type="text" asp-for="MyCredential.Username" class="form-control" />
+                    <span class="text-danger" asp-validation-for="MyCredential.Username"></span>
+                </div>
+                <div class='col-1'><label asp-for="MyCredential.Password"> Password </label></div>
+                <div class='col-4'>
+                    <input type="password" asp-for="MyCredential.Password" class="form-control" />
+                    <span class="text-danger" asp-validation-for="MyCredential.Password"></span>
+                </div>
+                <div class='col-2 d-grid'>
+                    <input class="btn btn-primary " type="submit" value="Login">
+                </div>
             </div>
         </div>
-    </div>
-    <div class="container tm-2 rounded" style="height:25px; background:#e6f2f5">
-        <p style="color:#800000;   text-align:center">Enter as Guest : Login by [ID = "Guest" and Password = "Guest"]</p>
-    </div>
 
+        <div class="container tm-2 rounded" style="height:25px; background:#e6f2f5">
+            <p style="color:#800000;   text-align:center">Enter as Guest : Login by [ID = "Guest" and Password = "Guest"]</p>
+        </div>
+    
 </form>
 
 <hr />
@@ -50,7 +57,7 @@
         <div class="row" @*style="height:250px"*@>
             <div class="col mb-2">
                 <div class="card" style="width: 18rem;">
-                    <img src="https://source.unsplash.com/286x180/?Accounting,Bills,Invoice,Bookkeeping" class="card-img-top" alt="Image">
+                    <img src="@Model.Image1" class="card-img-top" alt="Image">
                     <div class="card-body">
                         <h5 class="card-title">Accounting</h5>
                         <p class="card-text">Applied Accounts provides you complete accounting system in easy and efficiency way.</p>
@@ -60,7 +67,7 @@
             </div>
             <div class="col mb-2">
                 <div class="card" style="width: 18rem;">
-                    <img src="https://source.unsplash.com/286x180/?Warehouse,Inventory,Stock" class="card-img-top" alt="Image">
+                    <img src="@Model.Image2" class="card-img-top" alt="Image">
                     <div class="card-body">
                         <h5 class="card-title">Inventory</h5>
                         <p class="card-text">Manage and control of stock inventory integrated with accounting system</p>
@@ -70,7 +77,7 @@
             </div>
             <div class="col mb-2">
                 <div class="card" style="width: 18rem;">
-                    <img src="https://source.unsplash.com/286x180/?flowchart" class="card-img-top" alt="Image">
+                    <img src="@Model.Image3" class="card-img-top" alt="Image">
                     <div class="card-body">
                         <h5 class="card-title">Payroll</h5>
                         <p class="card-text">Keep your employee's information update, Manage Salary, benefits and incentives in easy way.</p>
@@ -80,7 +87,7 @@
             </div>
             <div class="col mb-2 d-lg-none">
                 <div class="card" style="width: 18rem;">
-                    <img src="https://source.unsplash.com/286x180/?Taxes,Finnace" class="card-img-top" alt="Image">
+                    <img src="@Model.Image4" class="card-img-top" alt="Image">
                     <div class="card-body">
                         <h5 class="card-title">Taxation</h5>
                         <p class="card-text">We provide submittion on monthly Sales Tax Return (GST/SRB) & Annual Income Tax Return (FBR) </p>
@@ -101,4 +108,8 @@
     <div class=" mt-1 bg-lightblue">
         <p class="TextCenter" style="color:#800000"><b>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and medium scale organization.</b></p>
     </div>
+</div>
+
+<div>
+    <p>@Model.MyMessage</p>
 </div>

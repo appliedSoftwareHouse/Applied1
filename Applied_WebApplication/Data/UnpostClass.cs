@@ -149,7 +149,7 @@ namespace Applied_WebApplication.Data
             {
                 if (BillReceivable.CountView == 1)
                 {
-                    if (tb_Ledger.Rows.Count > 0 )
+                    if (tb_Ledger.Rows.Count > 0)
                     {
                         foreach (DataRow Row in tb_Ledger.Rows)
                         {
@@ -188,13 +188,13 @@ namespace Applied_WebApplication.Data
             if (_LedgerTable.Rows.Count >= 2)
             {
                 var _VouNo = _LedgerTable.Rows[0]["Vou_No"].ToString();
-                foreach(DataRow Row in _LedgerTable.Rows)
+                foreach (DataRow Row in _LedgerTable.Rows)
                 {
                     if (Row["Vou_No"].ToString() == _VouNo)
                     {
                         _LedgerClass.CurrentRow = Row;
                         _LedgerClass.Delete();
-                        
+
                     }
                     _Result = true;
                 }
@@ -233,6 +233,50 @@ namespace Applied_WebApplication.Data
 
 
             //return _Result;
+        }
+        #endregion
+
+        #region Sale Retrurn
+        public static bool UnpostSaleReturn(string UserName, int ID)
+        {
+            var _Result = false;
+            DataTableClass Ledger = new(UserName, Tables.Ledger);
+            DataTableClass SaleReturn = new(UserName, Tables.SaleReturn);
+            SaleReturn.MyDataView.RowFilter = "ID=" + ID.ToString();
+            if (SaleReturn.MyDataView.Count > 0)
+            {
+                string Filter = $"TranID={(int)SaleReturn.MyDataView[0]["TranID"]} AND Vou_Type='{VoucherType.SaleReturn}'";
+                DataTable tb_Ledger = DataTableClass.GetTable(UserName, Tables.Ledger, Filter);
+
+                try
+                {
+                    if (SaleReturn.Count == 1)
+                    {
+                        if (tb_Ledger.Rows.Count >= 2)
+                        {
+                            foreach (DataRow Row in tb_Ledger.Rows)
+                            {
+                                if (Ledger.Seek((int)Row["ID"]))
+                                {
+                                    Ledger.SeekRecord((int)Row["ID"]);
+                                    Ledger.Delete();
+                                }
+                            }
+                            if (SaleReturn.Seek(ID))
+                            {
+                                SaleReturn.SeekRecord(ID);
+                                SaleReturn.Replace(ID, "Status", VoucherStatus.Submitted);
+                            }
+                            _Result = true;
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    _Result = true;
+                }
+            }
+            return _Result;
         }
         #endregion
     }

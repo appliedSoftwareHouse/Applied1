@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.CodeAnalysis.VisualBasic.Syntax;
+using Microsoft.Extensions.Hosting;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.Stock
@@ -17,7 +17,7 @@ namespace Applied_WebApplication.Pages.Stock
         public void OnGet()
         {
             GetVariables();
-            tb_Production = DataTableClass.GetTable(UserName, SQLQuery.List_Production());
+            tb_Production = DataTableClass.GetTable(UserName, SQLQuery.List_Production(""));
         }
 
         #region Set & Get Variables Values
@@ -44,9 +44,10 @@ namespace Applied_WebApplication.Pages.Stock
         public void OnPostFilter()
         {
             SetVariables();
-            var Date1 = Variables.Date1.ToString(AppRegistry.DateYMD);
-            var Date2 = Variables.Date2.ToString(AppRegistry.DateYMD);
-            var _Filter = Variables.Filter;
+            //var Date1 = Variables.Date1.ToString(AppRegistry.DateYMD);
+            //var Date2 = Variables.Date2.ToString(AppRegistry.DateYMD);
+            var _Filter = GetFilter();
+            tb_Production = DataTableClass.GetTable(UserName, SQLQuery.List_Production(_Filter));
         }
 
         public IActionResult OnPostNew()
@@ -104,6 +105,32 @@ namespace Applied_WebApplication.Pages.Stock
 
         #endregion
 
+
+        public string GetFilter()
+        {
+            var _Filter = string.Empty;
+            var _Date1 = Variables.Date1.ToString(AppRegistry.DateYMD);
+            var _Date2 = Variables.Date2.ToString(AppRegistry.DateYMD);
+            int _Flow() { if (Variables.InOut == "In") { return 1; } else { return 0; } }
+
+            _Filter = $"(Date(Vou_Date) >= Date('{_Date1}') AND Date(Vou_Date) <= Date('{_Date2}')) ";
+
+            if (Variables.InOut != "Both") { _Filter += $" AND (Flow = {_Flow()}) "; }
+            Variables.Search ??= "";
+            if (Variables.Search != null)
+            {
+                _Filter += " ";
+                if (Variables.Search.Length > 0)
+                {
+                    _Filter += $" AND (Remarks  like '%{Variables.Search.Trim()}%' ";
+                    _Filter += $" OR Remarks2 like '%{Variables.Search.Trim()}%' ";
+                    _Filter += $" OR Vou_No   like '%{Variables.Search.Trim()}%' ";
+                    _Filter += ")";
+                }
+            }
+            return _Filter;
+        }
+
         #region Parameters
         public class Parameters
         {
@@ -116,31 +143,9 @@ namespace Applied_WebApplication.Pages.Stock
             public string InOut { get; set; }
             public string Remarks { get; set; }
             public string Search { get; set; } = string.Empty;
-            public string Filter => GetFilter();
+            public string Filter { get; set; } = string.Empty;
 
-            public string GetFilter()
-            {
-                var _Filter = string.Empty;
-                var _Date1 = Date1.ToString(AppRegistry.DateYMD);
-                var _Date2 = Date2.ToString(AppRegistry.DateYMD);
-                int _Flow() { if (InOut == "In") { return 1; } else { return 0; } }
-
-                _Filter = $"(Date(Vou_No) >= Date('{_Date1}') AND Date(Vou_No) <= Date('{_Date2}')) ";
-
-                if (InOut != "Both") { _Filter += $" AND (Flow = {_Flow()}) "; }
-                if (Search != null)
-                {
-                    _Filter += " ";
-                    if (Search.Length > 0)
-                    {
-                        _Filter += $" AND (Remarks  like '%{Search.Trim()}%' ";
-                        _Filter += $" OR Remarks2 like '%{Search.Trim()}%' ";
-                        _Filter += $" OR Vou_No   like '%{Search.Trim()}%' ";
-                        _Filter += ")";
-                    }
-                }
-                return _Filter;
-            }
+            
         }
         #endregion
 
