@@ -44,6 +44,7 @@ namespace Applied_WebApplication.Pages.Stock
         {
             var StockClass = new StockLedgersClass(UserName);
             var _Table = StockClass.GetStockInHand2();
+            //var _Table = StockClass.GetStockInHand();
             //StockClass.SavetoDBTable(_Table);   Do not Delete.   Testing purpose.
             return _Table;
             

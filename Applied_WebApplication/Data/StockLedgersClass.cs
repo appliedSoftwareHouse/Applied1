@@ -424,7 +424,13 @@ namespace Applied_WebApplication.Data
                 if (Row["Amount"] == DBNull.Value) { Row["Amount"] = 0.00M; }
 
                 var _Qty = Math.Round(decimal.Parse(Row["Qty"].ToString()), 2);
-                var _Amount = Math.Round(decimal.Parse(Row["Amount"].ToString()), 2);
+
+                if (decimal.TryParse(Row["Amount"].ToString(), out decimal _Amount)) 
+                { _Amount = Math.Round(_Amount, 2); }
+                
+
+
+                //var _Amount = Math.Round(decimal.Parse(Row["Amount"].ToString()), 2);
 
                 #region Quantity and Amount
                 if ((string)Row["Vou_Type"] == "OBalStock")
