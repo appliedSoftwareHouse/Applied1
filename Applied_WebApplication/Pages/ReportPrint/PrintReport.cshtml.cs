@@ -830,7 +830,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
                     {
-                        return RedirectToPage("HTMLViewer", "HTMLView", new { _HTMLFile = Reportmodel.OutputReport.FileFullName });
+                        
+                        ReportLink = $"~/PrintedReports/{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        IsShowPdf = true;
+                        return Page();
+
+
+
                     }
                     else
                     {

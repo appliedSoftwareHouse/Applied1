@@ -186,6 +186,10 @@ namespace AppReportClass
                     OutputReport.FileStream = fstream;
                     Messages.Add($"{DateTimeNow}: Report saved sucessfully");
                     Messages.Add($"{DateTimeNow}: Created a file {_FileName}");
+
+                    OutputReport.FileLink = OutputReport.GetFileLink();
+
+                    return true;
                 }
             }
             else
