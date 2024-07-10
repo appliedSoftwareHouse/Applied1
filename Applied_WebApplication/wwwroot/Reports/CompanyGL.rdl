@@ -5,7 +5,7 @@
     <DataSource Name="ds_Ledger">
       <ConnectionProperties>
         <DataProvider>ODBC</DataProvider>
-        <ConnectString>Dsn=HFS</ConnectString>
+        <ConnectString>Dsn=Alpha</ConnectString>
         <IntegratedSecurity>true</IntegratedSecurity>
       </ConnectionProperties>
       <rd:SecurityType>Integrated</rd:SecurityType>

@@ -222,21 +222,21 @@ LEFT JOIN
                   <TablixCells>
                     <TablixCell>
                       <CellContents>
-                        <Textbox Name="CUSTOMER">
+                        <Textbox Name="Title">
                           <CanGrow>true</CanGrow>
                           <KeepTogether>true</KeepTogether>
                           <Paragraphs>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>=Fields!CUSTOMER.Value</Value>
+                                  <Value>=Fields!Title.Value</Value>
                                   <Style />
                                 </TextRun>
                               </TextRuns>
                               <Style />
                             </Paragraph>
                           </Paragraphs>
-                          <rd:DefaultName>CUSTOMER</rd:DefaultName>
+                          <rd:DefaultName>Title</rd:DefaultName>
                           <Style>
                             <Border>
                               <Color>LightGrey</Color>

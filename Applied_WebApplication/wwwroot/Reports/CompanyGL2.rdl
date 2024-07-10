@@ -286,7 +286,7 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
                             <Paragraph>
                               <TextRuns>
                                 <TextRun>
-                                  <Value>Description 2</Value>
+                                  <Value>Description.</Value>
                                   <Style>
                                     <FontSize>9pt</FontSize>
                                     <FontWeight>Bold</FontWeight>
@@ -742,7 +742,6 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
                             <PaddingBottom>2pt</PaddingBottom>
                           </Style>
                         </Textbox>
-                        <rd:Selected>true</rd:Selected>
                       </CellContents>
                     </TablixCell>
                     <TablixCell>
@@ -1318,7 +1317,7 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
             </Style>
           </Tablix>
         </ReportItems>
-        <Height>1.77778in</Height>
+        <Height>1.79167in</Height>
         <Style />
       </Body>
       <Width>7.38542in</Width>
@@ -1437,14 +1436,14 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
-            <Textbox Name="Textbox4">
+            <Textbox Name="txtFooter">
               <CanGrow>true</CanGrow>
               <KeepTogether>true</KeepTogether>
               <Paragraphs>
                 <Paragraph>
                   <TextRuns>
                     <TextRun>
-                      <Value>=Parameters!Footer.Value</Value>
+                      <Value>=Parameters!Footer.Value + " " + Globals!ReportName</Value>
                       <Style>
                         <FontStyle>Italic</FontStyle>
                         <FontSize>7pt</FontSize>
@@ -1456,8 +1455,7 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
                   </Style>
                 </Paragraph>
               </Paragraphs>
-              <rd:DefaultName>Textbox4</rd:DefaultName>
-              <Top>0.29167in</Top>
+              <Top>0.04167in</Top>
               <Height>0.25in</Height>
               <Width>3.58333in</Width>
               <Style>
@@ -1497,6 +1495,37 @@ ORDER BY CUSTOMER, COA, VOU_DATE</CommandText>
                   <Style>None</Style>
                 </Border>
                 <VerticalAlign>Middle</VerticalAlign>
+              </Style>
+            </Textbox>
+            <Textbox Name="Textbox4">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>=Globals!ReportName</Value>
+                      <Style>
+                        <FontSize>7pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>Textbox4</rd:DefaultName>
+              <Top>0.29167in</Top>
+              <Height>0.25in</Height>
+              <Width>3.58333in</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
           </ReportItems>
