@@ -411,8 +411,11 @@ namespace Applied_WebApplication.Data
             var _AvgRate = 0.00M;
             var _Cost = 0.00M;
 
-            foreach (DataRow Row in StockLedgerDetails.Rows)
+            foreach (DataRow Item in StockLedgerDetails.Rows)
             {
+
+                var Row = DataTableClass.RemoveNull(Item);
+
                 var _Row = StockLedger.NewRow();
                 _Row["StockID"] = (int)Row["StockID"];
                 _Row["Vou_No"] = (string)Row["Vou_No"];
