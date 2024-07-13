@@ -508,7 +508,7 @@ namespace Applied_WebApplication.Data
                 _Row["NetQty"] = Tot_Qty;
                 _Row["NetAmount"] = Tot_Amount;
 
-                if (Tot_Qty > 0 || Tot_Amount > 0)
+                if (Tot_Qty > 0 && Tot_Amount > 0)
                 { _AvgRate = Math.Round(Tot_Amount / Tot_Qty, 2); }
                 _Row["AvgRate"] = _AvgRate;
 
