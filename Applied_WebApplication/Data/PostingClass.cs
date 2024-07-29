@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.CodeAnalysis.Emit;
+using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
 using System.Net.Http.Headers;
@@ -611,6 +612,9 @@ namespace Applied_WebApplication.Data
             var ErrorMessages = new List<Message>();
             var COA_DR = AppRegistry.GetNumber(UserName, "ProductOUT");
             var COA_CR = AppRegistry.GetNumber(UserName, "ProductIN");
+           
+
+
 
             if (COA_DR > 0 && COA_CR > 0)                   // if Chart of account is valid.
             {
@@ -625,7 +629,12 @@ namespace Applied_WebApplication.Data
 
                 Tot_DR = Math.Round(Tot_DR, 2);
                 Tot_CR = Math.Round(Tot_CR, 2);
+                decimal Difference = Tot_DR - Tot_CR;
 
+                if(Difference < 0.50M)
+                {
+                    Tot_CR = Tot_DR;
+                }
 
                 #region Validation
                 if (Production == null)
@@ -659,7 +668,7 @@ namespace Applied_WebApplication.Data
                 var Vou_No = Production.Rows[0]["Vou_No"].ToString();
                 var Vou_Type = VoucherType.Production;
 
-                #region Check the voher is already exist in the ledger ? or not exist.
+                #region Check the voucher is already exist in the ledger ? or not exist.
                 tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
                 if (tb_Ledger.CountView > 0)
                 {
