@@ -8,6 +8,7 @@ using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
+using Microsoft.VisualBasic;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -401,8 +402,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #region Report's Data Parameters
 
-            var Heading1 = "PROJECT EXPENSES SHEET";
-            var Heading2 = $"Sale Register";
+            var Heading1 = "SALE REGISTER";
+            var Heading2 = $"From {model.Variables.StartDate.ToString(FormatDate)} " +
+                $"To {model.Variables.EndDate.ToString(FormatDate)}";
 
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {

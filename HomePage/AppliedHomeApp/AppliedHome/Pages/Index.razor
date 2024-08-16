@@ -1,0 +1,112 @@
+﻿@page "/"
+
+
+@{
+    var Image1 = "";
+    var Image2 = "";
+    var Image3 = "";
+    var Image4 = "";
+    var MyMessage = "";
+}
+
+<style>
+    .Login-Container {
+        background: #EEE8AA;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        border: thin;
+        margin-bottom: 3px
+    }
+</style>
+
+
+<form method="post">
+    @* <div class="text-danger" asp-validation-summary="ModelOnly"></div> *@
+
+        <div class="container Login-Container rounded">
+            <div class="row align-items-center">
+                <div class='col-1'><label asp-for="MyCredential.Username"> User ID </label></div>
+                <div class='col-4'>
+                    <input type="text" asp-for="MyCredential.Username" class="form-control" />
+                    <span class="text-danger" asp-validation-for="MyCredential.Username"></span>
+                </div>
+                <div class='col-1'><label asp-for="MyCredential.Password"> Password </label></div>
+                <div class='col-4'>
+                    <input type="password" asp-for="MyCredential.Password" class="form-control" />
+                    <span class="text-danger" asp-validation-for="MyCredential.Password"></span>
+                </div>
+                <div class='col-2 d-grid'>
+                    <input class="btn btn-primary " type="submit" value="Login">
+                </div>
+            </div>
+        </div>
+
+        <div class="container tm-2 rounded" style="height:25px; background:#e6f2f5">
+            <p style="color:#800000;   text-align:center">Enter as Guest : Login by [ID = "Guest" and Password = "Guest"]</p>
+        </div>
+    
+</form>
+
+<hr />
+
+<div>
+    <div class="container mb-1 align-items-center" @*style="height:420px"*@>
+        <div class="row" @*style="height:250px"*@>
+            <div class="col mb-2">
+                <div class="card" style="width: 18rem;">
+                    <img src="@Image1" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Accounting</h5>
+                        <p class="card-text">Applied Accounts provides you complete accounting system in easy and efficiency way.</p>
+                        <a href="#" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div class="card" style="width: 18rem;">
+                    <img src="@Image2" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Inventory</h5>
+                        <p class="card-text">Manage and control of stock inventory integrated with accounting system</p>
+                        <a href="#" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-2">
+                <div class="card" style="width: 18rem;">
+                    <img src="@Image3" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Payroll</h5>
+                        <p class="card-text">Keep your employee's information update, Manage Salary, benefits and incentives in easy way.</p>
+                        <a href="#" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col mb-2 d-lg-none">
+                <div class="card" style="width: 18rem;">
+                    <img src="@Image4" class="card-img-top" alt="Image">
+                    <div class="card-body">
+                        <h5 class="card-title">Taxation</h5>
+                        <p class="card-text">We provide submittion on monthly Sales Tax Return (GST/SRB) & Annual Income Tax Return (FBR) </p>
+                        <a href="#" class="btn btn-primary">Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div>
+    <div class="container rounded-2 pt-1" style="/*height:120px;*/ background:#e6f2f5; color:#C11B17 ">
+        <h3 Style="text-align:center">APPLIED SOFTWARE HOUSE</h3>
+        <h5 Style="text-align:center;  color:#7e02ff; padding:0px">Presents an Accounting, Stock and Payroll integrated systems in just Pakistani Rs. 5,000/- per month. </h5>
+        <h5 Style="text-align:center;  color:#0001ff; padding:0px">WhatsApp: +92 (336) 2454 230, Telegram: aamirjk2000  or   Email: <a href="mailto:aamir@jahangir.com">aamir@jahangir.com</a></h5>
+    </div>
+    <div class=" mt-1 bg-lightblue">
+        <p class="TextCenter" style="color:#800000"><b>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and medium scale organization.</b></p>
+    </div>
+</div>
+
+<div>
+    <p>@MyMessage</p>
+</div>
