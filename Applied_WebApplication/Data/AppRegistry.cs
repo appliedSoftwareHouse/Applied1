@@ -42,6 +42,9 @@ namespace Applied_WebApplication.Data
         public static readonly string FormatDate = "dd-MMM-yyyy";
         public static readonly string FormatDateY2 = "dd-MMM-yy";
         public static readonly string FormatDateM2 = "dd-MM-yy";
+        public static readonly string Currency2d = "#,##0.00";
+        public static readonly string Currency4d = "#,##0.0000";
+        public static readonly string Currency6d = "#,##0.000000";
         public static readonly DateTime MinDate = new DateTime(2020, 01, 01);
 
         public static DateTime GetFiscalFrom()

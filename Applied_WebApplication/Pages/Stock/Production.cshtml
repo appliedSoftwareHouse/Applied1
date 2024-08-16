@@ -5,12 +5,14 @@
     string UserName = User.Identity.Name;
     DataTable _Table = new DataTable();
 
-    string NumberFormat = AppRegistry.GetFormatCurrency(UserName);
+    string NumberFormat = AppRegistry.Currency6d;
     string DateFormat = AppRegistry.GetFormatDate(UserName);
 
     string TitleStock = "";
     string TitleInOut = "";
     decimal Tot_Amount = 0.00M;
+    decimal Tot_In = 0.00M;
+    decimal Tot_Out = 0.00M;
 }
 
 @if (Model.IsError)
@@ -169,9 +171,9 @@
                             var _Amount = Conversion.ToDecimal(Row["Amount"]).ToString(NumberFormat);
                             var _Flow = Row["Flow"].ToString();
 
-                            if (_Flow == "In") { Tot_Amount -= Conversion.ToDecimal(Row["Amount"]); }
-                            if (_Flow == "Out") { Tot_Amount += Conversion.ToDecimal(Row["Amount"]); }
-
+                            if (_Flow == "In") { Tot_In += Conversion.ToDecimal(Row["Amount"]); }
+                            if (_Flow == "Out") { Tot_Out += Conversion.ToDecimal(Row["Amount"]); }
+                            Tot_Amount = Tot_In - Tot_Out;
 
                             //var _Posted = Row["Status"].ToString();
 
@@ -179,9 +181,9 @@
                                 <td>@Row["Batch"]</td>
                                 <td>@Row["Flow"]</td>
                                 <td>@Row["StockTitle"]</td>
-                                <td>@_Qty</td>
-                                <td>@_Rate</td>
-                                <td>@_Amount</td>
+                                <td class="amount">@_Qty</td>
+                                <td class="amount">@_Rate</td>
+                                <td class="amount">@_Amount</td>
                                 <td>@Row["Remarks2"]</td>
                                 <td>
                                     @if (_Flow == "Out")
@@ -205,10 +207,10 @@
                     <tr>
                         <td></td>
                         <td></td>
+                        <td>In: @Tot_In.ToString(NumberFormat)</td>
+                        <td>Out: @Tot_In.ToString(NumberFormat)</td>
                         <td></td>
-                        <td></td>
-                        <td></td>
-                        <td>@Tot_Amount.ToString(NumberFormat)</td>
+                        <td class="amount" >@Tot_Amount.ToString(NumberFormat)</td>
                         <td></td>
                         <td></td>
                     </tr>

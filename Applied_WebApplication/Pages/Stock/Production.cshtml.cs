@@ -193,10 +193,11 @@ namespace Applied_WebApplication.Pages.Stock
                 var _true = decimal.TryParse(Row["Amount"].ToString(), out decimal _Amount);
 
                 if (_Flow == "In") { Tot_In_Amount += _Amount; }
-                if (_Flow == "Out") {if ((int)Row["ID2"] != ID2) { Tot_Out_Amount += _Amount; }; }
+                if (_Flow == "Out") 
+                {if ((int)Row["ID2"] == ID2) { Tot_Out_Amount += _Amount; }; }
             }
 
-            decimal _Difference = Math.Round(Tot_In_Amount, 2) - Math.Round(Tot_Out_Amount, 2);
+            decimal _Difference = Math.Round(Tot_In_Amount, 6) - Math.Round(Tot_Out_Amount, 6);
             if (_Difference != 0)
             {
 
@@ -325,7 +326,7 @@ namespace Applied_WebApplication.Pages.Stock
 
 
         // Non DataBase Parameters
-        public string NumberFormat => AppRegistry.GetFormatCurrency(UserName);
+        public string NumberFormat => AppRegistry.Currency6d;
         public string QtyFormat => Qty.ToString(NumberFormat);
         public string RateFormat => Rate.ToString(NumberFormat);
         public string AmountFormat => Amount.ToString(NumberFormat);
