@@ -773,6 +773,7 @@ namespace Applied_WebApplication.Data
             Text.Append("[L].[Customer],");
             Text.Append("[C].[Code],");
             Text.Append("[C].[Title],");
+            Text.Append("[C].[City],");
             Text.Append("[N].[Title] [Nature],");
             Text.Append("CAST(ROUND(SUM([L].[DR]), 2) AS FLOAT) AS [DR],");
             Text.Append("CAST(ROUND(SUM([L].[CR]), 2) AS FLOAT) AS [CR],");
