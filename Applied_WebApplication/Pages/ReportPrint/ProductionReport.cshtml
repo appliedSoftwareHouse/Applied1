@@ -1,0 +1,77 @@
+﻿@page
+@using System.Data
+@using AppReportClass
+@model Applied_WebApplication.Pages.ReportPrint.ProductionReportModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleStock = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Parameters.N_Inventory);
+}
+
+
+
+<form method="post">
+    <div class="container">
+        <div class="row mt-2 bg-light">
+
+            <div class="col-md-2">
+                <div class="form-floating mb-3">
+
+                    <select class="form-control" id="txtFlow" asp-for="@Model.Parameters.Flow">
+                        <option selected>@TitleStock</option>
+                        <option value="Both">Both</option>
+                        <option value="In">In</option>
+                        <option value="Out">Out</option>
+
+                    </select>
+                    <label for="txtFlow">Stock Flow</label>
+                </div>
+            </div>
+
+            <!--DATES -->
+            <div class="col-md-2">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="Date1" asp-for="@Model.Parameters.Dt_From" placeholder="report start from..">
+                    <label for="Date1">From Date</label>
+                </div>
+            </div>
+
+
+
+            <div class="col-md-2">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" id="Date2" asp-for="@Model.Parameters.Dt_To" placeholder="report start to..">
+                    <label for="Date2">From Date</label>
+                </div>
+            </div>
+
+
+            <div class="col-md-4">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="StockID" asp-for="@Model.Parameters.N_Inventory">
+                        <option selected>Select All</option>
+                        @foreach (DataRow Row in Model.Inventory.Rows)
+                        {
+                            <option value="@Row["ID"]">@Row["Title"]</option>
+                        }
+                    </select>
+                    <label for="StockID">Stock</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                        Print<i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Word">Word</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.HTML">HTML</button></li>
+                    </ul>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

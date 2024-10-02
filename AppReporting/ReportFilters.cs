@@ -19,6 +19,7 @@ namespace AppReportClass
             public bool All_COA { get; set; }
             public bool All_Customer { get; set; }
             public string DateFormat { get; set; }
+            public string Flow { get; set; }
 
         public string FilterText()
         {
@@ -71,5 +72,12 @@ namespace AppReportClass
             return Text.ToString();
         }
 
+        public string GetFlow(int _FlowID)
+        {
+            string _Result = "";
+            if(_FlowID==1) { return "In"; }
+            if(_FlowID==2) { return "Out"; }
+            return _Result;
+        }
     }
 }

@@ -81,18 +81,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
                 var _Heading1 = "TRIAL BALANCE";
                 var _Heading2 = string.Empty;
+                var _Footer = AppFunctions.AppGlobals.ReportFooter;
 
-                if (this.Variables.ReportType == TBOption.All.ToString()) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
-                if (this.Variables.ReportType == TBOption.UptoDate.ToString()) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
-                if (this.Variables.ReportType == TBOption.Monthly.ToString()) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportOption == TBOption.All.ToString()) { _Heading2 = $"Upto {DateTime.Now.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportOption == TBOption.UptoDate.ToString()) { _Heading2 = $"Upto {_Date2.ToString(AppRegistry.FormatDate)}"; }
+                if (this.Variables.ReportOption == TBOption.Monthly.ToString()) { _Heading2 = $"From {_Date1.ToString(AppRegistry.FormatDate)} To {_Date2.ToString(AppRegistry.FormatDate)}"; }
 
-                List<ReportParameter> _Parameters = new List<ReportParameter>
-                {
-                    new ReportParameter("CompanyName", CompanyName),
-                    new ReportParameter("Heading1", _Heading1),
-                    new ReportParameter("Heading2", _Heading2),
-                    new ReportParameter("Footer", AppFunctions.AppGlobals.ReportFooter)
-                };
+               
 
                 var Variables = new ReportParameters()
                 {
@@ -101,16 +96,25 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     OutputPath = AppFunctions.AppGlobals.PrintedReportPath,
                     OutputPathLink = AppFunctions.AppGlobals.PrintedReportPathLink,
                     OutputFile = "TB",
-                    CompanyName = UserProfile.GetCompanyName(User),
-                    Heading1 = _Heading1,
-                    Heading2 = _Heading2,
-                    Footer = AppFunctions.AppGlobals.ReportFooter,
+                    CompanyName = string.IsNullOrEmpty(CompanyName) ? ".." : CompanyName,
+                    Heading1 = string.IsNullOrEmpty(_Heading1) ? ".." : _Heading1,
+                    Heading2 = string.IsNullOrEmpty(_Heading2) ? ".." : _Heading2,
+                    Footer = string.IsNullOrEmpty(_Footer) ? ".." : _Footer,
                     ReportType = _ReportType,
                     DataSetName = "dset_TB",
                     ReportData = _Table,
-                    DataParameters = _Parameters
+                    
                 };
 
+                List<ReportParameter> _Parameters = new List<ReportParameter>
+                {
+                    new ReportParameter("CompanyName", Variables.CompanyName),
+                    new ReportParameter("Heading1", Variables.Heading1),
+                    new ReportParameter("Heading2", Variables.Heading2),
+                    new ReportParameter("Footer", AppFunctions.AppGlobals.ReportFooter)
+                };
+
+                Variables.DataParameters = _Parameters;
                 var ReportClass = new ExportReport(Variables);
                 ReportClass.Render();
 

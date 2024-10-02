@@ -9,6 +9,8 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using Microsoft.VisualBasic;
+using Microsoft.Win32;
+using Applied_WebApplication.Pages.Sales;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -40,6 +42,57 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
         }
         #endregion
+
+        #region Production Report
+        public IActionResult OnGetProductionReport()
+        {
+            string _Filter = "";
+            string _Flow = GetText(UserName, "pdRptFlow");
+            int _Stock = GetNumber(UserName, "pdRptStock");
+            DateTime _Date1 = GetDate(UserName, "pdRptDateFrom");
+            DateTime _Date2 = GetDate(UserName, "pdRptDateTo");
+
+            string __Date1 = _Date1.ToString(DateYMD);
+            string __Date2 = _Date2.ToString(DateYMD);
+
+            if(_Flow.Length>0) { _Filter = $"Flow='{_Flow}' "; }
+            
+            if(_Stock >0) 
+            {
+                if (_Filter.Length > 0) { _Filter += " AND "; }
+                _Filter = $"Flow={_Flow} "; 
+            }
+            if (_Filter.Length > 0) { _Filter += " AND "; }
+            _Filter += $"Date([Vou_Date]) >= Date('{__Date1}') AND ";
+            _Filter += $"Date([Vou_Date]) <= Date('{__Date2}')";
+            
+            
+            string _Heading1 = $"From {_Date1} to {_Date2}";
+            ReportClass reports = new ReportClass();
+            DataTable SourceData = DataTableClass.GetTable(UserName, SQLQuery.ProductionReport(_Filter));
+
+            reports.AppUser = User;
+            reports.ReportFilePath = AppGlobals.ReportPath;
+            reports.ReportFile = "ProductionReport.rdl";
+            reports.ReportDataSet = "ds_Production";
+            reports.ReportSourceData = SourceData;
+            reports.RecordSort = "Vou_Date, Vou_No";
+
+            reports.OutputFilePath = AppGlobals.PrintedReportPath;
+            reports.OutputFile = "ProductionReport";
+            reports.OutputFileLinkPath = AppGlobals.PrintedReportPathLink;
+
+            reports.RptParameters.Add("CompanyName", CompanyName);
+            reports.RptParameters.Add("Heading1", "Production Report");
+            reports.RptParameters.Add("Heading2", _Heading1);
+            reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
+
+            ReportLink = reports.GetReportLink();
+            IsShowPdf = !reports.IsError;
+            return Page();
+        }
+        #endregion
+
 
         #region Chart of Accounts
         public IActionResult OnGetCOAList()
@@ -226,7 +279,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             #region Report Filter Variables
             ReportFilters Filters = new()
             {
-                N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
+                N_COA = 0, // (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Employee = (int)AppRegistry.GetKey(UserName, "GL_Employee", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),

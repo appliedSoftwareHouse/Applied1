@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using static Applied_WebApplication.Pages.Stock.InventoryModel;
+using System.Xml.Linq;
 
 namespace Applied_WebApplication.Data
 {
@@ -1223,7 +1225,40 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-
+        #region Production Report
+        public static string ProductionReport(string _Filter)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine(" SELECT ");
+            _Text.AppendLine("[P1].[ID] AS[ID1],");
+            _Text.AppendLine("[P2].[TranID],");
+            _Text.AppendLine("[P2].[ID] AS[ID2],");
+            _Text.AppendLine("[P1].[Vou_No],");
+            _Text.AppendLine("[P1].[Vou_Date],");
+            _Text.AppendLine("[P1].[Batch],");
+            _Text.AppendLine("[P1].[Remarks],");
+            _Text.AppendLine("[P1].[Comments],");
+            _Text.AppendLine("[P2].[Stock],");
+            _Text.AppendLine("[I].[Title],");
+            _Text.AppendLine("[P2].[Flow],");
+            _Text.AppendLine("[P2].[UOM],");
+            _Text.AppendLine("[P2].[Qty],");
+            _Text.AppendLine("[P2].[Rate],");
+            _Text.AppendLine("[P2].[Remarks] AS[Description],");
+            _Text.AppendLine("[L].[Vou_No] ");
+            _Text.AppendLine("FROM [Production2][P2] ");
+            _Text.AppendLine("LEFT JOIN [Production] [P1] ON [P1].[ID] = [P2].[TranID] ");
+            _Text.AppendLine("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
+            _Text.AppendLine("LEFT JOIN ");
+            _Text.AppendLine("(SELECT[Vou_No] FROM [Ledger] WHERE[Vou_Type] = 'Production') [L] ");
+            _Text.AppendLine("ON [L].[Vou_No] = [P1].[Vou_No]");
+            if(_Filter.Length > 0)
+            {
+                _Text.AppendLine($"WHERE {_Filter}");
+            }
+            return _Text.ToString();
+        }
+        #endregion
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

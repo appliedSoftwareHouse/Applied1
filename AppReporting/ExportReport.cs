@@ -5,11 +5,12 @@ namespace AppReportClass
     public class ExportReport
     {
         public ReportParameters Variables { get; set; }
+        public List<string> MyMessage { get; set; }
 
         #region Constructor
         public ExportReport()
         {
-
+            MyMessage = new();
         }
 
         public ExportReport(ReportParameters parameters)
@@ -63,36 +64,44 @@ namespace AppReportClass
 
         public byte[] Render(ReportParameters? _ReportParameter)
         {
-            Variables ??= _ReportParameter;
-            Variables.DataParameters ??= GetDataParameters();
-            var _ReportType = _ReportParameter.ReportType;
-
-            if (_ReportParameter.ReportType == ReportType.Preview)
+            try
             {
-                _ReportType = ReportType.PDF;
+                Variables ??= _ReportParameter;
+                Variables.DataParameters ??= GetDataParameters();
+                var _ReportType = _ReportParameter.ReportType;
+
+                if (_ReportParameter.ReportType == ReportType.Preview)
+                {
+                    _ReportType = ReportType.PDF;
+                }
+
+                var _ReportFile = string.Concat(Variables.ReportPath, Variables.ReportFile);
+                ReportDataSource _DataSource = new(Variables.DataSetName, Variables.ReportData);
+                LocalReport report = new();
+                var _ReportStream = new StreamReader(_ReportFile);
+                report.LoadReportDefinition(_ReportStream);
+                report.DataSources.Add(_DataSource);
+                report.SetParameters(Variables.DataParameters);
+                var _RenderFormat = GetRenderFormat(_ReportType);
+                Variables.FileBytes = report.Render(_RenderFormat);         // Report render / generate
+
+                Variables.MimeType = GetReportMime(_ReportType);
+                Variables.OutputFileExtention = GetReportExtention(_ReportType);
+                Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
+                Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
+
+                Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
+                if (Variables.ReportType == ReportType.Preview)
+                {
+                    Variables.IsSaved = SaveReport();
+                }
+                return Variables.FileBytes;
             }
-
-            var _ReportFile = string.Concat(Variables.ReportPath, Variables.ReportFile);
-            ReportDataSource _DataSource = new(Variables.DataSetName, Variables.ReportData);
-            LocalReport report = new();
-            var _ReportStream = new StreamReader(_ReportFile);
-            report.LoadReportDefinition(_ReportStream);
-            report.DataSources.Add(_DataSource);
-            report.SetParameters(Variables.DataParameters);
-            var _RenderFormat = GetRenderFormat(_ReportType);
-            Variables.FileBytes = report.Render(_RenderFormat);
-
-            Variables.MimeType = GetReportMime(_ReportType);
-            Variables.OutputFileExtention = GetReportExtention(_ReportType);
-            Variables.OutputFileFullName = $"{Variables.OutputPath}{Variables.OutputFile}{Variables.OutputFileExtention}";
-            Variables.OutputFileName = $"{Variables.OutputFile}{Variables.OutputFileExtention}";
-
-            Variables.MyMessage = $"File length = {Variables.FileBytes.Length} ";
-            if (Variables.ReportType == ReportType.Preview)
+            catch (Exception ex)
             {
-                Variables.IsSaved = SaveReport();
+                MyMessage.Add($"Error: {ex.Message}") ;
             }
-            return Variables.FileBytes;
+            return new byte[0];
         }
 
         private static List<ReportParameter> GetDataParameters()
