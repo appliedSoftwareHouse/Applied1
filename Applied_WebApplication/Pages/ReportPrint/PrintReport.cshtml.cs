@@ -8,9 +8,6 @@ using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
-using Microsoft.VisualBasic;
-using Microsoft.Win32;
-using Applied_WebApplication.Pages.Sales;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
