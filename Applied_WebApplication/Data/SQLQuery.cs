@@ -1242,15 +1242,17 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("[I].[Title],");
             _Text.AppendLine("[P2].[Flow],");
             _Text.AppendLine("[P2].[UOM],");
+            _Text.AppendLine("[U].[Title] AS [Unit],");
             _Text.AppendLine("[P2].[Qty],");
             _Text.AppendLine("[P2].[Rate],");
             _Text.AppendLine("[P2].[Remarks] AS[Description],");
             _Text.AppendLine("[L].[Vou_No] ");
             _Text.AppendLine("FROM [Production2][P2] ");
             _Text.AppendLine("LEFT JOIN [Production] [P1] ON [P1].[ID] = [P2].[TranID] ");
-            _Text.AppendLine("LEFT JOIN [Inventory] [I] ON [I].[ID] = [P2].[Stock]");
+            _Text.AppendLine("LEFT JOIN [Inventory]  [I]  ON  [I].[ID] = [P2].[Stock]");
+            _Text.AppendLine("LEFT JOIN [Inv_UOM]    [U]  ON  [U].[ID] = [P2].[UOM]");
             _Text.AppendLine("LEFT JOIN ");
-            _Text.AppendLine("(SELECT[Vou_No] FROM [Ledger] WHERE[Vou_Type] = 'Production') [L] ");
+            _Text.AppendLine("(SELECT DISTINCT [Vou_No] FROM [Ledger] WHERE[Vou_Type] = 'Production') [L] ");
             _Text.AppendLine("ON [L].[Vou_No] = [P1].[Vou_No]");
             if(_Filter.Length > 0)
             {

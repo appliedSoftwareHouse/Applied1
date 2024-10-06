@@ -7,14 +7,24 @@
     var TitleStock = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Parameters.N_Inventory);
 }
 
+<style>
+    .filter-row
+    {
+        align-items: center;
+        background-color:lightblue; 
+        padding-top:3px;
+        padding-bottom:3px;
+        
+    }
+</style>
 
 
 <form method="post">
     <div class="container">
-        <div class="row mt-2 bg-light">
+        <div class="row mt-2 filter-row">
 
             <div class="col-md-2">
-                <div class="form-floating mb-3">
+                <div class="form-floating">
 
                     <select class="form-control" id="txtFlow" asp-for="@Model.Parameters.Flow">
                         <option selected>@TitleStock</option>
@@ -29,7 +39,7 @@
 
             <!--DATES -->
             <div class="col-md-2">
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                     <input type="date" class="form-control" id="Date1" asp-for="@Model.Parameters.Dt_From" placeholder="report start from..">
                     <label for="Date1">From Date</label>
                 </div>
@@ -38,7 +48,7 @@
 
 
             <div class="col-md-2">
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                     <input type="date" class="form-control" id="Date2" asp-for="@Model.Parameters.Dt_To" placeholder="report start to..">
                     <label for="Date2">From Date</label>
                 </div>
@@ -46,7 +56,7 @@
 
 
             <div class="col-md-4">
-                <div class="form-floating mb-3">
+                <div class="form-floating">
                     <select class="form-select" id="StockID" asp-for="@Model.Parameters.N_Inventory">
                         <option selected>Select All</option>
                         @foreach (DataRow Row in Model.Inventory.Rows)
@@ -57,7 +67,7 @@
                     <label for="StockID">Stock</label>
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-2" style="justify">
                 <div class="dropdown">
                     <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
                         Print<i class="bi bi-printer"></i>

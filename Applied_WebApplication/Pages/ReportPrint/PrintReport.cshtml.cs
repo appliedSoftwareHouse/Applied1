@@ -48,6 +48,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             int _Stock = GetNumber(UserName, "pdRptStock");
             DateTime _Date1 = GetDate(UserName, "pdRptDateFrom");
             DateTime _Date2 = GetDate(UserName, "pdRptDateTo");
+            string ReportName = GetText(UserName, "pdRptName");
 
             string __Date1 = _Date1.ToString(DateYMD);
             string __Date2 = _Date2.ToString(DateYMD);
@@ -64,13 +65,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
             _Filter += $"Date([Vou_Date]) <= Date('{__Date2}')";
             
             
-            string _Heading1 = $"From {_Date1} to {_Date2}";
+            string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
             ReportClass reports = new ReportClass();
             DataTable SourceData = DataTableClass.GetTable(UserName, SQLQuery.ProductionReport(_Filter));
 
             reports.AppUser = User;
             reports.ReportFilePath = AppGlobals.ReportPath;
-            reports.ReportFile = "ProductionReport.rdl";
+            reports.ReportFile = ReportName;
             reports.ReportDataSet = "ds_Production";
             reports.ReportSourceData = SourceData;
             reports.RecordSort = "Vou_Date, Vou_No";
@@ -81,7 +82,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             reports.RptParameters.Add("CompanyName", CompanyName);
             reports.RptParameters.Add("Heading1", "Production Report");
-            reports.RptParameters.Add("Heading2", _Heading1);
+            reports.RptParameters.Add("Heading2", _Heading2);
             reports.RptParameters.Add("Footer", AppGlobals.ReportFooter);
 
             ReportLink = reports.GetReportLink();

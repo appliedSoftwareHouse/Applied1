@@ -31,8 +31,15 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnPostPrint(ReportType RptType)
         {
             SetKeys();
-            AppRegistry.SetKey(UserName, "pdRptName", "ProductionReport.rdl", KeyType.Text);
+            string ReportName = "ProductionReport2.rdl";
+            if (UserProfile.GetUserClaim(User, "Role")=="Administrator") 
+            {
+                ReportName = "ProductionReport.rdl";
+            }
+
+            AppRegistry.SetKey(UserName, "pdRptName", ReportName, KeyType.Text);
             AppRegistry.SetKey(UserName, "pdRptType", (int)RptType, KeyType.Number);
+
             return RedirectToPage("/ReportPrint/PrintReport", "ProductionReport");
         }
 
