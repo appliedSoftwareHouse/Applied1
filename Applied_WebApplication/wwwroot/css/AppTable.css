@@ -8,47 +8,55 @@
     padding-right: 2px
 }
 
-table-list, thead {
-    background-color: aliceblue;
-    height: 10px;
-}
-
-table-list, tfoot, tr {
-    background-color: antiquewhite;
-}
-
-
-.table-list, tr {
-}
-
-    .table-list, tbody, tr:hover {
-        background-color: #ffff99;
+    .table-list thead {
+        font-display: block;
+        border: solid;
+        border-left-width: 0px;
+        border-right-width: 0px;
+        border-top-width: 1.5px;
+        border-bottom-width: 1.5px;
     }
 
-.table-list, th {
-    font-display: block;
-    border: solid;
-    border-left-width: 0px;
-    border-right-width: 0px;
-    border-top-width: 1.5px;
-    border-bottom-width: 1.5px
-}
+        .table-list thead tr {
+            color: darkblue;
+        }
 
-.table-list, td {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    border-bottom: dotted;
-    border-bottom-color: dimgrey;
-    border-bottom-width: thin;
-    font-size: small;
-    color: rebeccapurple
-}
+            .table-list thead tr th {
+            }
 
-.table-list, tfoot {
-    background-color: antiquewhite;
-}
+
+    .table-list tbody {
+        color:darkslateblue;
+        background-color: antiquewhite;
+        font-size:smaller;
+
+    }
+
+        .table-list tbody tr {
+        }
+
+            .table-list tbody tr td {
+            }
+
+
+    .table-list tfoot {
+        
+        background-color: burlywood;
+    }
+
+        .table-list tfoot tr {
+            color: white;
+        }
+
+            .table-list tfoot tr td {
+                color: darkslategray;
+            }
+
+
+
+
+
+
 
 
 .table-col-amount {
@@ -68,9 +76,6 @@ table-list, tfoot, tr {
     color: red;
 }
 
-.TableFooter {
-    background: #F9DBDB
-}
 
 .listbutton-red {
     background-color: transparent;

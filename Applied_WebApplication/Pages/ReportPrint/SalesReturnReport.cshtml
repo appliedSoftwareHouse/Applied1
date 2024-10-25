@@ -8,6 +8,15 @@
     var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
     var DateFormat = AppRegistry.FormatDate;
     var AmountFormat = AppRegistry.Currency2d;
+
+    var T_Qty = 0.00M;
+    var T_Amount = 0.00M;
+    var T_RQty = 0.00M;
+    var T_RAmount = 0.00M;
+    var T_TaxAmount = 0.00M;
+    var T_RTaxAmount = 0.00M;
+    var T_NetQty = 0.00M;
+    var T_NetAmount = 0.00M;
 }
 
 <style>
@@ -118,7 +127,7 @@
                 @if (Model.SourceTable.Rows.Count > 0)
                 {
                     <table class="table-list">
-                        <thead>
+                        <thead class="table-list-h">
                             <tr style="font-size:small">
                                 <th>Vou. Date</th>
                                 <th>Vou. No.</th>
@@ -138,21 +147,19 @@
 
                             @foreach (DataRow Row in Model.SourceTable.Rows)
                             {
-
                                 var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
 
-                                var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                                var _Qty = Conversion.ToDecimal(Row["Qty"]); T_Qty += _Qty;
                                 var _Rate = Conversion.ToDecimal(Row["Rate"]);
-                                var _Amount = Conversion.ToDecimal(Row["Amount"]);
+                                var _Amount = Conversion.ToDecimal(Row["Amount"]); T_Amount += _Amount;
 
-                                var _RQty = Conversion.ToDecimal(Row["RQty"]);
-                                var _RAmount = Conversion.ToDecimal(Row["RAmount"]);
-                                
-                                var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
-                                var _RTaxAmount = Conversion.ToDecimal(Row["RTaxAmount"]);
-                                var _NetQty = _Qty - _RQty;
-                                var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
-                                
+                                var _RQty = Conversion.ToDecimal(Row["RQty"]); T_RQty += _RQty;
+                                var _RAmount = Conversion.ToDecimal(Row["RAmount"]); T_RAmount += _RAmount;
+
+                                var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]); T_TaxAmount += _TaxAmount;
+                                var _RTaxAmount = Conversion.ToDecimal(Row["RTaxAmount"]); T_RTaxAmount += _RTaxAmount;
+                                var _NetQty = _Qty - _RQty; T_NetQty += _NetQty;
+                                var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]); T_NetAmount += _NetAmount;
 
                                 <tr>
                                     <td>@_Date</td>
@@ -167,21 +174,21 @@
                                     <td class="amount">@_RTaxAmount.ToString(AmountFormat)</td>
                                     <td class="amount">@_NetQty.ToString(AmountFormat)</td>
                                     <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
-                                    <td>B</td>
+
                                 </tr>
                             }
                         </tbody>
                         <tfoot>
                             <tr>
                                 <td colspan="4">TOTAL</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td class="amount">@T_Qty.ToString(AmountFormat)</td>
+                                <td class="amount">@T_Amount.ToString(AmountFormat)</td>
+                                <td class="amount">@T_RQty.ToString(AmountFormat)</td>
+                                <td class="amount">@T_RAmount.ToString(AmountFormat)</td>
+                                <td class="amount">@T_TaxAmount.ToString(AmountFormat)</td>
+                                <td class="amount">@T_RTaxAmount.ToString(AmountFormat)</td>
+                                <td class="amount">@T_NetQty.ToString(AmountFormat)</td>
+                                <td class="amount">@T_NetAmount.ToString(AmountFormat)</td>
                             </tr>
                         </tfoot>
                     </table>
