@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using static Applied_WebApplication.Pages.Stock.InventoryModel;
 using System.Xml.Linq;
+using System.Runtime.CompilerServices;
 
 namespace Applied_WebApplication.Data
 {
@@ -443,57 +444,82 @@ namespace Applied_WebApplication.Data
             Text.Append($" ORDER BY {_Order}");
             return Text.ToString();
         }
+                
         public static string SaleReturn(string _Filter)
         {
             var Text = new StringBuilder();
-            Text.Append("SELECT ");
-            Text.Append("[B2].[ID],");
-            Text.Append("[B2].[TranID],");
-            Text.Append("[B2].[SR_No],");
-            Text.Append("[R].[Vou_No],");
-            Text.Append("[B1].[Vou_No] AS [SaleVou_No],");
-            Text.Append("[B1].[Vou_Date],");
-            Text.Append("[B1].[Company],");
-            Text.Append("[C].[City] AS [CityName],");
-            Text.Append("[B1].[Inv_No],");
-            Text.Append("[B1].[Inv_Date],");
-            Text.Append("[B1].[Pay_Date],");
-            Text.Append("[B2].[Inventory],");
-            Text.Append("[B2].[Batch],");
-            Text.Append("[B2].[Qty],");
-            Text.Append("[R].[Qty] AS [RQty],");
-            Text.Append("[B2].[Rate],");
-            Text.Append("CAST([T].[Rate] AS FLOAT) AS [Tax], ");
-            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");
-            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
-            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");
-            Text.Append("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
-            Text.Append("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
-            Text.Append("CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],");
-            Text.Append("[B2].[ID] AS [ID2], ");
-            Text.Append("[I].[Title] AS [StockTitle],");
-            Text.Append("[C].[Title] AS [CompanyName],");
-            Text.Append("[E].[Title] AS [EmployeeName],");
-            Text.Append("[P].[title] AS [ProjectTitle],");
-            Text.Append("[T].[Code]  As [TaxTitle] ");
-            Text.Append("FROM[BillReceivable2] [B2] ");
-            Text.Append("LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] ");
-            Text.Append("LEFT JOIN[Inventory]      [I]   ON [I].[ID] = [B2].[Inventory] ");
-            Text.Append("LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] ");
-            Text.Append("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
-            Text.Append("LEFT JOIN[Project]        [P]   ON [P].[ID] = [B2].[Project]");
-            Text.Append("LEFT JOIN[Taxes]          [T]   ON [T].[ID] = [B2].[Tax]");
-            Text.Append("LEFT JOIN[SaleReturn]     [R]   ON [R].[TranID] = [B2].[ID]");
+            Text.AppendLine("SELECT * FROM ( ");
+            Text.AppendLine("SELECT ");
+            Text.AppendLine("[B2].[ID],");
+            Text.AppendLine("[B2].[TranID],");
+            Text.AppendLine("[B2].[SR_No],");
+            Text.AppendLine("[R].[Vou_No],");
+            Text.AppendLine("[B1].[Vou_No] AS [SaleVou_No],");
+            Text.AppendLine("[B1].[Vou_Date],");
+            Text.AppendLine("[B1].[Company],");
+            Text.AppendLine("[C].[City] AS [CityName],");
+            Text.AppendLine("[B1].[Inv_No],");
+            Text.AppendLine("[B1].[Inv_Date],");
+            Text.AppendLine("[B1].[Pay_Date],");
+            Text.AppendLine("[B2].[Inventory],");
+            Text.AppendLine("[B2].[Batch],");
+            Text.AppendLine("[B2].[Qty],");
+            Text.AppendLine("[R].[Qty] AS [RQty],");
+            Text.AppendLine("[B2].[Rate],");
+            Text.AppendLine("CAST([T].[Rate] AS FLOAT) AS [Tax], ");                        // Tax Rate
+            Text.AppendLine("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) AS [Amount],");        // Amount without Tax
+            Text.AppendLine("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.AppendLine("CAST([T].[Rate] AS FLOAT))/ 100 AS [TaxAmount],");             // Tax amount
+            Text.AppendLine("CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) +");
+            Text.AppendLine("(CAST([B2].[Qty] * [B2].[Rate] AS FLOAT) *");
+            Text.AppendLine("CAST([T].[Rate] AS FLOAT))/ 100 AS [NetAmount],");             // Net Amount
+            Text.AppendLine("[B2].[ID] AS [ID2], ");
+            Text.AppendLine("[I].[Title] AS [StockTitle],");
+            Text.AppendLine("[C].[Title] AS [CompanyName],");
+            Text.AppendLine("[E].[Title] AS [EmployeeName],");
+            Text.AppendLine("[P].[title] AS [ProjectTitle],");
+            Text.AppendLine("[T].[Code]  As [TaxTitle] ");
+            Text.AppendLine("FROM [BillReceivable2] [B2] ");
+            Text.AppendLine("LEFT JOIN[BillReceivable] [B1] ON [B1].[ID] = [B2].[TranID] ");
+            Text.AppendLine("LEFT JOIN[Inventory]      [I]   ON [I].[ID] = [B2].[Inventory] ");
+            Text.AppendLine("LEFT JOIN[Customers]      [C]   ON [C].[ID] = [B1].[Company] ");
+            Text.AppendLine("LEFT JOIN[Employees]      [E]   ON [E].[ID] = [B1].[Employee] ");
+            Text.AppendLine("LEFT JOIN[Project]        [P]   ON [P].[ID] = [B2].[Project]");
+            Text.AppendLine("LEFT JOIN[Taxes]          [T]   ON [T].[ID] = [B2].[Tax]");
+            Text.AppendLine("LEFT JOIN[SaleReturn]     [R]   ON [R].[TranID] = [B2].[ID]");
+            Text.AppendLine(") AS [SaleReturn] ");
             if (_Filter != null)
             {
                 if (_Filter.Length > 0)
                 {
-                    Text.Append($" WHERE {_Filter}");
+                    Text.AppendLine($" WHERE {_Filter}");
 
                 }
             }
 
             return Text.ToString();
+        }
+
+        public static string SaleReturnReport(string _Filter)
+        {
+            var _SaleReturn = SaleReturn(_Filter);
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[SaleVou_No] As[Vou_No],");
+            _Text.AppendLine("[Vou_Date],");
+            _Text.AppendLine("[Company],");
+            _Text.AppendLine("[CompanyName],");
+            _Text.AppendLine("[Inventory],");
+            _Text.AppendLine("[StockTitle],");
+            _Text.AppendLine("[Qty],[Rate],[Amount],");
+            _Text.AppendLine("[RQty],[RQty] * [Rate] As [RAmount],");
+            _Text.AppendLine("[Amount] * [Tax] AS[TaxAmount],");
+            _Text.AppendLine("([RQty] * [Rate]) * Tax AS[RTaxAmount],");
+            _Text.AppendLine("([Amount] - ([RQty] * [Rate])) -");
+            _Text.AppendLine("([TaxAmount] - (([RQty] * [Rate]) * Tax)) As NetAmount");
+            _Text.AppendLine($"FROM ({_SaleReturn})");
+
+            return _Text.ToString();
         }
 
         #endregion
@@ -502,9 +528,9 @@ namespace Applied_WebApplication.Data
         public static string Cities()
         {
             var Text = new StringBuilder();
-            Text.Append("SELECT Upper(Trim([City])) AS [Title] FROM [Customers] ");
-            Text.Append("GROUP BY 1 ");
-            Text.Append("ORDER BY 1 ");
+            Text.AppendLine("SELECT Upper(Trim([City])) AS [Title] FROM [Customers] ");
+            Text.AppendLine("GROUP BY 1 ");
+            Text.AppendLine("ORDER BY 1 ");
             return Text.ToString();
         }
         #endregion
@@ -514,17 +540,17 @@ namespace Applied_WebApplication.Data
         public static string TrialBalance(string _Filter, string _OrderBy)
         {
             var Text = new StringBuilder();
-            Text.Append("SELECT * FROM (");
-            Text.Append("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
-            Text.Append("SUM([Ledger].[DR]) AS [DR], ");
-            Text.Append("SUM([Ledger].[CR]) AS [CR], ");
-            Text.Append("SUM([Ledger].[DR] - [Ledger].[CR]) AS [BAL] ");
-            Text.Append("FROM [Ledger] ");
-            Text.Append("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
-            if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter} "); }
-            Text.Append("GROUP BY [COA] ");
-            Text.Append(") WHERE BAL <> 0 ");
-            if (_OrderBy.Length > 0) { Text.Append($" ORDER BY {_OrderBy}"); }
+            Text.AppendLine("SELECT * FROM (");
+            Text.AppendLine("SELECT [Ledger].[COA], [COA].[Code], [COA].[Title], ");
+            Text.AppendLine("SUM([Ledger].[DR]) AS [DR], ");
+            Text.AppendLine("SUM([Ledger].[CR]) AS [CR], ");
+            Text.AppendLine("SUM([Ledger].[DR] - [Ledger].[CR]) AS [BAL] ");
+            Text.AppendLine("FROM [Ledger] ");
+            Text.AppendLine("LEFT JOIN[COA] ON[COA].[ID] = [Ledger].[COA] ");
+            if (_Filter.Length > 0) { Text.AppendLine($" WHERE {_Filter} "); }
+            Text.AppendLine("GROUP BY [COA] ");
+            Text.AppendLine(") WHERE BAL <> 0 ");
+            if (_OrderBy.Length > 0) { Text.AppendLine($" ORDER BY {_OrderBy}"); }
 
             return Text.ToString();
         }

@@ -45,7 +45,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             Cities = DataTableClass.GetTable(UserName, SQLQuery.Cities());
 
             var _Filter = GetFilter(Variables);
-            var _SQLQuery = SQLQuery.SaleRegister(_Filter);
+            var _SQLQuery = SQLQuery.SaleReturn(_Filter);
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
 
         }

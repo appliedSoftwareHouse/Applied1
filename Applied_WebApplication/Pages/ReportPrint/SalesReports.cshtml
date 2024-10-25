@@ -141,63 +141,65 @@
 
         </div>
 
-        @if (Model.SourceTable != null)
-        {
-            if (Model.SourceTable.Rows.Count > 0)
-            {
+        <div class="container">
+            <div class="w-100">
+                @if (Model.SourceTable != null)
+                {
+                    if (Model.SourceTable.Rows.Count > 0)
+                    {
 
 
-                <table class="table-list">
-                    <thead>
-                        <tr>
-                            <th style="width:4%">SNo.</th>
-                            <th style="width:7%">Vou. No</th>
-                            <th style="width:8%">Vou. Date</th>
-                            <th style="width:15%">Company Name</th>
-                            <th style="width:5%">City 1</th>
-                            <th style="width:15%">Stock Title</th>
-                            <th style="width:8%">Quantity</th>
-                            <th style="width:8%">Rate</th>
-                            <th style="width:10%">Amount</th>
-                            <th style="width:10%">Tax Amount</th>
-                            <th style="width:10%">Net Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (DataRow Row in Model.SourceTable.Rows)
-                        {
-                            var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                        <table class="table-list">
+                            <thead>
+                                <tr>
+                                    <th style="width:4%">SNo.</th>
+                                    <th style="width:7%">Vou. No</th>
+                                    <th style="width:8%">Vou. Date</th>
+                                    <th style="width:15%">Company Name</th>
+                                    <th style="width:5%">City 1</th>
+                                    <th style="width:15%">Stock Title</th>
+                                    <th style="width:8%">Quantity</th>
+                                    <th style="width:8%">Rate</th>
+                                    <th style="width:10%">Amount</th>
+                                    <th style="width:10%">Tax Amount</th>
+                                    <th style="width:10%">Net Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (DataRow Row in Model.SourceTable.Rows)
+                                {
+                                    var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
 
-                            var _Qty = Conversion.ToDecimal(Row["Qty"]);
-                            var _Rate = Conversion.ToDecimal(Row["Rate"]);
-                            var _Amount = Conversion.ToDecimal(Row["Amount"]);
-                            var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
-                            var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
+                                    var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                                    var _Rate = Conversion.ToDecimal(Row["Rate"]);
+                                    var _Amount = Conversion.ToDecimal(Row["Amount"]);
+                                    var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                                    var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
 
-                            <tr style="font-size:small">
-                                <td>@Row["Sr_No"]</td>
-                                <td>@Row["Vou_No"]</td>
-                                <td>@_Date</td>
-                                <td>@Row["CompanyName"]</td>
-                                <td>@Row["CityName"]</td>
-                                <td>@Row["StockTitle"]</td>
-                                <td class="amount">@_Qty.ToString(AmountFormat)</td>
-                                <td class="amount">@_Rate.ToString(AmountFormat)</td>
-                                <td class="amount">@_Amount.ToString(AmountFormat)</td>
-                                <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
-                                <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
-                            </tr>
-                        }
+                                    <tr style="font-size:small">
+                                        <td>@Row["Sr_No"]</td>
+                                        <td>@Row["Vou_No"]</td>
+                                        <td>@_Date</td>
+                                        <td>@Row["CompanyName"]</td>
+                                        <td>@Row["CityName"]</td>
+                                        <td>@Row["StockTitle"]</td>
+                                        <td class="amount">@_Qty.ToString(AmountFormat)</td>
+                                        <td class="amount">@_Rate.ToString(AmountFormat)</td>
+                                        <td class="amount">@_Amount.ToString(AmountFormat)</td>
+                                        <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
+                                        <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
+                                    </tr>
+                                }
 
-                    </tbody>
-                </table>
+                            </tbody>
+                        </table>
 
-            }
-            else
-            {
-                <h5>No Record Found.....</h5>
-            }
-        }
-
-
+                    }
+                    else
+                    {
+                        <h5>No Record Found.....</h5>
+                    }
+                }
+            </div>
+        </div>
 </form>

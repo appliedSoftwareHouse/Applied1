@@ -1,0 +1,201 @@
+﻿@page
+@using System.Data
+@using AppReportClass
+@model Applied_WebApplication.Pages.ReportPrint.SalesReturnReportModel
+@{
+    var UserName = User.Identity.Name;
+    var SelectCompany = AppFunctions.GetTitle(UserName, Tables.Customers, Model.Variables.CompanyID);
+    var SelectInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, Model.Variables.InventoryID);
+    var DateFormat = AppRegistry.FormatDate;
+    var AmountFormat = AppRegistry.Currency2d;
+}
+
+<style>
+    .input-group mb-3 {
+        width: 80%
+    }
+
+    .form-control {
+        width: 20%
+    }
+
+    .btn-wh {
+        width: 175px;
+    }
+
+    .col-wh {
+        width: 100px;
+    }
+
+</style>
+
+<form method="post">
+    <div class="container">
+        <div class="row d-flex g-2 mt-1 mb-1 justify-content-start bg-lightblue p-1 ">
+
+            <div class="col-md date-width">
+                <div class="input-group date-group">
+                    <span class="input-group-text date-title" id="StartDate">Start</span>
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.StartDate"
+                           placeholder="Start Date" aria-label="Start Date" aria-describedby="txtVouDate">
+                </div>
+            </div>
+
+            <div class="col-md date-width">
+                <div class="input-group date-group">
+                    <input type="date" class="form-control date-date" asp-for="@Model.Variables.EndDate">
+                    <span class="input-group-text" id="Enddate">End</span>
+                </div>
+            </div>
+
+            <div class="col-md filter-select">
+                <select class="form-select" aria-label="Select Company" asp-for="@Model.Variables.CompanyID">
+                    <option selected>Select All</option>
+                    @if (Model.Customers is not null)
+                    {
+                        @foreach (DataRow Row in Model.Customers.Rows)
+                        {
+                            <option value="@Row["ID"]">@Row["Title"]</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md filter-select">
+                <select class="form-select" aria-label="Select City" asp-for="@Model.Variables.City">
+                    <option selected>Select All</option>
+                    @if (Model.Cities is not null)
+                    {
+                        @foreach (DataRow Row in Model.Cities.Rows)
+                        {
+                            <option value="@Row["Title"]">@Row["Title"]</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-md filter-select">
+                <select class="form-select" aria-label="Select Inventory" asp-for="@Model.Variables.InventoryID">
+                    <option selected>Select All</option>
+                    @if (Model.Inventory is not null)
+                    {
+                        @foreach (DataRow Row in Model.Inventory.Rows)
+                        {
+                            <option value="@Row["ID"]">@Row["Title"]</option>
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="col-wh">
+                <button type="submit" class="btn btn-primary w-100" asp-page-handler="Refresh">Refresh</button>
+            </div>
+
+            <div class="col-wh d-block">
+                <div class="dropdown">
+                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                        Print <i class="bi bi-printer"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Preview">Preview</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.PDF">PDF</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Excel">Excel</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.Word">Word</button></li>
+                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-RptType="@ReportType.HTML">HTML</button></li>
+                    </ul>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="container">
+        @if (Model.SourceTable is not null)
+        {
+            <div class="w-100">
+                @if (Model.SourceTable.Rows.Count > 0)
+                {
+                    <table class="table-list">
+                        <thead>
+                            <tr style="font-size:small">
+                                <th>Vou. Date</th>
+                                <th>Vou. No.</th>
+                                <th>Customer</th>
+                                <th>Stock</th>
+                                <th>Qty</th>
+                                <th>Amount</th>
+                                <th>R. Qty</th>
+                                <th>R. Amount</th>
+                                <th>Tax Amount</th>
+                                <th>Tax Reverse</th>
+                                <th>Net Qty</th>
+                                <th>Net Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (DataRow Row in Model.SourceTable.Rows)
+                            {
+
+                                var _Date = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+
+                                var _Qty = Conversion.ToDecimal(Row["Qty"]);
+                                var _Rate = Conversion.ToDecimal(Row["Rate"]);
+                                var _Amount = Conversion.ToDecimal(Row["Amount"]);
+
+                                var _RQty = Conversion.ToDecimal(Row["RQty"]);
+                                var _RAmount = Conversion.ToDecimal(Row["RAmount"]);
+                                
+                                var _TaxAmount = Conversion.ToDecimal(Row["TaxAmount"]);
+                                var _RTaxAmount = Conversion.ToDecimal(Row["RTaxAmount"]);
+                                var _NetQty = _Qty - _RQty;
+                                var _NetAmount = Conversion.ToDecimal(Row["NetAmount"]);
+                                
+
+                                <tr>
+                                    <td>@_Date</td>
+                                    <td>@Row["Vou_No"]</td>
+                                    <td>@Row["CompanyName"]</td>
+                                    <td>@Row["StockTitle"]</td>
+                                    <td class="amount">@_Qty.ToString(AmountFormat)</td>
+                                    <td class="amount">@_Amount.ToString(AmountFormat)</td>
+                                    <td class="amount">@_RQty.ToString(AmountFormat)</td>
+                                    <td class="amount">@_RAmount.ToString(AmountFormat)</td>
+                                    <td class="amount">@_TaxAmount.ToString(AmountFormat)</td>
+                                    <td class="amount">@_RTaxAmount.ToString(AmountFormat)</td>
+                                    <td class="amount">@_NetQty.ToString(AmountFormat)</td>
+                                    <td class="amount">@_NetAmount.ToString(AmountFormat)</td>
+                                    <td>B</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4">TOTAL</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <p>No Record Found....</p>
+                }
+            </div>
+        }
+
+        else
+        {
+            <p>No Data Found....</p>
+        }
+    </div>
+</form>
