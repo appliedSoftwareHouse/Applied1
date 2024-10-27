@@ -28,7 +28,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public string AppPath => Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         public string ReportPath = ".\\wwwroot\\Reports\\";
         public string PrintedReportsPath = ".\\wwwroot\\PrintedReports\\";
-        public string PrintedReportsPathLink =  "~/PrintedReports/";
+        public string PrintedReportsPathLink = "~/PrintedReports/";
 
 
         #endregion
@@ -53,18 +53,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
             string __Date1 = _Date1.ToString(DateYMD);
             string __Date2 = _Date2.ToString(DateYMD);
 
-            if(_Flow.Length>0) { _Filter = $"Flow='{_Flow}' "; }
-            
-            if(_Stock >0) 
+            if (_Flow.Length > 0) { _Filter = $"Flow='{_Flow}' "; }
+
+            if (_Stock > 0)
             {
                 if (_Filter.Length > 0) { _Filter += " AND "; }
-                _Filter = $"Flow={_Flow} "; 
+                _Filter = $"Flow={_Flow} ";
             }
             if (_Filter.Length > 0) { _Filter += " AND "; }
             _Filter += $"Date([Vou_Date]) >= Date('{__Date1}') AND ";
             _Filter += $"Date([Vou_Date]) <= Date('{__Date2}')";
-            
-            
+
+
             string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
             ReportClass reports = new ReportClass();
             DataTable SourceData = DataTableClass.GetTable(UserName, SQLQuery.ProductionReport(_Filter));
@@ -417,6 +417,68 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
+        #region Sale Return
+        public IActionResult OnGetSaleReturn()
+        {
+            try
+            {
+                var RptType = (ReportType)GetNumber(UserName,"srRptType");
+                var _PageModel = new SalesReturnReportModel();
+
+                _PageModel.UserName = UserName;
+                _PageModel.GetKeys();
+                _PageModel.LoadData(_PageModel.GetFilter(_PageModel.Variables));
+             
+                var _Heading1 = _PageModel.Variables.Heading1;
+                var _Heading2 = _PageModel.Variables.Heading2;
+
+                ReportModel Reportmodel = new();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = "SalesReturn";
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                Reportmodel.OutputReport.FileName = "SalesReturn";
+                Reportmodel.OutputReport.ReportType = RptType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_SalesReturn";
+                Reportmodel.ReportData.ReportTable = _PageModel.SourceTable; // Data Filter will apply by registry variables. FYI
+
+                var _Result = Reportmodel.ReportRenderAsync().Result;
+
+                if (_Result)         // Render a report for preview or download...
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        ReportLink = Reportmodel.OutputReport.FileLink;
+                        IsShowPdf = true;
+                        return Page();
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+
+        }
+        #endregion
+
+
         #region Sales Register Report
 
         public IActionResult OnGetSaleRegister(ReportType _ReportType)
@@ -541,16 +603,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
             try
             {
                 PurchaseReportsModel model = new();
-                
+
                 // Generate / Obtain Report Data from Temp Table....
                 var _TempTable = GetText(UserName, "pRptTemp");
                 var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
-                if(_SourceTable.DataSet == null) {return Page();}
+                if (_SourceTable.DataSet == null) { return Page(); }
                 // End Generate Report Data
 
                 var _Heading1 = GetText(UserName, "pRptHeading1");
                 var _Heading2 = GetText(UserName, "pRptHeading2");
-                
+
 
                 ReportModel Reportmodel = new ReportModel();
                 // Input Parameters  (.rdl report file)
@@ -595,7 +657,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             return Page();
         }
-       
+
         #endregion
 
         #region ExpenseSheet
@@ -883,7 +945,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
                     {
-                        
+
                         ReportLink = $"~/PrintedReports/{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
                         IsShowPdf = true;
                         return Page();
@@ -915,7 +977,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 var _Heading1 = GetText(UserName, "cSIHHead1");
                 var _Heading2 = GetText(UserName, "cSIHHead2");
-               
+
 
                 ReportModel Reportmodel = new ReportModel();
                 // Input Parameters  (.rdl report file)
@@ -977,7 +1039,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _Heading1 = GetText(UserName, "stkLedHead1");
                 var _Heading2 = GetText(UserName, "stkLedHead2");
 
-                ReportModel Reportmodel = new ReportModel();
+                ReportModel Reportmodel = new();
                 // Input Parameters  (.rdl report file)
                 Reportmodel.InputReport.FilePath = ReportPath;
                 Reportmodel.InputReport.FileName = _ReportFile;

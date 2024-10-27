@@ -13,7 +13,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public Parameters Variables { get; set; }
-        public string UserName => User.Identity.Name;
+        public string UserName { get; set; } 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool AllCompany { get; set; }
@@ -28,17 +28,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public void OnGet()
         {
-            Variables = new()
-            {
-                StartDate = AppRegistry.GetDate(UserName, "srRptDate1"),
-                EndDate = AppRegistry.GetDate(UserName, "srRptDate2"),
-                AllCompany = AppRegistry.GetBool(UserName, "srRptComAll"),
-                AllInventory = AppRegistry.GetBool(UserName, "srRptStockAll"),
-                CompanyID = AppRegistry.GetNumber(UserName, "srRptCompany"),
-                City = AppRegistry.GetText(UserName, "srRptCity"),
-                InventoryID = AppRegistry.GetNumber(UserName, "srRptInventory"),
-            };
-
+            
+            UserName = User.Identity.Name;
+            GetKeys();
             LoadData(string.Empty);
         }
 
@@ -53,7 +45,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             SourceTable = DataTableClass.GetTable(UserName, _SQLQuery, "[Vou_Date],[Vou_No]");
         }
 
-        internal string GetFilter(Parameters variables)
+        public string GetFilter(Parameters variables)
         {
             var Date1 = AppRegistry.YMD(variables.StartDate);
             var Date2 = AppRegistry.YMD(variables.EndDate);
@@ -94,13 +86,11 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
 
-
         public IActionResult OnPostPrint(ReportType RptType)
         {
             SetKeys();
-
-            return Page();
-
+            AppRegistry.SetKey(User.Identity.Name, "srRptType", (int)RptType, KeyType.Number);
+            return RedirectToPage("/ReportPrint/PrintReport", "SaleReturn");
         }
         private void SetKeys()
         {
@@ -110,7 +100,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Date1 = Variables.StartDate.ToString(AppRegistry.FormatDate);
             var _Date2 = Variables.EndDate.ToString(AppRegistry.FormatDate);
 
-            var _Heading1 = $"Sale Register";
+            var _Heading1 = $"Sale Return";
             var _Heading2 = $"From {_Date1} to {_Date2}";
 
             AppRegistry.SetKey(UserName, "srRptDate1", Variables.StartDate, KeyType.Date);
@@ -122,9 +112,25 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "srRptInventory", Variables.InventoryID, KeyType.Number);
             AppRegistry.SetKey(UserName, "srRptHeading1", _Heading1, KeyType.Text);
             AppRegistry.SetKey(UserName, "srRptHeading2", _Heading2, KeyType.Text);
+            
 
 
         }
+
+        public void GetKeys()
+        {
+            Variables ??= new();
+            Variables.StartDate = AppRegistry.GetDate(UserName, "srRptDate1");
+            Variables.EndDate = AppRegistry.GetDate(UserName, "srRptDate2");
+            Variables.AllCompany = AppRegistry.GetBool(UserName, "srRptComAll");
+            Variables.AllInventory = AppRegistry.GetBool(UserName, "srRptStockAll");
+            Variables.CompanyID = AppRegistry.GetNumber(UserName, "srRptCompany");
+            Variables.City = AppRegistry.GetText(UserName, "srRptCity");
+            Variables.InventoryID = AppRegistry.GetNumber(UserName, "srRptInventory");
+            Variables.Heading1 = AppRegistry.GetText(UserName, "srRptHeading1");
+            Variables.Heading2 = AppRegistry.GetText(UserName, "srRptHeading2");
+        }
+
     }
 
     public class Parameters
