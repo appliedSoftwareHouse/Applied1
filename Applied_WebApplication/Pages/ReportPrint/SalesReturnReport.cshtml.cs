@@ -95,7 +95,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
 
-
         public IActionResult OnPostPrint(ReportType RptType)
         {
             SetKeys();
