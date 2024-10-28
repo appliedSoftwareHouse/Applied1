@@ -33,6 +33,9 @@
     }
 
         .table-list tbody tr {
+            border-top:solid gray .5px;
+            
+
         }
 
             .table-list tbody tr td {

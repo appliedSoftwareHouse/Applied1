@@ -10,7 +10,7 @@
     var UserData = new UserProfile(UserName);
     var CashCode = 1;
     var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
-    var FMTAmount = AppRegistry.GetText(UserName, "FMTCurrency");
+    var FMTAmount = AppRegistry.Currency2d;
     var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
     var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
@@ -28,7 +28,7 @@
     }
 
     .box {
-        height:100%;
+        height: 100%;
     }
 </style>
 
@@ -77,7 +77,7 @@
                 @if (Model.Variables.CashBookID > 0)
                 {
                     <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                        asp-page-handler="Add">
+                            asp-page-handler="Add">
                         ADD
                     </button>
                 }
@@ -86,95 +86,95 @@
     </div>
 
     <!-- SHOW CASH BOOK RECORD -->
-    <div class="container" >
+    <div class="container">
         <!--DISBALE / HIDDEN VALUES-->
         <input hidden type="text" name="CashBookID" value="@Model.Variables.CashBookID" />                  <!--  Generate CashBookID i-->
         <!---->
-        <div class="row" >
-            <div class="overflow-auto box" >
+        <div class="row">
+            <div class="overflow-auto box">
                 @if (Model.Cashbook.Rows.Count > 0)
                 {
-                    
-                        <table class="table-list box">
-                            <thead class="table-header">
-                                <tr>
-                                    <th style="width:10%">Date</th>
-                                    <th style="width:10%">Vou No</th>
-                                    <th style="width:40%">Description</th>
-                                    <th style="width:10%; text-align: right">Paid</th>
-                                    <th style="width:10%; text-align: right">Received</th>
-                                    <th style="width:10%; text-align: right">Balance</th>
-                                    <!--CASH BOOK ADD BUTTON-->
-                                    <th style="width:10%; text-align: right">
-                                        <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
+
+                    <table class="table-list mt-2">
+                        <thead>
+                            <tr>
+                                <th style="width:10%">Date</th>
+                                <th style="width:10%">Vou No</th>
+                                <th style="width:40%">Description</th>
+                                <th style="width:10%; text-align: right">Paid</th>
+                                <th style="width:10%; text-align: right">Received</th>
+                                <th style="width:10%; text-align: right">Balance</th>
+                                <!--CASH BOOK ADD BUTTON-->
+                                <th style="width:10%; text-align: right">
+                                    <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
                                             asp-page-handler="Add">
-                                            <i class="bi bi-database-add"></i>
+                                        <i class="bi bi-database-add"></i>
 
-                                        </button>
-                                    </th>
+                                    </button>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (DataRow Row in Model.Cashbook.Rows)
+                            {
+                                decimal _DR = Conversion.ToDecimal(Row["DR"]);
+                                decimal _CR = Conversion.ToDecimal(Row["CR"]);
+                                _BAL += (_CR - _DR);
+                                DateTime _Date = (DateTime)Row["Vou_Date"];
+
+                                <tr>
+                                    <td class="text-center">@_Date.ToString(FMTDate)</td>
+                                    <td class="text-center">@Row["Vou_No"].ToString()</td>
+                                    <td>@Row["Description"].ToString()</td>
+                                    <td class="amount">@_DR.ToString(FMTAmount)</td>
+                                    <td class="amount">@_CR.ToString(FMTAmount)</td>
+                                    @if (decimal.Parse(_BAL.ToString()) > 0)
+                                    {
+                                        <td class="table-col-amount">@_BAL.ToString(FMTAmount)</td>
+                                    }
+                                    else
+                                    {
+                                        <td class="table-col-amount-red">@_BAL.ToString(FMTAmount)</td>
+                                    }
+
+                                    @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
+                                    {
+                                        <td class="text-center">
+                                            <button class="btn btn-link btn-sm listbutton-blue"
+                                                    asp-page-handler="Edit"
+                                                    asp-route-ID="@Row["ID"]">
+                                                <i class="bi bi-pencil-fill"></i>
+                                            </button>
+
+                                            <button class="btn btn-link btn-sm listbutton-red"
+                                                    asp-page-handler="Delete"
+                                                    asp-route-ID="@Row["ID"]">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+
+                                            <button class="btn btn-link btn-sm listbutton-green"
+                                                    asp-page-handler="Print"
+                                                    asp-route-Vou_No="@Row["Vou_No"]">
+                                                <i class="bi bi-printer text-success"></i>
+                                            </button>
+
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-center">
+                                            <button class="btn btn-link"
+                                                    asp-page-handler="Print"
+                                                    asp-route-Vou_No="@Row["Vou_No"]">
+                                                <i class="bi bi-printer text-success"></i>
+                                            </button>
+                                        </td>
+                                    }
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @foreach (DataRow Row in Model.Cashbook.Rows)
-                                {
-                                    decimal _DR = Conversion.ToDecimal(Row["DR"]);
-                                    decimal _CR = Conversion.ToDecimal(Row["CR"]);
-                                    _BAL += (_CR - _DR);
-                                    DateTime _Date = (DateTime)Row["Vou_Date"];
+                            }
+                        </tbody>
+                    </table>
 
-                                    <tr>
-                                        <td>@_Date.ToString(FMTDate)</td>
-                                        <td>@Row["Vou_No"].ToString()</td>
-                                        <td>@Row["Description"].ToString()</td>
-                                        <td class="amount">@_DR.ToString(FMTAmount)</td>
-                                        <td class="amount">@_CR.ToString(FMTAmount)</td>
-                                        @if (decimal.Parse(_BAL.ToString()) > 0)
-                                        {
-                                            <td class="table-col-amount">@_BAL.ToString(FMTAmount)</td>
-                                        }
-                                        else
-                                        {
-                                            <td class="table-col-amount-red">@_BAL.ToString(FMTAmount)</td>
-                                        }
-
-                                        @if (Row["Status"].ToString() == VoucherStatus.Submitted.ToString())
-                                        {
-                                            <td class="text-center">
-                                                <button class="btn btn-link btn-sm listbutton-blue"
-                                            asp-page-handler="Edit"
-                                            asp-route-ID="@Row["ID"]">
-                                                    <i class="bi bi-pencil-fill"></i>
-                                                </button>
-
-                                                <button class="btn btn-link btn-sm listbutton-red"
-                                            asp-page-handler="Delete"
-                                            asp-route-ID="@Row["ID"]">
-                                                    <i class="bi bi-trash-fill"></i>
-                                                </button>
-
-                                                <button class="btn btn-link btn-sm listbutton-green"
-                                            asp-page-handler="Print"
-                                            asp-route-Vou_No="@Row["Vou_No"]">
-                                                    <i class="bi bi-printer text-success"></i>
-                                                </button>
-
-                                            </td>
-                                        }
-                                        else
-                                        {
-                                            <td class="text-center">
-                                                <button class="btn btn-link"
-                                            asp-page-handler="Print"
-                                            asp-route-Vou_No="@Row["Vou_No"]">
-                                                    <i class="bi bi-printer text-success"></i>
-                                                </button>
-                                            </td>
-                                        }
-                                    </tr>
-                                }
-                            </tbody>
-                        </table>
-                    
                 }
                 else
                 {
