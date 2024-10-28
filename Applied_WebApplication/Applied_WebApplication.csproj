@@ -52,29 +52,12 @@
     <None Remove="wwwroot\Reports\PrintReports\**" />
     <None Remove="wwwroot\SQLiteDB\**" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Compile Remove="Data\xxx AppLocalDB.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Remove="wwwroot\Reports\SalesInvoice.rdl" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Remove="Pages\Accounts\2nisb1sl.stp~" />
-    <None Remove="Pages\Accounts\JV2.cshtml.cs~RF1d2addb3.TMP" />
-  </ItemGroup>
-
+ 
   <ItemGroup>
     <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
     <PackageReference Include="System.Security.Permissions" Version="8.0.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="wwwroot\Backup\" />
-    <Folder Include="wwwroot\Temp\" />
-  </ItemGroup>
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />

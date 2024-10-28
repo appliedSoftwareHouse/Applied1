@@ -54,64 +54,72 @@
                 <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Reload</button>
             </div>
         </div>
-        <hr style="margin:3px" />
-        <div class="row">
-            <input type="text" asp-for="@Model.Variables.ID" hidden />
-            <input type="text" asp-for="@Model.Variables.TranID" hidden />
+        <hr style="margin-top:3px; margin-bottom:3px" />
+        <div style="background-color:azure">
+            <div class="row justify-content-between p-2">
+                <input type="text" asp-for="@Model.Variables.ID" hidden />
+                <input type="text" asp-for="@Model.Variables.TranID" hidden />
 
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.SaleVou_No" readonly>
-                    <label for="floatingInput">Sales Voucher No</label>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.SaleVou_No" readonly>
+                        <label for="floatingInput">Sales Voucher No</label>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No" readonly>
-                    <label for="floatingInput">Voucher No</label>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="txtVou_No" placeholder="Voucher No" asp-for="@Model.Variables.Vou_No" readonly>
+                        <label for="floatingInput">Voucher No</label>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="date" class="form-control" id="dtVou_Date" asp-for="@Model.Variables.Vou_Date">
-                    <label for="floatingInput">Voucher Date</label>
+                <div class="col-md-3"></div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="date" class="form-control" id="dtVou_Date" asp-for="@Model.Variables.Vou_Date">
+                        <label for="floatingInput">Voucher Date</label>
+                    </div>
+
                 </div>
 
             </div>
+            <div class="row justify-content-between p-2">
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="txtStockTitle" placeholder="StockTitle" asp-for="@Model.Variables.StockTitle" readonly>
+                        <label for="floatingInput">Stock Title</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch" readonly>
+                        <label for="floatingInput">Batch</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.Qty" readonly>
+                        <label for="floatingInput">Sale Quantity</label>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.RQty">
+                        <label for="floatingInput">Return Quantity</label>
+                    </div>
+                </div>
 
+            </div>
         </div>
-        <div class="row justify-content-between">
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtStockTitle" placeholder="StockTitle" asp-for="@Model.Variables.StockTitle" readonly>
-                    <label for="floatingInput">Stock Title</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch" readonly>
-                    <label for="floatingInput">Batch</label>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.Qty" readonly>
-                    <label for="floatingInput">Sale Quantity</label>
-                </div>
-            </div>
-            
-            <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <input type="number" class="form-control" id="numReturnQty" step=".01" placeholder="Quantity" asp-for="@Model.Variables.RQty">
-                    <label for="floatingInput">Return Quantity</label>
-                </div>
-            </div>
-            <div class="col-md-3">
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md mb-2 bg-light">
                 <button type="submit" class="btn btn-primary" asp-page-handler="Save" asp-route-TranID="@Model.Variables.TranID"><i class="bi bi-save"></i> Save</button>
             </div>
         </div>
     </div>
+
 
     <div class="container">
         @if (Model.Receivable1 != null)
@@ -132,7 +140,7 @@
                             <th>Tax Rate</th>
                             <th>Tax Amount</th>
                             <th>Net Amount</th>
-                            
+
                             <th>..</th>
                         </tr>
                     </thead>
@@ -157,10 +165,10 @@
                                 <td class="table-col-amount">@_RQty.ToString(FMTCurrency1)</td>
                                 <td class="table-col-amount">@_Rate.ToString(FMTCurrency2)</td>
                                 <td class="table-col-amount">@_Amount.ToString(FMTCurrency1)</td>
-                                <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2+"%")</td>
+                                <td class="table-col-amount">@_TaxRate.ToString(FMTCurrency2 + "%")</td>
                                 <td class="table-col-amount">@_TaxAmount.ToString(FMTCurrency1)</td>
                                 <td class="table-col-amount">@_NetAmount.ToString(FMTCurrency1)</td>
-                                
+
                                 <td>
                                     <button class="listbutton-red" asp-page-handler="StockReturn" asp-route-id="@Row["ID"]">
                                         <i class="bi bi-cart-dash-fill"></i>

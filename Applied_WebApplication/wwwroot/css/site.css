@@ -64,9 +64,9 @@ AppHeading-2:hover {
 
 
 AppFooter {
-    position:fixed;
-    bottom:0px;
-    padding-left:100px;
+    position: sticky;
+    bottom: 0px;
+    padding-left: 100px;
 }
 
 

@@ -1,11 +1,8 @@
-using Applied_WebApplication.Pages.Sales;
 using AppReportClass;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
 using System.Text;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {

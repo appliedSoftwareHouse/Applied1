@@ -24,9 +24,9 @@ namespace Applied_WebApplication.Pages.Sales
             GetVariables();
             var Date1 = AppFunctions.MinDate(Variables.Start, Variables.End).AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = AppFunctions.MaxDate(Variables.Start, Variables.End).AddDays(1).ToString(AppRegistry.DateYMD);
-            var _Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') ";
+            var _Filter = $"Date([Vou_Date]) > Date('{Date1}') AND Date([Vou_Date]) < Date('{Date2}') ";
             if (Variables.Company > 0) { _Filter += $"AND Company={Variables.Company}"; }
-            var _SQLSalesList = SQLQuery.SaleReturn(_Filter) + " order by [B1].[Vou_Date]";
+            var _SQLSalesList = SQLQuery.SaleReturn(_Filter) + " order by [Vou_Date]";
             var tb_SaleReturn = new DataTableClass(UserName, _SQLSalesList, Tables.SaleReturn);
             Receivable1 = tb_SaleReturn.MyDataTable;
         }
@@ -36,9 +36,9 @@ namespace Applied_WebApplication.Pages.Sales
             GetVariables();
             var Date1 = AppFunctions.MinDate(Variables.Start, Variables.End).AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = AppFunctions.MaxDate(Variables.Start, Variables.End).AddDays(1).ToString(AppRegistry.DateYMD);
-            var _Filter = $"Date([B1].[Vou_Date]) > Date('{Date1}') AND Date([B1].[Vou_Date]) < Date('{Date2}') ";
+            var _Filter = $"Date([Vou_Date]) > Date('{Date1}') AND Date([Vou_Date]) < Date('{Date2}') ";
             if (Variables.Company > 0) { _Filter += $"AND Company={Variables.Company}"; }
-            var _SQLSalesList = SQLQuery.SaleReturn(_Filter) + " order by [B1].[Vou_Date]";
+            var _SQLSalesList = SQLQuery.SaleReturn(_Filter) + " order by [Vou_Date]";
             var tb_SaleReturn = new DataTableClass(UserName, _SQLSalesList, Tables.SaleReturn);
             Receivable1 = tb_SaleReturn.MyDataTable;
 
