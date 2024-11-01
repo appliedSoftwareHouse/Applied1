@@ -91,6 +91,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         private void SetKeys()
         {
+            UserName = User.Identity.Name;
             if (Variables.CompanyID == 0) { Variables.AllCompany = true; } else { Variables.AllCompany = false; }
             if (Variables.InventoryID == 0) { Variables.AllInventory = true; } else { Variables.AllInventory = false; }
 
@@ -109,13 +110,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "srRptInventory", Variables.InventoryID, KeyType.Number);
             AppRegistry.SetKey(UserName, "srRptHeading1", _Heading1, KeyType.Text);
             AppRegistry.SetKey(UserName, "srRptHeading2", _Heading2, KeyType.Text);
-            
-
-
         }
 
         public void GetKeys()
         {
+            UserName = User.Identity.Name;
+
             Variables ??= new();
             Variables.StartDate = AppRegistry.GetDate(UserName, "srRptDate1");
             Variables.EndDate = AppRegistry.GetDate(UserName, "srRptDate2");

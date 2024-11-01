@@ -22,6 +22,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 N_COA = (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)AppRegistry.GetKey(UserName, "GL_Company", KeyType.Number),
                 N_Employee = (int)AppRegistry.GetKey(UserName, "GL_Employee", KeyType.Number),
+                N_Project = (int)AppRegistry.GetKey(UserName, "GL_Project", KeyType.Number),
                 Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date)
             };
@@ -50,48 +51,26 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return RedirectToPage("PrintReport", "GLEmployee", new { _ReportType = Option });
         }
 
-        #region POST Company
-
-
-
-        //public IActionResult OnPostCompany()
-        //{
-        //    SetKeys();
-        //    return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.PDF });
-
-        //}
-
-        //public IActionResult OnPostCompanyExcel()
-        //{
-        //    SetKeys();
-        //    return RedirectToPage("PrintReport", "GLCompany", new { _ReportType =  ReportType.Excel });
-
-        //}
-
-        //public IActionResult OnPostCompanyWord()
-        //{
-        //    SetKeys();
-        //    return RedirectToPage("PrintReport", "GLCompany", new { _ReportType = ReportType.Word });
-
-        //}
-
-        //public IActionResult OnPostCompanyHTML()
-        //{
-        //    SetKeys();
-        //    return RedirectToPage("PrintReport", "GLCompany", new { _ReportType = ReportType.HTML });
-
-        //}
-
-        #endregion
-
-
+        public IActionResult OnPostGLProjects(ReportType Option)
+        {
+            SetKeys();
+            return RedirectToPage("PrintReport", "GLProject", new { _ReportType = Option });
+        }
 
         public void SetKeys()
         {
             var UserName = User.Identity.Name;
+
+            int CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"); 
+            int BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature");
+
+            string GLp_Nature = $"{CashBookNature},{BankBookNature}";
+            AppRegistry.SetKey(UserName, "GLp_Nature", GLp_Nature, KeyType.Text);
+
             AppRegistry.SetKey(UserName, "GL_COA", Parameters.N_COA, KeyType.Number);
             AppRegistry.SetKey(UserName, "GL_Company", Parameters.N_Customer, KeyType.Number);
             AppRegistry.SetKey(UserName, "GL_Employee", Parameters.N_Employee, KeyType.Number);
+            AppRegistry.SetKey(UserName, "GL_Project", Parameters.N_Project, KeyType.Number);
             AppRegistry.SetKey(UserName, "GL_Dt_From", Parameters.Dt_From, KeyType.Date);
             AppRegistry.SetKey(UserName, "GL_Dt_To", Parameters.Dt_To, KeyType.Date);
 

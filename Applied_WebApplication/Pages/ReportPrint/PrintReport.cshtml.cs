@@ -91,7 +91,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-
         #region Chart of Accounts
         public IActionResult OnGetCOAList()
         {
@@ -124,7 +123,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region General Ledger
+        #region General Ledger - GL
         public IActionResult OnGetGL(ReportType _ReportType)
         {
 
@@ -193,7 +192,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
         #endregion
 
-        #region Supplier / Vendor Ledger
+        #region General Ledger - GL Supplier / Vendor Ledger
 
         public IActionResult OnGetGLCompany(ReportType _ReportType)
         {
@@ -270,7 +269,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         #endregion
 
-        #region Employees Ledger
+        #region General Ledger - Employees
 
         public IActionResult OnGetGLEmployee(ReportType _ReportType)
         {
@@ -336,6 +335,84 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
         }
 
+        #endregion
+
+        #region General Ledger - Projects
+        public IActionResult OnGetGLProject(ReportType RptType)
+        {
+            try
+            {
+
+                string _Nature = GetText(UserName, "GLp_Nature");
+                int _Project = GetNumber(UserName, "GL_Project");
+                DateTime _Date1 = GetDate(UserName, "GL_Dt_From");
+                DateTime _Date2 = GetDate(UserName, "GL_Dt_To");
+                string __Date1 = _Date1.ToString(DateYMD);
+                string __Date2 = _Date2.ToString(DateYMD);
+                string _Sort = "Vou_Date, Vou_No";
+
+                string _Filter1 = $"[L].[Project] = {_Project} AND NOT [C].[NATURE] IN ({_Nature}) AND ";
+                _Filter1 += $"Date([Vou_Date]) < '{__Date1}'";
+
+                string _Filter2 = $"[L].[Project] = {_Project} AND NOT [C].[NATURE] IN ({_Nature}) AND ";
+                _Filter2 += $"Date([Vou_Date]) >= '{__Date1}' AND Date([Vou_Date] <= '{__Date2}')";
+
+                string _Query = SQLQuery.GLProject(_Filter1, _Filter2, _Sort);
+
+                ReportClass reports = new ReportClass();
+                DataTable _SourceTable = DataTableClass.GetTable(UserName, _Query);
+
+                string _ReportFile = "GLProject";
+                string _Heading1 = "No Records Found...";
+                string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
+
+                if (_SourceTable.Rows.Count > 0)
+                {
+                    _Heading1 = $"PROJECT LEDGER - {_SourceTable.Rows[1]["ProTitle"]}";
+                }
+
+                ReportModel Reportmodel = new();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = _ReportFile;
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                Reportmodel.OutputReport.FileName = _ReportFile;
+                Reportmodel.OutputReport.ReportType = RptType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_Project";
+                Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI
+
+                if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        ReportLink = Reportmodel.OutputReport.FileLink;
+                        IsShowPdf = true;
+                        return Page();
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+            return Page();
+        }
         #endregion
 
         #region Trial Balance
@@ -422,13 +499,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
         {
             try
             {
-                var RptType = (ReportType)GetNumber(UserName,"srRptType");
+                var RptType = (ReportType)GetNumber(UserName, "srRptType");
                 var _PageModel = new SalesReturnReportModel();
 
                 _PageModel.UserName = UserName;
                 _PageModel.GetKeys();
                 _PageModel.LoadData(_PageModel.GetFilter(_PageModel.Variables));
-             
+
                 var _Heading1 = _PageModel.Variables.Heading1;
                 var _Heading2 = _PageModel.Variables.Heading2;
 
@@ -477,7 +554,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
         #endregion
-
 
         #region Sales Register Report
 

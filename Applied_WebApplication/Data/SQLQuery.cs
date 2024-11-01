@@ -2,6 +2,8 @@
 using static Applied_WebApplication.Pages.Stock.InventoryModel;
 using System.Xml.Linq;
 using System.Runtime.CompilerServices;
+using Applied_WebApplication.Pages.Sales;
+using System.Text.RegularExpressions;
 
 namespace Applied_WebApplication.Data
 {
@@ -444,7 +446,7 @@ namespace Applied_WebApplication.Data
             Text.Append($" ORDER BY {_Order}");
             return Text.ToString();
         }
-                
+
         public static string SaleReturn(string _Filter)
         {
             var Text = new StringBuilder();
@@ -1280,11 +1282,72 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("LEFT JOIN ");
             _Text.AppendLine("(SELECT DISTINCT [Vou_No] FROM [Ledger] WHERE[Vou_Type] = 'Production') [L] ");
             _Text.AppendLine("ON [L].[Vou_No] = [P1].[Vou_No]");
-            if(_Filter.Length > 0)
+            if (_Filter.Length > 0)
             {
                 _Text.AppendLine($"WHERE {_Filter}");
             }
             return _Text.ToString();
+        }
+        #endregion
+
+        #region Ledger - Project
+        public static string GLProject(string _Filter1, string _Filter2, string _Sort)
+        {
+            var _Text = new StringBuilder();
+
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("'' AS [Vou_Date],");
+            _Text.AppendLine("'' AS [Vou_No],    '' AS [Ref_No], ");
+            _Text.AppendLine("0  AS [COA],       '' AS [COATitle],");
+            _Text.AppendLine("0  AS [Employee],  '' AS [EmpTitle],");
+            _Text.AppendLine("0  AS [Inventory], '' AS [InvTitle],");
+            _Text.AppendLine("0  AS [Project],   '' AS [ProTitle],");
+            _Text.AppendLine("0  AS [DR], 0 AS [CR],");
+            _Text.AppendLine("SUM([OBLedger].[DR]) - SUM([OBLedger].[CR]) AS[Amount],");
+            _Text.AppendLine("'Opening Balance' AS [Description]");
+            _Text.AppendLine("FROM(SELECT [L].* FROM [Ledger] [L]");
+            _Text.AppendLine("LEFT JOIN[COA][C] ON[C].[ID] = [L].[COA]");
+            _Text.AppendLine($"WHERE {_Filter1}");
+            _Text.AppendLine(") [OBLedger]");
+
+            _Text.AppendLine(" UNION ALL");
+
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[Ledger].[Vou_Date],");
+            _Text.AppendLine("[Ledger].[Vou_No],");
+            _Text.AppendLine("[Ledger].[Ref_No],");
+            _Text.AppendLine("[Ledger].[COA],");
+            _Text.AppendLine("[Ledger].[COATitle],");
+            _Text.AppendLine("[Ledger].[Employee],");
+            _Text.AppendLine("[Ledger].[EmpTitle],");
+            _Text.AppendLine("[Ledger].[Inventory],");
+            _Text.AppendLine("[Ledger].[InvTitle],");
+            _Text.AppendLine("[Ledger].[Project],");
+            _Text.AppendLine("[Ledger].[ProTitle],");
+            _Text.AppendLine("[Ledger].[DR],");
+            _Text.AppendLine("[Ledger].[CR],");
+            _Text.AppendLine("[Ledger].[DR] - [Ledger].[CR] AS [Amount],");
+            _Text.AppendLine("[Ledger].[Description]");
+            _Text.AppendLine("FROM(SELECT ");
+            _Text.AppendLine("[L].*,");
+            _Text.AppendLine("[C].[Title] [COATitle],");
+            _Text.AppendLine("[E].[Title] [EmpTitle],");
+            _Text.AppendLine("[S].[Title] [ComTitle],");
+            _Text.AppendLine("[I].[Title] [InvTitle],");
+            _Text.AppendLine("[P].[Title] [ProTitle]");
+            _Text.AppendLine("FROM [Ledger] [L]");
+            _Text.AppendLine("LEFT JOIN [COA]       [C] ON [C].[ID] = [L].[COA]");
+            _Text.AppendLine("LEFT JOIN [Employees] [E] ON [E].[ID] = [L].[Employee]");
+            _Text.AppendLine("LEFT JOIN [Customers] [S] ON [S].[ID] = [L].[Customer]");
+            _Text.AppendLine("LEFT JOIN [Inventory] [I] ON [I].[ID] = [L].[Inventory]");
+            _Text.AppendLine("LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]");
+            if (_Filter2.Length > 0) { _Text.AppendLine($" WHERE {_Filter2}"); };
+            _Text.AppendLine(") [Ledger]");
+            if (_Sort.Length > 0) { _Text.AppendLine($" ORDER BY {_Sort}"); }
+            
+
+            return _Text.ToString();
+
         }
         #endregion
 
