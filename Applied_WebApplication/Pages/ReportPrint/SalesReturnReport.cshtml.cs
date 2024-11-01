@@ -10,7 +10,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public Parameters Variables { get; set; }
-        public string UserName { get; set; } 
+        public string UserName { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool AllCompany { get; set; }
@@ -23,10 +23,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DataTable Inventory { get; set; }
         public DataTable Cities { get; set; }
 
+        
         public void OnGet()
         {
-            
-            UserName = User.Identity.Name;
+            UserName ??= User.Identity.Name;
             GetKeys();
             LoadData(string.Empty);
         }
@@ -78,6 +78,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnPostRefresh()
         {
+            UserName ??= User.Identity.Name;
             SetKeys();
             return RedirectToPage();
 
@@ -85,13 +86,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnPostPrint(ReportType RptType)
         {
+            UserName ??= User.Identity.Name;
             SetKeys();
-            AppRegistry.SetKey(User.Identity.Name, "srRptType", (int)RptType, KeyType.Number);
+            AppRegistry.SetKey(UserName, "srRptType", (int)RptType, KeyType.Number);
             return RedirectToPage("/ReportPrint/PrintReport", "SaleReturn");
         }
         private void SetKeys()
         {
-            UserName = User.Identity.Name;
+            UserName ??= User.Identity.Name;
             if (Variables.CompanyID == 0) { Variables.AllCompany = true; } else { Variables.AllCompany = false; }
             if (Variables.InventoryID == 0) { Variables.AllInventory = true; } else { Variables.AllInventory = false; }
 
@@ -114,7 +116,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public void GetKeys()
         {
-            UserName = User.Identity.Name;
+            
 
             Variables ??= new();
             Variables.StartDate = AppRegistry.GetDate(UserName, "srRptDate1");

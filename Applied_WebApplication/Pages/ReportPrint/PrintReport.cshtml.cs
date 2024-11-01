@@ -501,8 +501,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 var RptType = (ReportType)GetNumber(UserName, "srRptType");
                 var _PageModel = new SalesReturnReportModel();
-
                 _PageModel.UserName = UserName;
+
+                //_PageModel.UserName = UserName;
                 _PageModel.GetKeys();
                 _PageModel.LoadData(_PageModel.GetFilter(_PageModel.Variables));
 

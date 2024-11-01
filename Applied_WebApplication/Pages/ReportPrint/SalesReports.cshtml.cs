@@ -10,9 +10,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
     {
         [BindProperty]
         public Parameters Variables { get; set; }
-
         public string UserName => User.Identity.Name;
-
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public bool AllCompany { get; set; }
@@ -40,7 +38,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             };
 
-            Customers = DataTableClass.GetTable(UserName, Tables.Customers, "", "[Title]");
+                Customers = DataTableClass.GetTable(UserName, Tables.Customers, "", "[Title]");
             Inventory = DataTableClass.GetTable(UserName, Tables.Inventory, "", "[Title]");
             Cities = DataTableClass.GetTable(UserName, SQLQuery.Cities());
 
