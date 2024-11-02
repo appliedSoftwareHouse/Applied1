@@ -451,6 +451,7 @@ namespace Applied_WebApplication.Data
             Text.AppendLine("[B2].[TranID],");
             Text.AppendLine("[B2].[SR_No],");
             Text.AppendLine("[R].[Vou_No],");
+            Text.AppendLine("[R].[Vou_Date] AS [SRtn_Date],");
             Text.AppendLine("[B1].[Vou_No] AS [SaleVou_No],");
             Text.AppendLine("[B1].[Vou_Date],");
             Text.AppendLine("[B1].[Company],");
@@ -502,8 +503,8 @@ namespace Applied_WebApplication.Data
             var _SaleReturn = SaleReturn(_Filter);
             var _Text = new StringBuilder();
             _Text.AppendLine("SELECT ");
-            _Text.AppendLine("[SaleVou_No] As[Vou_No],");
-            _Text.AppendLine("[Vou_Date],");
+            _Text.AppendLine("[SaleVou_No] As [Vou_No],");
+            _Text.AppendLine("[SRtn_Date]  AS [Vou_Date],");
             _Text.AppendLine("[Company],");
             _Text.AppendLine("[CompanyName],");
             _Text.AppendLine("[Inventory],");
