@@ -350,6 +350,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 string __Date1 = _Date1.ToString(DateYMD);
                 string __Date2 = _Date2.ToString(DateYMD);
                 string _Sort = "Vou_Date, Vou_No";
+                string _ProjectTitle = GetTitle(UserName, Tables.Project, _Project);
+
 
                 string _Filter1 = $"[L].[Project] = {_Project} AND NOT [C].[NATURE] IN ({_Nature}) AND ";
                 _Filter1 += $"Date([Vou_Date]) < '{__Date1}'";
@@ -363,14 +365,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 DataTable _SourceTable = DataTableClass.GetTable(UserName, _Query);
 
                 string _ReportFile = "GLProject";
-                string _Heading1 = "No Records Found...";
+                string _Heading1 = $"PROJECT LEDGER - {_ProjectTitle}";
                 string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
-
-                if (_SourceTable.Rows.Count > 0)
-                {
-                    _Heading1 = $"PROJECT LEDGER - {_SourceTable.Rows[1]["ProTitle"]}";
-                }
-
+                
                 ReportModel Reportmodel = new();
                 // Input Parameters  (.rdl report file)
                 Reportmodel.InputReport.FilePath = ReportPath;

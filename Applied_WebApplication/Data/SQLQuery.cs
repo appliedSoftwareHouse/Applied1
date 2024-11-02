@@ -1,9 +1,4 @@
 ﻿using System.Text;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
-using System.Xml.Linq;
-using System.Runtime.CompilerServices;
-using Applied_WebApplication.Pages.Sales;
-using System.Text.RegularExpressions;
 
 namespace Applied_WebApplication.Data
 {
@@ -1308,7 +1303,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("FROM(SELECT [L].* FROM [Ledger] [L]");
             _Text.AppendLine("LEFT JOIN[COA][C] ON[C].[ID] = [L].[COA]");
             _Text.AppendLine($"WHERE {_Filter1}");
-            _Text.AppendLine(") [OBLedger]");
+            _Text.AppendLine(") [OBLedger] GROUP BY [Project]");
 
             _Text.AppendLine(" UNION ALL");
 
@@ -1344,11 +1339,42 @@ namespace Applied_WebApplication.Data
             if (_Filter2.Length > 0) { _Text.AppendLine($" WHERE {_Filter2}"); };
             _Text.AppendLine(") [Ledger]");
             if (_Sort.Length > 0) { _Text.AppendLine($" ORDER BY {_Sort}"); }
-            
+
 
             return _Text.ToString();
 
         }
+        #endregion
+
+        #region Trial Balance - Project wise
+        public static string TBProject(string _Filter)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[Ledger].[Project],");
+            _Text.AppendLine("[P].[Title] AS[ProjectTitle],");
+            _Text.AppendLine("[Ledger].[COA],");
+            _Text.AppendLine("[Ledger].[COATitle],");
+            _Text.AppendLine("SUM([Ledger].[DR]) AS[DR],");
+            _Text.AppendLine("SUM([Ledger].[CR]) As[CR]");
+            _Text.AppendLine("FROM (SELECT ");
+            _Text.AppendLine("[L].[COA],");
+            _Text.AppendLine("[C].[Title] AS [COATitle],");
+            _Text.AppendLine("[C].[Nature],");
+            _Text.AppendLine("[L].[Project],");
+            _Text.AppendLine("[L].[DR],");
+            _Text.AppendLine("[L].[CR]");
+            _Text.AppendLine("FROM [Ledger] [L]");
+            _Text.AppendLine("LEFT JOIN [COA] [C] ON [C].[ID] = [L].[COA]");
+            //_Text.AppendLine("WHERE [C].[Nature] NOT IN(1, 2) ");
+            _Text.AppendLine($"WHERE {_Filter}");
+            _Text.AppendLine(") [Ledger]");
+            _Text.AppendLine("LEFT JOIN [Project] [P] ON[P].[ID] = [Ledger].[Project]");
+            _Text.AppendLine("GROUP BY [COA],[Project] ORDER BY [Project], [COA]");
+
+            return _Text.ToString();
+        }
+
         #endregion
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS

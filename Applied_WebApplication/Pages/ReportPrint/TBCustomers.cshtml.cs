@@ -33,15 +33,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 CboxCustomerId = AppRegistry.GetNumber(UserName, "tbCus_Customer"),
                 CboxAccountsId = AppRegistry.GetNumber(UserName, "tbCus_Accounts")
             };
-
-            //Variables = new()
-            //{
-            //    CboxAccountsId = 0,
-            //    CboxCustomerId = 0,
-            //    DateFrom = AppRegistry.GetFiscalFrom(),
-            //    DateTo = DateTime.Now
-            //};
-
+                        
             var _Date = Variables.DateTo.ToString(AppRegistry.DateYMD);
             var _Filter = $"Date(Vou_Date) <= Date('{_Date}')";
             DataCustomer = DataTableClass.GetTable(UserName, SQLQuery.TBCustomer(UserName, _Filter));
