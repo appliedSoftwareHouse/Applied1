@@ -1,8 +1,10 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.Sales
 {
+    [Authorize]
     public class CreateInvoiceModel : PageModel
     {
         public Parameters Variables { get; set; }

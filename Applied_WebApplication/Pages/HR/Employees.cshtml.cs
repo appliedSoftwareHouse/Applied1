@@ -1,9 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.HR
 {
+    [Authorize]
     public class EmployeesModel : PageModel
     {
         public MyParameters Variables { get; set; }

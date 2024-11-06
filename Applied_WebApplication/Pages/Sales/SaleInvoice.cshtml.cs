@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -8,6 +9,7 @@ using System.Text;
 
 namespace Applied_WebApplication.Pages.Sales
 {
+    [Authorize]
     public class SaleInvoiceModel : PageModel
     {
         #region Setup

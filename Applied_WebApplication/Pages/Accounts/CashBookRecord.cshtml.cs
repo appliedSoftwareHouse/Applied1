@@ -3,9 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Authorization;
 using System.Data;
 using static Applied_WebApplication.Data.AppFunctions;
-using static Applied_WebApplication.Data.MessageClass;
 using static Applied_WebApplication.Pages.Accounts.CashBookModel;
-using Applied_WebApplication.Data;
 
 namespace Applied_WebApplication.Pages.Accounts
 {

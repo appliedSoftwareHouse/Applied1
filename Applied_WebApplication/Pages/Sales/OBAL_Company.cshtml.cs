@@ -1,11 +1,11 @@
-using Applied_WebApplication.Pages.Accounts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
-using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.Sales
 {
+    [Authorize]
     public class OBAL_CompanyModel : PageModel
     {
 

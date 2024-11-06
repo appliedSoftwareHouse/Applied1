@@ -2,9 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using AppReportClass;
 using System.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class ExpenseSheetModel : PageModel
     {
         [BindProperty]

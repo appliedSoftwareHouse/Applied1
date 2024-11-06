@@ -1,10 +1,11 @@
 using System.Drawing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.HR
 {
+    [Authorize]
     public class EmployeeModel : PageModel
     {
         [BindProperty]

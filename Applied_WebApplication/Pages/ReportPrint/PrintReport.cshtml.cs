@@ -8,10 +8,12 @@ using System.Data.SQLite;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
     //public class COAListModel : PageModel
+    [Authorize]
     public class ReportPrintModel : PageModel
     {
         #region Setup

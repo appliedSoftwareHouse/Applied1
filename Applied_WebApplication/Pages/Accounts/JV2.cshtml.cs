@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -5,6 +6,7 @@ using System.Data.SQLite;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
+    [Authorize]
     public class JV2Model : PageModel
     {
         [BindProperty]

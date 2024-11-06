@@ -1,10 +1,12 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class ProductionReportModel : PageModel
     {
         [BindProperty]

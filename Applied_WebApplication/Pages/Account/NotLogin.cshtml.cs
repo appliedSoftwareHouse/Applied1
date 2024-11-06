@@ -3,10 +3,16 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Applied_WebApplication.Pages.Account
 {
+    
     public class NotLoginModel : PageModel
     {
         public void OnGet()
         {
+        }
+
+        public IActionResult OnPostBack()
+        {
+            return RedirectToPage("Login");
         }
     }
 }

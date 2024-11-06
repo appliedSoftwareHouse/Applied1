@@ -1,4 +1,5 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Reporting.NETCore;
@@ -7,6 +8,7 @@ using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class TrialBalanceModel : PageModel
     {
         [BindProperty]

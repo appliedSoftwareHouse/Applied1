@@ -1,11 +1,13 @@
 using System.IO;
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Routing.Constraints;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class HTMLViewerModel : PageModel
     {
         public string HTMLFile {  get; set; }

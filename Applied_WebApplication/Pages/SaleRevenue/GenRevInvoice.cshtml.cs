@@ -1,12 +1,11 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 
 namespace Applied_WebApplication.Pages.SaleRevenue
 {
-    
-
-
+    [Authorize]
     public class GenRevInvoiceModel : PageModel
     {
         

@@ -1,4 +1,5 @@
 using AppReportClass;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
@@ -6,6 +7,7 @@ using System.Text;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
+    [Authorize]
     public class SalesReportsModel : PageModel
     {
         [BindProperty]
