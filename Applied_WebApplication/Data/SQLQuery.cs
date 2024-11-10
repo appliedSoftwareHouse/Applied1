@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Data;
+using System.Text;
 
 namespace Applied_WebApplication.Data
 {
@@ -1377,6 +1378,15 @@ namespace Applied_WebApplication.Data
         }
 
         #endregion
+
+        #region Get Receipt Accounts list
+        public static string ReceiptAccounts(string _Directory)
+        {
+            return GetDirectory(_Directory);
+        }
+        #endregion
+
+
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS
 

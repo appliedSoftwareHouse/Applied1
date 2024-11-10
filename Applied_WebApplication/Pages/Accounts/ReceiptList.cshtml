@@ -1,0 +1,63 @@
+﻿@page
+@model Applied_WebApplication.Pages.Accounts.ReceiptListModel
+@{
+    var UserName = User.Identity.Name;
+    var TitleAccount = GetTitle(UserName, Tables.COA, Model.Variables.Account);
+    var TitlePayer = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
+    var ListAccount = Titles(UserName, SQLQuery.ReceiptAccounts("ReceiptFunds"));
+    var ListPayer = Titles(UserName, Tables.Customers);
+
+
+}
+
+
+<div class="AppHeading-2">
+    <h3 class="TextCenter">List of Receipts</h3>
+</div>
+
+<form method="post">
+    <div class="container list-filter">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.From />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="input-group">
+                    <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.To />
+                    <span class="input-group-text" style="width:30%" id="To">End</span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="Account">Account</span>
+                    <select class="form-select" asp-for="@Model.Variables.Account">
+                        <option selected>@TitleAccount</option>
+                        @foreach (var item in ListAccount)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" id="Payer">Payer</span>
+                    <select class="form-select" asp-for="@Model.Variables.Payer">
+                        <option selected>@TitlePayer</option>
+                        @foreach (var item in ListPayer)
+                        {
+                            <option value="@item.Key">@item.Value</option>
+                        }
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <button class="btn btn-primary" asp-page-handler="Refresh">Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

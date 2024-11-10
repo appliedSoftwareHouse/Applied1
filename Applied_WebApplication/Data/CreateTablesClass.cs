@@ -1,10 +1,12 @@
 ﻿using Applied_WebApplication.Pages.Accounts;
+using Microsoft.Reporting.Map.WebForms.BingMaps;
 using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
 using static Applied_WebApplication.Data.MessageClass;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Applied_WebApplication.Data
 {
@@ -435,7 +437,22 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-
+        #region Receipts
+        public static void Receipts(string UserName)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("CREATE TABLE[Receipts](");
+            _Text.AppendLine("[ID] INT PRIMARY KEY,");
+            _Text.AppendLine("[ReceiptDate] DATETIME NOT NULL, ");
+            _Text.AppendLine("[Payer] INT NOT NULL, ");
+            _Text.AppendLine("[Account] INT NOT NULL, ");
+            _Text.AppendLine("[Project] INT NOT NULL, ");
+            _Text.AppendLine("[Employee] INT, ");
+            _Text.AppendLine("[Description] NVARCHAR NOT NULL);");
+            var Command = new SQLiteCommand(_Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+        }
+        #endregion
 
 
         //========================================================================= CREATE
@@ -600,6 +617,10 @@ namespace Applied_WebApplication.Data
                 case Tables.Chk_BillReceivable2:
                     Chk_BillReceivable2(UserName);
                     break;
+                case Tables.Receipts:
+                    Receipts(UserName);
+                    break;
+
 
 
                 default:

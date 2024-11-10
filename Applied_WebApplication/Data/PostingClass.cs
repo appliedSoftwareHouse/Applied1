@@ -1,8 +1,6 @@
-﻿using Microsoft.CodeAnalysis.Emit;
-using System.Data;
+﻿using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
-using System.Net.Http.Headers;
 using static Applied_WebApplication.Data.MessageClass;
 
 namespace Applied_WebApplication.Data

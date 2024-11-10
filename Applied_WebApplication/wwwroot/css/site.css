@@ -168,3 +168,18 @@ AppFooter {
     font-family:Calibri;
     color:blue;
 }
+
+.list-filter{
+    background-color:beige;
+    font-family:Calibri;
+    
+
+}
+
+    /*.list-filter textbox {
+        width: 150px
+    }
+
+    .list-filter btn{
+        width: 50px
+    }*/

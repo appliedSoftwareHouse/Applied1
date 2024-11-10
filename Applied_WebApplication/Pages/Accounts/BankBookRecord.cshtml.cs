@@ -15,7 +15,6 @@ namespace Applied_WebApplication.Pages.Accounts
     public class BankBookRecordModel : PageModel
     {
         [BindProperty]
-
         public BookRecord BookRecord { get; set; }
         public bool IsAdd = true;
         public bool IsError = false;
