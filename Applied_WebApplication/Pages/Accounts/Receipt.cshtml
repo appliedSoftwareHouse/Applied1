@@ -1,4 +1,140 @@
 ﻿@page
 @model Applied_WebApplication.Pages.Accounts.ReceiptModel
 @{
+    string UserName = User.Identity.Name;
+
+    string PayerTitle = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
+    string COATitle = GetTitle(UserName, Tables.COA, Model.Variables.COA); ;
+    string AccountTitle = GetTitle(UserName, Tables.COA, Model.Variables.Account);
+    string EmployeeTitle = GetTitle(UserName, Tables.COA, Model.Variables.Employee);
+    string ProjectTitle = GetTitle(UserName, Tables.COA, Model.Variables.Project);
+
 }
+
+<div class="AppHeading-2">
+    <h3 class="TextCenter">RECEIPT</h3>
+</div>
+
+<form method="post">
+    <div class="container">
+
+        <!--Row Vou no, Vou_Date, Is Cash-->
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Vou_No" id="Vou_No" readonly>
+                    <label for="Vou_No">Voucher No</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="date" class="form-control" asp-for="@Model.Variables.Vou_Date" id="Vou_Date">
+                    <label for="Vou_Date">Voucher Date</label>
+                </div>
+            </div>
+            <div class="col-3 align-content-center">
+                <input type="checkbox" asp-for="@Model.Variables.IsCash" title="Received in Cash" />
+                <label>Received in Cash</label>
+            </div>
+        </div>
+
+        <!--Row Payer, Account, Project-->
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Customer" aria-label="Floating label Payer" asp-for="@Model.Variables.Payer">
+                        <option selected>@PayerTitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Customer">Payer</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="COA" aria-label="Floating label Account" asp-for="@Model.Variables.Account">
+                        <option selected>@AccountTitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Model.tbAccounts)
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                    <label for="COA">Account Title</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <select class="form-select" id="Project" aria-label="Floating label Project" asp-for="@Model.Variables.Project">
+                        <option selected>@ProjectTitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Project))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+
+                    </select>
+                    <label for="Project">Project</label>
+                </div>
+            </div>
+        </div>
+
+        <!--Row Amount and Description-->
+        <div class="row">
+            <div class="col-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Amount" id="txtAmount">
+                    <label for="txtAmount">Amount</label>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="Description">
+                    <label for="Description">Description (Remarks)</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <button class="btn btn-primary mnu" asp-page-handler="New">New</button>
+                <button type="button" class="btn btn-primary mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
+                @if (Model.Variables.Vou_No != "New")
+                {
+                    <button class="btn btn-primary mnu" asp-page-handler="Delete">Delete</button>
+                    <button class="btn btn-primary mnu" asp-page-handler="Print">Print</button>
+                    <button class="btn btn-primary mnu" asp-page-handler="Email">Email</button>
+                    <button class="btn btn-primary mnu" asp-page-handler="SMS">SMS</button>
+                }
+            </div>
+        </div>
+    </div>
+
+<!-- Modal -->
+<div class="modal fade" id="SaveRecord" tabindex="-1" aria-labelledby="SaveRecordLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="SaveRecordLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Save Voucher No @Model.Variables.Vou_No
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+
+<style>
+    .mnu {
+        width: 100px;
+    }
+
+</style>

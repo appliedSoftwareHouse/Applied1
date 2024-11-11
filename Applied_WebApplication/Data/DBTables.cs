@@ -25,7 +25,7 @@ public enum Tables
     SaleReturn = 120,
     BankBook = 121,
     COA_Map =122,
-    Receipts,
+    Receipts=123,
 
 
     Customers = 201,

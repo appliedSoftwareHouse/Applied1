@@ -4,10 +4,8 @@
     var UserName = User.Identity.Name;
     var TitleAccount = GetTitle(UserName, Tables.COA, Model.Variables.Account);
     var TitlePayer = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
-    var ListAccount = Titles(UserName, SQLQuery.ReceiptAccounts("ReceiptFunds"));
+    var ListAccount = Titles(UserName, SQLQuery.ReceiptAccounts());
     var ListPayer = Titles(UserName, Tables.Customers);
-
-
 }
 
 
@@ -30,34 +28,51 @@
                     <span class="input-group-text" style="width:30%" id="To">End</span>
                 </div>
             </div>
-            <div class="col-md-3">
+           
+            <div class="col-md-4">
                 <div class="input-group">
-                    <span class="input-group-text" id="Account">Account</span>
-                    <select class="form-select" asp-for="@Model.Variables.Account">
-                        <option selected>@TitleAccount</option>
-                        @foreach (var item in ListAccount)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
+                    <span class="input-group-text" style="width:30%" id="To">Search</span>
+                    <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.Variables.Search />
+                    
                 </div>
             </div>
-            <div class="col-md-3">
-                <div class="input-group">
-                    <span class="input-group-text" id="Payer">Payer</span>
-                    <select class="form-select" asp-for="@Model.Variables.Payer">
-                        <option selected>@TitlePayer</option>
-                        @foreach (var item in ListPayer)
-                        {
-                            <option value="@item.Key">@item.Value</option>
-                        }
-                    </select>
-                </div>
-            </div>
+
             <div class="col-md-2">
                 <button class="btn btn-primary" asp-page-handler="Refresh">Refresh
                 </button>
             </div>
         </div>
     </div>
+
+    <div class="container mt-2">
+        <table class="table-list">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Receipt</th>
+                    <th>Payer</th>
+                    <th>Account</th>
+                    <th>Project</th>
+                    <th>Employee</th>
+                    <th>Amount</th>
+                    <th>
+                        <button class="btn btn-primary" asp-page-handler="New">New</button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+
+
 </form>

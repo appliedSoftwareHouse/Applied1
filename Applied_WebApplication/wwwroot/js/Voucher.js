@@ -9,3 +9,5 @@ function FormatAmount() {
    
     document.getElementById("txtDR").innerHTML = usFormat;
 }
+
+

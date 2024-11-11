@@ -1,4 +1,8 @@
-﻿using System.Data;
+﻿using Applied_WebApplication.Pages.Sales;
+using Microsoft.AspNetCore.Components.Web;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Data;
+using System.Security.Principal;
 using System.Text;
 
 namespace Applied_WebApplication.Data
@@ -1380,9 +1384,36 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Get Receipt Accounts list
-        public static string ReceiptAccounts(string _Directory)
+        public static string ReceiptAccounts()
         {
-            return GetDirectory(_Directory);
+            return GetDirectory("ReceiptAccount");
+        }
+        #endregion
+
+        #region 
+        public static string ReceiptsList(string _Filter)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT [R].*,");
+            _Text.AppendLine("[C].[Title] AS [PayerTitle],");
+            _Text.AppendLine("[E].[Title] AS [EmployeeTitle], ");
+            _Text.AppendLine("[A].[Value] AS [AccountTitle], ");
+            _Text.AppendLine("[P].[Title] As [ProjectTitle] ");
+            _Text.AppendLine("FROM [Receipts] [R]");
+            _Text.AppendLine("LEFT JOIN(");
+            _Text.AppendLine("SELECT* FROM [Directories] WHERE [Directory] = 'ReceiptAccount'");
+            _Text.AppendLine(") [A] ON [A].[ID] = [R].[Account]");
+            _Text.AppendLine("LEFT JOIN [Project] [P] ON [P].[ID] = [R].[Project] ");
+            _Text.AppendLine("LEFT JOIN[Employees] [E] ON[E].[ID] = [R].[Employee] ");
+            _Text.AppendLine("LEFT JOIN[Customers] [C] ON[C].[ID] = [R].[Payer];");
+            if(_Filter.Length > 0)
+            {
+                _Text.AppendLine($"WHERE {_Filter}");
+            }
+
+            return _Text.ToString();
+
+
         }
         #endregion
 

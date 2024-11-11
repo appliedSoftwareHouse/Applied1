@@ -443,11 +443,15 @@ namespace Applied_WebApplication.Data
             var _Text = new StringBuilder();
             _Text.AppendLine("CREATE TABLE[Receipts](");
             _Text.AppendLine("[ID] INT PRIMARY KEY,");
-            _Text.AppendLine("[ReceiptDate] DATETIME NOT NULL, ");
+            _Text.AppendLine("[Vou_No] TEXT(10), ");
+            _Text.AppendLine("[Vou_Date] DATE NOT NULL, ");
+            _Text.AppendLine("[IsCash] BOOLEAN, ");
+            _Text.AppendLine("[COA] INT, ");
             _Text.AppendLine("[Payer] INT NOT NULL, ");
             _Text.AppendLine("[Account] INT NOT NULL, ");
             _Text.AppendLine("[Project] INT NOT NULL, ");
             _Text.AppendLine("[Employee] INT, ");
+            _Text.AppendLine("[Amount] DECIMAL NOT NULL, ");
             _Text.AppendLine("[Description] NVARCHAR NOT NULL);");
             var Command = new SQLiteCommand(_Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
@@ -631,10 +635,10 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        
+
     }
 
-    
+
 
 
 }

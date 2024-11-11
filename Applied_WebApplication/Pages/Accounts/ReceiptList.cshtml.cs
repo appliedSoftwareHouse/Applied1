@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Text;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -12,11 +13,47 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public ReceiptsFilter Variables { get; set; }
         public string UserName => User.Identity.Name;
-        
-        
+        public DataTable ReceiptList { get; set; }
+
+
         public void OnGet()
         {
             GetKeys();
+            var _Query = $"SELECT * FROM [Receipt] {GetFiler()}";
+            ReceiptList = DataTableClass.GetTable(UserName, _Query, "ReceiptDate");
+            
+
+        }
+
+        private string GetFiler()
+        {
+            var _Text = new StringBuilder();
+
+            var _Date1 = Variables.From.ToString(AppRegistry.DateYMD);
+            var _Date2 = Variables.To.ToString(AppRegistry.DateYMD);
+            var _CloseBracket = false;
+            
+            _Text.Append($"Date([ReceiptDate]) >= Date('{_Date1}' AND Date([ReceiptDate]) <= Date({_Date2}) ");
+            if(Variables.Search.Length > 0)
+            {
+                _Text.Append($"AND ( AccountTitle like '%{Variables.Account}%' ");
+                _CloseBracket = true;
+            }
+            if (Variables.Payer > 0)
+            {
+                _Text.Append($"OR PayerTitle like '%{Variables.Payer}%' ");
+            }
+            if (Variables.Employee > 0)
+            {
+                _Text.Append($"OR EmployeeTitle like '%{Variables.Employee}%' ");
+            }
+            if (Variables.Employee > 0)
+            {
+                _Text.Append($"OR ProjectTitle like '%{Variables.Project}%' ");
+            }
+            if(_CloseBracket) { _Text.Append(" )"); }
+
+            return _Text.ToString();
 
         }
 
@@ -26,13 +63,20 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage();
         }
 
+        public IActionResult OnPostNew()
+        {
+            return RedirectToPage("./Receipt");
+        }
 
+
+
+        #region Set / Get Keys
         public void SetKeys()
         {
             AppRegistry.SetKey(UserName, "rcptFrom", Variables.From, KeyType.Date);
             AppRegistry.SetKey(UserName, "rcptTo", Variables.To, KeyType.Date);
-            AppRegistry.SetKey(UserName, "rcptAccount", Variables.Account, KeyType.Number);
-            AppRegistry.SetKey(UserName, "rcptPayer", Variables.Payer, KeyType.Number);
+            AppRegistry.SetKey(UserName, "rcptSearch", Variables.Search, KeyType.Text);
+            
         }
 
         public void GetKeys()
@@ -41,13 +85,12 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 From = AppRegistry.GetDate(UserName, "rcptFrom"),
                 To = AppRegistry.GetDate(UserName, "rcptTo"),
-                Account = AppRegistry.GetNumber(UserName, "rcptAccount"),
-                Payer = AppRegistry.GetNumber(UserName, "rcptPayer")
+                Search = AppRegistry.GetText(UserName, "rcptSearch")
             };
 
         }
+        #endregion
 
-        
     }
 
     public class ReceiptsFilter
@@ -55,10 +98,12 @@ namespace Applied_WebApplication.Pages.Accounts
         
         public DateTime From { get; set; }
         public DateTime To { get; set; }
+        public string Search { get; set; }
         public int Payer { get; set; }
         public int Account { get; set; }
         public int Project { get; set; }
         public int Employee { get; set; }
+        
         
     }
 }
