@@ -11,13 +11,12 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public Receipt Variables { get; set; }
         public Dictionary<int, string> tbAccounts { get; set; }
+        public Dictionary<int, string> tbReceiptAcc { get; set; }
         public string UserName => User.Identity.Name;
 
         public void OnGet()
         {
             Variables = GetNewRecord();
-            tbAccounts = AppFunctions.Titles(UserName, SQLQuery.ReceiptAccounts());
-
         }
 
         public static Receipt GetNewRecord()
@@ -37,6 +36,8 @@ namespace Applied_WebApplication.Pages.Accounts
                 Description = ""
             };
         }
+
+        #region Save and Validation
 
         public IActionResult OnPostSave()
         {
@@ -65,13 +66,12 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return Page();
         }
-
         
         public bool Validation()
         {
             return true;
         }
-
+        #endregion
     }
 
     public class Receipt
