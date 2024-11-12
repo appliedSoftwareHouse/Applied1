@@ -1,7 +1,5 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Applied_WebApplication.Pages;
 
 namespace Applied_WebApplication.Pages.Account
 {
@@ -52,6 +50,7 @@ namespace Applied_WebApplication.Pages.Account
 
                 CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"),
                 BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature"),
+                RevenueNote = AppRegistry.GetNumber(UserName, "RevenueNote"),
 
                 ProductIN = AppRegistry.GetNumber(UserName, "ProductIN"),
                 ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT"),
@@ -89,6 +88,7 @@ namespace Applied_WebApplication.Pages.Account
 
             AppRegistry.SetKey(UserName, "CashBkNature", Variables.CashBookNature, KeyType.Number);
             AppRegistry.SetKey(UserName, "BankBkNature", Variables.BankBookNature, KeyType.Number);
+            AppRegistry.SetKey(UserName, "RevenueNote", Variables.RevenueNote, KeyType.Number);
 
             AppRegistry.SetKey(UserName, "ProductIN", Variables.ProductIN, KeyType.Number);
             AppRegistry.SetKey(UserName, "ProductOUT", Variables.ProductOUT, KeyType.Number);
@@ -127,6 +127,7 @@ namespace Applied_WebApplication.Pages.Account
             public int ProductOUT { get; set; }
             public string ImagePath {  get; set; }
             public string ReportPath {  get; set; }
+            public int RevenueNote {  get; set; }
         }
         #endregion
         #region SQL Query

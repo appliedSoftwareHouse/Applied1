@@ -12,8 +12,11 @@
 
     int CashBookID = AppRegistry.GetNumber(UserName, "CashBookID");
     int BankBookID = AppRegistry.GetNumber(UserName, "BankBookID");
-    string _FilterCOA = $"Notes IN ({CashBookID},{BankBookID})";
+    int RevenueID = AppRegistry.GetNumber(UserName, "RevenueNote");
+    string _FilterCOA = $"Nature IN ({CashBookID},{BankBookID})";
+    string _FilterRevenue = $"Nature = {RevenueID}";
 
+    bool Stop = false;
 }
 
 <div class="AppHeading-2">
@@ -69,14 +72,14 @@
             </div>
             <div class="col-3">
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="COA" aria-label="Floating label Employee" asp-for="@Model.Variables.Employee">
-                        <option selected>@EmployeeTitle</option>
-                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                    <select class="form-select" id="COA" aria-label="Floating label Employee" asp-for="@Model.Variables.COA">
+                        <option selected>@COATitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA, _FilterRevenue))
                         {
                             <option value="@_Title.Key">@_Title.Value</option>
                         }
                     </select>
-                    <label for="Employee">Employee</label>
+                    <label for="Employee">Account Head</label>
                 </div>
             </div>
             <div class="col-3">
@@ -98,14 +101,28 @@
         <div class="row">
             <div class="col-3">
                 <div class="form-floating mb-3">
+                    <select class="form-select" id="COA" aria-label="Floating label Employee" asp-for="@Model.Variables.Employee">
+                        <option selected>@EmployeeTitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))
+                        {
+                            <option value="@_Title.Key">@_Title.Value</option>
+                        }
+                    </select>
+                    <label for="Employee">Employee</label>
+                </div>
+            </div>
+            <div class="col-3">
+                <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Amount" id="txtAmount">
                     <label for="txtAmount">Amount</label>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="form-floating mb-3">
-                    <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="Description">
-                    <label for="Description">Description (Remarks)</label>
+            <div class="row">
+                <div class="col-6">
+                    <div class="form-floating mb-3">
+                        <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="Description">
+                        <label for="Description">Description (Remarks)</label>
+                    </div>
                 </div>
             </div>
         </div>
@@ -126,24 +143,24 @@
         </div>
     </div>
 
-<!-- Modal -->
-<div class="modal fade" id="SaveRecord" tabindex="-1" aria-labelledby="SaveRecordLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="SaveRecordLabel">Modal title</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Save Voucher No @Model.Variables.Vou_No
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save changes</button>
+    <!-- Modal -->
+    <div class="modal fade" id="SaveRecord" tabindex="-1" aria-labelledby="SaveRecordLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="SaveRecordLabel">Modal title</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Save Voucher No @Model.Variables.Vou_No
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save changes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </form>
 
 <style>

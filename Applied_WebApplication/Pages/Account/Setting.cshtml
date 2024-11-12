@@ -23,6 +23,8 @@
     var TitleCashBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.CashBookNature);
     var TitleBankBookNature = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.BankBookNature);
 
+    // Revenue Account
+    var TitleRevenueNote = AppFunctions.GetTitle(UserName, Tables.COA_Nature, Model.Variables.RevenueNote);
 }
 
 <div class="AppHeading-2">
@@ -132,6 +134,28 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="COAStocks" placeholder="COA of Stocks" asp-for="@Model.Variables.COAStocks">
+                                    <label for="COAStock">COA for Stock in Hand</label>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="row mb-2">
+                           
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <select class="form-select" id="RevenueNoteID" aria-label="Selection of Revenue Note ID" asp-for="@Model.Variables.RevenueNote">
+                                        <option selected>@TitleRevenueNote</option>
+                                        @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA_Nature))
+                                        {
+                                            <option value="@Item.Key">@Item.Value</option>
+                                        }
+                                    </select>
+                                    <label for="RevenueNoteID">Revenue Note</label>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
                                     <select class="form-select" id="CashNatureID" aria-label="Selection of Cash Book Nature ID" asp-for="@Model.Variables.CashBookNature">
                                         <option selected>@TitleCashBookNature</option>
                                         @foreach (KeyValuePair<int, string> Item in AppFunctions.Titles(UserName, Tables.COA_Nature))
@@ -142,7 +166,6 @@
                                     <label for="CashNatureID">Cash Book Nature</label>
                                 </div>
                             </div>
-
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
                                     <select class="form-select" id="BankNatureID" aria-label="Selection of Cash Book Nature ID" asp-for="@Model.Variables.BankBookNature">
@@ -156,14 +179,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row mb-2">
-                            <div class="col-md-3">
-                                <div class="form-floating mb-1">
-                                    <input type="text" class="form-control" id="COAStocks" placeholder="COA of Stocks" asp-for="@Model.Variables.COAStocks">
-                                    <label for="COAStock">COA for Stock in Hand</label>
-                                </div>
-                            </div>
-                        </div>
+                        
 
                     </div>
                 </div>
