@@ -164,6 +164,8 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostPrint(string Vou_No)
         {
             SetKey(UserName, "cbVouNo", Vou_No, KeyType.Text);
+            SetKey(UserName, "Heading1", "Bank Voucher", KeyType.Text);
+
             return RedirectToPage("../ReportPrint/PrintReport", "Voucher", new { _ReportType = ReportType.Preview });
         }
         public IActionResult OnPostShow(int ID)

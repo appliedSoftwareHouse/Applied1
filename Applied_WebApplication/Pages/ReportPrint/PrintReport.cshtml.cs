@@ -907,6 +907,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #region Get Data Table
             var _VoucherNo = AppRegistry.GetText(UserName, "cbVouNo");
+            var _Heading1 = AppRegistry.GetText(UserName, "Heading1");
+            var _ReportName = "Voucher";
             var _Filter = $"Vou_No='{_VoucherNo}'";
             var _Table = DataTableClass.GetTable(UserName, SQLQuery.Voucher(_Filter));
             if (_Table.Rows.Count == 0)
@@ -919,36 +921,47 @@ namespace Applied_WebApplication.Pages.ReportPrint
             #region Report's Data Parameters
 
             var _VoucherType = _Table.Rows[0]["Vou_Type"];
-            string Heading1 = _VoucherType switch
-            {
-                VoucherType.Cash => "Cash Voucher",
-                VoucherType.Bank => "Bank Voucher",
-                VoucherType.Payment => "Payment Voucher",
-                VoucherType.Receivable => "Sales Invoices Voucher",
-                VoucherType.OBalance => "Opening Balance Voucher",
-                VoucherType.Cheque => "Bank Payment Voucher",
-                VoucherType.JV => "Journal Voucher",
-                VoucherType.OBalCom => "Opening Balance Voucher",
-                VoucherType.OBalStock => "Stock Opening Balance Voucher",
-                VoucherType.Receipt => "Receipt Voucher",
-                _ => "Journal Voucher"
-            };
 
-            var Heading2 = $"Voucher # {_VoucherNo}";
+            if (string.IsNullOrEmpty(_Heading1))
+            {
+                _Heading1 = _VoucherType switch
+                {
+                    VoucherType.Cash => "Cash Voucher",
+                    VoucherType.Bank => "Bank Voucher",
+                    VoucherType.Payment => "Payment Voucher",
+                    VoucherType.Receivable => "Sales Invoices Voucher",
+                    VoucherType.OBalance => "Opening Balance Voucher",
+                    VoucherType.Cheque => "Bank Payment Voucher",
+                    VoucherType.JV => "Journal Voucher",
+                    VoucherType.OBalCom => "Opening Balance Voucher",
+                    VoucherType.OBalStock => "Stock Opening Balance Voucher",
+                    VoucherType.Receipt => "Receipt Voucher",
+                    _ => "Journal Voucher"
+                };
+            }
+
+            var _Heading2 = $"Voucher # {_VoucherNo}";
 
             List<ReportParameter> _Parameters = new List<ReportParameter>
             {
                 new ReportParameter("CompanyName", CompanyName),
-                new ReportParameter("Heading1", Heading1),
-                new ReportParameter("Heading2", Heading2),
+                new ReportParameter("Heading1", _Heading1),
+                new ReportParameter("Heading2", _Heading2),
                 new ReportParameter("Footer", AppGlobals.ReportFooter)
             };
             #endregion
 
             #region Report Setup
 
+            if (_Table.Rows.Count > 0)  { _ReportName = "Voucher2"; }
+
+
             var ReportParameters = new ReportParameters()
             {
+
+               
+
+
                 ReportPath = AppGlobals.ReportPath,
                 ReportFile = "Voucher.rdl",
                 ReportType = _ReportType,
@@ -957,12 +970,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
                 OutputPath = AppGlobals.PrintedReportPath,
                 OutputPathLink = AppGlobals.PrintedReportPathLink,
-                OutputFile = "Voucher",
+                OutputFile = _ReportName,
 
                 DataSetName = "ds_Voucher",
                 Footer = AppGlobals.ReportFooter,
-                Heading1 = Heading1,
-                Heading2 = Heading2,
+                Heading1 = _Heading1,
+                Heading2 = _Heading2,
             };
 
             #endregion

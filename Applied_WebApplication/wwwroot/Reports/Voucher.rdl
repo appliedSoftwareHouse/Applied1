@@ -1,5 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily">
+<Report MustUnderstand="df" xmlns="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner" xmlns:df="http://schemas.microsoft.com/sqlserver/reporting/2016/01/reportdefinition/defaultfontfamily" xmlns:am="http://schemas.microsoft.com/sqlserver/reporting/authoringmetadata">
+  <am:AuthoringMetadata>
+    <am:CreatedBy>
+      <am:Name>MSRB</am:Name>
+      <am:Version>15.0.20283.0</am:Version>
+    </am:CreatedBy>
+    <am:UpdatedBy>
+      <am:Name>MSRB</am:Name>
+      <am:Version>15.0.20283.0</am:Version>
+    </am:UpdatedBy>
+    <am:LastModifiedTimestamp>2024-11-13T07:27:12.3563415Z</am:LastModifiedTimestamp>
+  </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
   <DataSources>
@@ -31,7 +42,9 @@ LEFT JOIN [COA]       [A] ON [A].[ID] = [L].[COA]
 LEFT JOIN [Customers] [C] ON [C].[ID] = [L].[Customer]
 LEFT JOIN [Employees] [E] ON [E].[ID] = [L].[Employee]
 LEFT JOIN [Inventory] [I] ON [I].[ID] = [L].[Inventory]
-LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
+LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]
+
+WHERE [L].[Vou_No] = 'CB-000200'</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -1908,7 +1921,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
       <Width>7.2in</Width>
       <Page>
         <PageHeader>
-          <Height>1.375in</Height>
+          <Height>1.19792in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -1964,7 +1977,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox2</rd:DefaultName>
-              <Top>0.5925in</Top>
+              <Top>0.555in</Top>
               <Left>6.35625in</Left>
               <Height>0.25in</Height>
               <Width>0.84375in</Width>
@@ -1999,7 +2012,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Vou_Date</rd:DefaultName>
-              <Top>0.91194in</Top>
+              <Top>0.87444in</Top>
               <Left>6.35625in</Left>
               <Height>0.25in</Height>
               <Width>0.84375in</Width>
@@ -2066,7 +2079,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox45</rd:DefaultName>
-              <Top>0.5925in</Top>
+              <Top>0.555in</Top>
               <Left>5.28681in</Left>
               <Height>0.25in</Height>
               <Width>1in</Width>
@@ -2100,7 +2113,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox46</rd:DefaultName>
-              <Top>0.91194in</Top>
+              <Top>0.87444in</Top>
               <Left>5.28681in</Left>
               <Height>0.25in</Height>
               <Width>1in</Width>
@@ -2130,7 +2143,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox48</rd:DefaultName>
-              <Top>0.5925in</Top>
+              <Top>0.555in</Top>
               <Height>0.25in</Height>
               <Width>4.35417in</Width>
               <ZIndex>6</ZIndex>
@@ -2152,7 +2165,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>1.27653in</Height>
+          <Height>0.79736in</Height>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
             <Textbox Name="Textbox54">
@@ -2172,7 +2185,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox54</rd:DefaultName>
-              <Top>0.71403in</Top>
+              <Top>0.46403in</Top>
               <Left>0.25in</Left>
               <Height>0.25in</Height>
               <Width>1.2in</Width>
@@ -2208,7 +2221,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox55</rd:DefaultName>
-              <Top>0.71403in</Top>
+              <Top>0.46403in</Top>
               <Left>1.73833in</Left>
               <Height>0.25in</Height>
               <Width>1.2in</Width>
@@ -2245,7 +2258,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
                 </Paragraph>
               </Paragraphs>
               <rd:DefaultName>Textbox56</rd:DefaultName>
-              <Top>0.71403in</Top>
+              <Top>0.46403in</Top>
               <Left>3.25917in</Left>
               <Height>0.25in</Height>
               <Width>1.2in</Width>
@@ -2267,9 +2280,9 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
             </Textbox>
             <Rectangle Name="Rectangle1">
               <KeepTogether>true</KeepTogether>
-              <Top>0.14111in</Top>
+              <Top>0.08903in</Top>
               <Left>4.80083in</Left>
-              <Height>0.82292in</Height>
+              <Height>0.625in</Height>
               <Width>2.26042in</Width>
               <ZIndex>3</ZIndex>
               <Visibility>
@@ -2292,7 +2305,7 @@ LEFT JOIN [Project]   [P] ON [P].[ID] = [L].[Project]</CommandText>
             </BottomBorder>
           </Style>
         </PageFooter>
-        <PageHeight>11.69in</PageHeight>
+        <PageHeight>5.83in</PageHeight>
         <PageWidth>8.27in</PageWidth>
         <LeftMargin>0.5in</LeftMargin>
         <RightMargin>0.5in</RightMargin>
