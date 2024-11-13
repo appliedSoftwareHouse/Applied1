@@ -958,10 +958,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             var ReportParameters = new ReportParameters()
             {
-
-               
-
-
                 ReportPath = AppGlobals.ReportPath,
                 ReportFile = "Voucher.rdl",
                 ReportType = _ReportType,
@@ -996,6 +992,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             {
                 ErrorMessages.Add(SetMessage(e.Message, ConsoleColor.Red));
             }
+
+            SetKey(UserName, "Heading1", "", KeyType.Text);      // Reset the Heading in registry. Do not delete.
             return Page();
 
         }

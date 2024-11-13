@@ -88,9 +88,10 @@
                             <td class="TextCenter">@Row["Status"]</td>
                             <td>
                                 <form method="post">
-                                    <input type="submit"
-                                           class="btn btn-link"
-                                           value="Post"
+                                    <input  id="btnPost"
+                                            type="submit"
+                                            class="btn btn-link"
+                                            value="Post"
                                    asp-page-handler="Posting"
                                    asp-route-id=@Row["ID"]
                                    asp-route-PostingType=@Model.Variables.PostingType>

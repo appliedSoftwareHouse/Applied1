@@ -360,7 +360,7 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-        #region New Row / Refresh
+                #region New Row / Refresh
         public DataRow NewRecord()
         {
             if (MyDataTable == null) { return null; }

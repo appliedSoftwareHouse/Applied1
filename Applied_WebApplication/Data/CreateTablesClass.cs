@@ -445,7 +445,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("[ID] INT PRIMARY KEY,");
             _Text.AppendLine("[Vou_No] TEXT(10), ");
             _Text.AppendLine("[Vou_Date] DATE NOT NULL, ");
-            _Text.AppendLine("[IsCash] BOOLEAN, ");
+            _Text.AppendLine("[Ref_No]  NVARCHAR(12), ");
             _Text.AppendLine("[COA] INT, ");
             _Text.AppendLine("[Payer] INT NOT NULL, ");
             _Text.AppendLine("[Account] INT NOT NULL, ");
