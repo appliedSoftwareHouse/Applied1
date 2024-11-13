@@ -1,4 +1,5 @@
 ﻿@page
+@using AppReportClass
 @model Applied_WebApplication.Pages.Accounts.ReceiptModel
 @{
     string UserName = User.Identity.Name;
@@ -89,7 +90,7 @@
                     <label for="Employee">Account Head</label>
                 </div>
             </div>
-           
+
         </div>
 
         <!--Row Amount and Description-->
@@ -144,9 +145,22 @@
                 @if (Model.Variables.Vou_No != "New")
                 {
                     <button class="btn btn-primary mnu" asp-page-handler="Delete">Delete</button>
-                    <button class="btn btn-primary mnu" asp-page-handler="Print">Print</button>
                     <button class="btn btn-primary mnu" asp-page-handler="Email">Email</button>
                     <button class="btn btn-primary mnu" asp-page-handler="SMS">SMS</button>
+                    
+                    <div style="position:relative" class="dropdown">
+                        <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                            Print <i class="bi bi-printer"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Word">Word</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="Print" asp-route-Option="@ReportType.Image">Image</button></li>
+                        </ul>
+                    </div>
                 }
             </div>
         </div>

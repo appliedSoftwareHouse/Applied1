@@ -1,4 +1,5 @@
 ﻿@page
+@using System.Data
 @model Applied_WebApplication.Pages.Accounts.ReceiptListModel
 @{
     var UserName = User.Identity.Name;
@@ -28,17 +29,18 @@
                     <span class="input-group-text" style="width:30%" id="To">End</span>
                 </div>
             </div>
-           
+
             <div class="col-md-4">
                 <div class="input-group justify-content-end">
                     <span class="input-group-text" style="width:30%" id="To">Search</span>
                     <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.Variables.Search />
-                    
+
                 </div>
             </div>
 
             <div class="col-md-2">
-                <button class="btn btn-primary" asp-page-handler="Refresh">Refresh
+                <button class="btn btn-primary" asp-page-handler="Refresh">
+                    Refresh
                 </button>
             </div>
         </div>
@@ -61,18 +63,42 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td></td>
-                </tr>
+                @foreach (DataRow Row in Model.ReceiptList.Rows)
+                {
+                    var _Amount = ((decimal)Row["Amount"]).ToString(AppRegistry.Currency2d);
+                    var _Date = ((DateTime)Row["Vou_Date"]).ToString(AppRegistry.FormatDateM2);
+                    <tr>
+                        <td style="width:10%">@_Date</td>
+                        <td style="width:10%">@Row["Vou_No"]</td>
+                        <td style="width:20%">@Row["PayerTitle"]</td>
+                        <td style="width:20%">@Row["ProjectTitle"]</td>
+                        <td style="width:20%">@Row["AccountTitle"]</td>
+                        <td style="width:20%">@Row["EmployeeTitle"]</td>
+                        <td style="width:10%" class="amount-blue">@_Amount</td>
+                        <td style="width:10%">
+                            <button type="submit"
+                                    asp-page-handler="Edit"
+                                    asp-route-ID="@Row["ID"]"
+                                    class="btn btn-link">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+                }
+
             </tbody>
             <tfoot>
                 <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>TOTAL</td>
+                    <td></td>
                     <td></td>
                 </tr>
             </tfoot>
         </table>
     </div>
-
-
-
 </form>

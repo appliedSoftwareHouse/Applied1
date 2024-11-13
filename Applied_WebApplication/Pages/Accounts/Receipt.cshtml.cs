@@ -19,7 +19,7 @@ namespace Applied_WebApplication.Pages.Accounts
         {
 
             if (ID == 0) { Variables = GetNewRecord(); }
-            if (ID > 1) { Variables = Variables = GetRecord(ID); }
+            if (ID > 0) { Variables = Variables = GetRecord(ID); }
 
             if (Variables.Payer > 0)
             {

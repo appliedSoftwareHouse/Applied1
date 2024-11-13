@@ -19,8 +19,8 @@ namespace Applied_WebApplication.Pages.Accounts
         public void OnGet()
         {
             GetKeys();
-            var _Query = $"SELECT * FROM [Receipt] {GetFiler()}";
-            ReceiptList = DataTableClass.GetTable(UserName, _Query, "ReceiptDate");
+            var _Query = SQLQuery.ReceiptsList(GetFiler());
+            ReceiptList = DataTableClass.GetTable(UserName, _Query, "Vou_Date");
             
 
         }
@@ -33,10 +33,10 @@ namespace Applied_WebApplication.Pages.Accounts
             var _Date2 = Variables.To.ToString(AppRegistry.DateYMD);
             var _CloseBracket = false;
             
-            _Text.Append($"Date([ReceiptDate]) >= Date('{_Date1}' AND Date([ReceiptDate]) <= Date({_Date2}) ");
+            _Text.Append($"Date([Vou_Date]) BETWEEN Date('{_Date1}') AND Date('{_Date2}') ");
             if(Variables.Search.Length > 0)
             {
-                _Text.Append($"AND ( AccountTitle like '%{Variables.Account}%' ");
+                _Text.Append($"AND ( AccountTitle like '%{Variables.Search}%' ");
                 _CloseBracket = true;
             }
             if (Variables.Payer > 0)
@@ -68,6 +68,10 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("./Receipt");
         }
 
+        public IActionResult OnPostEdit(int ID)
+        {
+            return RedirectToPage("Receipt", routeValues: new { ID });
+        }
 
 
         #region Set / Get Keys
