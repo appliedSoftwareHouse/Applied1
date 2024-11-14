@@ -1,7 +1,9 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using static Applied_WebApplication.Data.AppRegistry;
 
 namespace Applied_WebApplication.Pages.Accounts
 {
@@ -144,8 +146,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
 
         #region Print
-        public void OnPostPrint()
+        public IActionResult OnPostPrint(ReportType _ReportType)
         {
+            AppRegistry.SetKey(UserName, "rcptID", Variables.ID, KeyType.Text);
+            AppRegistry.SetKey(UserName, "rcptHead2", Variables.Vou_No, KeyType.Text);
+
+            return RedirectToPage("../ReportPrint/PrintReport", "Receipt", new { RptType=_ReportType });
 
         }
         #endregion

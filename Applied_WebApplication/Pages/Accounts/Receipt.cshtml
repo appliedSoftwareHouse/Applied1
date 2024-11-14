@@ -25,7 +25,6 @@
 
 <form method="post">
     <div class="container justify-content-around">
-
         <input type="number" asp-for="@Model.Variables.ID" hidden />
         <!--Row Vou no, Vou_Date, Is Cash-->
         <div class="row">
@@ -140,16 +139,17 @@
     <div class="container justify-content-center">
         <div class="row">
             <div class="col">
-                <button class="btn btn-primary mnu" asp-page-handler="New">New</button>
+
+                <button type="submit" class="btn btn-primary mnu" asp-page-handler="New">New</button>
                 <button type="button" class="btn btn-primary mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
                 @if (Model.Variables.Vou_No != "New")
                 {
-                    <button class="btn btn-primary mnu" asp-page-handler="Delete">Delete</button>
-                    <button class="btn btn-primary mnu" asp-page-handler="Email">Email</button>
-                    <button class="btn btn-primary mnu" asp-page-handler="SMS">SMS</button>
-                    
-                    <div style="position:relative" class="dropdown">
-                        <button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-bs-toggle="dropdown">
+                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="Delete">Delete</button>
+                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="Email">Email</button>
+                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="SMS">SMS</button>
+
+                    <div class="dropdown btn-print">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
                             Print <i class="bi bi-printer"></i>
                         </button>
                         <ul class="dropdown-menu">
@@ -171,15 +171,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="SaveRecordLabel">Modal title</h1>
+                    <h1 class="modal-title fs-5" id="SaveRecordLabel">SAVE RECEIPT</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     Save Voucher No @Model.Variables.Vou_No
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary" asp-page-handler="Save">Save changes</button>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Save">Save changes</button>
                 </div>
             </div>
         </div>
@@ -189,6 +189,16 @@
 <style>
     .mnu {
         width: 100px;
+    }
+
+    .btn-print {
+        position: relative;
+        float: right;
+    }
+
+    .pageBody {
+        margin-left: 50%;
+        margin-right: 50%;
     }
 
 </style>

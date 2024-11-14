@@ -1394,6 +1394,7 @@ namespace Applied_WebApplication.Data
         public static string ReceiptsList(string _Filter)
         {
             var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT * FROM (");
             _Text.AppendLine("SELECT [R].*,");
             _Text.AppendLine("[C].[Title] AS [PayerTitle],");
             _Text.AppendLine("[E].[Title] AS [EmployeeTitle], ");
@@ -1404,6 +1405,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("LEFT JOIN [Project]   [P] ON [P].[ID] = [R].[Project] ");
             _Text.AppendLine("LEFT JOIN [Employees] [E] ON [E].[ID] = [R].[Employee] ");
             _Text.AppendLine("LEFT JOIN [Customers] [C] ON [C].[ID] = [R].[Payer] ");
+            _Text.AppendLine(") AS [Receipt] ");
             if(_Filter.Length > 0)
             {
                 _Text.AppendLine($"WHERE {_Filter}");

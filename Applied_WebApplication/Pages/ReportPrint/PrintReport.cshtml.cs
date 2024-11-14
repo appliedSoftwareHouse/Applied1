@@ -369,7 +369,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 string _ReportFile = "GLProject";
                 string _Heading1 = $"PROJECT LEDGER - {_ProjectTitle}";
                 string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
-                
+
                 ReportModel Reportmodel = new();
                 // Input Parameters  (.rdl report file)
                 Reportmodel.InputReport.FilePath = ReportPath;
@@ -953,7 +953,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             #region Report Setup
 
-            if (_Table.Rows.Count > 0)  { _ReportName = "Voucher2"; }
+            if (_Table.Rows.Count > 0) { _ReportName = "Voucher2"; }
 
 
             var ReportParameters = new ReportParameters()
@@ -1166,6 +1166,76 @@ namespace Applied_WebApplication.Pages.ReportPrint
             }
 
             return Page();
+        }
+
+        #endregion
+
+        #region Receipt (Payment recevied)
+
+        public IActionResult OnGetReceipt(ReportType RptType)
+        {
+            try
+            {
+                // Generate / Obtain Report Data from Temp Table....
+                var _Heading1 = "R E C E I P T";
+                var _Heading2 = GetText(UserName, "rcptHead2");
+                var _ID = GetText(UserName, "rcptID");
+                var _Query = SQLQuery.ReceiptsList($"[ID]={_ID}");
+                var _SourceTable = DataTableClass.GetTable(UserName, _Query);
+                var _ReportFile = "Receipt";
+                if (_SourceTable == null) { return Page(); }
+
+                if (_SourceTable.Rows.Count > 0)
+                {
+
+                    var _Amount = (decimal)_SourceTable.Rows[0]["Amount"];
+                    var _NumInWords = new NumInWords();
+                    var _AmountinWord = _NumInWords.ChangeNumericToWords(_Amount);
+
+
+                    ReportModel Reportmodel = new();
+                    // Input Parameters  (.rdl report file)
+                    Reportmodel.InputReport.FilePath = ReportPath;
+                    Reportmodel.InputReport.FileName = _ReportFile;
+                    Reportmodel.InputReport.FileExtention = "rdl";
+                    // output Parameters (like pdf, excel, word, html, tiff)
+                    Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                    Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                    Reportmodel.OutputReport.FileName = _ReportFile;
+                    Reportmodel.OutputReport.ReportType = RptType;
+                    // Reports Parameters
+                    Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                    Reportmodel.AddReportParameter("Heading1", _Heading1);
+                    Reportmodel.AddReportParameter("Heading2", _Heading2);
+                    Reportmodel.AddReportParameter("Footer", ReportFooter);
+                    Reportmodel.AddReportParameter("InWord", _AmountinWord);
+
+                    Reportmodel.ReportData.DataSetName = "ds_receipt";
+                    Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI
+
+                    if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
+                    {
+                        if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                        {
+                            ReportLink = Reportmodel.OutputReport.FileLink;
+                            IsShowPdf = true;
+                            return Page();
+                        }
+                        else
+                        {
+                            var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                            return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+
         }
 
         #endregion
