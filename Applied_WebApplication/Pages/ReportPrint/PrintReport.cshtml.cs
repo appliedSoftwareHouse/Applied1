@@ -1189,13 +1189,13 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
 
                     var _Amount = (decimal)_SourceTable.Rows[0]["Amount"];
+                    //var _Amount = (decimal)175823.55;
                     var _NumInWords = new NumInWords();
-                    var _Currency = new string[1];
 
-                    _Currency[0] = AppRegistry.GetText(UserName, "CurrencyTitle");
-                    _Currency[1] = AppRegistry.GetText(UserName, "CurrencyUnit");
+                    var _CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle");
+                    var _CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit");
 
-                    var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount,_Currency[0], _Currency[1]);
+                    var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount,_CurrencyTitle, _CurrencyUnit);
 
 
                     ReportModel Reportmodel = new();

@@ -25,39 +25,51 @@ namespace Applied_WebApplication.Pages.Account
   
             Variables = new()
             {
+                // Opening Balance
                 OBCompany = AppRegistry.GetNumber(UserName, "OBCompany"),
                 OBStock = AppRegistry.GetNumber(UserName, "OBStock"),
 
+                // General Setup
                 FiscalStart = AppRegistry.GetDate(UserName, "FiscalStart"),
                 FiscalEnd = AppRegistry.GetDate(UserName, "FiscalEnd"),
                 StockExpiry = AppRegistry.GetNumber(UserName, "StockExpiry"),
-                CurrencySign = AppRegistry.GetText(UserName, "CurrencySign"),
+                
                 OBDate = AppRegistry.GetDate(UserName, "OBDate"),
-                CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
+                
                 DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
                 SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL"),
 
+                // Currency Setup
+                CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle"),
+                CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit"),
+                CurrencySign = AppRegistry.GetText(UserName, "CurrencySign"),
+                CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
+
+                // Bill Payable Setup
                 BPay_Stock = AppRegistry.GetNumber(UserName, "BPay_Stock"),
                 BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax"),
                 BPay_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"),
 
+                // Bill Receivable
                 BRec_Stock = AppRegistry.GetNumber(UserName, "BRec_Stock"),
                 BRec_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax"),
                 BRec_Receivable = AppRegistry.GetNumber(UserName, "BRec_Receivable"),
                 
+                // Accounts setrup for ledger
                 CompanyGLs = AppRegistry.GetText(UserName, "CompanyGLs"),
                 COAStocks = AppRegistry.GetText(UserName, "COAStocks"),
 
+                // Accounts Nature
                 CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"),
                 BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature"),
                 RevenueNote = AppRegistry.GetNumber(UserName, "RevenueNote"),
 
+                // Production
                 ProductIN = AppRegistry.GetNumber(UserName, "ProductIN"),
                 ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT"),
 
                 ImagePath = AppRegistry.GetText(UserName, "ImagePath"),
                 ReportPath = AppRegistry.GetText(UserName, "ReportPath"),
-
             };
         }
         #endregion

@@ -9,17 +9,17 @@ namespace Applied_WebApplication.Data
         public string ChangeNumericToWords(double Amount)
         {
             string _Amount = Amount.ToString();
-            return ChangeToWords(_Amount, false);
+            return ChangeToWords(_Amount, false, "","");
         }
         public string ChangeNumericToWords(decimal Amount)
         {
             string _Amount = Amount.ToString();
-            
-            return ChangeToWords(_Amount, false);
+
+            return ChangeToWords(_Amount, false, "", "");
         }
         public string ChangeNumericToWords(string Amount)
         {
-            return ChangeToWords(Amount, false);
+            return ChangeToWords(Amount, false, "", "");
         }
         #endregion
 
@@ -27,60 +27,69 @@ namespace Applied_WebApplication.Data
         public string ChangeCurrencyToWords(double Amount, string Currency, string Unit)
         {
             string _Amount = Amount.ToString();
-            string[] _Currency = new string[1];
-            _Currency[0] = Currency;
-            _Currency[1] = Unit;
-            return ChangeToWords(_Amount, true, _Currency);
+            return ChangeToWords(_Amount, true, Currency, Unit);
         }
         public string ChangeCurrencyToWords(decimal Amount, string Currency, string Unit)
         {
             string _Amount = Amount.ToString();
-            string[] _Currency = new string[1];
-            _Currency[0] = Currency;
-            _Currency[1] = Unit;
-            return ChangeToWords(_Amount, true, _Currency);
+            return ChangeToWords(_Amount, true, Currency, Unit);
         }
         public string ChangeCurrencyToWords(string Amount, string Currency, string Unit)
         {
-            string[] _Currency = new string[1];
-            _Currency[0] = Currency;
-            _Currency[1] = Unit;
-            return ChangeToWords(Amount, true, _Currency);
+            return ChangeToWords(Amount, true, Currency, Unit);
         }
 
 
         #endregion 
 
-        private string ChangeToWords(string numb, bool isCurrency)
+        //private string ChangeToWords(string numb, bool isCurrency, string Currency, string Unit)
+        //{
+        //    return ChangeToWords(numb, isCurrency, Currency, Unit);
+        //}
+
+        private string ChangeToWords(string numb, bool isCurrency, string Currency, string Unit)
         {
-            return ChangeToWords(numb, isCurrency, new string[1]);
-        }
 
-        private string ChangeToWords(string numb, bool isCurrency, string[]? Currency)
-        {
+            string val = "";
+            string wholeNo = numb; 
+            string points = ""; 
+            string andStr = ""; 
+            string unitStr = "";
+            string endStr = "Only";
 
-            Currency[0] ??= "Rs.";
-            Currency[1] ??= "Paisa";
-
-            string val = "", wholeNo = numb, points = "", andStr = "", pointStr = "";
-            string endStr = (isCurrency) ? ("Only") : ("");
+            if (!isCurrency)
+            {
+                Currency = "";
+                Unit = "";
+                andStr = "";
+            }
+            
             try
             {
                 int decimalPlace = numb.IndexOf(".");
+                
+                if(decimalPlace <=0)
+                {
+                    unitStr = $"and No {Unit} ";
+                }
+                
                 if (decimalPlace > 0)
                 {
                     wholeNo = numb.Substring(0, decimalPlace);
                     points = numb.Substring(decimalPlace + 1);
+
+                    if(points.Length == 1) { points += "0"; }
+
                     if (Convert.ToInt32(points) > 0)
                     {
-                        andStr = (isCurrency) ? ("and") : ("point");// just to separate whole numbers from > points/cents
-                        endStr = (isCurrency) ? (Currency[1] + endStr) : ("");
-                        pointStr = translateCents(points);
+                        andStr = (isCurrency) ? ("and") : ("");// just to separate whole numbers from > points/cents
+                        endStr = (isCurrency) ? (Unit + " " + endStr) : ("");
+                        unitStr = translateWholeNumber(points);
                     }
                 }
 
-                val = $"{Currency[0]} {translateWholeNumber(wholeNo).Trim()} {andStr}{pointStr} {endStr}";
-                     
+                val = $"{Currency} {translateWholeNumber(wholeNo).Trim()} {andStr} {unitStr} {endStr}";
+
                 //val = string.Format("{0} {1}{2} {3}", translateWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
             }
             catch {; }
@@ -213,7 +222,7 @@ namespace Applied_WebApplication.Data
                 default:
                     if (digt > 0)
                     {
-                        name = tens(digit.Substring(0, 1) + "0") + "" + ones(digit.Substring(1));
+                        name = tens(digit.Substring(0, 1) + "0") + " " + ones(digit.Substring(1));
                     }
                     break;
             }
