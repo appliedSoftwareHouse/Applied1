@@ -6,56 +6,59 @@
     var CurrencyFormat = AppRegistry.GetFormatCurrency(UserName);
     decimal _TotDebit = 0.00M, _TotCredit = 0.00M, _TotBalance = 0.00M;
 
-    _TotDebit = Conversion.ToDecimal(Model.TBProjects.Compute("SUM(DR)", ""));
-    _TotCredit = Conversion.ToDecimal(Model.TBProjects.Compute("SUM(CR)", ""));
-    _TotBalance = _TotDebit - _TotCredit;
+    if (Model.TBProjects is not null)
+    {
+        _TotDebit = Conversion.ToDecimal(Model.TBProjects.Compute("SUM(DR)", ""));
+        _TotCredit = Conversion.ToDecimal(Model.TBProjects.Compute("SUM(CR)", ""));
+        _TotBalance = _TotDebit - _TotCredit;
+    }
 }
 
 
-<form method="post">
-    <div class="container mt-0">
+<form method = "post" >
+    < div class="container mt-0">
         <div class="row align-items-center bg-light">
-            <div class="col-3 pt-3">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputProjectID">Project</label>
-                    <select class="form-select" id="inputProjectID" asp-for="@Model.Variables.CboxProjectId">
-                        <option selected>Choose...</option>
-                        @foreach (DataRow Row in Model.CboxProject.Rows)
-                        {
-                            <option value="@Row["ID"].ToString()"> @Row["Title"].ToString()</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-3 pt-3">
-                <div class="input-group mb-3">
-                    <label class="input-group-text" for="inputAccountsID">Account</label>
-                    <select class="form-select" id="inputAccountsID" asp-for="@Model.Variables.CboxAccountsId">
-                        <option selected>Choose...</option>
-                        @foreach (DataRow Row in Model.CboxAccounts.Rows)
-                        {
-                            <option value="@Row["ID"].ToString()"> @Row["Title"].ToString()</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="col-2">
-                <div class="input-group mb-3">
-                    @* <label for="lblDate" class="form-label">Date</label> *@
-                    <input type="date" class="form-control" id="inputDate" placeholder="Date & time" asp-for="@Model.Variables.DateTo">
-                </div>
-            </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Refresh</button>
-            </div>
-            <div class="col-1">
-                <button type="submit" class="btn btn-primary" asp-page-handler="Reset">ReSet</button>
-            </div>
-            <div class="col-1 ">
-                <button class="btn btn-success">Print</button>
-            </div>
+    <div class="col-3 pt-3">
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputProjectID">Project</label>
+            <select class="form-select" id="inputProjectID" asp-for="@Model.Variables.CboxProjectId">
+                <option selected>Choose...</option>
+                @foreach(DataRow Row in Model.CboxProject.Rows)
+        {
+                    < option value = "@Row["ID"].ToString()" > @Row["Title"].ToString() </ option >
+                }
+            </select>
         </div>
     </div>
+    <div class="col-3 pt-3">
+        <div class="input-group mb-3">
+            <label class="input-group-text" for="inputAccountsID">Account</label>
+            <select class="form-select" id="inputAccountsID" asp-for="@Model.Variables.CboxAccountsId">
+                <option selected>Choose...</option>
+                @foreach(DataRow Row in Model.CboxAccounts.Rows)
+        {
+                    < option value = "@Row["ID"].ToString()" > @Row["Title"].ToString() </ option >
+                }
+            </select>
+        </div>
+    </div>
+    <div class="col-2">
+        <div class="input-group mb-3">
+    @* <label for="lblDate" class="form-label">Date</label> *@
+    <input type="date" class="form-control" id="inputDate" placeholder="Date & time" asp-for="@Model.Variables.DateTo">
+                    </div>
+                </div>
+    <div class="col-1">
+        <button type="submit" class="btn btn-primary" asp-page-handler="Refresh">Refresh</button>
+    </div>
+    <div class="col-1">
+        <button type="submit" class="btn btn-primary" asp-page-handler="Reset">ReSet</button>
+    </div>
+    <div class="col-1 ">
+        <button class="btn btn-success">Print</button>
+    </div>
+            </div>
+        </div>
 
 
 
@@ -75,23 +78,23 @@
             <tbody>
                 @foreach (DataRow Row in Model.TBProjects.Rows)
                 {
-                    decimal Debit, Credit;
-                    var Amount = Conversion.ToDecimal(Row["DR"]) - Conversion.ToDecimal(Row["CR"]);
-                    if (Amount > 0) { Debit = Amount; Credit = 0; } else { Debit = 0; Credit = Math.Abs(Amount); }
+                decimal Debit, Credit;
+        var Amount = Conversion.ToDecimal(Row["DR"]) - Conversion.ToDecimal(Row["CR"]);
+                if (Amount > 0) { Debit = Amount; Credit = 0; } else { Debit = 0; Credit = Math.Abs(Amount); }
 
-                    var _Debit = Debit.ToString(CurrencyFormat);
-                    var _Credit = Credit.ToString(CurrencyFormat);
-                    var _Balance = (Debit - Credit).ToString(CurrencyFormat);
+var _Debit = Debit.ToString(CurrencyFormat);
+var _Credit = Credit.ToString(CurrencyFormat);
+var _Balance = (Debit - Credit).ToString(CurrencyFormat);
 
-                    <tr>
-                        <td>@Row["Project"]</td>
-                        <td>@Row["ProjectTitle"]</td>
-                        <td>@Row["COA"]</td>
-                        <td>@Row["COATitle"]</td>
-                        <td>@_Debit</td>
-                        <td>@_Credit</td>
-                        <td>@_Balance</td>
-                    </tr>
+                <tr>
+                    <td>@Row["Project"]</td>
+                    <td>@Row["ProjectTitle"]</td>
+                    <td>@Row["COA"]</td>
+                    <td>@Row["COATitle"]</td>
+                    <td>@_Debit</td>
+                    <td>@_Credit</td>
+                    <td>@_Balance</td>
+                </tr>
                 }
             </tbody>
             <tfoot>
@@ -108,4 +111,4 @@
             </tfoot>
         </table>
     </div>
-</form>
+    </form>

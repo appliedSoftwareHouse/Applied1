@@ -5,8 +5,8 @@
     string UserName = User.Identity.Name;
 
     string PayerTitle = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
-    string COATitle = GetTitle(UserName, Tables.COA, Model.Variables.COA); ;
-    string AccountTitle = GetTitle(UserName, Tables.COA, Model.Variables.Account);
+    string RevenueTitle = GetTitle(UserName, Tables.COA, Model.Variables.COA); ;
+    string CashBankTitle = GetTitle(UserName, Tables.COA, Model.Variables.COACash);
     string EmployeeTitle = GetTitle(UserName, Tables.COA, Model.Variables.Employee);
     string ProjectTitle = GetTitle(UserName, Tables.COA, Model.Variables.Project);
     //Model.tbAccounts = AppFunctions.Titles(UserName, SQLQuery.ReceiptAccounts());
@@ -14,7 +14,7 @@
     int CashBookID = AppRegistry.GetNumber(UserName, "CashBookID");
     int BankBookID = AppRegistry.GetNumber(UserName, "BankBookID");
     int RevenueID = AppRegistry.GetNumber(UserName, "RevenueNote");
-    string _FilterCOA = $"Nature IN ({CashBookID},{BankBookID})";
+    string _FilterCashBank = $"Nature IN ({CashBookID},{BankBookID})";
     string _FilterRevenue = $"Nature = {RevenueID}";
 }
 
@@ -23,10 +23,25 @@
     <h3 class="TextCenter">RECEIPT</h3>
 </div>
 
+
+@if (Model.MyMessage.Length > 0)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Message! </strong> @Model.MyMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+
+}
+
+
+
+
 <form method="post">
     <div class="container justify-content-around">
         <input type="number" asp-for="@Model.Variables.ID" hidden />
-        <!--Row Vou no, Vou_Date, Is Cash-->
+        <input type="text" asp-for="@Model.Variables.Status" hidden />
+        <!--Row Vou no, Vou_Date, Reference No.-->
         <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
@@ -49,19 +64,19 @@
 
         </div>
 
-        <!--Row Payer, Account, Project-->
+        <!-- Cash / Bank, Revenue, Project -->
         <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="Customer" aria-label="Floating label COA" asp-for="@Model.Variables.COA">
-                        <option selected>@COATitle</option>
-                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA, _FilterCOA))
+                    <select class="form-select" id="CashBank" aria-label="Floating label CashBank" asp-for="@Model.Variables.COACash">
+                        <option selected>@CashBankTitle</option>
+                        @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA, _FilterCashBank))
                         {
                             <option value="@_Title.Key">@_Title.Value</option>
                         }
 
                     </select>
-                    <label for="Customer">Cash/Bank</label>
+                    <label for="CashBank">Cash / Bank</label>
                 </div>
             </div>
             <div class="col-md-3">
@@ -79,20 +94,20 @@
             </div>
             <div class="col-md-3">
                 <div class="form-floating mb-3">
-                    <select class="form-select" id="COA" aria-label="Floating label Employee" asp-for="@Model.Variables.COA">
-                        <option selected>@COATitle</option>
+                    <select class="form-select" id="Revenue" aria-label="Floating label Revenue" asp-for="@Model.Variables.COA">
+                        <option selected>@RevenueTitle</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA, _FilterRevenue))
                         {
                             <option value="@_Title.Key">@_Title.Value</option>
                         }
                     </select>
-                    <label for="Employee">Account Head</label>
+                    <label for="Revenue">Account Head</label>
                 </div>
             </div>
 
         </div>
 
-        <!--Row Amount and Description-->
+        <!--Project, Employee, Amount-->
         <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
@@ -126,11 +141,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Description -->
         <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="Description">
-                    <label for="Description">Description (Remarks)</label>
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="txtDescription">
+                    <label for="txtDescription">Description (Remarks)</label>
                 </div>
             </div>
         </div>
@@ -140,13 +157,14 @@
         <div class="row">
             <div class="col">
 
-                <button type="submit" class="btn btn-primary mnu" asp-page-handler="New">New</button>
-                <button type="button" class="btn btn-primary mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
+                <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
+
                 @if (Model.Variables.Vou_No != "New")
                 {
-                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="Delete">Delete</button>
-                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="Email">Email</button>
-                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="SMS">SMS</button>
+                    <button type="submit" class="btn btn-primary mnu" asp-page-handler="New">New</button>
+                    <button type="submit" class="btn btn-danger mnu" asp-page-handler="Delete">Delete</button>
+                    <button type="submit" class="btn btn-light mnu" asp-page-handler="Email">Email</button>
+                    <button type="submit" class="btn btn-light mnu" asp-page-handler="SMS">SMS</button>
 
                     <div class="dropdown btn-print">
                         <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
@@ -162,6 +180,8 @@
                         </ul>
                     </div>
                 }
+                <button type="submit" class="btn btn-primary mnu btn-print" asp-page-handler="Back">Back</button>
+
             </div>
         </div>
     </div>
@@ -186,6 +206,7 @@
     </div>
 </form>
 
+
 <style>
     .mnu {
         width: 100px;
@@ -194,6 +215,8 @@
     .btn-print {
         position: relative;
         float: right;
+        margin-left: 5px;
+        margin-right: 5px;
     }
 
     .pageBody {

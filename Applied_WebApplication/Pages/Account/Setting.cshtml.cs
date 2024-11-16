@@ -65,20 +65,28 @@ namespace Applied_WebApplication.Pages.Account
         public IActionResult OnPostSave()
         {
             
+            // General Setup
             AppRegistry.SetKey(UserName, "OBCompany", Variables.OBCompany, KeyType.Number);
             AppRegistry.SetKey(UserName, "OBStock", Variables.OBStock, KeyType.Number);
             AppRegistry.SetKey(UserName, "FiscalStart", Variables.FiscalStart, KeyType.Date);
             AppRegistry.SetKey(UserName, "FiscalEnd", Variables.FiscalEnd, KeyType.Date);
             AppRegistry.SetKey(UserName, "StockExpiry", Variables.StockExpiry, KeyType.Number);
-            AppRegistry.SetKey(UserName, "CurrencySign", Variables.CurrencySign, KeyType.Text);
             AppRegistry.SetKey(UserName, "OBDate", Variables.OBDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "FMTDate", Variables.DateFormat, KeyType.Text);
+            
+            // Currency Setup
+            AppRegistry.SetKey(UserName, "CurrencyTitle", Variables.CurrencyTitle, KeyType.Text);
+            AppRegistry.SetKey(UserName, "CurrencyUnit", Variables.CurrencyUnit, KeyType.Text);
+            AppRegistry.SetKey(UserName, "CurrencySign", Variables.CurrencySign, KeyType.Text);
             AppRegistry.SetKey(UserName, "FMTCurrency", Variables.CurrencyFormat, KeyType.Text);
 
+            // Bill payable Setup
             AppRegistry.SetKey(UserName, "BPay_Stock", Variables.BPay_Stock, KeyType.Number);
             AppRegistry.SetKey(UserName, "BPay_Tax", Variables.BPay_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BPay_Payable", Variables.BPay_Payable, KeyType.Number);
 
+
+            // Bill Receivable Setup
             AppRegistry.SetKey(UserName, "BRec_Stock", Variables.BRec_Stock, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
@@ -86,15 +94,20 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "CompanyGLs", Variables.CompanyGLs, KeyType.Text);
             AppRegistry.SetKey(UserName, "COAStocks", Variables.COAStocks, KeyType.Text);
 
+            // Accounts Nature Setup
             AppRegistry.SetKey(UserName, "CashBkNature", Variables.CashBookNature, KeyType.Number);
             AppRegistry.SetKey(UserName, "BankBkNature", Variables.BankBookNature, KeyType.Number);
             AppRegistry.SetKey(UserName, "RevenueNote", Variables.RevenueNote, KeyType.Number);
 
+            // Production Setup
             AppRegistry.SetKey(UserName, "ProductIN", Variables.ProductIN, KeyType.Number);
             AppRegistry.SetKey(UserName, "ProductOUT", Variables.ProductOUT, KeyType.Number);
 
+
+            // Image and report Path Setup
             AppRegistry.SetKey(UserName, "ImagePath", Variables.ImagePath, KeyType.Text); 
             AppRegistry.SetKey(UserName, "ReportPath", Variables.ReportPath, KeyType.Text);
+            
             return RedirectToPage();
         }
         #endregion
@@ -128,6 +141,9 @@ namespace Applied_WebApplication.Pages.Account
             public string ImagePath {  get; set; }
             public string ReportPath {  get; set; }
             public int RevenueNote {  get; set; }
+            public string CurrencyTitle {  get; set; }
+            public string CurrencyUnit {  get; set; }
+
         }
         #endregion
         #region SQL Query

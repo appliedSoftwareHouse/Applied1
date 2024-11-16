@@ -32,7 +32,7 @@ namespace Applied_WebApplication.Data
         public DataRowCollection Rows => MyDataTable_Rows();
         private DataRowCollection MyDataTable_Rows()
         {
-            if(MyDataTable != null )
+            if (MyDataTable != null)
             {
                 return MyDataTable.Rows;
             }
@@ -40,7 +40,7 @@ namespace Applied_WebApplication.Data
             {
                 return null;
             }
-            
+
         }
         public DataColumnCollection Columns => MyDataTable.Columns;
 
@@ -273,15 +273,15 @@ namespace Applied_WebApplication.Data
             var _Filter = string.Empty;
             var _OrderBy = string.Empty;
 
-            if(Filter.Length > 0) { _Filter = $" WHERE {Filter}"; }
-            if(OrderBy.Length > 0) { _OrderBy = $" Order by {OrderBy}"; }
+            if (Filter.Length > 0) { _Filter = $" WHERE {Filter}"; }
+            if (OrderBy.Length > 0) { _OrderBy = $" Order by {OrderBy}"; }
 
             try
             {
                 SQLiteConnection MyConnection = ConnectionClass.AppConnection(UserName);
                 if (_Table.ToString() == null) { return new DataTable(); }                 // Exit here if table name is not specified.
                 if (MyConnection.State != ConnectionState.Open) { MyConnection.Open(); }
-                SQLiteCommand _Command = new( $"SELECT * FROM [{_Table}] {_Filter} {_OrderBy} ", MyConnection);
+                SQLiteCommand _Command = new($"SELECT * FROM [{_Table}] {_Filter} {_OrderBy} ", MyConnection);
                 SQLiteDataAdapter _Adapter = new(_Command);
                 DataSet _DataSet = new();
                 _Adapter.Fill(_DataSet, _Table.ToString());
@@ -360,7 +360,7 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-                #region New Row / Refresh
+        #region New Row / Refresh
         public DataRow NewRecord()
         {
             if (MyDataTable == null) { return null; }
@@ -409,7 +409,7 @@ namespace Applied_WebApplication.Data
         #region Commands INSERT / UPDATE / DELETE
         private void CommandInsert()
         {
-            if(!IsSave) { return; }
+            if (!IsSave) { return; }
 
             DataColumnCollection _Columns = MyDataTable.Columns;
             SQLiteCommand _Command = new SQLiteCommand(MyConnection);
@@ -620,7 +620,7 @@ namespace Applied_WebApplication.Data
 
         public void Save(bool? Validate)
         {
-            if(UserRole=="Viewer") { MyMessage = "Not Authorized to Save";  return; }          // Viewer User can not save the data. 
+            if (UserRole == "Viewer") { MyMessage = "Not Authorized to Save"; return; }          // Viewer User can not save the data. 
 
             Validate ??= true;
             IsError = false;
@@ -628,7 +628,7 @@ namespace Applied_WebApplication.Data
             if (CurrentRow != null)
             {
                 TableValidation = new(CurrentRow.Table); /*{ UserName = UserName };*/
-                
+
 
                 if (TableValidation.SQLAction.Length == 0)
                 {
@@ -676,6 +676,16 @@ namespace Applied_WebApplication.Data
             }
         }
 
+        public bool Delete(int ID)
+        {
+            if (Seek(ID))
+            {
+                CurrentRow = SeekRecord(ID);
+                return Delete();
+            }
+            return false;
+        }
+
         public bool Delete()
         {
             if (UserRole == "Viewer") { MyMessage = "Not Authorized to Delete"; return false; }          // Viewer User can not save the data. 
@@ -695,12 +705,12 @@ namespace Applied_WebApplication.Data
             if (records == 1)
             {
                 IsError = false;
-                MyMessage = string.Concat(records.ToString(), " has been deleted.");
+                MyMessage = string.Concat(records.ToString(), " record has been deleted.");
             }
             if (records > 1)
             {
                 IsError = false;
-                MyMessage = string.Concat(records.ToString(), " have been deleted.");
+                MyMessage = string.Concat(records.ToString(), " records have been deleted.");
             }
 
             return IsError;
@@ -710,13 +720,13 @@ namespace Applied_WebApplication.Data
         {
             int _Result;
             var _Table = GetTable(UserName, $"SELECT CAST(MAX(ID) AS INTEGER) AS [ID] FROM [{MyDataTable.TableName}]");
-            if(_Table.Rows.Count==0) { _Result= 1; }
+            if (_Table.Rows.Count == 0) { _Result = 1; }
             else
             { _Result = Conversion.ToInteger(_Table.Rows[0]["ID"]) + 1; }
 
             return _Result;
         }
-                
+
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
             DataTableClass tb_table = new(UserName, table, "");

@@ -447,12 +447,13 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("[Vou_Date] DATE NOT NULL, ");
             _Text.AppendLine("[Ref_No]  NVARCHAR(12), ");
             _Text.AppendLine("[COA] INT, ");
+            _Text.AppendLine("[COACash] INT, ");
             _Text.AppendLine("[Payer] INT NOT NULL, ");
-            _Text.AppendLine("[Account] INT NOT NULL, ");
             _Text.AppendLine("[Project] INT NOT NULL, ");
             _Text.AppendLine("[Employee] INT, ");
             _Text.AppendLine("[Amount] DECIMAL NOT NULL, ");
-            _Text.AppendLine("[Description] NVARCHAR NOT NULL);");
+            _Text.AppendLine("[Description] NVARCHAR NOT NULL,");
+            _Text.AppendLine("[Status] NVARCHAR(10) NOT NULL);");
             var Command = new SQLiteCommand(_Text.ToString(), ConnectionClass.AppConnection(UserName));
             Command.ExecuteNonQuery();
         }

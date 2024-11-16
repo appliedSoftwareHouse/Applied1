@@ -14,6 +14,7 @@ namespace Applied_WebApplication.Data
         public string ChangeNumericToWords(decimal Amount)
         {
             string _Amount = Amount.ToString();
+            
             return ChangeToWords(_Amount, false);
         }
         public string ChangeNumericToWords(string Amount)
@@ -23,23 +24,44 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Currency to Word
-        public string ChangeCurrencyToWords(double Amount)
+        public string ChangeCurrencyToWords(double Amount, string Currency, string Unit)
         {
-            return ChangeToWords(Amount.ToString(), true);
+            string _Amount = Amount.ToString();
+            string[] _Currency = new string[1];
+            _Currency[0] = Currency;
+            _Currency[1] = Unit;
+            return ChangeToWords(_Amount, true, _Currency);
         }
-        public string ChangeCurrencyToWords(decimal Amount)
+        public string ChangeCurrencyToWords(decimal Amount, string Currency, string Unit)
         {
-            return ChangeToWords(Amount.ToString(), true);
+            string _Amount = Amount.ToString();
+            string[] _Currency = new string[1];
+            _Currency[0] = Currency;
+            _Currency[1] = Unit;
+            return ChangeToWords(_Amount, true, _Currency);
         }
-        public string ChangeCurrencyToWords(string Amount)
+        public string ChangeCurrencyToWords(string Amount, string Currency, string Unit)
         {
-            return ChangeToWords(Amount, true);
+            string[] _Currency = new string[1];
+            _Currency[0] = Currency;
+            _Currency[1] = Unit;
+            return ChangeToWords(Amount, true, _Currency);
         }
-        
-        
-        #endregion
+
+
+        #endregion 
+
         private string ChangeToWords(string numb, bool isCurrency)
         {
+            return ChangeToWords(numb, isCurrency, new string[1]);
+        }
+
+        private string ChangeToWords(string numb, bool isCurrency, string[]? Currency)
+        {
+
+            Currency[0] ??= "Rs.";
+            Currency[1] ??= "Paisa";
+
             string val = "", wholeNo = numb, points = "", andStr = "", pointStr = "";
             string endStr = (isCurrency) ? ("Only") : ("");
             try
@@ -52,11 +74,14 @@ namespace Applied_WebApplication.Data
                     if (Convert.ToInt32(points) > 0)
                     {
                         andStr = (isCurrency) ? ("and") : ("point");// just to separate whole numbers from > points/cents
-                        endStr = (isCurrency) ? ("Cents " + endStr) : ("");
+                        endStr = (isCurrency) ? (Currency[1] + endStr) : ("");
                         pointStr = translateCents(points);
                     }
                 }
-                val = string.Format("{0} {1}{2} {3}", translateWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
+
+                val = $"{Currency[0]} {translateWholeNumber(wholeNo).Trim()} {andStr}{pointStr} {endStr}";
+                     
+                //val = string.Format("{0} {1}{2} {3}", translateWholeNumber(wholeNo).Trim(), andStr, pointStr, endStr);
             }
             catch {; }
             return val;
