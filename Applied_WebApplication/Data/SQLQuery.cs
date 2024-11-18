@@ -1353,7 +1353,7 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Trial Balance - Project wise
-        public static string TBProject(string _Filter)
+        public static string TBProject(string _Filter, string Orderby)
         {
             var _Text = new StringBuilder();
             _Text.AppendLine("SELECT ");
@@ -1362,21 +1362,23 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("[Ledger].[COA],");
             _Text.AppendLine("[Ledger].[COATitle],");
             _Text.AppendLine("SUM([Ledger].[DR]) AS[DR],");
-            _Text.AppendLine("SUM([Ledger].[CR]) As[CR]");
+            _Text.AppendLine("SUM([Ledger].[CR]) As[CR],");
+            _Text.AppendLine("SUM([Ledger].[Amount]) As [Amount]");
             _Text.AppendLine("FROM (SELECT ");
             _Text.AppendLine("[L].[COA],");
             _Text.AppendLine("[C].[Title] AS [COATitle],");
             _Text.AppendLine("[C].[Nature],");
             _Text.AppendLine("[L].[Project],");
             _Text.AppendLine("[L].[DR],");
-            _Text.AppendLine("[L].[CR]");
+            _Text.AppendLine("[L].[CR],");
+            _Text.AppendLine("[L].[DR] - [L].[CR] As [Amount]");
             _Text.AppendLine("FROM [Ledger] [L]");
             _Text.AppendLine("LEFT JOIN [COA] [C] ON [C].[ID] = [L].[COA]");
             //_Text.AppendLine("WHERE [C].[Nature] NOT IN(1, 2) ");
             _Text.AppendLine($"WHERE {_Filter}");
             _Text.AppendLine(") [Ledger]");
             _Text.AppendLine("LEFT JOIN [Project] [P] ON[P].[ID] = [Ledger].[Project]");
-            _Text.AppendLine("GROUP BY [COA],[Project] ORDER BY [Project], [COA]");
+            _Text.AppendLine($"GROUP BY [COA],[Project] ORDER BY {Orderby}");
 
             return _Text.ToString();
         }

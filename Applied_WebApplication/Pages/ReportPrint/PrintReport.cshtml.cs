@@ -9,6 +9,7 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -1195,7 +1196,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     var _CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle");
                     var _CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit");
 
-                    var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount,_CurrencyTitle, _CurrencyUnit);
+                    var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount, _CurrencyTitle, _CurrencyUnit);
 
 
                     ReportModel Reportmodel = new();
@@ -1241,6 +1242,82 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             return Page();
 
+        }
+
+        #endregion
+
+        #region Project Trial Balance (TB)
+        public IActionResult OnGetProjectTB(ReportType RptType)
+        {
+            try
+            {
+                var _Date1 = AppRegistry.GetDate(UserName, "tbpFrom");
+                var _Date2 = AppRegistry.GetDate(UserName, "tbpTo");
+                var _Project = AppRegistry.GetNumber(UserName, "tbpProject");
+                var _Account = AppRegistry.GetNumber(UserName, "tbpAccount");
+
+                int CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature");
+                int BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature");
+                string _Nature = $"{CashBookNature},{BankBookNature}";
+
+                var _Date = _Date2.ToString(AppRegistry.DateYMD);
+                var _Filter = $"[C].[Nature] NOT IN({_Nature}) ";
+                _Filter += $"AND Date([Vou_Date]) <= Date('{_Date}') ";
+                if (_Project == 0) { _Filter += "AND [L].[Project] > 0 "; }
+                if (_Project > 0) { _Filter += $"AND [Project] = {_Project} "; }
+                if (_Account > 0) { _Filter += $"AND [COA] = {_Account} "; }
+
+                var _Query = SQLQuery.TBProject(_Filter, "[ProjectTitle], [COATitle]");
+                var _SourceTable = DataTableClass.GetTable(UserName, _Query);
+
+                var _ReportFile = "TBProject1";
+                var _Heading1 = "Trial Balance (Project wise)";
+                var _Heading2 = $"Date upto {_Date2.ToString(FormatDate)}";
+
+
+                ReportModel Reportmodel = new();
+                // Input Parameters  (.rdl report file)
+                Reportmodel.InputReport.FilePath = ReportPath;
+                Reportmodel.InputReport.FileName = _ReportFile;
+                Reportmodel.InputReport.FileExtention = "rdl";
+                // output Parameters (like pdf, excel, word, html, tiff)
+                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                Reportmodel.OutputReport.FileName = _ReportFile;
+                Reportmodel.OutputReport.ReportType = RptType;
+                // Reports Parameters
+                Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                Reportmodel.AddReportParameter("Heading1", _Heading1);
+                Reportmodel.AddReportParameter("Heading2", _Heading2);
+                Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+                Reportmodel.ReportData.DataSetName = "ds_TBProject";
+                Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI
+
+                if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
+                {
+                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                    {
+                        ReportLink = Reportmodel.OutputReport.FileLink;
+                        IsShowPdf = true;
+                        return Page();
+                    }
+                    else
+                    {
+                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                    }
+                }
+
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+
+
+            return Page();
         }
 
         #endregion

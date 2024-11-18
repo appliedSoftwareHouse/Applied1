@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -44,8 +45,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
             if (Variables.CboxProjectId > 0) { _Filter += $"AND [Project] = {Variables.CboxProjectId} "; }
             if (Variables.CboxAccountsId > 0) { _Filter += $"AND [COA] = {Variables.CboxAccountsId} "; }
 
-            var _Query = SQLQuery.TBProject(_Filter);
-            TBProjects = DataTableClass.GetTable(UserName,_Query);
+            var _Query = SQLQuery.TBProject(_Filter, "[Project], [COA]");
+            TBProjects = DataTableClass.GetTable(UserName, _Query);
 
             CboxAccounts = GetCboxAccounts();
             CboxProject = GetCBoxProject();
@@ -119,19 +120,31 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return RedirectToPage();
         }
 
-
-        #region Variables
-        public class MyParameters
+        public IActionResult OnPostPrint(ReportType Option)
         {
-            public DateTime DateFrom { get; set; }
-            public DateTime DateTo { get; set; }
-            public string ReportType { get; set; }
-            public string ReportOption { get; set; }
-            public decimal Tot_DR { get; set; }
-            public decimal Tot_CR { get; set; }
-            public int CboxProjectId { get; set; }
-            public int CboxAccountsId { get; set; }
+            AppRegistry.SetKey(UserName, "tbpFrom", Variables.DateFrom, KeyType.Date);
+            AppRegistry.SetKey(UserName, "tbpTo", Variables.DateTo, KeyType.Date);
+            AppRegistry.SetKey(UserName, "tbpProject", Variables.CboxProjectId, KeyType.Number);
+            AppRegistry.SetKey(UserName, "tbpAccount", Variables.CboxAccountsId, KeyType.Number);
+
+            return RedirectToPage("../ReportPrint/PrintReport", "ProjectTB", new { RptType = Option });
         }
-        #endregion
+
+
     }
+
+    #region Variables
+    public class MyParameters
+    {
+        public DateTime DateFrom { get; set; }
+        public DateTime DateTo { get; set; }
+        public string ReportType { get; set; }
+        public string ReportOption { get; set; }
+        public decimal Tot_DR { get; set; }
+        public decimal Tot_CR { get; set; }
+        public int CboxProjectId { get; set; }
+        public int CboxAccountsId { get; set; }
+    }
+    #endregion
+
 }
