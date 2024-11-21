@@ -3,40 +3,84 @@
 @using Applied_WebApplication.Data
 @model Applied_WebApplication.Pages.Sales.CustomersModel
 @{
-    
+
     var UserName = User.Identity.Name;
-    DataTableClass Customer = new(UserName, Tables.Customers);
+
 }
 
-<div class="container bg-primary text-white"><h4>Customer</h4></div>
-<br />
+<div class="AppHeading-2">
+    <h4>Customer</h4>
+</div>
 
 <form method="post">
-    <table class="table">
-        <thead>
-            <tr>
-                <th scope="col">Code</th>
-                <th scope="col">Title</th>
-                <th scope="auto">
-                    <button class="btn-primary" value="ADD"
-                            asp-page="./Customer" asp-route-UserName=@UserName asp-page-handler="Add">
-                        ADD
+
+    <div class="container list-filter">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group justify-content-end">
+                    <span class="input-group-text" style="width:30%" id="To">Search</span>
+                    <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.SearchText />
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary" asp-page-handler="Refresh">
+                    Search
+                </button>
+
+
+                @if (Model.SearchText.Length > 0)
+                {
+                    <button class="btn btn-primary" asp-page-handler="Clear">
+                        Clear
                     </button>
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (DataRow _Row in Customer.MyDataTable.Rows)
-            {
+                }
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="continer">
+
+        <table class="table-list">
+            <thead>
                 <tr>
-                    <td>@_Row["Code"]</td>
-                    <td>@_Row["Title"]</td>
-                    <td>
-                        <a asp-page="./Customer"  asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
-                        <a asp-page="./Customer"  asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Delete">Delete </a> 
-                    </td>
+                    <th scope="col">Code</th>
+                    <th scope="col">Name / Title</th>
+                    <th scope="col">City</th>
+                    <th scope="col">Phone</th>
+                    <th scope="col">Mobile</th>
+                    <th scope="col">Email</th>
+                    <th scope="auto">
+                        <button class="btn-primary" value="ADD"
+                                asp-page="./Customer" asp-route-UserName=@UserName asp-page-handler="Add">
+                            ADD
+                        </button>
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @if (Model.Customer is not null)
+                {
+                    @foreach (DataRow _Row in Model.Customer.Rows)
+                    {
+                        <tr>
+                            <td>@_Row["Code"]</td>
+                            <td>@_Row["Title"]</td>
+                            <td>@_Row["City"]</td>
+                            <td>@_Row["Phone"]</td>
+                            <td>@_Row["Mobile"]</td>
+                            <td>@_Row["Email"]</td>
+                            <td>
+                                <a asp-page="./Customer" asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Edit"> Edit</a> |
+                                <a asp-page="./Customer" asp-route-UserName=@UserName asp-route-id=@_Row["ID"] asp-page-handler="Delete">Delete </a>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
 </form>
