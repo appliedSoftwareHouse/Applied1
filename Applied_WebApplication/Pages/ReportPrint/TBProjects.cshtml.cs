@@ -131,6 +131,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
         }
 
 
+
+
+        public void ReportStyle()
+        {
+            //if(_Style == 1) { Variables.ReportStyle = 1; }
+            //if(_Style == 2) { Variables.ReportStyle = 2; }
+            //if(_Style == 3) { Variables.ReportStyle = 3; }
+
+
+        }
     }
 
     #region Variables
@@ -139,6 +149,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public string ReportType { get; set; }
+        public int ReportStyle { get; set; }
         public string ReportOption { get; set; }
         public decimal Tot_DR { get; set; }
         public decimal Tot_CR { get; set; }

@@ -1247,10 +1247,17 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Project Trial Balance (TB)
-        public IActionResult OnGetProjectTB(ReportType RptType)
+        public IActionResult OnGetProjectTB(ReportType RptType, int ReportID)
         {
             try
             {
+                var _ReportFile = "TBProject1";
+                if (ReportID == 1) { _ReportFile = "TBProject1"; }
+                if (ReportID == 2) { _ReportFile = "TBProject2"; }
+                if (ReportID == 3) { _ReportFile = "TBProject3"; }
+
+
+
                 var _Date1 = AppRegistry.GetDate(UserName, "tbpFrom");
                 var _Date2 = AppRegistry.GetDate(UserName, "tbpTo");
                 var _Project = AppRegistry.GetNumber(UserName, "tbpProject");
@@ -1268,9 +1275,16 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 if (_Account > 0) { _Filter += $"AND [COA] = {_Account} "; }
 
                 var _Query = SQLQuery.TBProject(_Filter, "[ProjectTitle], [COATitle]");
+
+                if(ReportID==3)
+                {
+                    _Query = SQLQuery.TBProject3(_Filter, "[[ProjectTitle]]");
+                }
+
+
+
                 var _SourceTable = DataTableClass.GetTable(UserName, _Query);
 
-                var _ReportFile = "TBProject1";
                 var _Heading1 = "Trial Balance (Project wise)";
                 var _Heading2 = $"Date upto {_Date2.ToString(FormatDate)}";
 

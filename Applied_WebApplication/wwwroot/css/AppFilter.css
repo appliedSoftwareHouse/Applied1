@@ -1,13 +1,19 @@
 ﻿.filter {
+    display:inline-flex;
     width: auto;
     height:44px;
     background-color:cornsilk;
     margin-left:0px;
     margin-right:0px;
+    margin-bottom:3px;
     padding-left: 0;
     padding-right: 0;
     padding-top: 3px;
     padding-bottom: 3px;
+}
+
+.filter button{
+    width:120px;
 }
 
 .date-width {

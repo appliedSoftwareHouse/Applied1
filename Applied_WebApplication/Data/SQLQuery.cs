@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Security.Principal;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Applied_WebApplication.Data
 {
@@ -1297,7 +1298,7 @@ namespace Applied_WebApplication.Data
             var _Text = new StringBuilder();
 
             _Text.AppendLine("SELECT ");
-            _Text.AppendLine("'' AS [Vou_Date],");
+            _Text.AppendLine("[OBLedger].[Vou_Date] AS [Vou_Date],");
             _Text.AppendLine("'' AS [Vou_No],    '' AS [Ref_No], ");
             _Text.AppendLine("0  AS [COA],       '' AS [COATitle],");
             _Text.AppendLine("0  AS [Employee],  '' AS [EmpTitle],");
@@ -1383,6 +1384,42 @@ namespace Applied_WebApplication.Data
             return _Text.ToString();
         }
 
+        public static string TBProject3(string _Filter, string Orderby)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT * FROM (");
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[Ledger].[Project],");
+            _Text.AppendLine("[P].[Title] AS [ProjectTitle],");
+            _Text.AppendLine("SUM([Ledger].[DR]) AS [DR],");
+            _Text.AppendLine("SUM([Ledger].[CR]) As [CR],");
+            _Text.AppendLine("SUM([Ledger].[Amount]) As [Amount]");
+            _Text.AppendLine("FROM(");
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[L].[COA],");
+            _Text.AppendLine("[C].[Title] AS [COATitle],");
+            _Text.AppendLine("[C].[Nature],");
+            _Text.AppendLine("[L].[Project],");
+            _Text.AppendLine("[L].[DR],");
+            _Text.AppendLine("[L].[CR],");
+            _Text.AppendLine("[L].[DR] - [L].[CR] As [Amount]");
+            _Text.AppendLine("FROM [Ledger] [L]");
+            _Text.AppendLine("LEFT JOIN [COA][C] ON [C].[ID] = [L].[COA]");
+            _Text.AppendLine("WHERE [C].[Nature] NOT IN(1, 2)");
+            if(_Text.Length > 0)
+            {
+                _Text.AppendLine($"AND {_Filter}");
+            }
+            _Text.AppendLine(") [Ledger]");
+            _Text.AppendLine("LEFT JOIN[Project] [P] ON[P].[ID] = [Ledger].[Project] ");
+            _Text.AppendLine("GROUP BY [Ledger].[Project] ORDER BY [ProjectTitle]");
+            _Text.AppendLine(") [TB] ");
+           
+            return _Text.ToString();
+
+        }
+
+
         #endregion
 
         #region Get Receipt Accounts list
@@ -1408,7 +1445,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("LEFT JOIN [Employees] [E] ON [E].[ID] = [R].[Employee] ");
             _Text.AppendLine("LEFT JOIN [Customers] [C] ON [C].[ID] = [R].[Payer] ");
             _Text.AppendLine(") AS [Receipt] ");
-            if(_Filter.Length > 0)
+            if (_Filter.Length > 0)
             {
                 _Text.AppendLine($"WHERE {_Filter}");
             }
