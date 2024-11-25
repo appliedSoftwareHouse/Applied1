@@ -55,54 +55,17 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         }
 
+        #region Get List of Project and Accounts for ComboBox
         private DataTable GetCBoxProject()
         {
             return DataTableClass.GetTable(UserName, Tables.Project);
-
-            //DataTable _Table = new();
-            //_Table.Columns.Add("ID", typeof(int));
-            //_Table.Columns.Add("Title", typeof(string));
-            //_Table.PrimaryKey = new[] { _Table.Columns[0] };
-
-            //foreach (DataRow Row in TBProjects.Rows)
-            //{
-            //    if (Row["Project"] is not null)
-            //    {
-            //        if (_Table.Rows.Contains(Row["Project"])) { continue; }
-
-            //        var newRow = _Table.NewRow();
-            //        newRow["ID"] = Row["Project"];
-            //        newRow["Title"] = Row["ProjectTitle"];
-            //        _Table.Rows.Add(newRow);
-            //    }
-            //}
-            //return _Table;
         }
 
         private DataTable GetCboxAccounts()
         {
             return DataTableClass.GetTable(UserName, Tables.COA);
-
-            //DataTable _Table = new();
-            //_Table.Columns.Add("ID", typeof(int));
-            //_Table.Columns.Add("Title", typeof(string));
-            //_Table.PrimaryKey = new[] { _Table.Columns[0] };
-
-            //foreach (DataRow Row in TBProjects.Rows)
-            //{
-            //    if (Row["COA"] is not null)
-            //    {
-            //        if (_Table.Rows.Contains(Row["COA"])) { continue; }
-
-            //        var newRow = _Table.NewRow();
-            //        newRow["ID"] = Row["COA"];
-            //        newRow["Title"] = Row["COATitle"];
-            //        _Table.Rows.Add(newRow);
-            //    }
-            //}
-            //return _Table;
-
         }
+        #endregion
 
         public IActionResult OnPostRefresh()
         {
@@ -126,6 +89,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             AppRegistry.SetKey(UserName, "tbpTo", Variables.DateTo, KeyType.Date);
             AppRegistry.SetKey(UserName, "tbpProject", Variables.CboxProjectId, KeyType.Number);
             AppRegistry.SetKey(UserName, "tbpAccount", Variables.CboxAccountsId, KeyType.Number);
+            AppRegistry.SetKey(UserName, "tbpFormat", Variables.ReportFormat, KeyType.Number);
 
             return RedirectToPage("../ReportPrint/PrintReport", "ProjectTB", new { RptType = Option });
         }
@@ -149,7 +113,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DateTime DateFrom { get; set; }
         public DateTime DateTo { get; set; }
         public string ReportType { get; set; }
-        public int ReportStyle { get; set; }
+        public int ReportFormat { get; set; }
         public string ReportOption { get; set; }
         public decimal Tot_DR { get; set; }
         public decimal Tot_CR { get; set; }

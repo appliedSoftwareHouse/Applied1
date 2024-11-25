@@ -1,5 +1,6 @@
 ﻿using AppReportClass;
 using System.Data;
+using System.Reflection.Metadata;
 
 namespace Applied_WebApplication.Data
 {
@@ -264,7 +265,11 @@ namespace Applied_WebApplication.Data
         internal static DataTable GetGL(string userName, ReportFilters paramaters)
         {
             var _Filter = $"COA={paramaters.N_COA} ORDER BY COA,Vou_Date, Vou_No";
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
+            var _Date = new string[2];
+            _Date[0] = paramaters.Dt_From.ToString(AppRegistry.DateYMD);
+            _Date[1] = paramaters.Dt_To.ToString(AppRegistry.DateYMD);
+
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger2(_Filter, _Date, ""));
             return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }
 
