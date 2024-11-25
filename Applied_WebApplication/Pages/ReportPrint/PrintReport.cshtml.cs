@@ -9,7 +9,6 @@ using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.AppFunctions;
 using static Applied_WebApplication.Data.MessageClass;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 
 namespace Applied_WebApplication.Pages.ReportPrint
 {
@@ -130,21 +129,34 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public IActionResult OnGetGL(ReportType _ReportType)
         {
 
-            ReportFilters Filters = new ReportFilters()
+            ReportFilters paramaters = new ReportFilters()
             {
                 N_COA = (int)GetKey(UserName, "GL_COA", KeyType.Number),
                 Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
-            DataTable _Table = Ledger.GetGL(UserName, Filters);
+
+            var _Dates = new string[3]
+           {
+                paramaters.Dt_From.AddDays(-1).ToString(DateYMD),
+                paramaters.Dt_From.ToString(DateYMD),
+                paramaters.Dt_To.ToString(DateYMD)
+           };
+
+            var _FilterOB = $"[COA] = {paramaters.N_COA} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[COA] = {paramaters.N_COA} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _GroupBy = "[COA]";
+            var _SortBy = "[Vou_date], [Vou_no]";
+            var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+            DataTable _Table = DataTableClass.GetTable(UserName, _Query);
+
 
             if (_Table.Rows.Count > 0)
             {
                 var FMTDate = GetFormatDate(UserName);
-                var Date1 = MinDate(Filters.Dt_From, Filters.Dt_To).ToString(FMTDate);
-                var Date2 = MaxDate(Filters.Dt_From, Filters.Dt_To).ToString(FMTDate);
-                var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, Filters.N_COA)}";
-                var _Heading2 = $"From {Date1} to {Date2}";
+                var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, paramaters.N_COA)}";
+                var _Heading2 = $"From {_Dates[1]} to {_Dates[1]}";
                 var _CompanyName = UserProfile.GetCompanyName(User);
 
 
@@ -156,10 +168,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     new ReportParameter("Footer", AppGlobals.ReportFooter)
                 };
 
+
+                #region Report Generator
                 var Variables = new ReportParameters()
                 {
                     ReportPath = AppGlobals.ReportPath,
-                    ReportFile = "Ledger.rdl",
+                    ReportFile = "Ledger1.rdl",
                     OutputPath = AppGlobals.PrintedReportPath,
                     OutputPathLink = AppGlobals.PrintedReportPathLink,
                     OutputFile = "Ledger",
@@ -186,7 +200,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 {
                     return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
                 }
-
+                #endregion
             }
 
             return Page();
@@ -199,24 +213,36 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetGLCompany(ReportType _ReportType)
         {
-            #region Report Filter Variables
-            ReportFilters Filters = new()
+            
+            ReportFilters paramaters = new ReportFilters()
             {
+                //N_COA = (int)GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)GetKey(UserName, "GL_Company", KeyType.Number),
                 Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
-            #endregion
-            var _COAs = GetText(UserName, "CompanyGLs");
-            var _Filter = $"COA IN ({_COAs}) AND Customer = {Filters.N_Customer} ";
-            var _Dates = new string[] { Filters.Dt_From.ToString(DateYMD), Filters.Dt_To.ToString(DateYMD) };
-            var _OrderBy = "[Vou_Date], [Vou_No]";
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger2(_Filter, _Dates, _OrderBy));
+
+            var _Dates = new string[3]
+           {
+                paramaters.Dt_From.AddDays(-1).ToString(DateYMD),
+                paramaters.Dt_From.ToString(DateYMD),
+                paramaters.Dt_To.ToString(DateYMD)
+           };
+
+            var _FilterOB = $"[Customer] = {paramaters.N_Customer} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[Customer] = {paramaters.N_Customer} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _GroupBy = "[Customer]";
+            var _SortBy = "[Vou_date], [Vou_no]";
+            
+            var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+            DataTable _Table = DataTableClass.GetTable(UserName, _Query);
+
 
             if (_Table.Rows.Count > 0)
             {
-                var _Title = GetTitle(UserName, Tables.Customers, Filters.N_Customer);
-                var _Status = GetColumnValue(UserName, Tables.Customers, "Status", Filters.N_Customer);
+                var _Title = GetTitle(UserName, Tables.Customers, paramaters.N_Customer);
+                var _Status = GetColumnValue(UserName, Tables.Customers, "Status", paramaters.N_Customer);
                 var _StatusTitle = "";
                 if (_Status.Length > 0)
                 {
@@ -224,7 +250,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     if (_StatusTitle.Length == 0) { _StatusTitle = "Un-assigned"; }
                 }
                 var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
-                var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(FormatDate), " To ", Filters.Dt_To.ToString(FormatDate));
+                var _Heading2 = string.Concat("From ", _Dates[1], " To ", _Dates[2]);
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
@@ -1332,3 +1358,4 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
     }
 }
+

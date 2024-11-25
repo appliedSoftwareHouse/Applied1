@@ -5,6 +5,8 @@ using System.Data;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
+using static Applied_WebApplication.Pages.Stock.InventoryModel;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Applied_WebApplication.Data
 {
@@ -295,50 +297,71 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Ledger 2
-        public static string Ledger2(string _Filter, string[] Dates, string _OrderBy)
+        public static string Ledger2(string _FilterOB, string _Filter, string _Groupby, string OBDate, string _OrderBy)
         {
-            var Text = new StringBuilder();
-            Text.AppendLine("SELECT * FROM (");
-            Text.AppendLine("SELECT ");
-            Text.AppendLine("'OBAL' AS [Vou_No],");
-            Text.AppendLine($"DATE('{Dates[0]}') AS [Vou_Date],");
-            Text.AppendLine($"'Opening Balance as on ' || DATE('{Dates[0]}') AS [Description],");
-            Text.AppendLine("IIF([BAL] > 0,[BAL],0) AS [DR],");
-            Text.AppendLine("IIF([BAL] < 0,ABS([BAL]),0) AS [CR],");
-            Text.AppendLine("0 AS [AccountTitle],");
-            Text.AppendLine("0 AS [CompanyName],");
-            Text.AppendLine("0 AS [EmployeeName],");
-            Text.AppendLine("0 AS [ProjectTitle],");
-            Text.AppendLine("0 AS [StockTitle] ");
-            Text.AppendLine("FROM(SELECT SUM([DR] -[CR]) AS [BAL] ");
-            Text.AppendLine("FROM(SELECT * ");
-            Text.AppendLine($"FROM[Ledger] WHERE DATE([Vou_Date]) < DATE('{Dates[0]}') AND {_Filter}))) ");
-            Text.AppendLine("UNION ALL ");
+            var _Text1 = new StringBuilder();           // Opening Balance
+            var _Text2 = new StringBuilder();           // Ledger
+            var _Text3 = new StringBuilder();           // Combine Opening and Ledger
 
-            Text.AppendLine("SELECT ");
-            Text.AppendLine("[L].[Vou_No], ");
-            Text.AppendLine("[L].[Vou_Date],");
-            Text.AppendLine("[L].[Description],");
-            Text.AppendLine("[L].[DR],");
-            Text.AppendLine("[L].[CR],");
-            Text.AppendLine("[A].[TITLE] AS [AccountTitle],");
-            Text.AppendLine("[C].[TITLE] AS [CompanyName],");
-            Text.AppendLine("[E].[TITLE] AS [EmployeeName],");
-            Text.AppendLine("[P].[TITLE] AS [ProjectTitle],");
-            Text.AppendLine("[I].[TITLE] AS [StockTitle]");
-            Text.AppendLine("FROM(");
-            Text.AppendLine("SELECT * FROM [Ledger] [L] ");
-            Text.AppendLine($"WHERE (Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}')) ");
-            Text.AppendLine($"AND {_Filter}");
-            Text.AppendLine(" ) AS[L]");
-            Text.AppendLine("LEFT JOIN[COA]       [A] ON[A].[ID] = [L].[COA]");
-            Text.AppendLine("LEFT JOIN[Customers] [C] ON[C].[ID] = [L].[CUSTOMER]");
-            Text.AppendLine("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[EMPLOYEE]");
-            Text.AppendLine("LEFT JOIN[Project]   [P] ON[P].[ID] = [L].[PROJECT]");
-            Text.AppendLine("LEFT JOIN[Inventory] [I] ON[I].[ID] = [L].[INVENTORY]");
-            Text.AppendLine(") AS [GLedger]");
-            Text.AppendLine($"ORDER BY {_OrderBy}");
-            return Text.ToString();
+            // Ledger Opening Balance One DataRow
+            _Text1.AppendLine("SELECT");
+            _Text1.AppendLine("0 AS[Vou_No],");
+            _Text1.AppendLine($"Date('{OBDate}') AS[Vou_Date],");
+            _Text1.AppendLine("IIF([BAL] > 0, [BAL], 0) AS[DR],");
+            _Text1.AppendLine("IIF([BAL] < 0, ABS([BAL]), 0) AS[CR],");
+            _Text1.AppendLine("'Opening Balance...' AS[Description],");
+            _Text1.AppendLine("0 AS[COA],");
+            _Text1.AppendLine("0 AS[Customer],");
+            _Text1.AppendLine("0 AS[Project],");
+            _Text1.AppendLine("0 AS[Employee],");
+            _Text1.AppendLine("0 AS[Inventory]");
+            _Text1.AppendLine("FROM(SELECT");
+            _Text1.AppendLine("SUM([DR]) AS[DR],");
+            _Text1.AppendLine("SUM([CR]) AS[CR],");
+            _Text1.AppendLine("SUM([DR] - [CR]) AS[BAL]");
+            _Text1.AppendLine("FROM [Ledger]");
+            _Text1.AppendLine($"WHERE {_FilterOB}) ");
+            _Text1.AppendLine($"GROUP BY {_Groupby} ");
+
+            // Ledger DataRow from Start to End Date
+            _Text2.AppendLine("SELECT");
+            _Text2.AppendLine("[Ledger].[Vou_No],");
+            _Text2.AppendLine("[Ledger].[Vou_Date],");
+            _Text2.AppendLine("[Ledger].[DR],");
+            _Text2.AppendLine("[Ledger].[CR],");
+            _Text2.AppendLine("[Ledger].[Description],");
+            _Text2.AppendLine("[Ledger].[COA],");
+            _Text2.AppendLine("[Ledger].[Customer],");
+            _Text2.AppendLine("[Ledger].[Project],");
+            _Text2.AppendLine("[Ledger].[Employee],");
+            _Text2.AppendLine("[Ledger].[Inventory]");
+            _Text2.AppendLine("FROM[Ledger]");
+            _Text2.AppendLine($"WHERE {_Filter} ");
+
+
+            _Text3.AppendLine("SELECT[L].*,");
+            _Text3.AppendLine("[A].[TITLE] AS[AccountTitle],");
+            _Text3.AppendLine("[C].[TITLE] AS[CompanyName],");
+            _Text3.AppendLine("[E].[TITLE] AS[EmployeeName],");
+            _Text3.AppendLine("[P].[TITLE] AS[ProjectTitle],");
+            _Text3.AppendLine("[I].[TITLE] AS[StockTitle]");
+            _Text3.AppendLine($"FROM(");
+
+            _Text3.AppendLine(_Text1.ToString());
+            _Text3.AppendLine("UNION ALL");
+            _Text3.AppendLine(_Text2.ToString());
+
+
+            _Text3.AppendLine(") AS[L]");
+            _Text3.AppendLine("LEFT JOIN[COA]       [A] ON[A].[ID] = [L].[COA]");
+            _Text3.AppendLine("LEFT JOIN[Customers] [C] ON[C].[ID] = [L].[CUSTOMER]");
+            _Text3.AppendLine("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[EMPLOYEE]");
+            _Text3.AppendLine("LEFT JOIN[Project]   [P] ON[P].[ID] = [L].[PROJECT]");
+            _Text3.AppendLine("LEFT JOIN[Inventory] [I] ON[I].[ID] = [L].[INVENTORY]");
+            if (_OrderBy.Length>0) { _Text3.AppendLine($"ORDER BY {_OrderBy}"); }
+
+            return _Text3.ToString();
+
         }
         #endregion
 
@@ -1406,7 +1429,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("FROM [Ledger] [L]");
             _Text.AppendLine("LEFT JOIN [COA][C] ON [C].[ID] = [L].[COA]");
             _Text.AppendLine("WHERE [C].[Nature] NOT IN(1, 2)");
-            if(_Text.Length > 0)
+            if (_Text.Length > 0)
             {
                 _Text.AppendLine($"AND {_Filter}");
             }
@@ -1414,7 +1437,7 @@ namespace Applied_WebApplication.Data
             _Text.AppendLine("LEFT JOIN[Project] [P] ON[P].[ID] = [Ledger].[Project] ");
             _Text.AppendLine("GROUP BY [Ledger].[Project] ORDER BY [ProjectTitle]");
             _Text.AppendLine(") [TB] ");
-           
+
             return _Text.ToString();
 
         }

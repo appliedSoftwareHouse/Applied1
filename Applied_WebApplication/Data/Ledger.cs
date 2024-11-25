@@ -264,18 +264,29 @@ namespace Applied_WebApplication.Data
 
         internal static DataTable GetGL(string userName, ReportFilters paramaters)
         {
-            var _Filter = $"COA={paramaters.N_COA} ORDER BY COA,Vou_Date, Vou_No";
-            var _Date = new string[2];
-            _Date[0] = paramaters.Dt_From.ToString(AppRegistry.DateYMD);
-            _Date[1] = paramaters.Dt_To.ToString(AppRegistry.DateYMD);
 
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger2(_Filter, _Date, ""));
-            return Generate_LedgerTable(userName, tb_Ledger, paramaters);
+            var _Dates = new string[3]
+            {
+                paramaters.Dt_From.AddDays(-1).ToString(AppRegistry.DateYMD),
+                paramaters.Dt_From.ToString(AppRegistry.DateYMD),
+                paramaters.Dt_To.ToString(AppRegistry.DateYMD)
+            };
+            
+
+            var _FilterOB = $"[COA] = {paramaters.N_COA} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[COA] = {paramaters.N_COA} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _GroupBy = "[COA]";
+            var _SortBy = "[Vou_date], [Vou_no]";
+            var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+            DataTable tb_Ledger = DataTableClass.GetTable(userName, _Query);
+            return tb_Ledger;
+            //return Generate_LedgerTable(userName, tb_Ledger, paramaters);
         }
 
         internal static DataTable GetGLCompany(string UserName, ReportFilters paramaters)
         {
-            
+
 
             string _Filter;
             if (paramaters.All_Customer)
@@ -290,7 +301,7 @@ namespace Applied_WebApplication.Data
 
         internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportFilters paramaters)
         {
-            
+
             var _Filter = $" [L].ID<0";
             DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
             DataTable Result = tb_Ledger.Clone();
