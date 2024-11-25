@@ -374,3 +374,4 @@ FodyWeavers.xsd
 *.rdl
 *.db
 /Applied_WebApplication/wwwroot/DBTemp/AppliedTemp.db
+/Applied_WebApplication/chrome
