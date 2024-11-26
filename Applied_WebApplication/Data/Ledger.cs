@@ -40,39 +40,41 @@ namespace Applied_WebApplication.Data
             if (TableName.ToString() == Tables.BankBook.ToString()) { return LedgerBankBook(_Parameters); }                                // Get Ledger Record from CashBook
             return GetEmptyLedger();
         }
-        public static DataTable ConvertLedger(string UserName, DataTable _Table)
-        {
-            DataTable _Ledger = DataTableClass.GetTable(UserName, Tables.view_Ledger).Clone();
-            decimal Balance = 0M;
 
-            #region CashBook
-            if (_Table.TableName == "CashBook")
-            {
-                DataView _DataView = _Table.AsDataView();
-                _DataView.Sort = "Vou_Date";
 
-                foreach (DataRow _Row in _DataView.ToTable().Rows)
-                {
-                    decimal Debit = decimal.Parse(_Row["DR"].ToString());
-                    decimal Credit = decimal.Parse(_Row["CR"].ToString());
-                    Balance += (Debit - Credit);
+        //public static DataTable ConvertLedger(string UserName, DataTable _Table)
+        //{
+        //    DataTable _Ledger = DataTableClass.GetTable(UserName, Tables.view_Ledger).Clone();
+        //    decimal Balance = 0M;
 
-                    DataRow _NewRow = _Ledger.NewRow();
-                    _NewRow["ID"] = _Row["ID"];
-                    _NewRow["Vou_Type"] = "Cash";
-                    _NewRow["Vou_Date"] = _Row["Vou_Date"];
-                    _NewRow["Vou_No"] = _Row["Vou_No"];
-                    _NewRow["Description"] = _Row["Description"];
-                    _NewRow["DR"] = Debit;
-                    _NewRow["CR"] = Credit;
-                    _NewRow["BAL"] = Balance;
-                    _Ledger.Rows.Add(_NewRow);
-                }
-            }
-            #endregion
+        //    #region CashBook
+        //    if (_Table.TableName == "CashBook")
+        //    {
+        //        DataView _DataView = _Table.AsDataView();
+        //        _DataView.Sort = "Vou_Date";
 
-            return _Ledger;
-        }
+        //        foreach (DataRow _Row in _DataView.ToTable().Rows)
+        //        {
+        //            decimal Debit = decimal.Parse(_Row["DR"].ToString());
+        //            decimal Credit = decimal.Parse(_Row["CR"].ToString());
+        //            Balance += (Debit - Credit);
+
+        //            DataRow _NewRow = _Ledger.NewRow();
+        //            _NewRow["ID"] = _Row["ID"];
+        //            _NewRow["Vou_Type"] = "Cash";
+        //            _NewRow["Vou_Date"] = _Row["Vou_Date"];
+        //            _NewRow["Vou_No"] = _Row["Vou_No"];
+        //            _NewRow["Description"] = _Row["Description"];
+        //            _NewRow["DR"] = Debit;
+        //            _NewRow["CR"] = Credit;
+        //            _NewRow["BAL"] = Balance;
+        //            _Ledger.Rows.Add(_NewRow);
+        //        }
+        //    }
+        //    #endregion
+
+        //    return _Ledger;
+        //}
 
 
         #region UpdateLedger
@@ -262,169 +264,169 @@ namespace Applied_WebApplication.Data
             return _Ledger;
         }
 
-        internal static DataTable GetGL(string userName, ReportFilters paramaters)
-        {
+        //internal static DataTable GetGL(string userName, ReportFilters paramaters)
+        //{
 
-            var _Dates = new string[3]
-            {
-                paramaters.Dt_From.AddDays(-1).ToString(AppRegistry.DateYMD),
-                paramaters.Dt_From.ToString(AppRegistry.DateYMD),
-                paramaters.Dt_To.ToString(AppRegistry.DateYMD)
-            };
+        //    var _Dates = new string[3]
+        //    {
+        //        paramaters.Dt_From.AddDays(-1).ToString(AppRegistry.DateYMD),
+        //        paramaters.Dt_From.ToString(AppRegistry.DateYMD),
+        //        paramaters.Dt_To.ToString(AppRegistry.DateYMD)
+        //    };
             
 
-            var _FilterOB = $"[COA] = {paramaters.N_COA} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
-            var _Filter = $"[COA] = {paramaters.N_COA} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
-            var _GroupBy = "[COA]";
-            var _SortBy = "[Vou_date], [Vou_no]";
-            var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+        //    var _FilterOB = $"[COA] = {paramaters.N_COA} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+        //    var _Filter = $"[COA] = {paramaters.N_COA} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+        //    var _GroupBy = "[COA]";
+        //    var _SortBy = "[Vou_date], [Vou_no]";
+        //    var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
 
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, _Query);
-            return tb_Ledger;
-            //return Generate_LedgerTable(userName, tb_Ledger, paramaters);
-        }
+        //    DataTable tb_Ledger = DataTableClass.GetTable(userName, _Query);
+        //    return tb_Ledger;
+        //    //return Generate_LedgerTable(userName, tb_Ledger, paramaters);
+        //}
 
-        internal static DataTable GetGLCompany(string UserName, ReportFilters paramaters)
-        {
-
-
-            string _Filter;
-            if (paramaters.All_Customer)
-            { _Filter = $"Customer={paramaters.N_Customer}"; }
-            else
-            { _Filter = $"Customer={paramaters.N_Customer} AND COA={paramaters.N_COA}"; }
-
-            _Filter += " ORDER BY Customer,COA,Vou_Date";
-            DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(_Filter));
-            return Generate_LedgerTable(UserName, _Table, paramaters);
-        }
-
-        internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportFilters paramaters)
-        {
-
-            var _Filter = $" [L].ID<0";
-            DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
-            DataTable Result = tb_Ledger.Clone();
-            Result.TableName = "Ledger";
-            decimal Balance = 0.00M;
-            bool IsOBalEntry = false;
-            DataRow NewRow;
-
-            List<int> AccountList = GetAccountList(_Table);
-            foreach (int Account in AccountList)
-            {
-                var COAView = _Table.AsDataView();
-                COAView.RowFilter = $"COA={Account}";
-
-                #region Each Account Records
-                var AccountTable = COAView.ToTable();
-
-                foreach (DataRow Row in AccountTable.Rows)
-                {
-                    DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
-                    decimal RowDR = decimal.Parse(Row["DR"].ToString());
-                    decimal RowCR = decimal.Parse(Row["CR"].ToString());
-
-                    if (RowDate < paramaters.Dt_From)
-                    {
-                        Balance += RowDR - RowCR;                                                 // Generate Opening Balances and continue untill Date From reach.
-                        continue;
-                    }      // Skip if date is less from [From]
-                    else
-                    {
-                        if (RowDate > paramaters.Dt_To) { continue; }                      // Skip if date if more than [To]
-                        if (!IsOBalEntry)
-                        {
-                            NewRow = Result.NewRow();
-                            NewRow["Vou_Date"] = paramaters.Dt_From.AddDays(-1);
-                            NewRow["Vou_No"] = "OBAL";
-                            NewRow["COA"] = Account;
-                            NewRow["Customer"] = AccountTable.Rows[0]["Customer"];
-                            NewRow["Employee"] = AccountTable.Rows[0]["Employee"];
-                            NewRow["Project"] = AccountTable.Rows[0]["Project"];
-                            NewRow["Inventory"] = AccountTable.Rows[0]["Inventory"];
-                            NewRow["AccountTitle"] = AccountTable.Rows[0]["AccountTitle"];
-                            NewRow["CompanyName"] = AccountTable.Rows[0]["CompanyName"];
-                            NewRow["EmployeeName"] = AccountTable.Rows[0]["EmployeeName"];
-                            NewRow["ProjectTitle"] = AccountTable.Rows[0]["ProjectTitle"];
-                            NewRow["StockTitle"] = AccountTable.Rows[0]["StockTitle"];
-                            NewRow["Description"] = "Opening Balance as on " + paramaters.Dt_From.AddDays(-1).ToShortDateString();
-                            if (Balance >= 0) { NewRow["DR"] = Balance; NewRow["CR"] = 0; } else { NewRow["DR"] = 0; NewRow["CR"] = Balance * (-1); }
-                            Result.Rows.Add(NewRow);
-                            IsOBalEntry = true;
-                            //continue;
-                        }
-
-                        NewRow = Result.NewRow();
-                        NewRow["ID"] = Row["ID"];
-                        NewRow["TranID"] = Row["TranID"];
-                        NewRow["Vou_Date"] = Row["Vou_Date"];
-                        NewRow["Vou_No"] = Row["Vou_No"];
-                        NewRow["Vou_Type"] = Row["Vou_Type"];
-                        NewRow["SR_No"] = Row["SR_No"];
-                        NewRow["Ref_No"] = Row["Ref_No"];
-                        NewRow["BookID"] = Row["BookID"];
-                        NewRow["COA"] = Row["COA"];
-                        NewRow["DR"] = Row["DR"];
-                        NewRow["CR"] = Row["CR"];
-                        NewRow["Description"] = Row["Description"];
-                        NewRow["Comments"] = Row["Comments"];
-                        NewRow["Customer"] = Row["Customer"];
-                        NewRow["Project"] = Row["Project"];
-                        NewRow["Employee"] = Row["Employee"];
-                        NewRow["Inventory"] = Row["Inventory"];
-                        NewRow["AccountTitle"] = Row["AccountTitle"];
-                        NewRow["CompanyName"] = Row["CompanyName"];
-                        NewRow["EmployeeName"] = Row["EmployeeName"];
-                        NewRow["ProjectTitle"] = Row["ProjectTitle"];
-                        NewRow["StockTitle"] = Row["StockTitle"];
-                        Result.Rows.Add(NewRow);
-                    }
-                    #endregion
-
-                }
-            }
-            return Result;
+        //internal static DataTable GetGLCompany(string UserName, ReportFilters paramaters)
+        //{
 
 
-        }
+        //    string _Filter;
+        //    if (paramaters.All_Customer)
+        //    { _Filter = $"Customer={paramaters.N_Customer}"; }
+        //    else
+        //    { _Filter = $"Customer={paramaters.N_Customer} AND COA={paramaters.N_COA}"; }
 
-        private static List<int> GetAccountList(DataTable _Table)
-        {
-            List<int> _List = new List<int>();
-            foreach (DataRow Row in _Table.Rows)
-            {
-                if (_List.Contains((int)Row["COA"])) { continue; };
-                _List.Add((int)Row["COA"]);
-            }
-            return _List;
-        }
+        //    _Filter += " ORDER BY Customer,COA,Vou_Date";
+        //    DataTable _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(_Filter));
+        //    return Generate_LedgerTable(UserName, _Table, paramaters);
+        //}
 
-        internal static DataTable GetTB(string UserName, ReportFilters filters)
-        {
-            DataTableClass tc_TB = new(UserName, Tables.TB);
-            DataTable tb_TrialBal = tc_TB.MyDataTable.Clone();
+        //internal static DataTable Generate_LedgerTable(string userName, DataTable _Table, ReportFilters paramaters)
+        //{
 
-            foreach (DataRow Row in tc_TB.MyDataTable.Rows)
-            {
-                decimal _Amount = decimal.Parse(Row["BAL"].ToString());
-                decimal _Debit = 0.00M;
-                decimal _Credit = 0.00M;
-                if (_Amount >= 0) { _Debit = _Amount; _Credit = 0; }
-                if (_Amount < 0) { _Debit = 0; _Credit = Math.Abs(_Amount); }
+        //    var _Filter = $" [L].ID<0";
+        //    DataTable tb_Ledger = DataTableClass.GetTable(userName, SQLQuery.Ledger(_Filter));
+        //    DataTable Result = tb_Ledger.Clone();
+        //    Result.TableName = "Ledger";
+        //    decimal Balance = 0.00M;
+        //    bool IsOBalEntry = false;
+        //    DataRow NewRow;
 
-                DataRow RowTB = tb_TrialBal.NewRow();
-                RowTB["COA"] = Row["COA"];
-                RowTB["Code"] = Row["Code"];
-                RowTB["Title"] = Row["Title"];
-                RowTB["DR"] = _Debit;
-                RowTB["CR"] = _Credit;
-                RowTB["Bal"] = _Amount;
-                tb_TrialBal.Rows.Add(RowTB);
-            }
+        //    List<int> AccountList = GetAccountList(_Table);
+        //    foreach (int Account in AccountList)
+        //    {
+        //        var COAView = _Table.AsDataView();
+        //        COAView.RowFilter = $"COA={Account}";
 
-            return tb_TrialBal;
-        }
+        //        #region Each Account Records
+        //        var AccountTable = COAView.ToTable();
+
+        //        foreach (DataRow Row in AccountTable.Rows)
+        //        {
+        //            DateTime RowDate = DateTime.Parse(Row["Vou_Date"].ToString());
+        //            decimal RowDR = decimal.Parse(Row["DR"].ToString());
+        //            decimal RowCR = decimal.Parse(Row["CR"].ToString());
+
+        //            if (RowDate < paramaters.Dt_From)
+        //            {
+        //                Balance += RowDR - RowCR;                                                 // Generate Opening Balances and continue untill Date From reach.
+        //                continue;
+        //            }      // Skip if date is less from [From]
+        //            else
+        //            {
+        //                if (RowDate > paramaters.Dt_To) { continue; }                      // Skip if date if more than [To]
+        //                if (!IsOBalEntry)
+        //                {
+        //                    NewRow = Result.NewRow();
+        //                    NewRow["Vou_Date"] = paramaters.Dt_From.AddDays(-1);
+        //                    NewRow["Vou_No"] = "OBAL";
+        //                    NewRow["COA"] = Account;
+        //                    NewRow["Customer"] = AccountTable.Rows[0]["Customer"];
+        //                    NewRow["Employee"] = AccountTable.Rows[0]["Employee"];
+        //                    NewRow["Project"] = AccountTable.Rows[0]["Project"];
+        //                    NewRow["Inventory"] = AccountTable.Rows[0]["Inventory"];
+        //                    NewRow["AccountTitle"] = AccountTable.Rows[0]["AccountTitle"];
+        //                    NewRow["CompanyName"] = AccountTable.Rows[0]["CompanyName"];
+        //                    NewRow["EmployeeName"] = AccountTable.Rows[0]["EmployeeName"];
+        //                    NewRow["ProjectTitle"] = AccountTable.Rows[0]["ProjectTitle"];
+        //                    NewRow["StockTitle"] = AccountTable.Rows[0]["StockTitle"];
+        //                    NewRow["Description"] = "Opening Balance as on " + paramaters.Dt_From.AddDays(-1).ToShortDateString();
+        //                    if (Balance >= 0) { NewRow["DR"] = Balance; NewRow["CR"] = 0; } else { NewRow["DR"] = 0; NewRow["CR"] = Balance * (-1); }
+        //                    Result.Rows.Add(NewRow);
+        //                    IsOBalEntry = true;
+        //                    //continue;
+        //                }
+
+        //                NewRow = Result.NewRow();
+        //                NewRow["ID"] = Row["ID"];
+        //                NewRow["TranID"] = Row["TranID"];
+        //                NewRow["Vou_Date"] = Row["Vou_Date"];
+        //                NewRow["Vou_No"] = Row["Vou_No"];
+        //                NewRow["Vou_Type"] = Row["Vou_Type"];
+        //                NewRow["SR_No"] = Row["SR_No"];
+        //                NewRow["Ref_No"] = Row["Ref_No"];
+        //                NewRow["BookID"] = Row["BookID"];
+        //                NewRow["COA"] = Row["COA"];
+        //                NewRow["DR"] = Row["DR"];
+        //                NewRow["CR"] = Row["CR"];
+        //                NewRow["Description"] = Row["Description"];
+        //                NewRow["Comments"] = Row["Comments"];
+        //                NewRow["Customer"] = Row["Customer"];
+        //                NewRow["Project"] = Row["Project"];
+        //                NewRow["Employee"] = Row["Employee"];
+        //                NewRow["Inventory"] = Row["Inventory"];
+        //                NewRow["AccountTitle"] = Row["AccountTitle"];
+        //                NewRow["CompanyName"] = Row["CompanyName"];
+        //                NewRow["EmployeeName"] = Row["EmployeeName"];
+        //                NewRow["ProjectTitle"] = Row["ProjectTitle"];
+        //                NewRow["StockTitle"] = Row["StockTitle"];
+        //                Result.Rows.Add(NewRow);
+        //            }
+        //            #endregion
+
+        //        }
+        //    }
+        //    return Result;
+
+
+        //}
+
+        //private static List<int> GetAccountList(DataTable _Table)
+        //{
+        //    List<int> _List = new List<int>();
+        //    foreach (DataRow Row in _Table.Rows)
+        //    {
+        //        if (_List.Contains((int)Row["COA"])) { continue; };
+        //        _List.Add((int)Row["COA"]);
+        //    }
+        //    return _List;
+        //}
+
+        //internal static DataTable GetTB(string UserName, ReportFilters filters)
+        //{
+        //    DataTableClass tc_TB = new(UserName, Tables.TB);
+        //    DataTable tb_TrialBal = tc_TB.MyDataTable.Clone();
+
+        //    foreach (DataRow Row in tc_TB.MyDataTable.Rows)
+        //    {
+        //        decimal _Amount = decimal.Parse(Row["BAL"].ToString());
+        //        decimal _Debit = 0.00M;
+        //        decimal _Credit = 0.00M;
+        //        if (_Amount >= 0) { _Debit = _Amount; _Credit = 0; }
+        //        if (_Amount < 0) { _Debit = 0; _Credit = Math.Abs(_Amount); }
+
+        //        DataRow RowTB = tb_TrialBal.NewRow();
+        //        RowTB["COA"] = Row["COA"];
+        //        RowTB["Code"] = Row["Code"];
+        //        RowTB["Title"] = Row["Title"];
+        //        RowTB["DR"] = _Debit;
+        //        RowTB["CR"] = _Credit;
+        //        RowTB["Bal"] = _Amount;
+        //        tb_TrialBal.Rows.Add(RowTB);
+        //    }
+
+        //    return tb_TrialBal;
+        //}
 
         public class LedgerParamaters
         {

@@ -110,14 +110,21 @@
                                     <label for="YearEnd">Fiscal Year End</label>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row mb-2">
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
                                     <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.SalesReportRDL">
                                     <label for="SalesReport">Sales Report Name</label>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.InvoiceReportRDL">
+                                    <label for="SalesReport">Invoice Report Name</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                           
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
                                     <input type="text" class="form-control" id="COALedgers" placeholder="COA for Party Ledgers" asp-for="@Model.Variables.CompanyGLs">

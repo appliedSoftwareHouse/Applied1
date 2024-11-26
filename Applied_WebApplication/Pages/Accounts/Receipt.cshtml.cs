@@ -175,11 +175,14 @@ namespace Applied_WebApplication.Pages.Accounts
         #region Print
         public IActionResult OnPostPrint(ReportType _ReportType)
         {
+            var _ShowImages = true;
+            if(_ReportType == ReportType.Preview) { _ShowImages = false; }
+           
             AppRegistry.SetKey(UserName, "rcptID", Variables.ID, KeyType.Text);
             AppRegistry.SetKey(UserName, "rcptHead2", Variables.Vou_No, KeyType.Text);
+            AppRegistry.SetKey(UserName, "rcptShowImg", !_ShowImages, KeyType.Boolean);
 
             return RedirectToPage("../ReportPrint/PrintReport", "Receipt", new { RptType = _ReportType });
-
         }
         #endregion
 

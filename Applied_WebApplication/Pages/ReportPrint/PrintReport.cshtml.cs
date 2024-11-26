@@ -229,8 +229,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 paramaters.Dt_To.ToString(DateYMD)
            };
 
-            var _FilterOB = $"[Customer] = {paramaters.N_Customer} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
-            var _Filter = $"[Customer] = {paramaters.N_Customer} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _Nature = GetText(UserName, "GLp_Nature");
+            var _FilterOB = $"[Customer] = {paramaters.N_Customer} AND NOT [COA] IN ({_Nature}) AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[Customer] = {paramaters.N_Customer} AND NOT [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
             var _GroupBy = "[Customer]";
             var _SortBy = "[Vou_date], [Vou_no]";
             
@@ -242,14 +243,14 @@ namespace Applied_WebApplication.Pages.ReportPrint
             if (_Table.Rows.Count > 0)
             {
                 var _Title = GetTitle(UserName, Tables.Customers, paramaters.N_Customer);
-                var _Status = GetColumnValue(UserName, Tables.Customers, "Status", paramaters.N_Customer);
-                var _StatusTitle = "";
-                if (_Status.Length > 0)
-                {
-                    _StatusTitle = DirectoryClass.GetDirectoryValue(UserName, "CompanyStatus", Convert.ToInt32(_Status));
-                    if (_StatusTitle.Length == 0) { _StatusTitle = "Un-assigned"; }
-                }
-                var _Heading1 = string.Concat(_Title, " (", _StatusTitle, ")");
+                //var _Status = GetColumnValue(UserName, Tables.Customers, "Status", paramaters.N_Customer);
+                //var _StatusTitle = "";
+                //if (_Status.Length > 0)
+                //{
+                //    _StatusTitle = DirectoryClass.GetDirectoryValue(UserName, "CompanyStatus", Convert.ToInt32(_Status));
+                //    if (_StatusTitle.Length == 0) { _StatusTitle = "Un-assigned"; }
+                //}
+                var _Heading1 = _Title;
                 var _Heading2 = string.Concat("From ", _Dates[1], " To ", _Dates[2]);
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
@@ -302,23 +303,37 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetGLEmployee(ReportType _ReportType)
         {
-            #region Report Filter Variables
-            ReportFilters Filters = new()
+            
+            ReportFilters paramaters = new ReportFilters()
             {
-                N_COA = 0, // (int)AppRegistry.GetKey(UserName, "GL_COA", KeyType.Number),
-                N_Employee = (int)AppRegistry.GetKey(UserName, "GL_Employee", KeyType.Number),
-                Dt_From = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_From", KeyType.Date),
-                Dt_To = (DateTime)AppRegistry.GetKey(UserName, "GL_Dt_To", KeyType.Date),
+                N_Employee = (int)GetKey(UserName, "GL_Employee", KeyType.Number),
+                Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
             };
-            #endregion
 
-            var _Table = DataTableClass.GetTable(UserName, SQLQuery.Ledger(Filters.FilterText() + " ORDER BY Customer, COA, Vou_Date"));
+            var _Dates = new string[3]
+           {
+                paramaters.Dt_From.AddDays(-1).ToString(DateYMD),
+                paramaters.Dt_From.ToString(DateYMD),
+                paramaters.Dt_To.ToString(DateYMD)
+           };
+
+            var _Nature = GetText(UserName, "GLp_Nature");
+            var _FilterOB = $"[Employee] = {paramaters.N_Employee} AND NOT [COA] IN ({_Nature}) AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[Employee] = {paramaters.N_Employee} AND NOT [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _GroupBy = "[Employee]";
+            var _SortBy = "[Vou_date], [Vou_no]";
+
+            var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+            DataTable _Table = DataTableClass.GetTable(UserName, _Query);
+
 
             if (_Table.Rows.Count > 0)
             {
-                var _Title = GetTitle(UserName, Tables.Employees, Filters.N_Employee);
+                var _Title = GetTitle(UserName, Tables.Employees, paramaters.N_Employee);
                 var _Heading1 = string.Concat(_Title);
-                var _Heading2 = string.Concat("From ", Filters.Dt_From.ToString(AppRegistry.FormatDate), " To ", Filters.Dt_To.ToString(AppRegistry.FormatDate));
+                var _Heading2 = string.Concat("From ", _Dates[1], " To ", _Dates[2]);
 
                 List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
@@ -1209,18 +1224,19 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _ID = GetText(UserName, "rcptID");
                 var _Query = SQLQuery.ReceiptsList($"[ID]={_ID}");
                 var _SourceTable = DataTableClass.GetTable(UserName, _Query);
-                var _ReportFile = "Receipt";
+                var _ReportFile = GetText(UserName, "InvReportRDL");
+                var _ShowImages = GetBool(UserName, "rcptShowImg");
+
                 if (_SourceTable == null) { return Page(); }
 
                 if (_SourceTable.Rows.Count > 0)
                 {
 
                     var _Amount = (decimal)_SourceTable.Rows[0]["Amount"];
-                    //var _Amount = (decimal)175823.55;
                     var _NumInWords = new NumInWords();
 
-                    var _CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle");
-                    var _CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit");
+                    var _CurrencyTitle = GetText(UserName, "CurrencyTitle");
+                    var _CurrencyUnit = GetText(UserName, "CurrencyUnit");
 
                     var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount, _CurrencyTitle, _CurrencyUnit);
 
@@ -1241,6 +1257,8 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     Reportmodel.AddReportParameter("Heading2", _Heading2);
                     Reportmodel.AddReportParameter("Footer", ReportFooter);
                     Reportmodel.AddReportParameter("InWord", _AmountinWord);
+                    Reportmodel.AddReportParameter("PayerTitle", "Donor");
+                    Reportmodel.AddReportParameter("ShowImages", _ShowImages.ToString());
 
                     Reportmodel.ReportData.DataSetName = "ds_receipt";
                     Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI

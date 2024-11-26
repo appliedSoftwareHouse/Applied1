@@ -38,6 +38,7 @@ namespace Applied_WebApplication.Pages.Account
                 
                 DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
                 SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL"),
+                InvoiceReportRDL = AppRegistry.GetText(UserName, "InvReportRDL"),
 
                 // Currency Setup
                 CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle"),
@@ -103,6 +104,7 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
             AppRegistry.SetKey(UserName, "SalesReportRDL", Variables.SalesReportRDL, KeyType.Text);
+            AppRegistry.SetKey(UserName, "InvReportRDL", Variables.InvoiceReportRDL, KeyType.Text);
             AppRegistry.SetKey(UserName, "CompanyGLs", Variables.CompanyGLs, KeyType.Text);
             AppRegistry.SetKey(UserName, "COAStocks", Variables.COAStocks, KeyType.Text);
 
@@ -144,6 +146,7 @@ namespace Applied_WebApplication.Pages.Account
             public int BRec_Tax { get; set; }
             public int BRec_Receivable { get; set; }
             public string SalesReportRDL { get; set; }
+            public string InvoiceReportRDL { get; set; }
             public string CompanyGLs { get; set; }
             public string COAStocks { get; set; }
             public int CashBookNature { get; set; }
