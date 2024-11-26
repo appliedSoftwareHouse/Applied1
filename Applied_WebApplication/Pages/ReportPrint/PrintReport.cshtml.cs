@@ -216,7 +216,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
             
             ReportFilters paramaters = new ReportFilters()
             {
-                //N_COA = (int)GetKey(UserName, "GL_COA", KeyType.Number),
                 N_Customer = (int)GetKey(UserName, "GL_Company", KeyType.Number),
                 Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
                 Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
@@ -229,9 +228,9 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 paramaters.Dt_To.ToString(DateYMD)
            };
 
-            var _Nature = GetText(UserName, "GLp_Nature");
-            var _FilterOB = $"[Customer] = {paramaters.N_Customer} AND NOT [COA] IN ({_Nature}) AND Date([Vou_Date]) < Date('{_Dates[1]}')";
-            var _Filter = $"[Customer] = {paramaters.N_Customer} AND NOT [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            var _Nature = GetText(UserName, "CompanyGLs");
+            var _FilterOB = $"[Customer] = {paramaters.N_Customer} AND  [COA] IN ({_Nature}) AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            var _Filter = $"[Customer] = {paramaters.N_Customer} AND  [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
             var _GroupBy = "[Customer]";
             var _SortBy = "[Vou_date], [Vou_no]";
             
