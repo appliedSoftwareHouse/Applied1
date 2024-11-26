@@ -1225,12 +1225,18 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _SourceTable = DataTableClass.GetTable(UserName, _Query);
                 var _ReportFile = GetText(UserName, "InvReportRDL");
                 var _ShowImages = GetBool(UserName, "rcptShowImg");
+                var _OutputFile = _ReportFile;
 
                 if (_SourceTable == null) { return Page(); }
+                if(RptType!=ReportType.Preview)
+                {
+                    var _VNo = _SourceTable.Rows[0]["Vou_No"].ToString();
+                    var _Payer = _SourceTable.Rows[0]["PayerTitle"].ToString();
+                    _OutputFile = $"{_VNo}-{_Payer}";
+                }
 
                 if (_SourceTable.Rows.Count > 0)
                 {
-
                     var _Amount = (decimal)_SourceTable.Rows[0]["Amount"];
                     var _NumInWords = new NumInWords();
 
@@ -1238,7 +1244,6 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     var _CurrencyUnit = GetText(UserName, "CurrencyUnit");
 
                     var _AmountinWord = _NumInWords.ChangeCurrencyToWords(_Amount, _CurrencyTitle, _CurrencyUnit);
-
 
                     ReportModel Reportmodel = new();
                     // Input Parameters  (.rdl report file)
@@ -1248,7 +1253,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     // output Parameters (like pdf, excel, word, html, tiff)
                     Reportmodel.OutputReport.FilePath = PrintedReportsPath;
                     Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
-                    Reportmodel.OutputReport.FileName = _ReportFile;
+                    Reportmodel.OutputReport.FileName = _OutputFile;
                     Reportmodel.OutputReport.ReportType = RptType;
                     // Reports Parameters
                     Reportmodel.AddReportParameter("CompanyName", CompanyName);

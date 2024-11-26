@@ -90,8 +90,11 @@ namespace Applied_WebApplication.Data
             if (Row.Table.TableName == Tables.BOMProfile.ToString()) { ValidateTable_BOMProfile(Row); }
             if (Row.Table.TableName == Tables.BOMProfile2.ToString()) { ValidateTable_BOMProfile2(Row); }
             if (Row.Table.TableName == Tables.Employees.ToString()) { ValidateTable_Employees(Row); }
+            if (Row.Table.TableName == Tables.Receipts.ToString()) { ValidateTable_Receipt(Row); }
             if (MyMessages.Count > 0) { return false; } else { return true; }
         }
+
+       
 
 
 
@@ -607,7 +610,6 @@ namespace Applied_WebApplication.Data
             if ((DateTime)Row["Vou_Date"] < AppRegistry.GetFiscalFrom()) { MyMessages.Add(SetMessage("Voucher Date is less than current fiscal year start date.")); }
             if ((DateTime)Row["Vou_Date"] > AppRegistry.GetFiscalTo()) { MyMessages.Add(SetMessage("Voucher Date is more than current fiscal year end date.")); }
         }
-
         private void ValidateTable_Employees(DataRow Row)
         {
             MyMessages = new List<Message>();
@@ -626,7 +628,22 @@ namespace Applied_WebApplication.Data
             if ((DateTime)Row["DOB"] == new DateTime()) { MyMessages.Add(SetMessage("Employee's date of birth is not defined.")); }
 
         }
+        private void ValidateTable_Receipt(DataRow Row)
+        {
+            MyMessages = new List<Message>();
+            if (SQLAction == CommandAction.Insert.ToString())
+            {
+                //if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+            }
+            if ((int)Row["ID"] == 0) { MyMessages.Add(SetMessage("Receipt ID is zero.")); }
+            if (Row["Vou_No"].ToString().Length==0) { MyMessages.Add(SetMessage("Voucher No. not defined.")); }
+            if ((int)Row["Payer"]==0) { MyMessages.Add(SetMessage("Received from (Payer) not defined.")); }
+            if ((int)Row["Project"]==0) { MyMessages.Add(SetMessage("Project (Purpose) not defined.")); }
+            if ((int)Row["COA"]==0) { MyMessages.Add(SetMessage("Receipt account is not defined.")); }
+            if ((int)Row["COACash"]==0) { MyMessages.Add(SetMessage("Receipt Cash / Bank Account not defined.")); }
+            if ((decimal)Row["Amount"]==0) { MyMessages.Add(SetMessage("Receipt Amount is zero.")); }
 
+        }
         #endregion
 
     }

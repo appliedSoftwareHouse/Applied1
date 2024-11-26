@@ -68,6 +68,8 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
 
                 case 7:
+                    Filter = $"Date([Vou_Date]) >= Date('{Date1}') AND Date([Vou_Date]) <= Date('{Date2}') AND [Status]='{Submitted}'";
+                    PostTable = GetTable(UserName, SQLQuery.PostReceipt(Filter));
                     break;
                 case 8:
                     break;
@@ -113,6 +115,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
             if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
+            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceipt(UserName, id); }
 
             if (ErrorMessages.Count > 0)
             {

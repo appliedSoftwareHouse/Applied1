@@ -784,6 +784,74 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Posting of Receipt
+        public static List<Message> PostReceipt(string UserName, int id)
+        {
+            List<Message> MyMessages = new();
+
+            DataTableClass tb_receipt = new(UserName, Tables.Receipts, $"ID={id}");
+            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
+
+            if (tb_receipt.Count == 0)
+            {
+                MyMessages.Add(SetMessage("No Record Found."));
+                return MyMessages;
+            }
+
+            var Row = tb_receipt.Rows[0];
+
+            var Row1 = tb_Ledger.NewRecord();
+            Row1["ID"] = 0;
+            Row1["TranID"] = Row["ID"];
+            Row1["Vou_Type"] = VoucherType.Receipt.ToString();
+            Row1["Vou_Date"] = Row["Vou_Date"];
+            Row1["Vou_No"] = Row["Vou_No"];
+            Row1["SR_No"] = 1;
+            Row1["Ref_No"] = Row["Ref_No"];
+            Row1["BookID"] = 0;
+            Row1["COA"] = Row["COACash"];
+            Row1["DR"] = Row["Amount"];
+            Row1["CR"] = 0;
+            Row1["Customer"] = Row["Payer"];
+            Row1["Project"] = Row["Project"];
+            Row1["Employee"] = Row["Employee"];
+            Row1["Inventory"] = DBNull.Value;
+            Row1["Description"] = Row["Description"];
+            Row1["Comments"] = DBNull.Value;
+
+            var Row2 = tb_Ledger.NewRecord();
+            Row2["ID"] = 0;
+            Row2["TranID"] = Row["ID"];
+            Row2["Vou_Type"] = VoucherType.Receipt.ToString();
+            Row2["Vou_Date"] = Row["Vou_Date"];
+            Row2["Vou_No"] = Row["Vou_No"];
+            Row2["SR_No"] = 1;
+            Row2["Ref_No"] = Row["Ref_No"];
+            Row2["BookID"] = 0;
+            Row2["COA"] = Row["COA"];
+            Row2["DR"] = 0;
+            Row2["CR"] = Row["Amount"];
+            Row2["Customer"] = Row["Payer"];
+            Row2["Project"] = Row["Project"];
+            Row2["Employee"] = Row["Employee"];
+            Row2["Inventory"] = DBNull.Value;
+            Row2["Description"] = Row["Description"];
+            Row2["Comments"] = DBNull.Value;
+
+            if(tb_Ledger.IsRowValid(Row,CommandAction.Insert, PostType.Receipt))
+            {
+                tb_Ledger.CurrentRow = Row1; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
+                tb_Ledger.CurrentRow = Row2; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
+
+                if(MyMessages.Count == 0)
+                {
+                    DataTableClass.Replace(UserName, Tables.Receipts, id, "Status", VoucherStatus.Posted.ToString());
+                }
+            }
+
+            return MyMessages;
+        }
+        #endregion
 
         #region Opening Balances Posting
         public static List<Message> PostOpeningBalance(string UserName)
@@ -895,7 +963,9 @@ namespace Applied_WebApplication.Data
             }
             return MyMessages;
         }
+        #endregion
 
+        #region Opening Balances Company and Stock
         public static List<Message> PostOpeningBalanceCompany(string UserName)
         {
             List<Message> MyMessages = new List<Message>();
@@ -1125,24 +1195,22 @@ namespace Applied_WebApplication.Data
                     var StockTitle = AppFunctions.GetTitle(UserName, Tables.Inventory, (int)Voucher[0]["Inventory"]);
                     if (_messages.Count == 0)
                     {
-
-                        MyMessages.Add(MessageClass.SetMessage($"{StockTitle}: Opening Balance saved sucessfully.", Color.Green));
+                        MyMessages.Add(SetMessage($"{StockTitle}: Opening Balance saved sucessfully.", Color.Green));
                     }
                     else
                     {
-                        MyMessages.Add(MessageClass.SetMessage($"{StockTitle}: Opening Balance NOT saved.", Color.Red));
+                        MyMessages.Add(SetMessage($"{StockTitle}: Opening Balance NOT saved.", Color.Red));
                     }
                 }
                 else
                 {
-                    MyMessages.Add(MessageClass.SetMessage($"Stock Opening Transaction {Voucher[0]["ID"]} not saved."));
+                    MyMessages.Add(SetMessage($"Stock Opening Transaction {Voucher[0]["ID"]} not saved."));
                 }
             }
             return MyMessages;
         }
         #endregion
 
-
-
+      
     }
 }

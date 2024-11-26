@@ -65,6 +65,9 @@ namespace Applied_WebApplication.Pages.Applied
                     break;
 
                 case 7:             // Receipt
+                    Filter = $"Date([Vou_Date]) >= Date('{Date1}') AND Date([Vou_Date]) <= Date('{Date2}') AND [Status]='{VoucherStatus.Posted}'";
+                    UnpostTable = GetTable(UserName, SQLQuery.PostReceipt(Filter));
+
                     break;
 
                 case 8:             // JV
@@ -98,6 +101,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BillReceivable) { IsError = UnpostClass.UnpostBillReceivable(UserName, id); }
             if (PostingType == (int)PostType.SaleReturn) { IsError = UnpostClass.UnpostSaleReturn(UserName, id); }
             if (PostingType == (int)PostType.Production) { IsError = UnpostClass.UnpostProduction(UserName, id); }
+            if (PostingType == (int)PostType.Receipt) { IsError = UnpostClass.UnpostReceipt(UserName, id); }
             if (ErrorMessages.Count == 0) { IsError = false; } else { IsError = true; return Page(); }
             return RedirectToPage("UnPost", "Refresh");
         }

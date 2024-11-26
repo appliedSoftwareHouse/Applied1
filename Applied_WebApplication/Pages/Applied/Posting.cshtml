@@ -4,7 +4,7 @@
 @{
     var UserName = User.Identity.Name;
     var NumFormat = AppRegistry.GetText(UserName, "FMTCurrency");                                                     // Get format of Currency to display
-    var DateFormat = AppRegistry.GetText(UserName, "DateFormat");                                                      // Get format of Number to Display
+    var DateFormat = AppRegistry.FormatDate;                                                      // Get format of Number to Display
     var TitlePosting = Enum.GetName(typeof(PostType), Model.Variables.PostingType);
 
 }
@@ -77,7 +77,8 @@
                 <tbody>
                     @foreach (DataRow Row in Model.PostTable.Rows)
                     {
-                        string RowDate = DateTime.Parse(Row["Vou_Date"].ToString()).ToString("dd-MMM-yyyy");
+                        string RowDate = ((DateTime)Row["Vou_Date"]).ToString(DateFormat);
+                        
 
                         <tr>
                             <td class="TextCenter">@Row["Vou_No"]</td>
