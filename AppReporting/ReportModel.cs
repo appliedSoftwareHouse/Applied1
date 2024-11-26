@@ -166,6 +166,8 @@ namespace AppReportClass
 
         public bool SaveReport()
         {
+            try
+            {
             Messages.Add($"{DateTimeNow}: Report {ReportBytes.Length} btyes count.");
             Messages.Add($"{DateTimeNow}: Report saving start at {DateTimeNow}");
 
@@ -195,6 +197,12 @@ namespace AppReportClass
             else
             {
                 Messages.Add($"{DateTimeNow}: Report NOT saved.");
+            }
+            }
+            catch (Exception)
+            {
+
+                throw;
             }
 
             return false;
