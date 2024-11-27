@@ -8,9 +8,8 @@
 }
 
 <div class="container AppHeading-2">
-    <h5 class="TextCenter">UNPOST VOUCHERS</h5>
+    <h3>UNPOST VOUCHERS</h3>
 </div>
-
 
 <!--HEADING MENU-->
 <form method="post">
@@ -47,7 +46,7 @@
                 </div>
             </div>
             <div class="col-md-2 d-grid">
-                <input type="submit" value="Refresh" class="btn btn-primary " asp-page-handler="Refresh" />
+                <input type="submit" value="Refresh" class="btn btn-primary" asp-page-handler="Refresh" />
             </div>
         </div>
     </div>
@@ -58,7 +57,7 @@
 @if (Model.UnpostTable != null)
 {
 
-    <div class="container overflow-scroll" style="min-height:400px;  max-height: 100vh">
+    <div class="container overflow-scroll" style="height:calc(100vh - 220px)">
         <div class="row">
             <table class="table-list">
                 <thead>
@@ -92,7 +91,7 @@
                                         <input type="submit"
                                                class="btn btn-link text-center"
                                                value="UnPost"
-                                   asp-page-handler="Unpost"
+                                   asp-page-handler="Unposting"
                                    asp-route-id=@Row["ID"]
                                    asp-route-PostingType=@Model.Variables.PostingType>
                                     </form>

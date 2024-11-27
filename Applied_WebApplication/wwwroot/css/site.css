@@ -32,18 +32,25 @@ body {
 
 .AppHeading {
     margin-top: 1px;
-    margin-bottom: 10px;
-    padding-left: 10px;
-    padding-bottom: 3px;
-    padding-top: 10px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-bottom: 2px;
+    padding-top: 1px;
     background-color: darkorchid;
     color: whitesmoke;
     border-block: double;
+    height: 40px;
+    font-size: 18px;
 }
 
     .AppHeading:hover {
         background-color: slateblue;
     }
+
+    .AppHeading h3{
+        text-align:center
+    }
+
 
 .AppHeading-2 {
     margin-top: 1px;
@@ -58,9 +65,16 @@ body {
     font-size: 18px;
 }
 
-AppHeading-2:hover {
-    background-color: slateblue;
-}
+    .AppHeading-2 h3 {
+        text-align:center;
+        color:white;
+
+    }
+
+
+    .AppHeading-2:hover {
+        background-color: slateblue;
+    }
 
 
 AppFooter {

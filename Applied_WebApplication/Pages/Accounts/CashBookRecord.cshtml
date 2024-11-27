@@ -22,29 +22,24 @@
     }
 
     }
-
-
 </style>
 
 
-<div class="container AppHeading">
-        <h4>CASH BOOK RECORD</h4>
+<div class="container AppHeading-2">
+    <h3>CASH BOOK RECORD</h3>
 </div>
 
-@if(Model.IsError)
+@if (Model.IsError)
 {
     <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.ErrorMessages></component>
 }
-
-
-
 
 <form method="post">
 
     <div class="container">
         <div>
-        <div> <input type="text" hidden name="ID" value=@Model.BookRecord.ID class="form-control"> </div>
-        <div> <input type="text" hidden name="BookID" value=@Model.BookRecord.BookID class="form-control"> </div>
+            <div> <input type="text" hidden name="ID" value=@Model.BookRecord.ID class="form-control"> </div>
+            <div> <input type="text" hidden name="BookID" value=@Model.BookRecord.BookID class="form-control"> </div>
         </div>
         <div class="row">
             <div class="col-md-6">
@@ -54,7 +49,6 @@
                            name="Vou_No"
                            value="@Model.BookRecord.Vou_No"
                            class="form-control"
-                           
                            placeholder="Voucher No">
                     <button name="auto" class="btn btn-outline-secondary" type="submit" asp-page-handler="AutoVoucher">Auto</button>
                 </div>
@@ -137,7 +131,7 @@
             </div>
             <div class="col-md-6">
                 <div class="col-md-6 input-group mb-3">
-                    <span class="input-group-text"  id="COAID">Employee</span>
+                    <span class="input-group-text" id="COAID">Employee</span>
                     <select class="form-select" name="Employee" asp-for="@Model.BookRecord.Employee">
                         <option selected>@TitleEmployee</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Employees))

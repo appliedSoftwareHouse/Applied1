@@ -92,7 +92,7 @@ namespace Applied_WebApplication.Pages.Applied
             }
         }
 
-        public IActionResult OnPostUnPost(int id, int PostingType)
+        public IActionResult OnPostUnPosting(int id, int PostingType)
         {
 
             if (PostingType == (int)PostType.CashBook) { IsError = UnpostClass.Unpost_CashBook(UserName, id); }
