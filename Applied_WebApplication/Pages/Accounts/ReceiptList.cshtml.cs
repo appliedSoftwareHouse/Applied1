@@ -1,3 +1,4 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -71,6 +72,28 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostEdit(int ID)
         {
             return RedirectToPage("Receipt", routeValues: new { ID });
+        }
+
+        public IActionResult OnPostDelete(int ID)
+        {
+            return Page();
+        }
+
+        public IActionResult OnPostPrint(int ID, string Vou_No)
+        {
+            var _ReportType = ReportType.Preview;
+            var _ShowImages = true;
+
+            AppRegistry.SetKey(UserName, "rcptID", ID, KeyType.Text);
+            AppRegistry.SetKey(UserName, "rcptHead2", Vou_No, KeyType.Text);
+            AppRegistry.SetKey(UserName, "rcptShowImg", !_ShowImages, KeyType.Boolean);
+
+            return RedirectToPage("../ReportPrint/PrintReport", "Receipt", new { RptType = _ReportType });
+        }
+
+        public IActionResult OnPostUnPost(int ID, string Vou_No)
+        {
+            return Page();
         }
 
 

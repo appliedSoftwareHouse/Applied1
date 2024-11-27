@@ -7,6 +7,7 @@
     var TitlePayer = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
     var ListAccount = Titles(UserName, SQLQuery.ReceiptAccounts());
     var ListPayer = Titles(UserName, Tables.Customers);
+    var Role = UserProfile.GetUserRole(User);
 }
 
 
@@ -17,13 +18,13 @@
 <form method="post">
     <div class="container list-filter">
         <div class="row">
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="input-group">
                     <span class="input-group-text" style="width:30%" id="From">Start</span>
                     <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.From />
                 </div>
             </div>
-            <div class="col-md-2">
+            <div class="col-md-3">
                 <div class="input-group">
                     <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.To />
                     <span class="input-group-text" style="width:30%" id="To">End</span>
@@ -31,7 +32,7 @@
             </div>
 
             <div class="col-md-4">
-                <div class="input-group justify-content-end">
+                <div class="input-group">
                     <span class="input-group-text" style="width:30%" id="To">Search</span>
                     <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.Variables.Search />
 
@@ -39,7 +40,7 @@
             </div>
 
             <div class="col-md-2">
-                <button class="btn btn-primary" asp-page-handler="Refresh">
+                <button class="btn btn-primary float-end" asp-page-handler="Refresh">
                     Refresh
                 </button>
             </div>
@@ -55,10 +56,10 @@
                     <th>Payer</th>
                     <th>Account</th>
                     <th>Project</th>
-                    <th>Employee</th>
-                    <th>Amount</th>
-                    <th>
-                        <button class="btn btn-primary" asp-page-handler="New">New</button>
+                   @*  <th>Employee</th> *@
+                    <th class="amount">Amount</th>
+                    <th style="text-align: center;">
+                        <button class="btn btn-primary" asp-page-handler="New"><i class="bi bi-clipboard-plus-fill"></i></button>
                     </th>
                 </tr>
             </thead>
@@ -76,30 +77,43 @@
                         <td style="width:15%">@Row["PayerTitle"]</td>
                         <td style="width:15%">@Row["ProjectTitle"]</td>
                         <td style="width:15%">@Row["AccountTitle"]</td>
-                        <td style="width:15%">@Row["EmployeeTitle"]</td>
+                        @* <td style="width:15%">@Row["EmployeeTitle"]</td> *@
                         <td style="width:10%" class="amount-blue">@_Amount</td>
-                        <td style="width:10%" class="justify-content-center">
+
+                        <td style="width:10%; text-align: center">
                             @if (_Status == "Submitted")
                             {
-                                <button type="submit" style="padding:0px"
+                                <button id="b1" type="submit" style="padding:0px;color:darkblue"
                                         asp-page-handler="Edit"
                                         asp-route-ID="@Row["ID"]"
                                         class="btn btn-link">
                                     <i class="bi bi-pencil-fill"></i>
                                 </button>
-                                <button type="submit" style="padding:0px"
+                                <button id="b2" type="submit" style="padding:0px;color:red"
                                         asp-page-handler="Delete"
                                         asp-route-ID="@Row["ID"]"
                                         class="btn btn-link">
                                     <i class="bi bi-trash-fill"></i>
                                 </button>
                             }
-                            <button type="submit" style="padding:0px"
+                            <button id="b3" type="submit" style="padding:0px;color:green"
                                     asp-page-handler="Print"
                                     asp-route-ID="@Row["ID"]"
+                                    asp-route-Vou_No="@Row["Vou_No"]"
                                     class="btn btn-link">
                                 <i class="bi bi-printer-fill"></i>
                             </button>
+                            @if(Role=="Administrator")
+                            {
+                                <button id="b3" type="submit" style="padding:0px;color:darkgoldenrod"
+                                        asp-page-handler="UnPost"
+                                        asp-route-ID="@Row["ID"]"
+                                        asp-route-Vou_No="@Row["Vou_No"]"
+                                        class="btn btn-link">
+                                    <i class="bi bi-card-checklist"></i>
+                                </button>
+                            }
+
                         </td>
                     </tr>
                 }
@@ -107,7 +121,6 @@
             </tbody>
             <tfoot>
                 <tr>
-                    <td></td>
                     <td></td>
                     <td></td>
                     <td></td>

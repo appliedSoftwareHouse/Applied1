@@ -58,6 +58,11 @@ namespace Applied_WebApplication.Pages
             return RedirectToPage("/Accounts/Vouchers");
         }
 
+        public IActionResult OnPostReceipt()
+        {
+            return RedirectToPage("/Accounts/Receipt", routeValues: new { ID = 0 });
+        }
+
 
         #region Excel Class
         //public void OnPostExcel()

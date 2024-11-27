@@ -27,6 +27,12 @@
 </div>
 
 
+@if (Model.MyMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.MyMessages></component>
+}
+
+
 @if (Model.MyMessage.Length > 0)
 {
     <div class="alert alert-warning alert-dismissible fade show" role="alert">
@@ -155,10 +161,10 @@
             {
                 <div class="col-md-3">
                     <div class="form-floating mb-3">
-                    <input type="text" disabled class="form-control" asp-for="@Model.Variables.Status" id="txtDescription">
-                    <label for="txtDescription">Status</label>
+                        <input type="text" disabled class="form-control" asp-for="@Model.Variables.Status" id="txtDescription">
+                        <label for="txtDescription">Status</label>
+                    </div>
                 </div>
-            </div>
             }
         </div>
     </div>
@@ -167,12 +173,7 @@
         <div class="row">
             <div class="col">
 
-                @if(Model.Variables.Status == "Submitted")
-                {
-                    <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
-                }
-
-                
+                <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
 
                 @if (Model.Variables.Vou_No != "New")
                 {
