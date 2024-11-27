@@ -16,6 +16,9 @@
     int RevenueID = AppRegistry.GetNumber(UserName, "RevenueNote");
     string _FilterCashBank = $"Nature IN ({CashBookID},{BankBookID})";
     string _FilterRevenue = $"Nature = {RevenueID}";
+
+    string UserRole = UserProfile.GetUserRole(User);
+
 }
 
 
@@ -148,6 +151,15 @@
                     <label for="txtDescription">Description (Remarks)</label>
                 </div>
             </div>
+            @if (UserRole == "Administrator")
+            {
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                    <input type="text" disabled class="form-control" asp-for="@Model.Variables.Status" id="txtDescription">
+                    <label for="txtDescription">Status</label>
+                </div>
+            </div>
+            }
         </div>
     </div>
 
@@ -155,7 +167,12 @@
         <div class="row">
             <div class="col">
 
-                <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
+                @if(Model.Variables.Status == "Submitted")
+                {
+                    <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#SaveRecord">Save</button>
+                }
+
+                
 
                 @if (Model.Variables.Vou_No != "New")
                 {

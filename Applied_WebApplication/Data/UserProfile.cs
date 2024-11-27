@@ -95,7 +95,7 @@ namespace Applied_WebApplication.Data
 
         public static string GetUserRole(ClaimsPrincipal _ClaimPrincipal)
         {
-            // Get a Company name to display at main page of the App.
+            // Get a user role from user identity.
             string Result = "Client";
             foreach (Claim _Claim in _ClaimPrincipal.Claims)
             {
