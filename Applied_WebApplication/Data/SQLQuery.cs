@@ -1452,7 +1452,7 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-        #region 
+        #region  Receipt and Posting of Receipt
         public static string ReceiptsList(string _Filter)
         {
             var _Text = new StringBuilder();
@@ -1474,9 +1474,29 @@ namespace Applied_WebApplication.Data
             }
 
             return _Text.ToString();
+        }
 
+        internal static string PostReceipt(string filter)
+        {
+            var _Text = new StringBuilder();
+
+            _Text.AppendLine("SELECT ");
+            _Text.AppendLine("[ID], ");
+            _Text.AppendLine("[Vou_No], ");
+            _Text.AppendLine("[Vou_Date], ");
+            _Text.AppendLine("[PayerTitle] AS [Title], ");
+            _Text.AppendLine("0 AS [DR], ");
+            _Text.AppendLine("[Amount] AS [CR], ");
+            _Text.AppendLine("[Status] ");
+            _Text.AppendLine("FROM ( ");
+            _Text.AppendLine(ReceiptsList(filter));
+            _Text.AppendLine(") As [Receipts]");
+
+
+            return _Text.ToString();
 
         }
+
         #endregion
 
 
