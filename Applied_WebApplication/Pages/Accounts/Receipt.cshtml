@@ -16,12 +16,21 @@
     int RevenueID = AppRegistry.GetNumber(UserName, "RevenueNote");
     string _FilterCashBank = $"Nature IN ({CashBookID},{BankBookID})";
     string _FilterRevenue = $"Nature = {RevenueID}";
+
+    string UserRole = UserProfile.GetUserRole(User);
+
 }
 
 
 <div class="AppHeading-2">
     <h3>RECEIPT</h3>
 </div>
+
+
+@if (Model.MyMessages.Count > 0)
+{
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors=@Model.MyMessages></component>
+}
 
 
 @if (Model.MyMessage.Length > 0)
@@ -148,6 +157,15 @@
                     <label for="txtDescription">Description (Remarks)</label>
                 </div>
             </div>
+            @if (UserRole == "Administrator")
+            {
+                <div class="col-md-3">
+                    <div class="form-floating mb-3">
+                        <input type="text" disabled class="form-control" asp-for="@Model.Variables.Status" id="txtDescription">
+                        <label for="txtDescription">Status</label>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 

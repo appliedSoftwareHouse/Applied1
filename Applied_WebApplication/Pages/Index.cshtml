@@ -107,7 +107,8 @@
             <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Invoice" asp-page=".\Accounts\Invoice" />
         </div>
         <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt" />
+            <button class="btn btn-primary" asp-page-handler="Receipt">Issue Receipt</button>
+            @* <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt?0" /> *@
         </div>
         <div class="p-2 d-inline-block">
             <input type="submit" id="btn-menu" class="btn btn-primary" value="Bill Payable" asp-page=".\Accounts\BillPayableList" formmethod="get" />

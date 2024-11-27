@@ -633,15 +633,16 @@ namespace Applied_WebApplication.Data
             MyMessages = new List<Message>();
             if (SQLAction == CommandAction.Insert.ToString())
             {
-                //if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
+                if (Seek("ID", Row["ID"].ToString())) { MyMessages.Add(SetMessage("ID is already exist in Data Base. Contact to Administrator.")); }
             }
-            if ((int)Row["ID"] == 0) { MyMessages.Add(SetMessage("Receipt ID is zero.")); }
+            
             if (Row["Vou_No"].ToString().Length==0) { MyMessages.Add(SetMessage("Voucher No. not defined.")); }
             if ((int)Row["Payer"]==0) { MyMessages.Add(SetMessage("Received from (Payer) not defined.")); }
             if ((int)Row["Project"]==0) { MyMessages.Add(SetMessage("Project (Purpose) not defined.")); }
             if ((int)Row["COA"]==0) { MyMessages.Add(SetMessage("Receipt account is not defined.")); }
             if ((int)Row["COACash"]==0) { MyMessages.Add(SetMessage("Receipt Cash / Bank Account not defined.")); }
             if ((decimal)Row["Amount"]==0) { MyMessages.Add(SetMessage("Receipt Amount is zero.")); }
+            if (Row["Description"].ToString() == string.Empty) { MyMessages.Add(SetMessage("Description is null.")); }
 
         }
         #endregion

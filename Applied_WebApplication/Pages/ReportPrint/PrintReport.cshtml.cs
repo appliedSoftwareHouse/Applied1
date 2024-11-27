@@ -154,9 +154,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             if (_Table.Rows.Count > 0)
             {
+                _Dates[1] = paramaters.Dt_From.ToString(FormatDate);
+                _Dates[2] = paramaters.Dt_To.ToString(FormatDate);
+
                 var FMTDate = GetFormatDate(UserName);
                 var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, paramaters.N_COA)}";
-                var _Heading2 = $"From {_Dates[1]} to {_Dates[1]}";
+                var _Heading2 = $"From {_Dates[1]} to {_Dates[2]}";
                 var _CompanyName = UserProfile.GetCompanyName(User);
 
 
