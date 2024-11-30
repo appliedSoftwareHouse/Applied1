@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Net;
+using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -358,7 +360,7 @@ namespace Applied_WebApplication.Data
             _Text3.AppendLine("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[EMPLOYEE]");
             _Text3.AppendLine("LEFT JOIN[Project]   [P] ON[P].[ID] = [L].[PROJECT]");
             _Text3.AppendLine("LEFT JOIN[Inventory] [I] ON[I].[ID] = [L].[INVENTORY]");
-            if (_OrderBy.Length>0) { _Text3.AppendLine($"ORDER BY {_OrderBy}"); }
+            if (_OrderBy.Length > 0) { _Text3.AppendLine($"ORDER BY {_OrderBy}"); }
 
             return _Text3.ToString();
 
@@ -1499,6 +1501,31 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Cash Bank book Voucher print Query
+        public static string CashBankPrint(string Book, string Filter)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT * FROM (");
+            _Text.AppendLine("SELECT[CB].*,");
+            _Text.AppendLine("[B].[Title] AS [BookTitle],");
+            _Text.AppendLine("[C].[Title] AS [AccountTitle],");
+            _Text.AppendLine("[T].[Title] AS [CustomerTitle],");
+            _Text.AppendLine("[E].[Title] AS [EmployeeTitle],");
+            _Text.AppendLine("[P].[Title] AS [projectTitle]");
+            _Text.AppendLine($"FROM [{Book}] [CB]");
+            _Text.AppendLine("LEFT JOIN [COA]       [B] ON [B].[ID] = [CB].[BookID]");
+            _Text.AppendLine("LEFT JOIN [COA]       [C] ON [C].[ID] = [CB].[COA]");
+            _Text.AppendLine("LEFT JOIN [Customers] [T] ON [T].[ID] = [CB].[Customer]");
+            _Text.AppendLine("LEFT JOIN [Employees] [E] ON [E].[ID] = [CB].[Employee]");
+            _Text.AppendLine("LEFT JOIN [Project]   [P] ON [P].[ID] = [CB].[Project])");
+            if(Filter.Length > 0)
+            {
+                _Text.AppendLine($"WHERE {Filter}");
+            }
+
+            return _Text.ToString();
+        }
+        #endregion
 
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS

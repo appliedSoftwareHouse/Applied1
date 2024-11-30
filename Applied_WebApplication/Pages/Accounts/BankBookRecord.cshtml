@@ -95,7 +95,7 @@
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="Debit">Debit</span>
                     <input type="number"
-                          step=".01"
+                           step=".01"
                            name="DR"
                            value="@Model.BookRecord.DR"
                            class="form-control"
@@ -183,13 +183,15 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!--BUTTON-->
-
+    <!--BUTTON-->
+    <div class="container">
         <div class="row">
             <div class="col">
                 <input class="btn btn-primary" type="submit" value="SAVE" asp-page-handler="Save" />
                 <input class="btn btn-primary" type="submit" value="Back" asp-page-handler="Back" />
+                <input class="btn btn-primary" type="submit" value="Print" asp-page-handler="Print" />
             </div>
         </div>
     </div>
