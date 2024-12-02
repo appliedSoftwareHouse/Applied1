@@ -173,13 +173,13 @@ namespace Applied_WebApplication.Pages.Accounts
                 {
                     var _BookID = (int)_Table.Rows[0]["BookID"];
                     var _Booktitle = AppFunctions.GetTitle(UserName, Tables.COA, _BookID);
-                    AppRegistry.SetKey(UserName, "cbbVouID", ID, KeyType.Number);
-                    AppRegistry.SetKey(UserName, "cbbHeading1", "Bank Book", KeyType.Text);
-                    AppRegistry.SetKey(UserName, "cbbHeading2", _Booktitle, KeyType.Text);
-                    AppRegistry.SetKey(UserName, "cbbBook", "BankBook", KeyType.Text);
+                    SetKey(UserName, "cbbVouID", ID, KeyType.Number);
+                    SetKey(UserName, "cbbHeading1", "Bank Book", KeyType.Text);
+                    SetKey(UserName, "cbbHeading2", _Booktitle, KeyType.Text);
+                    SetKey(UserName, "cbbBook", "BankBook", KeyType.Text);
 
-                    var Option = ReportType.Preview;
-                    return RedirectToPage("../ReportPrint/PrintReport", "CashBankBook", new { _ReportType = Option });
+                    var RptType = ReportType.Preview;
+                    return RedirectToPage("../ReportPrint/PrintReport", "CashBankBook", routeValues: new { RptType });
 
                 }
             }

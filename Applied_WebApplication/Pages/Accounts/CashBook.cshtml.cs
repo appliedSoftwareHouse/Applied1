@@ -160,11 +160,28 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return RedirectToPage("CashBook");
         }
-        public IActionResult OnPostPrint(string Vou_No)
+        public IActionResult OnPostPrint(int ID)
         {
-            SetKey(UserName, "cbVouNo", Vou_No, KeyType.Text);
-            SetKey(UserName, "Heading1", "Cash Voucher", KeyType.Text);
-            return RedirectToPage("../ReportPrint/PrintReport", "Voucher", new { _ReportType = ReportType.Preview });
+            if (ID > 0)
+            {
+
+                var _Table = DataTableClass.GetTable(UserName, Tables.CashBook, $"ID={ID}");
+
+                if (_Table.Rows.Count > 0)
+                {
+                    var _BookID = (int)_Table.Rows[0]["BookID"];
+                    var _Booktitle = AppFunctions.GetTitle(UserName, Tables.COA, _BookID);
+                    SetKey(UserName, "cbbVouID", ID, KeyType.Number);
+                    SetKey(UserName, "cbbHeading1", "Cash Book", KeyType.Text);
+                    SetKey(UserName, "cbbHeading2", _Booktitle, KeyType.Text);
+                    SetKey(UserName, "cbbBook", "CashBook", KeyType.Text);
+
+                    var RptType = ReportType.Preview;
+                    return RedirectToPage("../ReportPrint/PrintReport", "CashBankBook", routeValues: new { RptType});
+
+                }
+            }
+            return Page();
         }
         public IActionResult OnPostShow(int ID)
         {
