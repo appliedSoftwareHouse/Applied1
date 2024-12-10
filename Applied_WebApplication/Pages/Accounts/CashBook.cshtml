@@ -24,11 +24,11 @@
 
 <style>
     .date-1 {
-        width: 100px
+    width: 100px
     }
 
     .box {
-        height: 100%;
+    height: 100%;
     }
 </style>
 
@@ -77,7 +77,7 @@
                 @if (Model.Variables.CashBookID > 0)
                 {
                     <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                            asp-page-handler="Add">
+                    asp-page-handler="Add">
                         ADD
                     </button>
                 }
@@ -107,7 +107,7 @@
                                 <!--CASH BOOK ADD BUTTON-->
                                 <th style="width:10%; text-align: right">
                                     <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                                            asp-page-handler="Add">
+                                    asp-page-handler="Add">
                                         <i class="bi bi-database-add"></i>
 
                                     </button>
@@ -117,6 +117,7 @@
                         <tbody>
                             @foreach (DataRow Row in Model.Cashbook.Rows)
                             {
+                                
                                 decimal _DR = Conversion.ToDecimal(Row["DR"]);
                                 decimal _CR = Conversion.ToDecimal(Row["CR"]);
                                 _BAL += (_CR - _DR);
@@ -152,9 +153,9 @@
                                                 <i class="bi bi-trash-fill"></i>
                                             </button>
 
-                                            <button class="btn btn-link btn-sm listbutton-green"
+                                            <button class="btn btn-link" type="submit"
                                                     asp-page-handler="Print"
-                                                    asp-route-Vou_No="@Row["Vou_No"]">
+                                                    asp-route-ID="@Row["ID"]">
                                                 <i class="bi bi-printer text-success"></i>
                                             </button>
 
@@ -163,9 +164,9 @@
                                     else
                                     {
                                         <td class="text-center">
-                                            <button class="btn btn-link"
+                                            <button class="btn btn-link" type="submit"
                                                     asp-page-handler="Print"
-                                                    asp-route-Vou_No="@Row["Vou_No"]">
+                                                    asp-route-ID="@Row["ID"]">
                                                 <i class="bi bi-printer text-success"></i>
                                             </button>
                                         </td>

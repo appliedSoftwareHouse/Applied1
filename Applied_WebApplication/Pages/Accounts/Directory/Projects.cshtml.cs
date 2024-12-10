@@ -107,6 +107,7 @@ namespace Applied_WebApplication.Pages.Accounts.Directory
             public string Code { get; set; }
             public string Title { get; set; }
             public string Comments { get; set; }
+            public string Search { get; set; }
 
         }
     }

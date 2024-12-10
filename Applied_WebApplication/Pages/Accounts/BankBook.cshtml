@@ -100,7 +100,7 @@
                                     <!--CASH BOOK ADD BUTTON-->
                                     <th style="width:10%; text-align: right">
                                         <button class="btn btn-primary float-end" type="Submit" id="btnAdd"
-                                            asp-page-handler="Add">
+                                                asp-page-handler="Add">
                                             <i class="bi bi-database-add"></i>
 
                                         </button>
@@ -134,35 +134,27 @@
                                         {
                                             <td class="text-center">
                                                 <button class="btn btn-link btn-sm p-0"
-                                            asp-page-handler="Edit"
-                                            asp-route-ID="@Row["ID"]">
+                                                        asp-page-handler="Edit"
+                                                        asp-route-ID="@Row["ID"]">
                                                     <i class="bi bi-pencil-fill text-primary"></i>
                                                 </button>
 
                                                 <button class="btn btn-link btn-sm p-0"
-                                            asp-page-handler="Delete"
-                                            asp-route-ID="@Row["ID"]">
+                                                        asp-page-handler="Delete"
+                                                        asp-route-ID="@Row["ID"]">
                                                     <i class="bi bi-trash-fill text-danger"></i>
                                                 </button>
-
-                                                <button class="btn btn-link btn-sm p-0"
-                                            asp-page-handler="Print"
-                                            asp-route-Vou_No="@Row["Vou_No"]">
-                                                    <i class="bi bi-printer text-success"></i>
-                                                </button>
-
                                             </td>
                                         }
-                                        else
-                                        {
-                                            <td class="text-center">
-                                                <button class="btn btn-link"
-                                            asp-page-handler="Print"
-                                            asp-route-Vou_No="@Row["Vou_No"]">
-                                                    <i class="bi bi-printer text-success"></i>
-                                                </button>
-                                            </td>
-                                        }
+
+                                        <td class="text-center">
+                                            <button class="btn btn-link"
+                                                    asp-page-handler="Print"
+                                                    asp-route-ID="@Row["ID"]">
+                                                <i class="bi bi-printer text-success"></i>
+                                            </button>
+                                        </td>
+
                                     </tr>
                                 }
                             </tbody>
