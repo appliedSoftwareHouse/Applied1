@@ -11,12 +11,36 @@
     <h5 class="TextCenter">EMPLOYEES LIST</h5>
 </div>
 
-
-
 <form method="post">
+    <div class="container list-filter">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group justify-content-end">
+                    <span class="input-group-text" style="width:30%" id="To">Search</span>
+                    <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.SearchText />
+
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <button class="btn btn-primary" asp-page-handler="Refresh">
+                    Search
+                </button>
+
+
+                @if (Model.SearchText.Length > 0)
+                {
+                    <button class="btn btn-primary" asp-page-handler="Clear">
+                        Clear
+                    </button>
+                }
+            </div>
+        </div>
+    </div>
+
     <!-- Table of Employee List. -->
     <div class="container">
-        <table class="table table-hover">
+        <table class="table-list">
             <thead>
                 <tr>
                     <th>Code</th>
@@ -35,32 +59,35 @@
                 </tr>
             </thead>
             <tbody>
-                @if (Model.MyTable.Rows.Count > 0)
+                @if (Model.MyTable is not null)
                 {
-                    @foreach (DataRow Row in Model.MyTable.Rows)
+                    @if (Model.MyTable.Rows.Count > 0)
                     {
-                        <tr>
-                            <td>@Row["Code"]</td>
-                            <td>@Row["Title"]</td>
-                            <td>@Row["Designation"]</td>
-                            <td>@Row["Full_Name"]</td>
-                            <td>@Row["City"]</td>
-                            <td>
-                                <div class="text-center">
-                                    <button class="btn listbutton-blue"
-                                    asp-page-handler="Edit"
-                                    asp-route-ID=@Row["ID"]>
-                                        <i class="bi bi-pencil-fill "></i>
-                                    </button>
+                        @foreach (DataRow Row in Model.MyTable.Rows)
+                        {
+                            <tr>
+                                <td>@Row["Code"]</td>
+                                <td>@Row["Title"]</td>
+                                <td>@Row["Designation"]</td>
+                                <td>@Row["Full_Name"]</td>
+                                <td>@Row["City"]</td>
+                                <td>
+                                    <div class="text-center">
+                                        <button class="btn listbutton-blue"
+                                                asp-page-handler="Edit"
+                                                asp-route-ID=@Row["ID"]>
+                                            <i class="bi bi-pencil-fill "></i>
+                                        </button>
 
-                                    <button class="btn listbutton-red"
-                                    asp-page-handler="Delete"
-                                    asp-route-ID=@Row["ID"]>
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                        <button class="btn listbutton-red"
+                                                asp-page-handler="Delete"
+                                                asp-route-ID=@Row["ID"]>
+                                            <i class="bi bi-trash3-fill"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     }
                 }
                 else
