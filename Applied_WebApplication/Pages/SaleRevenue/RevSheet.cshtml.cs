@@ -42,11 +42,10 @@ namespace Applied_WebApplication.Pages.SaleRevenue
             var _Date1 = AppFunctions.MinDate(Variables.MinDate, Variables.MaxDate).ToString(DateYMD);
             var _Date2 = AppFunctions.MaxDate(Variables.MinDate, Variables.MaxDate).ToString(DateYMD);
 
-            var _Filter = $"COA={id}";
             var _Dates = new string[] { _Date1, _Date2 };
             var _Book = "Cash";
 
-            Cashbook = DataTableClass.GetTable(UserName, SQLQuery.BookLedger(_Filter, _Dates, _Book));
+            Cashbook = DataTableClass.GetTable(UserName, SQLQuery.BookLedger((int)id, _Dates, _Book));
 
             if (Variables.IsPosted1 == 1)                        // Not posted.
             {
