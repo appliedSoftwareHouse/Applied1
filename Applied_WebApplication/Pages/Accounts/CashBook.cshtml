@@ -8,17 +8,14 @@
 @{
     var UserName = User.Identity.Name;
     var UserData = new UserProfile(UserName);
-    var CashCode = 1;
-    var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashCode.ToString());
+    var CashNature = 1;          // 
+    var COATitles = Titles(UserName, Tables.COA, "Nature=" + CashNature.ToString());
     var FMTAmount = AppRegistry.Currency2d;
     var FMTDate = AppRegistry.GetText(UserName, "FMTDate");
     var TitleBook = GetTitle(UserName, Tables.COA, Model.Variables.CashBookID);
     var Date1 = Model.Variables.MinDate.ToString("yyyy-MM-dd");
     var Date2 = Model.Variables.MaxDate.ToString("yyyy-MM-dd");
     var _BAL = 0.00M;
-
-
-
     var _SelectPosted = "SELECT...";
 }
 
