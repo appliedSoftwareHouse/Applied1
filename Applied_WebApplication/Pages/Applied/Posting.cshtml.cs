@@ -115,7 +115,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
             if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
-            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceipt(UserName, id); }
+            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result; }
 
             if (ErrorMessages.Count > 0)
             {

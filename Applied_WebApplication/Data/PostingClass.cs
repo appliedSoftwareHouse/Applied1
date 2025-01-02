@@ -1,6 +1,7 @@
 ﻿using Applied_WebApplication.Pages;
 using System.Data;
 using System.Data.SQLite;
+using System.Diagnostics;
 using System.Drawing;
 using static Applied_WebApplication.Data.MessageClass;
 
@@ -785,69 +786,77 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Posting of Receipt
-        public static List<Message> PostReceipt(string UserName, int id)
+        public static async Task<List<Message>> PostReceiptAsync(string UserName, int id)
         {
             List<Message> MyMessages = new();
 
-            DataTableClass tb_receipt = new(UserName, Tables.Receipts, $"ID={id}");
-            DataTableClass tb_Ledger = new(UserName, Tables.Ledger);
-
-            if (tb_receipt.Count == 0)
+            await Task.Run(() =>
             {
-                MyMessages.Add(SetMessage("No Record Found."));
-                return MyMessages;
-            }
+                DataTableClass tb_receipt = new(UserName, Tables.Receipts, $"ID={id}");
+                DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "Vou_Type='Receipt'");
+                bool DoProcess = true;
 
-            var Row = tb_receipt.Rows[0];
-
-            var Row1 = tb_Ledger.NewRecord();
-            Row1["ID"] = 0;
-            Row1["TranID"] = Row["ID"];
-            Row1["Vou_Type"] = VoucherType.Receipt.ToString();
-            Row1["Vou_Date"] = Row["Vou_Date"];
-            Row1["Vou_No"] = Row["Vou_No"];
-            Row1["SR_No"] = 1;
-            Row1["Ref_No"] = Row["Ref_No"];
-            Row1["BookID"] = 0;
-            Row1["COA"] = Row["COACash"];
-            Row1["DR"] = Row["Amount"];
-            Row1["CR"] = 0;
-            Row1["Customer"] = Row["Payer"];
-            Row1["Project"] = Row["Project"];
-            Row1["Employee"] = Row["Employee"];
-            Row1["Inventory"] = DBNull.Value;
-            Row1["Description"] = Row["Description"];
-            Row1["Comments"] = DBNull.Value;
-
-            var Row2 = tb_Ledger.NewRecord();
-            Row2["ID"] = 0;
-            Row2["TranID"] = Row["ID"];
-            Row2["Vou_Type"] = VoucherType.Receipt.ToString();
-            Row2["Vou_Date"] = Row["Vou_Date"];
-            Row2["Vou_No"] = Row["Vou_No"];
-            Row2["SR_No"] = 1;
-            Row2["Ref_No"] = Row["Ref_No"];
-            Row2["BookID"] = 0;
-            Row2["COA"] = Row["COA"];
-            Row2["DR"] = 0;
-            Row2["CR"] = Row["Amount"];
-            Row2["Customer"] = Row["Payer"];
-            Row2["Project"] = Row["Project"];
-            Row2["Employee"] = Row["Employee"];
-            Row2["Inventory"] = DBNull.Value;
-            Row2["Description"] = Row["Description"];
-            Row2["Comments"] = DBNull.Value;
-
-            if(tb_Ledger.IsRowValid(Row,CommandAction.Insert, PostType.Receipt))
-            {
-                tb_Ledger.CurrentRow = Row1; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
-                tb_Ledger.CurrentRow = Row2; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
-
-                if(MyMessages.Count == 0)
+                if (tb_receipt.Count == 0)
                 {
-                    DataTableClass.Replace(UserName, Tables.Receipts, id, "Status", VoucherStatus.Posted.ToString());
+                    MyMessages.Add(SetMessage("No Record Found."));
+                    DoProcess = false;
                 }
-            }
+
+                if (DoProcess)
+                {
+
+                    var Row = tb_receipt.Rows[0];
+
+                    var Row1 = tb_Ledger.NewRecord();
+                    Row1["ID"] = 0;
+                    Row1["TranID"] = Row["ID"];
+                    Row1["Vou_Type"] = VoucherType.Receipt.ToString();
+                    Row1["Vou_Date"] = Row["Vou_Date"];
+                    Row1["Vou_No"] = Row["Vou_No"];
+                    Row1["SR_No"] = 1;
+                    Row1["Ref_No"] = Row["Ref_No"];
+                    Row1["BookID"] = 0;
+                    Row1["COA"] = Row["COACash"];
+                    Row1["DR"] = Row["Amount"];
+                    Row1["CR"] = 0;
+                    Row1["Customer"] = Row["Payer"];
+                    Row1["Project"] = Row["Project"];
+                    Row1["Employee"] = Row["Employee"];
+                    Row1["Inventory"] = DBNull.Value;
+                    Row1["Description"] = Row["Description"];
+                    Row1["Comments"] = DBNull.Value;
+
+                    var Row2 = tb_Ledger.NewRecord();
+                    Row2["ID"] = 0;
+                    Row2["TranID"] = Row["ID"];
+                    Row2["Vou_Type"] = VoucherType.Receipt.ToString();
+                    Row2["Vou_Date"] = Row["Vou_Date"];
+                    Row2["Vou_No"] = Row["Vou_No"];
+                    Row2["SR_No"] = 1;
+                    Row2["Ref_No"] = Row["Ref_No"];
+                    Row2["BookID"] = 0;
+                    Row2["COA"] = Row["COA"];
+                    Row2["DR"] = 0;
+                    Row2["CR"] = Row["Amount"];
+                    Row2["Customer"] = Row["Payer"];
+                    Row2["Project"] = Row["Project"];
+                    Row2["Employee"] = Row["Employee"];
+                    Row2["Inventory"] = DBNull.Value;
+                    Row2["Description"] = Row["Description"];
+                    Row2["Comments"] = DBNull.Value;
+
+                    if (tb_Ledger.IsRowValid(Row, CommandAction.Insert, PostType.Receipt))
+                    {
+                        tb_Ledger.CurrentRow = Row1; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
+                        tb_Ledger.CurrentRow = Row2; tb_Ledger.Save(); MyMessages.AddRange(tb_Ledger.ErrorMessages);
+
+                        if (MyMessages.Count == 0)
+                        {
+                            DataTableClass.Replace(UserName, Tables.Receipts, id, "Status", VoucherStatus.Posted.ToString());
+                        }
+                    }
+                }
+            });
 
             return MyMessages;
         }
@@ -1211,6 +1220,6 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
-      
+
     }
 }
