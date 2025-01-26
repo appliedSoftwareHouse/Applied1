@@ -62,6 +62,7 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             public DateTime DateFrom { get; set; }
             public DateTime DateTo { get; set; }
+            public string Search { get; set; }
 
         }
 
