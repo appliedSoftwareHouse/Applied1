@@ -4,6 +4,9 @@
 @{
     var UserName = User.Identity.Name;
     var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+
+    var Tot_DR = 0.00M;
+    var Tot_CR = 0.00M;
 }
 
 
@@ -15,29 +18,35 @@
 
 
 <form method="post">
-    <div class="container bg-info">
-        <div class="row d-flex align-items-center text-black">
-            <dir class="col-md-3">
-                <div class="form-floating mt-2">
-                    <input class="form-control" type="date" id="txtDateFrom" asp-for="@Model.Variables.DateFrom" placeholder="Date From" />
-                    <label for="txtDateFrom">From</label>
+    <div class="container list-filter">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="From">Start</span>
+                    <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.DateFrom />
                 </div>
-            </dir>
-            <dir class="col-md-3">
-                <div class="form-floating mt-2">
-                    <input class="form-control" type="date" id="txtDateTo" asp-for="@Model.Variables.DateTo" placeholder="Date To" />
-                    <label for="txtDateFrom">To</label>
+            </div>
+            <div class="col-md-3">
+                <div class="input-group">
+                    <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.DateTo />
+                    <span class="input-group-text" style="width:30%" id="To">End</span>
                 </div>
-            </dir>
-            <dir class="col-md-3">
-                <div class="form-floating mt-2">
-                    <input class="form-control" id="txtTest" placeholder="Test" />
-                    <label formaction="txtTest">Test</label>
+            </div>
+
+            <div class="col-md-4">
+                <div class="input-group">
+                    <span class="input-group-text" style="width:30%" id="To">Search</span>
+                    <input type="Text" class="form-control text-center" id="SearchText" style="width:70%" asp-for=@Model.Variables.Search />
+
                 </div>
-            </dir>
-            <dir class="col-md-3">
-                <button type="submit" class="btn btn-premary" asp-page-handler="Refresh">REFRESH</button>
-            </dir>
+            </div>
+
+            <div class="col-md-2">
+                <button class="btn btn-primary float-end" asp-page-handler="Refresh">
+                    Refresh
+                </button>
+            </div>
+            
         </div>
     </div>
 
@@ -45,16 +54,16 @@
 
 
     <!-------------------Table -->
-    <div class="container">
-        <table class="table table-hover">
+    <div class="container mt-2">
+        <table class="table-list">
             <thead>
                 <tr>
-                    <th style="width:10%">Date</th>
-                    <th style="width:10%">Code</th>
-                    <th style="width:10%">Debit</th>
-                    <th style="width:10%">Credit</th>
-                    <th style="width:30%">Description</th>
-                    <th>
+                    <th class="text-center" style="width:10%">Date</th>
+                    <th class="text-center" style="width:10%">Vou. No</th>
+                    <th class="text-center" style="width:10%">Debit</th>
+                    <th class="text-center" style="width:10%">Credit</th>
+                    <th class="text-center" style="width:50%">Description</th>
+                    <th class="text-center" style="width:10%; text-align: center">
                         <button type="submit" class="listbutton-green"
                                 asp-page-handler="New">
                             <i class="bi bi-database-add"></i>
@@ -71,20 +80,18 @@
                         string _Date = AppFunctions.GetDate(Row["Vou_Date"]);
                         decimal _DR = (decimal.Parse(Row["DR"].ToString()));
                         decimal _CR = (decimal.Parse(Row["CR"].ToString()));
+
+                        Tot_DR += _DR; Tot_CR += _CR;
+
                       
                         <tr>
-                            <td>@_Date</td>
-                            <td>@Row["Vou_No"].ToString()</td>
+                            <td class="text-center">@_Date</td>
+                            <td class="text-center">@Row["Vou_No"].ToString()</td>
                             <td class="amount">@_DR.ToString(FMTCurrency)</td>
                             <td class="amount">@_CR.ToString(FMTCurrency)</td>
-                            <td>@Row["Description"].ToString()</td>
-                            
-                            <td>
-                                <button type="submit" class="listbutton-blue"
-                                asp-route-Vou_No="@Row["Vou_No"]"
-                                asp-page-handler="JV">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button>
+                            <td class="px-2">@Row["Description"].ToString()</td>
+
+                            <td style="text-align: center">
                                 <button type="submit" class="listbutton-blue"
                                         asp-route-Vou_No="@Row["Vou_No"]"
                                         asp-page-handler="JV2">
@@ -100,14 +107,23 @@
                     }
                 }
             </tbody>
+            <tfoot>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th class="amount-blue">@Tot_DR.ToString(FMTCurrency)</th>
+                    <th class="amount-blue">@Tot_DR.ToString(FMTCurrency)</th>
+                    <th></th>
+                    <th style="text-align: center">
+                        <button type="submit" class="listbutton-green"
+                                asp-page-handler="New">
+                            <i class="bi bi-database-add"></i>
+                        </button>
+                    </th>
+                </tr>
+
+            </tfoot>
         </table>
     </div>
-    <!--Buttons Area-->
-    <div>
-        <button type="submit" class="listbutton-green"
-                asp-page-handler="New">
-            <i class="bi bi-database-add"></i>
-        </button>
-
-    </div>
+    
 </form>

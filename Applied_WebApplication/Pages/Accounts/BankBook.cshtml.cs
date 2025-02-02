@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using System.Drawing;
+using System.Net;
 using static Applied_WebApplication.Data.AppRegistry;
 using static Applied_WebApplication.Data.MessageClass;
 
@@ -26,7 +27,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public string UserName => User.Identity.Name;
 
 
-        #region Get / POST
+        #region Get
 
         public void OnGet(int? id)
         {
@@ -161,12 +162,34 @@ namespace Applied_WebApplication.Pages.Accounts
             }
             return RedirectToPage("BankBook");
         }
-        public IActionResult OnPostPrint(string Vou_No)
+        public IActionResult OnPostPrint(int ID)
         {
-            SetKey(UserName, "cbVouNo", Vou_No, KeyType.Text);
-            SetKey(UserName, "Heading1", "Bank Voucher", KeyType.Text);
+            if (ID > 0)
+            {
 
-            return RedirectToPage("../ReportPrint/PrintReport", "Voucher", new { _ReportType = ReportType.Preview });
+                var _Table = DataTableClass.GetTable(UserName, Tables.BankBook, $"ID={ID}");
+
+                if (_Table.Rows.Count > 0)
+                {
+                    var _BookID = (int)_Table.Rows[0]["BookID"];
+                    var _Booktitle = AppFunctions.GetTitle(UserName, Tables.COA, _BookID);
+                    SetKey(UserName, "cbbVouID", ID, KeyType.Number);
+                    SetKey(UserName, "cbbHeading1", "Bank Book", KeyType.Text);
+                    SetKey(UserName, "cbbHeading2", _Booktitle, KeyType.Text);
+                    SetKey(UserName, "cbbBook", "BankBook", KeyType.Text);
+
+                    var RptType = ReportType.Preview;
+                    return RedirectToPage("../ReportPrint/PrintReport", "CashBankBook", routeValues: new { RptType });
+
+                }
+            }
+            return Page();
+
+
+            //SetKey(UserName, "cbVouNo", Vou_No, KeyType.Text);
+            //SetKey(UserName, "Heading1", "Bank Voucher", KeyType.Text);
+
+            //return RedirectToPage("../ReportPrint/PrintReport", "Voucher", new { _ReportType = ReportType.Preview });
         }
         public IActionResult OnPostShow(int ID)
         {

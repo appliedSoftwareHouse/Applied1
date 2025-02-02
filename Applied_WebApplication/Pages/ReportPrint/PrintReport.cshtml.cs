@@ -154,9 +154,12 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             if (_Table.Rows.Count > 0)
             {
+                _Dates[1] = paramaters.Dt_From.ToString(FormatDate);
+                _Dates[2] = paramaters.Dt_To.ToString(FormatDate);
+
                 var FMTDate = GetFormatDate(UserName);
                 var _Heading1 = $"GENERAL LEDGER: {GetTitle(UserName, Tables.COA, paramaters.N_COA)}";
-                var _Heading2 = $"From {_Dates[1]} to {_Dates[1]}";
+                var _Heading2 = $"From {_Dates[1]} to {_Dates[2]}";
                 var _CompanyName = UserProfile.GetCompanyName(User);
 
 
@@ -213,7 +216,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetGLCompany(ReportType _ReportType)
         {
-            
+
             ReportFilters paramaters = new ReportFilters()
             {
                 N_Customer = (int)GetKey(UserName, "GL_Company", KeyType.Number),
@@ -233,7 +236,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
             var _Filter = $"[Customer] = {paramaters.N_Customer} AND  [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
             var _GroupBy = "[Customer]";
             var _SortBy = "[Vou_date], [Vou_no]";
-            
+
             var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
 
             DataTable _Table = DataTableClass.GetTable(UserName, _Query);
@@ -302,7 +305,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
         public IActionResult OnGetGLEmployee(ReportType _ReportType)
         {
-            
+
             ReportFilters paramaters = new ReportFilters()
             {
                 N_Employee = (int)GetKey(UserName, "GL_Employee", KeyType.Number),
@@ -383,33 +386,45 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #region General Ledger - Projects
         public IActionResult OnGetGLProject(ReportType RptType)
         {
+
+
+
+
+
+
             try
             {
 
-                string _Nature = GetText(UserName, "GLp_Nature");
-                int _Project = GetNumber(UserName, "GL_Project");
-                DateTime _Date1 = GetDate(UserName, "GL_Dt_From");
-                DateTime _Date2 = GetDate(UserName, "GL_Dt_To");
-                string __Date1 = _Date1.ToString(DateYMD);
-                string __Date2 = _Date2.ToString(DateYMD);
-                string _Sort = "Vou_Date, Vou_No";
-                string _ProjectTitle = GetTitle(UserName, Tables.Project, _Project);
+                ReportFilters paramaters = new ReportFilters()
+                {
+                    N_Project = (int)GetKey(UserName, "GL_Project", KeyType.Number),
+                    Dt_From = (DateTime)GetKey(UserName, "GL_Dt_From", KeyType.Date),
+                    Dt_To = (DateTime)GetKey(UserName, "GL_Dt_To", KeyType.Date),
+                };
+
+                var _Dates = new string[3]
+               {
+                paramaters.Dt_From.AddDays(-1).ToString(DateYMD),
+                paramaters.Dt_From.ToString(DateYMD),
+                paramaters.Dt_To.ToString(DateYMD)
+               };
+
+                var _Nature = GetText(UserName, "GLp_Nature");
+                var _FilterOB = $"[Project] = {paramaters.N_Project} AND NOT  [COA] IN ({_Nature}) AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+                var _Filter = $"[Project] = {paramaters.N_Project} AND NOT  [COA] IN ({_Nature}) AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+                var _GroupBy = "[Project]";
+                var _SortBy = "[Vou_date], [Vou_no]";
+                var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+                DataTable _Table = DataTableClass.GetTable(UserName, _Query);
 
 
-                string _Filter1 = $"[L].[Project] = {_Project} AND NOT [C].[NATURE] IN ({_Nature}) AND ";
-                _Filter1 += $"Date([Vou_Date]) < '{__Date1}'";
-
-                string _Filter2 = $"[L].[Project] = {_Project} AND NOT [C].[NATURE] IN ({_Nature}) AND ";
-                _Filter2 += $"Date([Vou_Date]) >= '{__Date1}' AND Date([Vou_Date] <= '{__Date2}')";
-
-                string _Query = SQLQuery.GLProject(_Filter1, _Filter2, _Sort);
-
-                ReportClass reports = new ReportClass();
-                DataTable _SourceTable = DataTableClass.GetTable(UserName, _Query);
-
+                string _ProjectTitle = GetTitle(UserName, Tables.Project, paramaters.N_Project);
+                string _Date1 = paramaters.Dt_From.ToString(FormatDate);
+                string _Date2 = paramaters.Dt_To.ToString(FormatDate);
                 string _ReportFile = "GLProject";
                 string _Heading1 = $"PROJECT LEDGER - {_ProjectTitle}";
-                string _Heading2 = $"From {_Date1.ToString(FormatDate)} to {_Date2.ToString(FormatDate)}";
+                string _Heading2 = $"From {_Date1} to {_Date2}";
 
                 ReportModel Reportmodel = new();
                 // Input Parameters  (.rdl report file)
@@ -428,7 +443,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 Reportmodel.AddReportParameter("Footer", ReportFooter);
 
                 Reportmodel.ReportData.DataSetName = "ds_Project";
-                Reportmodel.ReportData.ReportTable = _SourceTable; // Data Filter will apply by registry variables. FYI
+                Reportmodel.ReportData.ReportTable = _Table; // Data Filter will apply by registry variables. FYI
 
                 if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
                 {
@@ -1228,7 +1243,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _OutputFile = _ReportFile;
 
                 if (_SourceTable == null) { return Page(); }
-                if(RptType!=ReportType.Preview)
+                if (RptType != ReportType.Preview)
                 {
                     var _VNo = _SourceTable.Rows[0]["Vou_No"].ToString();
                     var _Payer = _SourceTable.Rows[0]["PayerTitle"].ToString();
@@ -1376,6 +1391,74 @@ namespace Applied_WebApplication.Pages.ReportPrint
             return Page();
         }
 
+        #endregion
+
+        #region Cash or Bank book Voucher
+
+        public IActionResult OnGetCashBankBook(ReportType RptType)
+        {
+            try
+            {
+                // Generate / Obtain Report Data from Temp Table....
+
+                var _ReportFile = "CashBankBook";
+                var _Vou_ID = GetNumber(UserName, "cbbVouID");
+                var _Heading1 = GetText(UserName, "cbbHeading1");
+                var _Heading2 = GetText(UserName, "cbbLedHead2");
+                var _Book = GetText(UserName, "cbbBook");
+                var _Query = SQLQuery.CashBankPrint(_Book, $"ID={_Vou_ID}");
+                var _Table = DataTableClass.GetTable(UserName, _Query);
+                if (_Table.Rows.Count > 0)
+                {
+                    var _Row = _Table.Rows[0];
+                    var _Currency = GetText(UserName, "CurrencyTitle");
+                    var _Unit = GetText(UserName, "CurrencyUnit");
+                    var _Amount = (decimal)_Row["DR"] + (decimal)_Row["CR"];
+                    var _InWord = new NumInWords().ChangeCurrencyToWords(_Amount, _Currency, _Unit);
+
+                ReportModel Reportmodel = new();
+                    // Input Parameters  (.rdl report file)
+                    Reportmodel.InputReport.FilePath = ReportPath;
+                    Reportmodel.InputReport.FileName = _ReportFile;
+                    Reportmodel.InputReport.FileExtention = "rdl";
+                    // output Parameters (like pdf, excel, word, html, tiff)
+                    Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+                    Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+                    Reportmodel.OutputReport.FileName = _ReportFile;
+                    Reportmodel.OutputReport.ReportType = RptType;
+                    // Reports Parameters
+                    Reportmodel.AddReportParameter("CompanyName", CompanyName);
+                    Reportmodel.AddReportParameter("Heading1", _Heading1);
+                    Reportmodel.AddReportParameter("Heading2", _Heading2);
+                    Reportmodel.AddReportParameter("Footer", ReportFooter);
+                    Reportmodel.AddReportParameter("InWords", _InWord);
+
+                    Reportmodel.ReportData.DataSetName = "ds_CashBank";
+                    Reportmodel.ReportData.ReportTable = _Table; // Data Filter will apply by registry variables. FYI
+
+                    if (Reportmodel.ReportRenderAsync().Result)         // Render a report for preview or download...
+                    {
+                        if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+                        {
+                            ReportLink = Reportmodel.OutputReport.FileLink;
+                            IsShowPdf = true;
+                            return Page();
+                        }
+                        else
+                        {
+                            var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+                            return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            }
+
+            return Page();
+        }
         #endregion
 
     }

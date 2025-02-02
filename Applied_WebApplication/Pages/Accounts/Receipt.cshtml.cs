@@ -16,10 +16,12 @@ namespace Applied_WebApplication.Pages.Accounts
         public string UserName => User.Identity.Name;
         public DataRow PayerProfile { get; set; }
         public string MyMessage { get; set; } = string.Empty;
+        public List<Message> MyMessages { get; set; } = new();
 
         public void OnGet(int ID)
         {
-
+           
+            MyMessages = new();
             if (ID == 0) { Variables = GetNewRecord(); }
             if (ID > 0) { Variables = GetRecord(ID); }
 
@@ -54,12 +56,12 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 var _Row = _DataTable.Rows[0];
 
-                Parameter _Variable = new();;
+                Parameter _Variable = new(); ;
                 {
                     _Variable.ID = (int)_Row["ID"];
                     _Variable.Vou_No = _Row["Vou_No"].ToString();
                     _Variable.Vou_Date = (DateTime)_Row["Vou_Date"];
-                    _Variable.Payer = (int)_Row["Payer"]; 
+                    _Variable.Payer = (int)_Row["Payer"];
                     _Variable.COACash = (int)_Row["COACash"];
                     _Variable.COA = (int)_Row["COA"];
                     _Variable.Project = (int)_Row["Project"];
@@ -102,14 +104,12 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostSave()
         {
+            MyMessages = new();
             var _TableClass = new DataTableClass(UserName, Tables.Receipts);
             _TableClass.CurrentRow = _TableClass.MyDataTable.NewRow();
 
-            var IsNew = false;
-
             if (Variables.Vou_No.ToUpper() == "NEW")
             {
-                IsNew = true;
                 Variables.Vou_No = NewVoucher.GetNewVoucher(_TableClass.MyDataTable, "RN");
 
             }
@@ -127,42 +127,24 @@ namespace Applied_WebApplication.Pages.Accounts
             _TableClass.CurrentRow["Description"] = Variables.Description;
             _TableClass.CurrentRow["Status"] = "Submitted";
 
-            if (Validation())
+            _TableClass.Save();
+            MyMessages = _TableClass.ErrorMessages;
+            if(MyMessages.Count > 0)
             {
-                _TableClass.Save();
+                return Page();
+            }
+            else
+            {
+                MyMessages.Add(MessageClass.SetMessage($"{Variables.Vou_No} has been saved."));
                 Variables.ID = (int)_TableClass.CurrentRow["ID"];
                 AppRegistry.SetKey(UserName, "rcptDate", Variables.Vou_Date, KeyType.Date);
                 AppRegistry.SetKey(UserName, "rcptMessage", $"Receipt {Variables.Vou_No} has been saved", KeyType.Text);
-
-
-
                 return RedirectToPage("Receipt", routeValues: new { ID = Variables.ID });
             }
-            else
-            {
-                if (IsNew) { Variables.Vou_No = "New"; }
-                MyMessage = "Some Receipts value are missing. Please complete them.";
-
-            }
-            return Page();
-        }
-
-        public bool Validation()
-        {
-            var _Valid = true;
-            if (Variables.Amount <= 0) { _Valid = false; }
-            if (Variables.Payer == 0) { _Valid = false; }
-            if (Variables.COA == 0) { _Valid = false; }
-            if (Variables.Project == 0) { _Valid = false; }
-            if (Variables.Description == null) { _Valid = false; }
-            else
-            {
-                if (Variables.Description.Length == 0) { _Valid = false; }
-            }
-
-            return _Valid;
 
         }
+
+
         #endregion
 
         #region Send Email
@@ -176,8 +158,8 @@ namespace Applied_WebApplication.Pages.Accounts
         public IActionResult OnPostPrint(ReportType _ReportType)
         {
             var _ShowImages = true;
-            if(_ReportType == ReportType.Preview) { _ShowImages = false; }
-           
+            if (_ReportType == ReportType.Preview) { _ShowImages = false; }
+
             AppRegistry.SetKey(UserName, "rcptID", Variables.ID, KeyType.Text);
             AppRegistry.SetKey(UserName, "rcptHead2", Variables.Vou_No, KeyType.Text);
             AppRegistry.SetKey(UserName, "rcptShowImg", !_ShowImages, KeyType.Boolean);
@@ -203,7 +185,7 @@ namespace Applied_WebApplication.Pages.Accounts
         #region Delete Button
         public IActionResult OnPostDelete()
         {
-            if(Variables.Status == "Submitted")
+            if (Variables.Status == "Submitted")
             {
                 var _TableClass = new DataTableClass(UserName, Tables.Receipts);
                 _TableClass.Delete(Variables.ID);
@@ -216,7 +198,7 @@ namespace Applied_WebApplication.Pages.Accounts
             }
 
             return Page();
-           
+
         }
         #endregion
 
@@ -225,7 +207,7 @@ namespace Applied_WebApplication.Pages.Accounts
     public class Parameter
     {
         public int ID { get; set; }
-        public string Vou_No { get; set; }
+        public string Vou_No { get; set; } = "New";
         public DateTime Vou_Date { get; set; }
         public string Ref_No { get; set; } = string.Empty;
         public int COACash { get; set; }

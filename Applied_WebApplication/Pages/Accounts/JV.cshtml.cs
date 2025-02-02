@@ -6,6 +6,8 @@ using System.Data.SQLite;
 using System.Drawing;
 using static Applied_WebApplication.Data.MessageClass;
 
+// Delete this page in future due to JV2 created in replacement of it.  26-1-2025
+
 namespace Applied_WebApplication.Pages.Accounts
 {
     [Authorize]
@@ -21,8 +23,8 @@ namespace Applied_WebApplication.Pages.Accounts
 
         private bool VoucherBalance()
         {
-            var Tot_DR = Voucher.Compute("SUM(DR)", "");
-            var Tot_CR = Voucher.Compute("SUM(CR)", "");
+            var Tot_DR = Voucher.Compute("SUM(DR)", "") ?? 0;
+            var Tot_CR = Voucher.Compute("SUM(CR)", "") ?? 0;
 
             if(Tot_DR.Equals(Tot_CR)) { return true; }
             return false;

@@ -1,11 +1,8 @@
+using AppReportClass;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.ReportingServices.ReportProcessing.OnDemandReportObjectModel;
 using System.Data;
-using System.Text;
-using static Applied_WebApplication.Data.AppFunctions;
-using static Applied_WebApplication.Data.MessageClass;
 using static Applied_WebApplication.Pages.Accounts.BankBookModel;
 
 
@@ -85,7 +82,7 @@ namespace Applied_WebApplication.Pages.Accounts
             Row["Employee"] = BookRecord.Employee;
             Row["Status"] = VoucherStatus.Submitted;
             // Generate a new voucher number
-            if (BookRecord.Vou_No.ToUpper()=="NEW") { Row["Vou_No"] = GetNewVouNo(BookRecord.Vou_Date); }  
+            if (BookRecord.Vou_No.ToUpper()=="NEW") { Row["Vou_No"] = NewVoucher.GetNewVoucher(Row.Table, "BB", BookRecord.Vou_Date); ; }  
 
             Table.Save();
 
@@ -117,36 +114,24 @@ namespace Applied_WebApplication.Pages.Accounts
 
         public IActionResult OnPostAutoVoucher()
         {
-            BookRecord.Vou_No = GetNewVouNo(DateTime.Now);
+            var _Table = DataTableClass.GetTable(UserName, Tables.BankBook);
+            BookRecord.Vou_No = NewVoucher.GetNewVoucher(_Table, "BB", DateTime.Now); ;
             return Page();
         }
 
-        private string GetNewVouNo(DateTime _Date)
+        public IActionResult OnPostPrint()
         {
-            string NewNum;
+            if (BookRecord.Vou_No.ToUpper() == "NEW") { return Page(); }
 
-            var _Text = SQLQuery.NewVouNo(Tables.BankBook);
-            
-            DataTable _Table = DataTableClass.GetTable(UserName, _Text.ToString());
-            DataView _View = _Table.AsDataView();
+            var _Booktitle = AppFunctions.GetTitle(UserName, Tables.COA, BookID);
+            AppRegistry.SetKey(UserName, "cbbVouID", BookRecord.ID, KeyType.Number);
+            AppRegistry.SetKey(UserName, "cbbHeading1", "Bank Book", KeyType.Text);
+            AppRegistry.SetKey(UserName, "cbbHeading2", _Booktitle, KeyType.Text);
+            AppRegistry.SetKey(UserName, "cbbBook", "Bank", KeyType.Text);
 
-            var _Year = _Date.ToString("yy");
-            var _Month = _Date.ToString("MM");
-            _View.RowFilter = string.Concat("Vou_No like '", MyVouTag, _Year, _Month, "%'");
-            DataTable _VouList = _View.ToTable();
-            var MaxNum = _VouList.Compute("Max(num)", "");
-            if (MaxNum == DBNull.Value)
-            {
-                NewNum = string.Concat(MyVouTag, _Year, _Month, "-", "0001");
-            }
-            else
-            {
-                var _MaxNum = int.Parse(MaxNum.ToString()) + 1;
-                NewNum = string.Concat(MyVouTag, _Year, _Month, "-", _MaxNum.ToString("0000"));
-            }
-            return NewNum;
+            var Option = ReportType.Preview;
+            return RedirectToPage("./ReportPrint/PrintReport", "CashBankBook", new { _ReportType = Option });
         }
-
 
     }
 }

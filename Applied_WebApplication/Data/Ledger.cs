@@ -257,7 +257,7 @@ namespace Applied_WebApplication.Data
         }
 
 
-        private DataTable GetEmptyLedger()
+        public DataTable GetEmptyLedger()
         {
             DataTableClass _Table = new(UserName, Tables.view_Ledger);
             DataTable _Ledger = _Table.MyDataTable.Clone();
