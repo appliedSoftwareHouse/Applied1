@@ -78,7 +78,7 @@ namespace Applied_WebApplication.Pages.Applied
                     PostTable = GetTable(UserName, SQLQuery.PostSaleReturnList(Filter));
                     break;
                 case 10:
-                         // Production Process
+                    // Production Process
                     Filter = $"Date([P1].[Vou_Date]) > Date('{Date1}') AND Date([P1].[Vou_Date]) < Date('{Date2}')";
                     PostTable = GetTable(UserName, SQLQuery.PostProductionList(Filter, "Submitted"));
 
@@ -108,14 +108,32 @@ namespace Applied_WebApplication.Pages.Applied
                 Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
             };
 
-            if (PostingType == (int)PostType.CashBook) { ErrorMessages = PostingClass.PostCashBookAsync(UserName, id).Result; }
-            if (PostingType == (int)PostType.BankBook) { ErrorMessages = PostingClass.PostBankBookAsync(UserName, id).Result; }
+            if (PostingType == (int)PostType.CashBook)
+            {
+                if (!AppRegistry.GetBool(UserName, "PostCash"))
+                {
+                    ErrorMessages = PostingClass.PostCashBookAsync(UserName, id).Result;
+                }
+            }
+            if (PostingType == (int)PostType.BankBook)
+            {
+                if (!AppRegistry.GetBool(UserName, "PostBank"))
+                {
+                    ErrorMessages = PostingClass.PostBankBookAsync(UserName, id).Result;
+                }
+            }
             if (PostingType == (int)PostType.Production) { ErrorMessages = PostingClass.PostProductionAsync(UserName, id).Result; }
 
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
             if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
-            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceipt(UserName, id); }
+            if (PostingType == (int)PostType.Receipt)
+            {
+                if (!AppRegistry.GetBool(UserName, "PostReceipt"))
+                {
+                    ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
+                }
+            }
 
             if (ErrorMessages.Count > 0)
             {

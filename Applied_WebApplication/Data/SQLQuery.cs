@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
+using System.Net;
+using System.Security.Policy;
 using System.Security.Principal;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -358,7 +360,7 @@ namespace Applied_WebApplication.Data
             _Text3.AppendLine("LEFT JOIN[Employees] [E] ON[E].[ID] = [L].[EMPLOYEE]");
             _Text3.AppendLine("LEFT JOIN[Project]   [P] ON[P].[ID] = [L].[PROJECT]");
             _Text3.AppendLine("LEFT JOIN[Inventory] [I] ON[I].[ID] = [L].[INVENTORY]");
-            if (_OrderBy.Length>0) { _Text3.AppendLine($"ORDER BY {_OrderBy}"); }
+            if (_OrderBy.Length > 0) { _Text3.AppendLine($"ORDER BY {_OrderBy}"); }
 
             return _Text3.ToString();
 
@@ -646,58 +648,62 @@ namespace Applied_WebApplication.Data
         #endregion
 
         #region Cash Book Ledger
-        public static string BookLedger(string _Filter, string[] Dates, string Book)
+        public static string BookLedger(int _ID, string[] Dates, string Book)
         {
             string _BookName = string.Empty;
+            string _Filter1 = $"BookID={_ID}";
+            string _Filter2 = $"COA={_ID}";
+
+
             if (Book == "Cash") { _BookName = "CashBook"; }
             if (Book == "Bank") { _BookName = "BankBook"; }
 
             var Text = new StringBuilder();
 
-            Text.Append("SELECT * FROM ( ");
-            Text.Append("SELECT ");
-            Text.Append("-1 AS [ID],");
-            Text.Append($"'{Dates[0]}' AS [Vou_date], ");
-            Text.Append("'OBAL' AS [Vou_No], ");
-            Text.Append("'Opening Balance' AS [Description], ");
-            Text.Append("SUM([DR]) AS [DR], ");
-            Text.Append("SUM([CR]) AS [CR], ");
-            Text.Append("'Posted' AS [Status]");
-            Text.Append("FROM (");
-            Text.Append($"SELECT [DR],[CR] FROM [{_BookName}] WHERE Date([Vou_Date]) < Date('{Dates[0]}') ");
+            Text.AppendLine("SELECT * FROM ( ");
+            Text.AppendLine("SELECT ");
+            Text.AppendLine("-1 AS [ID],");
+            Text.AppendLine($"'{Dates[0]}' AS [Vou_date], ");
+            Text.AppendLine("'OBAL' AS [Vou_No], ");
+            Text.AppendLine("'Opening Balance' AS [Description], ");
+            Text.AppendLine("SUM([DR]) AS [DR], ");
+            Text.AppendLine("SUM([CR]) AS [CR], ");
+            Text.AppendLine("'Posted' AS [Status]");
+            Text.AppendLine("FROM (");
+            Text.AppendLine($"SELECT [DR],[CR] FROM [{_BookName}] WHERE Date([Vou_Date]) < Date('{Dates[0]}') AND {_Filter1} ");
 
-            Text.Append("UNION ALL ");
-            Text.Append("SELECT [CR] AS [DR] ,[CR] AS [DR] ");
-            Text.Append($"FROM [Ledger] WHERE {_Filter} and [Vou_Type] <> '{Book}' ");
-            Text.Append($"AND Date([Vou_Date]) < Date('{Dates[0]}') ");
-            Text.Append(") ");
+            Text.AppendLine("UNION ALL ");
+            Text.AppendLine("SELECT [CR] AS [DR] ,[CR] AS [DR] ");
+            Text.AppendLine($"FROM [Ledger] WHERE {_Filter2} and [Vou_Type] <> '{Book}' ");
+            Text.AppendLine($"AND Date([Vou_Date]) < Date('{Dates[0]}') ");
+            Text.AppendLine(") ");
 
-            Text.Append("UNION ALL  ");
-            Text.Append("SELECT ");
-            Text.Append("[ID],");
-            Text.Append("[Vou_Date], ");
-            Text.Append("[Vou_No], ");
-            Text.Append("[Description], ");
-            Text.Append("[DR], ");
-            Text.Append("[CR], ");
-            Text.Append("[Status]");
-            Text.Append($"FROM [{_BookName}] ");
-            Text.Append($"WHERE Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
+            Text.AppendLine("UNION ALL  ");
+            Text.AppendLine("SELECT ");
+            Text.AppendLine("[ID],");
+            Text.AppendLine("[Vou_Date], ");
+            Text.AppendLine("[Vou_No], ");
+            Text.AppendLine("[Description], ");
+            Text.AppendLine("[DR], ");
+            Text.AppendLine("[CR], ");
+            Text.AppendLine("[Status]");
+            Text.AppendLine($"FROM [{_BookName}] ");
+            Text.AppendLine($"WHERE Date([Vou_Date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') AND {_Filter1} ");
 
-            Text.Append("UNION ALL ");
-            Text.Append("SELECT ");
-            Text.Append("0 AS [ID],");
-            Text.Append("[Vou_Date], ");
-            Text.Append("[Vou_No], ");
-            Text.Append("[Description], ");
-            Text.Append("[CR] AS [DR] , ");
-            Text.Append("[DR] AS [CR], ");
-            Text.Append("'Posted' AS [Status]");
-            Text.Append("FROM [Ledger] ");
-            Text.Append($"WHERE {_Filter} AND Date([Vou_date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
-            Text.Append($"AND [Vou_type] <> '{Book}' ");
-            Text.Append(") AS [CashBookLedger] ");
-            Text.Append("ORDER BY [Vou_Date],[Vou_No]");
+            Text.AppendLine("UNION ALL ");
+            Text.AppendLine("SELECT ");
+            Text.AppendLine("0 AS [ID],");
+            Text.AppendLine("[Vou_Date], ");
+            Text.AppendLine("[Vou_No], ");
+            Text.AppendLine("[Description], ");
+            Text.AppendLine("[CR] AS [DR] , ");
+            Text.AppendLine("[DR] AS [CR], ");
+            Text.AppendLine("'Posted' AS [Status]");
+            Text.AppendLine("FROM [Ledger] ");
+            Text.AppendLine($"WHERE {_Filter2} AND Date([Vou_date]) BETWEEN Date('{Dates[0]}') AND Date('{Dates[1]}') ");
+            Text.AppendLine($"AND [Vou_type] <> '{Book}' ");
+            Text.AppendLine(") AS [CashBookLedger] ");
+            Text.AppendLine("ORDER BY [Vou_Date],[Vou_No]");
 
             return Text.ToString();
         }
@@ -1499,6 +1505,36 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
+        #region Cash Bank book Voucher print Query
+        public static string CashBankPrint(string Book, string Filter)
+        {
+            var _Text = new StringBuilder();
+            _Text.AppendLine("SELECT * FROM (");
+            _Text.AppendLine("SELECT[CB].*,");
+            _Text.AppendLine("[B].[Title] AS [BookTitle],");
+            _Text.AppendLine("[C].[Title] AS [AccountTitle],");
+            _Text.AppendLine("[T].[Title] AS [CustomerTitle],");
+            _Text.AppendLine("[E].[Title] AS [EmployeeTitle],");
+            _Text.AppendLine("[P].[Title] AS [projectTitle]");
+            _Text.AppendLine($"FROM [{Book}] [CB]");
+            _Text.AppendLine("LEFT JOIN [COA]       [B] ON [B].[ID] = [CB].[BookID]");
+            _Text.AppendLine("LEFT JOIN [COA]       [C] ON [C].[ID] = [CB].[COA]");
+            _Text.AppendLine("LEFT JOIN [Customers] [T] ON [T].[ID] = [CB].[Customer]");
+            _Text.AppendLine("LEFT JOIN [Employees] [E] ON [E].[ID] = [CB].[Employee]");
+            _Text.AppendLine("LEFT JOIN [Project]   [P] ON [P].[ID] = [CB].[Project])");
+            if(Filter.Length > 0)
+            {
+                _Text.AppendLine($"WHERE {Filter}");
+            }
+
+            return _Text.ToString();
+        }
+
+        internal static Tables GetDeliveryChallans(string _Filter)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
 
 
         //------------------------------------------------------------------------------------------ CREATING DATA TABLE AND VIEWS

@@ -1,11 +1,16 @@
 ﻿using Applied_WebApplication.Pages.Accounts;
+using Applied_WebApplication.Pages.Sales;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.Reporting.Map.WebForms.BingMaps;
+using Microsoft.VisualBasic;
 using System;
 using System.Data;
 using System.Data.SQLite;
 using System.Security.Claims;
 using System.Text;
+using System.Xml.Linq;
 using static Applied_WebApplication.Data.MessageClass;
+using static Applied_WebApplication.Pages.Stock.InventoryModel;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Applied_WebApplication.Data
@@ -459,6 +464,48 @@ namespace Applied_WebApplication.Data
         }
         #endregion
 
+        #region Delivery Challan
+        private static void DeliveryChallan(string UserName)
+        {
+            var _Text = new StringBuilder();
+
+            _Text.AppendLine("CREATE TABLE[DeliveryChallans](");
+            _Text.AppendLine("[ID] INT NOT NULL UNIQUE,");
+            _Text.AppendLine("[Vou_No] NVARCHAR(12) NOT NULL,");
+            _Text.AppendLine("[Vou_Date] DATETIME NOT NULL,");
+            _Text.AppendLine("[Company] INT REFERENCES[Customers]([ID]),");
+            _Text.AppendLine("[Employee] INT REFERENCES[Employees]([ID]),");
+            _Text.AppendLine("[Ref_No] NVARCHAR(20),");
+            _Text.AppendLine("[DC_No] NVARCHAR(20) NOT NULL,");
+            _Text.AppendLine("[DC_Date] DATETIME,");
+            _Text.AppendLine("[Pay_Date] DATETIME NOT NULL,");
+            _Text.AppendLine("[Amount] DECIMAL NOT NULL DEFAULT(0.00),");
+            _Text.AppendLine("[Description] NVARCHAR(100) NOT NULL,");
+            _Text.AppendLine("[Comments] NVARCHAR(500),");
+            _Text.AppendLine("[Status] NVARCHAR(12) NOT NULL DEFAULT Submitted);");
+            var Command = new SQLiteCommand(_Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+
+        }
+        private static void DeliveryChallan2(string UserName)
+        {
+            var _Text = new StringBuilder();
+
+            _Text.AppendLine("CREATE TABLE [DeliveryChallans2](");
+            _Text.AppendLine("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");
+            _Text.AppendLine("[Sr_No] INT NOT NULL, ");
+            _Text.AppendLine("[TranID] INT NOT NULL REFERENCES [DeliveryChallans] ([ID]),");
+            _Text.AppendLine("[Inventory] INT NOT NULL REFERENCES [Inventory] ([ID]),");
+            _Text.AppendLine("[Batch] NVARCHAR(20) NOT NULL,");
+            _Text.AppendLine("[Qty] DECIMAL NOT NULL,");
+            _Text.AppendLine("[Description] NVARCHAR(100),");
+            _Text.AppendLine("[Project] INT REFERENCES[Project]([ID]));");
+            var Command = new SQLiteCommand(_Text.ToString(), ConnectionClass.AppConnection(UserName));
+            Command.ExecuteNonQuery();
+
+        }
+        #endregion
+
 
         //========================================================================= CREATE
         #region Create DataTable into Source Data
@@ -565,7 +612,11 @@ namespace Applied_WebApplication.Data
                 case Tables.StockInHand:
                     StockInHand(UserName);
                     break;
-                case Tables.FinishedGoods:
+                case Tables.DeliveryChallans:
+                    DeliveryChallan(UserName);
+                    break;
+                case Tables.DeliveryChallans2:
+                    DeliveryChallan2(UserName);
                     break;
                 case Tables.OBALStock:
                     break;
@@ -632,6 +683,8 @@ namespace Applied_WebApplication.Data
                     break;
             }
         }
+
+
 
 
         #endregion
