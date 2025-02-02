@@ -15,7 +15,7 @@ namespace Applied_WebApplication.Data
             List<Message> ErrorMessages = new List<Message>();
             await Task.Run(() =>
             {
-
+                AppRegistry.SetKey(UserName, "PostCash", true, KeyType.Boolean);
                 DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
 
                 List<DataRow> VoucherRows = new();
@@ -95,6 +95,8 @@ namespace Applied_WebApplication.Data
 
 
             });
+
+            AppRegistry.SetKey(UserName, "PostCash", false, KeyType.Boolean);
             return ErrorMessages;
         }
         #endregion
@@ -106,6 +108,7 @@ namespace Applied_WebApplication.Data
 
             await Task.Run(() =>
             {
+                AppRegistry.SetKey(UserName, "PostBank", true, KeyType.Boolean);
                 DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "");
                 List<DataRow> VoucherRows = new();
 
@@ -182,6 +185,7 @@ namespace Applied_WebApplication.Data
                     DataTableClass.Replace(UserName, Tables.BankBook, id, "Status", VoucherStatus.Posted.ToString());
                 }
             });
+            AppRegistry.SetKey(UserName, "PostBank", false, KeyType.Boolean);
             return ErrorMessages;
         }
         #endregion
@@ -788,10 +792,12 @@ namespace Applied_WebApplication.Data
         #region Posting of Receipt
         public static async Task<List<Message>> PostReceiptAsync(string UserName, int id)
         {
+           
             List<Message> MyMessages = new();
 
             await Task.Run(() =>
             {
+                AppRegistry.SetKey(UserName, "PostReceipt", true, KeyType.Boolean);
                 DataTableClass tb_receipt = new(UserName, Tables.Receipts, $"ID={id}");
                 DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "Vou_Type='Receipt'");
                 bool DoProcess = true;
@@ -858,6 +864,7 @@ namespace Applied_WebApplication.Data
                 }
             });
 
+            AppRegistry.SetKey(UserName, "PostReceipt", false, KeyType.Boolean);
             return MyMessages;
         }
         #endregion

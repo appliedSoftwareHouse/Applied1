@@ -54,6 +54,8 @@ public enum Tables
     view_Production = 318,
     StockCategory = 319,
     StockInHand = 320,
+    DeliveryChallans = 321,
+    DeliveryChallans2 = 322,
 
     Ledger = 401,
     view_Ledger = 402,

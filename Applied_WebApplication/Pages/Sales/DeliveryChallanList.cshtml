@@ -1,0 +1,21 @@
+﻿@page
+@model Applied_WebApplication.Pages.Sales.DeliveryChallanListModel
+@{
+}
+
+<div class="container AppHeading-2">
+    <h3>DELIVERY CHALLAN / DELIVERY ORDER</h3>
+</div>
+
+<div class="list-filter">
+    <label>Search</label>
+    <input  />
+    <button></button>
+
+    @if(Model.SearchText.Length > 0)
+    {
+        <button asp-page-handler="Clear">Clear</button>
+    }
+
+
+</div>

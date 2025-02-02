@@ -84,16 +84,22 @@
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer AppFooter">
-        <a class="text-muted">  &copy; 2022 - Applied Software House V1.0</a>
-        <a asp-page="/WE">ABOUT US</a> |
-        <a class="float-end" style="color:blue; padding-right:100px">@DateTime.Now.ToLongDateString()</a>
+    <main role="main" class="pb-3">
+        <div class="container">
+            @RenderBody()
+        </div>
+    </main>
+
+
+    <footer class="border-top footer1">
+        <div class=container-fluid>
+            <div class="row">
+                <div class="col-2" style="text-align:start"><a asp-page="/WE">ABOUT US</a></div>
+                <div class="col-6" style="text-align:center">&copy; 2022 - Applied Software House V1.0</div>
+                <div class="col-4" style="text-align:end">@DateTime.Now.ToLongDateString()</div>
+            </div>
+        </div>
     </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -104,3 +110,10 @@
 
 </body>
 </html>
+
+<style>
+    .footer1 {
+        position: relative;
+        bottom: 0px;
+    }
+</style>
