@@ -4,6 +4,9 @@
 @{
     var UserName = User.Identity.Name;
     var FMTCurrency = AppRegistry.GetKey(UserName, "FMTCurrency", KeyType.Text).ToString();
+
+    var Tot_DR = 0.00M;
+    var Tot_CR = 0.00M;
 }
 
 
@@ -55,12 +58,12 @@
         <table class="table-list">
             <thead>
                 <tr>
-                    <th style="width:15%">Date</th>
-                    <th style="width:15%">Vou_No</th>
-                    <th style="width:20%">Debit</th>
-                    <th style="width:20%">Credit</th>
-                    <th style="width:20%">Description</th>
-                    <th style="width:10%; text-align: center">
+                    <th class="text-center" style="width:10%">Date</th>
+                    <th class="text-center" style="width:10%">Vou. No</th>
+                    <th class="text-center" style="width:10%">Debit</th>
+                    <th class="text-center" style="width:10%">Credit</th>
+                    <th class="text-center" style="width:50%">Description</th>
+                    <th class="text-center" style="width:10%; text-align: center">
                         <button type="submit" class="listbutton-green"
                                 asp-page-handler="New">
                             <i class="bi bi-database-add"></i>
@@ -77,20 +80,18 @@
                         string _Date = AppFunctions.GetDate(Row["Vou_Date"]);
                         decimal _DR = (decimal.Parse(Row["DR"].ToString()));
                         decimal _CR = (decimal.Parse(Row["CR"].ToString()));
+
+                        Tot_DR += _DR; Tot_CR += _CR;
+
                       
                         <tr>
-                            <td>@_Date</td>
-                            <td>@Row["Vou_No"].ToString()</td>
+                            <td class="text-center">@_Date</td>
+                            <td class="text-center">@Row["Vou_No"].ToString()</td>
                             <td class="amount">@_DR.ToString(FMTCurrency)</td>
                             <td class="amount">@_CR.ToString(FMTCurrency)</td>
-                            <td>@Row["Description"].ToString()</td>
+                            <td class="px-2">@Row["Description"].ToString()</td>
 
                             <td style="text-align: center">
-                                @* <button type="submit" class="listbutton-blue"
-                                asp-route-Vou_No="@Row["Vou_No"]"
-                                asp-page-handler="JV">
-                                    <i class="bi bi-pencil-fill"></i>
-                                </button> *@
                                 <button type="submit" class="listbutton-blue"
                                         asp-route-Vou_No="@Row["Vou_No"]"
                                         asp-page-handler="JV2">
@@ -110,8 +111,8 @@
                 <tr>
                     <th></th>
                     <th></th>
-                    <th></th>
-                    <th></th>
+                    <th class="amount-blue">@Tot_DR.ToString(FMTCurrency)</th>
+                    <th class="amount-blue">@Tot_DR.ToString(FMTCurrency)</th>
                     <th></th>
                     <th style="text-align: center">
                         <button type="submit" class="listbutton-green"
