@@ -1529,6 +1529,11 @@ namespace Applied_WebApplication.Data
 
             return _Text.ToString();
         }
+
+        internal static Tables GetDeliveryChallans(string _Filter)
+        {
+            throw new NotImplementedException();
+        }
         #endregion
 
 

@@ -91,6 +91,14 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("../ReportPrint/PrintReport", "Receipt", new { RptType = _ReportType });
         }
 
+        public IActionResult OnPostPrintList()
+        {
+            var _ReportType = ReportType.Preview;
+            
+            return RedirectToPage("../ReportPrint/PrintReport", "ReceiptList", new { RptType = _ReportType });
+        }
+
+
         public IActionResult OnPostUnPost(int ID, string Vou_No)
         {
             return Page();

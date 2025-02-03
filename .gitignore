@@ -375,3 +375,4 @@ FodyWeavers.xsd
 *.db
 /Applied_WebApplication/wwwroot/DBTemp/AppliedTemp.db
 /Applied_WebApplication/chrome
+/Applied_WebApplication/wwwroot/PrintedReports/Receipt.pdf
