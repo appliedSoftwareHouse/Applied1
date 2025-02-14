@@ -4,7 +4,10 @@
 @{
     string UserName = User.Identity.Name;
 
-    string PayerTitle = GetTitle(UserName, Tables.COA, Model.Variables.Payer);
+
+    Model.tbPayers = GetList(UserName, Tables.Customers, "");
+
+    string PayerTitle = Model.tbPayers.Where(e => e.Key == Model.Variables.Payer).FirstOrDefault().Value; 
     string RevenueTitle = GetTitle(UserName, Tables.COA, Model.Variables.COA); ;
     string CashBankTitle = GetTitle(UserName, Tables.COA, Model.Variables.COACash);
     string EmployeeTitle = GetTitle(UserName, Tables.COA, Model.Variables.Employee);
@@ -18,6 +21,17 @@
     string _FilterRevenue = $"Nature = {RevenueID}";
 
     string UserRole = UserProfile.GetUserRole(User);
+
+    var Options = new Dictionary<int, string>
+        {
+            { 1, "Apple" },
+            { 2, "Banana" },
+            { 3, "Cherry" },
+            { 4, "Date" },
+            { 5, "Elderberry" },
+            { 6, "Fig" },
+            { 7, "Grapes" }
+        };
 
 }
 
@@ -87,8 +101,19 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="form-floating mb-3">
-                    <select class="form-select" id="Customer" aria-label="Floating label Payer" asp-for="@Model.Variables.Payer">
+                <div class="form-floating position-relative">
+                    <input type="text" id="searchInput" class="form-control" placeholder="Search..." autocomplete="off" asp-for="@PayerTitle">
+                    <input type="hidden" id="payerId" asp-for="@Model.Variables.Payer">
+                    <label for="searchInput">Payer</label>
+                    <div class="dropdown-menu w-100 show mt-1" id="dropdownList" style="display: none; max-height: 200px; overflow-y: auto;">
+                        @foreach (var item in Model.tbPayers)
+                        {
+                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                        }
+                    </div>
+                </div>
+                @* <div class="form-floating mb-3">
+                    <select class="form-select is-invalid" id="Customer" aria-label="Floating label Payer" asp-for="@Model.Variables.Payer">
                         <option selected>@PayerTitle</option>
                         @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.Customers))
                         {
@@ -97,8 +122,16 @@
 
                     </select>
                     <label for="Customer">Payer</label>
-                </div>
+                    
+                </div> *@
+                
             </div>
+            @* <div class="col-md-1">
+                <button type="button" class="btn btn-success mnu" data-bs-toggle="modal" data-bs-target="#ShowRecord"><i class="bi bi-arrow-up"></i></button>
+
+            </div> *@
+                       
+
             <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Revenue" aria-label="Floating label Revenue" asp-for="@Model.Variables.COA">
@@ -220,7 +253,65 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Show Modal -->
+    <div class="modal fade" id="ShowRecord" tabindex="-1" aria-labelledby="showRecordLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="ShowRecordLabel">SHOW RECEIPT</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-md-3">
+                        <div class="form-floating mb-3">
+                            <input type="text" disabled class="form-control" asp-for="@Model.Variables.SearchText" id="txtSearchText">
+                            <label for="txtSearchText">Status</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Calcel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="SelectCustomer">Select</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
 </form>
+
+<script>
+    $(document).ready(function () {
+        $("#searchInput").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#dropdownList").show();
+            $(".dropdown-item").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        $(".dropdown-item").on("click", function () {
+            var payerName = $(this).text();
+            var payerId = $(this).data("id");
+
+            $("#searchInput").val(payerName); // Set text input value
+            $("#payerId").val(payerId); // Set hidden input value (ID)
+
+            $("#dropdownList").hide();
+        });
+
+        $(document).on("click", function (event) {
+            if (!$(event.target).closest(".form-floating").length) {
+                $("#dropdownList").hide();
+            }
+        });
+    });
+</script>
+
 
 
 <style>

@@ -12,15 +12,19 @@ namespace Applied_WebApplication.Pages.Accounts
         [BindProperty]
         public Parameter Variables { get; set; }
         public Dictionary<int, string> tbAccounts { get; set; }
+        public Dictionary<int, string> tbPayers { get; set; }
         public Dictionary<int, string> tbReceiptAcc { get; set; }
         public string UserName => User.Identity.Name;
         public DataRow PayerProfile { get; set; }
         public string MyMessage { get; set; } = string.Empty;
         public List<Message> MyMessages { get; set; } = new();
+        
 
         public void OnGet(int ID)
         {
-           
+         
+            
+
             MyMessages = new();
             if (ID == 0) { Variables = GetNewRecord(); }
             if (ID > 0) { Variables = GetRecord(ID); }
@@ -202,6 +206,10 @@ namespace Applied_WebApplication.Pages.Accounts
         }
         #endregion
 
+        public void SelectCustomer()
+        {
+
+        }
     }
 
     public class Parameter
@@ -218,6 +226,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public decimal Amount { get; set; } = 0.00M;
         public string Description { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
+        public string SearchText { get; set; } = string.Empty;
 
     }
 }
