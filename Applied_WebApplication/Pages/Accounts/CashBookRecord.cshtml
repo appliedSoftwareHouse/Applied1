@@ -87,7 +87,6 @@
                             <option value="@_Title.Key">@_Title.Value</option>
                         }
                     </select>
-                    <button class="btn btn-sm">O</button>
                 </div>
             </div>
         </div>
@@ -196,7 +195,7 @@
         </div>
     </div>
 
-</form>
+
 
 
 <!-- Modal -->
@@ -218,32 +217,4 @@
     </div>
 </div>
 
-
-<div class="modal fade" id="ShowList" tabindex="-1" aria-labelledby="ShowListCustomers" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="SaveRecordLabel">Select a Customer</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="col-md-6">
-                    <div class="input-group mb-3">
-                        <span class="input-group-text" id="COA">Account</span>
-                        <select class="form-select" name="COA" asp-for="@Model.BookRecord.COA">
-                            <option selected>@TitleCOA</option>
-                            @foreach (KeyValuePair<int, string> _Title in Titles(UserName, Tables.COA))
-                            {
-                                <option value="@_Title.Key">@_Title.Value</option>
-                            }
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
-                <button type="submit" class="btn btn-primary btn-sm" asp-page-handler="Save">Save changes</button>
-            </div>
-        </div>
-    </div>
-</div>
+</form>
