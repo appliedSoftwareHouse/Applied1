@@ -797,7 +797,9 @@ namespace Applied_WebApplication.Data
 
             await Task.Run(() =>
             {
+
                 AppRegistry.SetKey(UserName, "PostReceipt", true, KeyType.Boolean);
+
                 DataTableClass tb_receipt = new(UserName, Tables.Receipts, $"ID={id}");
                 DataTableClass tb_Ledger = new(UserName, Tables.Ledger, "Vou_Type='Receipt'");
                 bool DoProcess = true;
