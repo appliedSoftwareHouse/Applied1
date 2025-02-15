@@ -4,7 +4,154 @@
     ViewData["Title"] = "APPLIED SOFTWARE HOUSE";
 }
 
-<div class="container">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied Software House</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(to right, #4a90e2, #357ab7);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .contact {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3eaf2;
+            border-radius: 5px;
+        }
+
+            .contact p {
+                margin: 5px 0;
+            }
+
+        .customer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .customer-table th, .customer-table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .customer-table th {
+                background: #357ab7;
+                color: white;
+            }
+
+        .contact a {
+            color: #357ab7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .contact a:hover {
+                text-decoration: underline;
+            }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #357ab7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            .btn:hover {
+                background: #2b5f91;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">APPLIED SOFTWARE HOUSE</div>
+
+    <div class="container">
+        <h2>Applied Accounts</h2>
+        <p>Designed and developed by <strong>Muhammad Aamir Jahangir Khan</strong></p>
+        <p>Computer programmer since 1983.</p>
+
+        <div class="contact">
+            <p><strong>Contact:</strong> +92 336 2454 230 (Aamir Jahangir)</p>
+            <p><strong>Email:</strong> <a href="mailto:aamir@jahangir.com">aamir@jahangir.com</a></p>
+        </div>
+
+        <h2>Clients</h2>
+        <table class="customer-table">
+            <tr>
+                <th>Customer Name</th>
+                <th>City</th>
+                <th>Country</th>
+            </tr>
+            <tr>
+                <td>HFS Steel SA</td>
+                <td>Muzambique</td>
+                <td>Africa</td>
+            </tr>
+            <tr>
+                <td>Amcorp Engineering and Construction (Pvt) Limited</td>
+                <td>Karachi</td>
+                <td>Pakistan</td>
+            </tr>
+            <tr>
+                <td>Mumtaz Welfare Foundation</td>
+                <td>Karachi</td>
+                <td>Pakistan</td>
+            </tr>
+            <tr>
+                <td>OCS Lubricants</td>
+                <td>Muzambique</td>
+                <td>Africa</td>
+            </tr>
+            <tr>
+                <td>ALPHA</td>
+                <td>Muzambique</td>
+                <td>Africa</td>
+            </tr>
+        </table>
+
+        <a href="#" class="btn">View More Clients</a>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+@* <div class="container">
     <div class="row">
         <div class="alert alert-primary" role="alert">
             <h1 class="text-center">@ViewData["Title"]</h1>
@@ -67,3 +214,4 @@
 </div>
 
 
+ *@
