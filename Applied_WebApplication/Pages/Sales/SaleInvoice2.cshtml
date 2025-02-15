@@ -33,21 +33,19 @@
         <input hidden asp-for="@Model.myModel.fields.ID2" />
         <input hidden asp-for="@Model.myModel.fields.Status" />
 
-        <div class="row g-2 mb-2">
+        <div class="row g-1 mb-1">
             <div class="col-md-4">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@Model.myModel.fields.Vou_No">
                     <label for="txtVouNo">Voucher No</label>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@Model.myModel.fields.Inv_No">
                     <label for="txtInvNo">Voucher No</label>
                 </div>
             </div>
-
             <div class="col-md-4">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="txtRefNo" placeholder="Reference Number" asp-for="@Model.myModel.fields.Ref_No">
@@ -57,7 +55,7 @@
             </div>
         </div>
 
-        <div class="row g-2 mb-2">
+        <div class="row g-1 mb-1">
             <div class="col-md-4">
                 <div class="form-floating">
                     <input type="date" class="form-control" id="dtVou" placeholder="Voucher Date" asp-for="@Model.myModel.fields.Vou_Date">
@@ -78,8 +76,7 @@
             </div>
         </div>
 
-        <div class="row g-2 mb-2">
-            <!-- Company Dropdown -->
+        <div class="row g-1 mb-1">
             <div class="col-md-4">
                 <div class="form-floating position-relative">
                     <input type="text" id="ddownCompany" class="form-control" placeholder="Company..." autocomplete="off" asp-for="@TitleCompany">
@@ -96,8 +93,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Employee Dropdown -->
             <div class="col-md-4">
                 <div class="form-floating position-relative">
                     <input type="text" id="ddownEmployee" class="form-control" placeholder="Employee..." autocomplete="off" asp-for="@TitleEmployee">
@@ -116,13 +111,22 @@
             </div>
             <div class="col-md-4">
                 <div class="form-floating">
-                    <input type="text" class="form-control" id="txtRemarks" placeholder="Invoice Date" asp-for="@Model.myModel.fields.Remarks">
+                    <input type="text" class="form-control" id="txtRemarks" placeholder="Remarks" asp-for="@Model.myModel.fields.Remarks">
                     <label for="txtRemarks">Remarks</label>
                 </div>
             </div>
         </div>
-        <hr />
-        <div class="row g-2 mb-2">
+        <div class="row g-1">
+            <div class="col-md-12">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtComments" placeholder="Comments" asp-for="@Model.myModel.fields.Comments">
+                    <label for="txtComments">Comments</label>
+                </div>
+            </div>
+        </div>
+        
+        <hr class="mid-line" />
+        <div class="row g-1 mb-1">
             <div class="col-md-4">
                 <div class="form-floating position-relative">
                     <input type="text" id="ddownInventory" class="form-control" placeholder="Inventory..." autocomplete="off" asp-for="@TitleInventory">
@@ -151,6 +155,79 @@
                     <label for="txtRate">Rate</label>
                 </div>
             </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtAmount" readonly placeholder="Amount" asp-for="@Model.myModel.fields.Amount">
+                    <label for="txtAmount">Amount</label>
+                </div>
+            </div>
+
+        </div>
+        <div class="row g-1 mb-1">
+            <div class="col-md-4">
+                <div class="form-floating position-relative">
+                    <input type="text" id="ddownTaxes" class="form-control" placeholder="Taxes..." autocomplete="off" asp-for="@TitleTax">
+                    <input type="hidden" id="InventoryId" asp-for="@Model.myModel.fields.Tax">
+                    <label for="ddownTaxes">Tax</label>
+                    <span id="caretIconTaxes" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                        <i class="bi bi-chevron-down"></i>
+                    </span>
+                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListTaxes" style="display: none; max-height: 200px; overflow-y: auto;">
+                        @foreach (var item in Model.TaxesList)
+                        {
+                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtTaxRate" readonly placeholder="Tax Rate" asp-for="@Model.myModel.fields.TaxRate">
+                    <label for="txtTaxRate">Tax Rate</label>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtTaxAmount" readonly placeholder="Tax Rate" asp-for="@Model.myModel.fields.TaxAmount">
+                    <label for="txtTaxAmount">Tax Amount</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="number" class="form-control" id="txtNetAmount" readonly placeholder="NetAmount" asp-for="@Model.myModel.fields.NetAmount">
+                    <label for="txtNetAmount">Net Amount</label>
+                </div>
+            </div>
+        </div>
+        <div class="row g-1 mb-1">
+            <div class="col-md-4">
+                <div class="form-floating position-relative">
+                    <input type="text" id="ddownProject" class="form-control" placeholder="Project..." autocomplete="off" asp-for="@TitleProject">
+                    <input type="hidden" id="ProjectId" asp-for="@Model.myModel.fields.Project">
+                    <label for="ddownProject">Project</label>
+                    <span id="caretIconProject" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                        <i class="bi bi-chevron-down"></i>
+                    </span>
+                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListProject" style="display: none; max-height: 200px; overflow-y: auto;">
+                        @foreach (var item in Model.ProjectList)
+                        {
+                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.myModel.fields.Batch">
+                    <label for="txtNetBatch">Batch</label>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-floating">
+                    <input type="text" class="form-control" id="txtDescription" placeholder="Description" asp-for="@Model.myModel.fields.Description">
+                    <label for="txtDescription">Item Description</label>
+                </div>
+            </div>
 
         </div>
 
@@ -166,11 +243,16 @@
         initDropdown("#ddownCompany", "#CompanyId", "#dropdownListCompany");
         initDropdown("#ddownEmployee", "#EmployeeId", "#dropdownListEmployee");
         initDropdown("#ddownInventory", "#InventoryId", "#dropdownListInventory");
+        initDropdown("#ddownTaxes", "#TaxesId", "#dropdownListTaxes");
+        initDropdown("#ddownProject", "#ProjectId", "#dropdownListProject");
 
         // Click event handlers
         ddownClick("#caretIconCompany", "#dropdownListCompany", "#ddownCompany");
         ddownClick("#caretIconEmployee", "#dropdownListEmployee", "#ddownEmployee");
         ddownClick("#caretIconInventory", "#dropdownListInventory", "#ddownInventory");
+        ddownClick("#caretIconTaxes", "#dropdownListTaxes", "#ddownTaxes");
+        ddownClick("#caretIconProject", "#dropdownListProject", "#ddownProject");
     });
 
 </script>
+
