@@ -55,6 +55,10 @@ namespace Applied_WebApplication.Pages.Accounts
         {
             return RedirectToPage("../Sales/SaleInvoice", "New");
         }
+        public IActionResult OnPostAdd2()
+        {
+            return RedirectToPage("../Sales/SaleInvoice2", "New");
+        }
         #endregion
 
         #region Show Record

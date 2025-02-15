@@ -127,6 +127,7 @@ namespace Applied_WebApplication.Pages.Applied
             if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
             if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
             if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
+
             if (PostingType == (int)PostType.Receipt)
             {
                 if (!AppRegistry.GetBool(UserName, "PostReceipt"))
@@ -134,6 +135,9 @@ namespace Applied_WebApplication.Pages.Applied
                     ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
                 }
             }
+
+            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result; }
+
 
             if (ErrorMessages.Count > 0)
             {
