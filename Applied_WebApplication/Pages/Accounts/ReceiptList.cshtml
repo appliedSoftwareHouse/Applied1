@@ -1,5 +1,6 @@
 ﻿@page
 @using System.Data
+@using AppReportClass
 @model Applied_WebApplication.Pages.Accounts.ReceiptListModel
 @{
     var UserName = User.Identity.Name;
@@ -18,13 +19,13 @@
 <form method="post">
     <div class="container list-filter">
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="input-group">
                     <span class="input-group-text" style="width:30%" id="From">Start</span>
                     <input type="date" class="form-control text-center" id="MinDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.From />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-2">
                 <div class="input-group">
                     <input type="date" class="form-control text-center" id="MaxDate" style="width:70%" min="2020-01-01" asp-for=@Model.Variables.To />
                     <span class="input-group-text" style="width:30%" id="To">End</span>
@@ -44,6 +45,23 @@
                     Refresh
                 </button>
             </div>
+            <div class="col-md-2">
+                <div class="col-1 col-width">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown">
+                            Print <i class="bi bi-printer"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Preview">Preview</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.PDF">PDF</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Excel">Excel</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Word">Word</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.HTML">HTML</button></li>
+                            <li><button type="submit" class="btn btn-link border-0" asp-page-handler="PrintList" asp-route-Option="@ReportType.Image">Image</button></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -56,7 +74,7 @@
                     <th>Payer</th>
                     <th>Account</th>
                     <th>Project</th>
-                   @*  <th>Employee</th> *@
+                    @*  <th>Employee</th> *@
                     <th class="amount">Amount</th>
                     <th style="text-align: center;">
                         <button class="btn btn-primary" asp-page-handler="New"><i class="bi bi-clipboard-plus-fill"></i></button>
@@ -103,7 +121,7 @@
                                     class="btn btn-link">
                                 <i class="bi bi-printer-fill"></i>
                             </button>
-                            @if(Role=="Administrator")
+                            @if (Role == "Administrator")
                             {
                                 <button id="b3" type="submit" style="padding:0px;color:darkgoldenrod"
                                         asp-page-handler="UnPost"
