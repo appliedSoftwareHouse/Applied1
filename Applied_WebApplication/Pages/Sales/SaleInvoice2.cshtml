@@ -22,7 +22,7 @@
 
 @if (Model.ErrorMessages.Count > 0)
 {
-    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+        <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
 }
 
 
@@ -43,7 +43,7 @@
             <div class="col-md-4">
                 <div class="form-floating">
                     <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@Model.myModel.fields.Inv_No">
-                    <label for="txtInvNo">Voucher No</label>
+                    <label for="txtInvNo">Invoice No</label>
                 </div>
             </div>
             <div class="col-md-4">
@@ -124,7 +124,7 @@
                 </div>
             </div>
         </div>
-        
+
         <hr class="mid-line" />
         <div class="row g-1 mb-1">
             <div class="col-md-4">
@@ -231,6 +231,52 @@
 
         </div>
 
+        <div class="container">
+            <table class="table-list">
+                <thead>
+                    <tr>
+                        <th style="width:5%">Sr #</th>
+                        <th style="width:5%">Inventory</th>
+                        <th style="width:5%">Batch</th>
+                        <th style="width:5%">Qty</th>
+                        <th style="width:5%">Rate</th>
+                        <th style="width:5%">Amount</th>
+                        <th style="width:5%">Tax %</th>
+                        <th style="width:5%">Tax Amount</th>
+                        <th style="width:5%">Net Amount</th>
+                        <th style="width:5%">
+                            <button class="btn btn-blue">
+                                <i class="bi bi-pencil-fill"></i>
+                            </button>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach(DataFields _fields in Model.myModel.fieldsList)
+                    {
+                        <tr>
+                            <td>@_fields.Sr_No</td>
+                            <td>@_fields.TitleInventory</td>
+                            <td>@_fields.Batch</td>
+                            <td class="amount">@_fields.TQty</td>
+                            <td class="amount">@_fields.TRate</td>
+                            <td class="amount">@_fields.TAmount</td>
+                            <td class="amount">@_fields.TaxRate</td>
+                            <td class="amount">@_fields.TaxAmount</td>
+                            <td class="amount">@_fields.NetAmount</td>
+                            <td class="amount">
+                                <button id="btnEdit" title="Edit Record" class="btn btn-edit"><i class="bi bi-pencil-fill"></i></button>
+                                <button id="btnDel" title="Delete Record" class="btn btn-del"><i class="bi bi-trash-fill"></i></button>
+                                @if (model.MaxSrNo == _fields.Sr_No)
+                                {
+                                    <button id="btnPlus" title="New Record" class="btn btn-plus"><i class="bi bi-plus-square-fill"></i></button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
 
 

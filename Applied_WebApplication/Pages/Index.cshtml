@@ -55,6 +55,13 @@
         position: relative;
     }
 
+    .btn {
+        width: 100px;
+        height: 40px;
+        margin-bottom: 5px;
+        background-color: #357ab7;
+    }
+
 </style>
 
 <!--  Carousel -->
@@ -84,54 +91,26 @@
 <!--  carousel END -->
 
 <blockquote class="blockquote">
-    <p>For 30 years, providing Desktop Software Solution, Now developing a web base Accounting Software for small and medium scale organization.</p>
-    <footer class="blockquote-footer align-content-center">It is Under Development.</footer>
+    <p>For the past 30 years, we've been delivering top-notch desktop software solutions. Now, we're developing a web-based accounting system tailored for small and medium-sized businesses.</p>
+    <footer class="blockquote-footer align-content-end">Currently in development – stay tuned!</footer>
 </blockquote>
 
 <form method="post">
-    <div class="d-flex flex-row flex-wrap bd-highlight mb-3 justify-content-center">
-        <div class="p-2 d-inline-block">
-            <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="">Test</button>
-        </div>
-        
-        <div class="p-2 d-inline-block">
-            <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="CashBook">Cash Book</button>
-            
-        </div>
-        <div class="p-2 d-inline-block">
-            <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="BankBook">Bank Book</button>
-            
-        </div>
-        <div class="p-2 d-inline-block">
-            <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="WCheque">Cheque</button>
-            @* <input type="submit" id="btn-menu" class="btn btn-primary" value="Write Cheque" asp-page-handler="WCheque"> *@
-        </div>
-        <div class="p-2 d-inline-block">
-            <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Invoice">Invoice</button>
-            @* <input type="submit" id="btn-menu" class="btn btn-primary" value="Sale Invoice" asp-page=".\Sales\SaleInvoice2" /> *@
-        </div>
-        <div class="p-2 d-inline-block">
-            <button class="btn btn-primary" asp-page-handler="Receipt">Issue Receipt</button>
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Issue Receipt" asp-page=".\Accounts\Receipt?0" />
-        </div>
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Bill Payable" asp-page=".\Accounts\BillPayableList" formmethod="get" />
-        </div>
-
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Ledgers" asp-page=".\ReportPrint\GeneralLedgers" formmethod="get" />
-        </div>
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Vouchers" asp-page=".\Accounts\VouchersList" formmethod="get" />
-        </div>
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="JV Voucher" asp-page=".\Accounts\JV" formmethod="get" />
-        </div>
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="JV List" asp-page=".\Accounts\JVList" formmethod="get" />
-        </div>
-        <div class="p-2 d-inline-block">
-            <input type="submit" id="btn-menu" class="btn btn-primary" value="Stock Position" asp-page=".\Stock\StockPosition" formmethod="get" />
+    <div class="container">
+        <div class="row d-flex flex-row flex-wrap bd-highlight mb-3 justify-content-center">
+            <div class="p-2 col-12">
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="">Test</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="CashBook">Cash Book</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="BankBook">Bank Book</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="WCheque">Cheque</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Invoice">Invoice</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Receipt">Receipt</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Payable">Payable</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Ledgers">Ledgers</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Vouchers">Vouchers</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="JV">JV</button>
+                <button type="submit" id="btn-menu" class="btn btn-primary" asp-page-handler="Stock">Stock</button>
+            </div>
         </div>
     </div>
 </form>
