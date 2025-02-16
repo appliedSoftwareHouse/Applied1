@@ -30,6 +30,11 @@ namespace Applied_WebApplication.Pages
         public IActionResult OnPostPosting() => RedirectToPage("/Applied/Posting");
         public IActionResult OnPostVouchers() => RedirectToPage("/Accounts/Vouchers");
         public IActionResult OnPostReceipt() => RedirectToPage("/Accounts/Receipt", routeValues: new { ID = 0 });
+        public IActionResult OnPostPayable() => RedirectToPage("/Accounts/BillPayable");
+        public IActionResult OnPostReceivable() => RedirectToPage("/Accounts/BillReceivable");
+        public IActionResult OnPostLedgers() => RedirectToPage("/ReportPrint/ReportPrint/GeneralLedgers");
+        public IActionResult OnPostJV() => RedirectToPage("/Accounts/JV");
+        public IActionResult OnPostStock() => RedirectToPage("/Stock/StockPosition");
 
 
 
