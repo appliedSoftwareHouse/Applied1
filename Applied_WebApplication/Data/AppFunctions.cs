@@ -4,7 +4,7 @@ using static Applied_WebApplication.Pages.Accounts.WriteChequeModel;
 
 namespace Applied_WebApplication.Data
 {
-    public class AppFunctions
+    public static partial class AppFunctions
     {
         #region New Voucher
         public static string GetNewCashVoucher(string UserName)
@@ -325,14 +325,11 @@ namespace Applied_WebApplication.Data
 
         #endregion
 
-        //public static string AddCommas(string UserName, object _Value)
-        //{
-        //    var _Number = Decimal.Round(Conversion.ToDecimal(_Value), 2);
-        //    var _Format = AppRegistry.GetFormatCurrency(UserName);
-        //    var _result = _Number.ToString(_Format);
-        //    return _result;
-        //}
-
+        public enum Status
+        {
+            Submitted,
+            Posted,
+        }
 
     }
 }

@@ -22,7 +22,7 @@ namespace Applied_WebApplication.Pages
             }
         }
 
-        public IActionResult OnPostTest() => RedirectToPage("/ReportPrint/PrintReport", "Ledger", routeValues: new { COAID = 2 });
+        public IActionResult OnPostTest() => RedirectToPage("/Sales/SaleInvoice2", routeValues: new { ID = 104, SRNO = 3 });
         public IActionResult OnPostCashBook() => RedirectToPage("/Accounts/Cashbook", routeValues: new { id = AppRegistry.GetNumber(UserName, "CashBookID") });
         public IActionResult OnPostBankBook() => RedirectToPage("/Accounts/Bankbook", routeValues: new { id = AppRegistry.GetNumber(UserName, "BankBookID") });
         public IActionResult OnPostWCheque() => RedirectToPage("/Accounts/WriteCheque", routeValues: new { ChqCode = "" });

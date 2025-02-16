@@ -3,12 +3,19 @@
 @{
 
     var UserName = User.Identity.Name;
-    var model = Model.myModel;
-    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, model.fields.Inventory);
-    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, model.fields.Company);
-    var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.Employees, model.fields.Employee);
-    var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, model.fields.Project);
-    var TitleTax = AppFunctions.GetTitle(UserName, Tables.Taxes, model.fields.Tax);
+
+    DataFields myfields = Model.myModel.fields;
+    List<DataFields> myfieldsList = Model.myModel.fieldsList;
+    bool IsError = false;
+
+    if (myfields == null || myfieldsList == null) { IsError = true; }
+
+
+    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, myfields.Inventory);
+    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, myfields.Company);
+    var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.Employees, myfields.Employee);
+    var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, myfields.Project);
+    var TitleTax = AppFunctions.GetTitle(UserName, Tables.Taxes, myfields.Tax);
 
     var FMTCurrency1 = AppRegistry.FormatCurrency1;
     var FMTCurrency2 = AppRegistry.FormatCurrency2;
@@ -22,266 +29,276 @@
 
 @if (Model.ErrorMessages.Count > 0)
 {
-        <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
+    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
 }
 
+@if (!IsError)
+{
 
-
-<form method="post">
-    <div class="container">
-        <input hidden asp-for="@Model.myModel.fields.ID1" />
-        <input hidden asp-for="@Model.myModel.fields.ID2" />
-        <input hidden asp-for="@Model.myModel.fields.Status" />
-
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@Model.myModel.fields.Vou_No">
-                    <label for="txtVouNo">Voucher No</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@Model.myModel.fields.Inv_No">
-                    <label for="txtInvNo">Invoice No</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtRefNo" placeholder="Reference Number" asp-for="@Model.myModel.fields.Ref_No">
-                    <label for="txtRefNo">Reference No</label>
-                </div>
-
-            </div>
-        </div>
-
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="dtVou" placeholder="Voucher Date" asp-for="@Model.myModel.fields.Vou_Date">
-                    <label for="dtVou">Voucher Date</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="dtInv" placeholder="Invoice Date" asp-for="@Model.myModel.fields.Inv_Date">
-                    <label for="dtInv">Invoice Date</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="date" class="form-control" id="dtPay" placeholder="Invoice Date" asp-for="@Model.myModel.fields.Pay_Date">
-                    <label for="dtPay">Payment due Date</label>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating position-relative">
-                    <input type="text" id="ddownCompany" class="form-control" placeholder="Company..." autocomplete="off" asp-for="@TitleCompany">
-                    <input type="hidden" id="CompanyId" asp-for="@Model.myModel.fields.Company">
-                    <label for="ddownCompany">Company</label>
-                    <span id="caretIconCompany" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListCompany" style="display: none; max-height: 200px; overflow-y: auto;">
-                        @foreach (var item in Model.CompanyList)
-                        {
-                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating position-relative">
-                    <input type="text" id="ddownEmployee" class="form-control" placeholder="Employee..." autocomplete="off" asp-for="@TitleEmployee">
-                    <input type="hidden" id="EmployeeId" asp-for="@Model.myModel.fields.Employee">
-                    <label for="ddownEmployee">Employee</label>
-                    <span id="caretIconEmployee" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListEmployee" style="display: none; max-height: 200px; overflow-y: auto;">
-                        @foreach (var item in Model.EmployeeList)
-                        {
-                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtRemarks" placeholder="Remarks" asp-for="@Model.myModel.fields.Remarks">
-                    <label for="txtRemarks">Remarks</label>
-                </div>
-            </div>
-        </div>
-        <div class="row g-1">
-            <div class="col-md-12">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtComments" placeholder="Comments" asp-for="@Model.myModel.fields.Comments">
-                    <label for="txtComments">Comments</label>
-                </div>
-            </div>
-        </div>
-
-        <hr class="mid-line" />
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating position-relative">
-                    <input type="text" id="ddownInventory" class="form-control" placeholder="Inventory..." autocomplete="off" asp-for="@TitleInventory">
-                    <input type="hidden" id="InventoryId" asp-for="@Model.myModel.fields.Inventory">
-                    <label for="ddownInventory">Inventory</label>
-                    <span id="caretIconInventory" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListInventory" style="display: none; max-height: 200px; overflow-y: auto;">
-                        @foreach (var item in Model.StockList)
-                        {
-                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtQuantity" placeholder="Quantity" asp-for="@Model.myModel.fields.Qty">
-                    <label for="txtQuantity">Quantity</label>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtRate" placeholder="Rate" asp-for="@Model.myModel.fields.Rate">
-                    <label for="txtRate">Rate</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtAmount" readonly placeholder="Amount" asp-for="@Model.myModel.fields.Amount">
-                    <label for="txtAmount">Amount</label>
-                </div>
-            </div>
-
-        </div>
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating position-relative">
-                    <input type="text" id="ddownTaxes" class="form-control" placeholder="Taxes..." autocomplete="off" asp-for="@TitleTax">
-                    <input type="hidden" id="InventoryId" asp-for="@Model.myModel.fields.Tax">
-                    <label for="ddownTaxes">Tax</label>
-                    <span id="caretIconTaxes" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListTaxes" style="display: none; max-height: 200px; overflow-y: auto;">
-                        @foreach (var item in Model.TaxesList)
-                        {
-                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtTaxRate" readonly placeholder="Tax Rate" asp-for="@Model.myModel.fields.TaxRate">
-                    <label for="txtTaxRate">Tax Rate</label>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtTaxAmount" readonly placeholder="Tax Rate" asp-for="@Model.myModel.fields.TaxAmount">
-                    <label for="txtTaxAmount">Tax Amount</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="number" class="form-control" id="txtNetAmount" readonly placeholder="NetAmount" asp-for="@Model.myModel.fields.NetAmount">
-                    <label for="txtNetAmount">Net Amount</label>
-                </div>
-            </div>
-        </div>
-        <div class="row g-1 mb-1">
-            <div class="col-md-4">
-                <div class="form-floating position-relative">
-                    <input type="text" id="ddownProject" class="form-control" placeholder="Project..." autocomplete="off" asp-for="@TitleProject">
-                    <input type="hidden" id="ProjectId" asp-for="@Model.myModel.fields.Project">
-                    <label for="ddownProject">Project</label>
-                    <span id="caretIconProject" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
-                        <i class="bi bi-chevron-down"></i>
-                    </span>
-                    <div class="dropdown-menu w-100 show mt-1" id="dropdownListProject" style="display: none; max-height: 200px; overflow-y: auto;">
-                        @foreach (var item in Model.ProjectList)
-                        {
-                            <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
-                        }
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.myModel.fields.Batch">
-                    <label for="txtNetBatch">Batch</label>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="txtDescription" placeholder="Description" asp-for="@Model.myModel.fields.Description">
-                    <label for="txtDescription">Item Description</label>
-                </div>
-            </div>
-
-        </div>
-
+    <form method="post">
         <div class="container">
-            <table class="table-list">
-                <thead>
-                    <tr>
-                        <th style="width:5%">Sr #</th>
-                        <th style="width:5%">Inventory</th>
-                        <th style="width:5%">Batch</th>
-                        <th style="width:5%">Qty</th>
-                        <th style="width:5%">Rate</th>
-                        <th style="width:5%">Amount</th>
-                        <th style="width:5%">Tax %</th>
-                        <th style="width:5%">Tax Amount</th>
-                        <th style="width:5%">Net Amount</th>
-                        <th style="width:5%">
-                            <button class="btn btn-blue">
-                                <i class="bi bi-pencil-fill"></i>
-                            </button>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach(DataFields _fields in Model.myModel.fieldsList)
-                    {
+            <input hidden asp-for="@myfields.ID1" />
+            <input hidden asp-for="@myfields.ID2" />
+            <input hidden asp-for="@myfields.Status" />
+
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@myfields.Vou_No">
+                        <label for="txtVouNo">Voucher No</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@myfields.Inv_No">
+                        <label for="txtInvNo">Invoice No</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtRefNo" placeholder="Reference Number" asp-for="@myfields.Ref_No">
+                        <label for="txtRefNo">Reference No</label>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dtVou" placeholder="Voucher Date" asp-for="@myfields.Vou_Date">
+                        <label for="dtVou">Voucher Date</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dtInv" placeholder="Invoice Date" asp-for="@myfields.Inv_Date">
+                        <label for="dtInv">Invoice Date</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="date" class="form-control" id="dtPay" placeholder="Invoice Date" asp-for="@myfields.Pay_Date">
+                        <label for="dtPay">Payment due Date</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating position-relative">
+                        <input type="text" id="ddownCompany" class="form-control" placeholder="Company..." autocomplete="off" asp-for="@TitleCompany">
+                        <input type="hidden" id="CompanyId" asp-for="@myfields.Company">
+                        <label for="ddownCompany">Company</label>
+                        <span id="caretIconCompany" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <div class="dropdown-menu w-100 show mt-1" id="dropdownListCompany" style="display: none; max-height: 200px; overflow-y: auto;">
+                            @foreach (var item in Model.CompanyList)
+                            {
+                                <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating position-relative">
+                        <input type="text" id="ddownEmployee" class="form-control" placeholder="Employee..." autocomplete="off" asp-for="@TitleEmployee">
+                        <input type="hidden" id="EmployeeId" asp-for="@myfields.Employee">
+                        <label for="ddownEmployee">Employee</label>
+                        <span id="caretIconEmployee" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <div class="dropdown-menu w-100 show mt-1" id="dropdownListEmployee" style="display: none; max-height: 200px; overflow-y: auto;">
+                            @foreach (var item in Model.EmployeeList)
+                            {
+                                <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtRemarks" placeholder="Remarks" asp-for="@myfields.Remarks">
+                        <label for="txtRemarks">Remarks</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-1">
+                <div class="col-md-12">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtComments" placeholder="Comments" asp-for="@myfields.Comments">
+                        <label for="txtComments">Comments</label>
+                    </div>
+                </div>
+            </div>
+
+            <hr class="mid-line" />
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating position-relative">
+                        <input type="text" id="ddownInventory" class="form-control" placeholder="Inventory..." autocomplete="off" asp-for="@TitleInventory">
+                        <input type="hidden" id="InventoryId" asp-for="@myfields.Inventory">
+                        <label for="ddownInventory">Inventory</label>
+                        <span id="caretIconInventory" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <div class="dropdown-menu w-100 show mt-1" id="dropdownListInventory" style="display: none; max-height: 200px; overflow-y: auto;">
+                            @foreach (var item in Model.StockList)
+                            {
+                                <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtQuantity" placeholder="Quantity" asp-for="@myfields.Qty">
+                        <label for="txtQuantity">Quantity</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtRate" placeholder="Rate" asp-for="@myfields.Rate">
+                        <label for="txtRate">Rate</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtAmount" readonly placeholder="Amount" asp-for="@myfields.Amount">
+                        <label for="txtAmount">Amount</label>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating position-relative">
+                        <input type="text" id="ddownTaxes" class="form-control" placeholder="Taxes..." autocomplete="off" asp-for="@TitleTax">
+                        <input type="hidden" id="InventoryId" asp-for="@myfields.Tax">
+                        <label for="ddownTaxes">Tax</label>
+                        <span id="caretIconTaxes" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <div class="dropdown-menu w-100 show mt-1" id="dropdownListTaxes" style="display: none; max-height: 200px; overflow-y: auto;">
+                            @foreach (var item in Model.TaxesList)
+                            {
+                                <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtTaxRate" readonly placeholder="Tax Rate" asp-for="@myfields.TaxRate">
+                        <label for="txtTaxRate">Tax Rate</label>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtTaxAmount" readonly placeholder="Tax Rate" asp-for="@myfields.TaxAmount">
+                        <label for="txtTaxAmount">Tax Amount</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="number" class="form-control" id="txtNetAmount" readonly placeholder="NetAmount" asp-for="@myfields.NetAmount">
+                        <label for="txtNetAmount">Net Amount</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row g-1 mb-1">
+                <div class="col-md-4">
+                    <div class="form-floating position-relative">
+                        <input type="text" id="ddownProject" class="form-control" placeholder="Project..." autocomplete="off" asp-for="@TitleProject">
+                        <input type="hidden" id="ProjectId" asp-for="@myfields.Project">
+                        <label for="ddownProject">Project</label>
+                        <span id="caretIconProject" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
+                            <i class="bi bi-chevron-down"></i>
+                        </span>
+                        <div class="dropdown-menu w-100 show mt-1" id="dropdownListProject" style="display: none; max-height: 200px; overflow-y: auto;">
+                            @foreach (var item in Model.ProjectList)
+                            {
+                                <button class="dropdown-item" type="button" data-id="@item.Key">@item.Value</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@myfields.Batch">
+                        <label for="txtNetBatch">Batch</label>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtDescription" placeholder="Description" asp-for="@myfields.Description">
+                        <label for="txtDescription">Item Description</label>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="container">
+                <table class="table-list">
+                    <thead>
                         <tr>
-                            <td>@_fields.Sr_No</td>
-                            <td>@_fields.TitleInventory</td>
-                            <td>@_fields.Batch</td>
-                            <td class="amount">@_fields.TQty</td>
-                            <td class="amount">@_fields.TRate</td>
-                            <td class="amount">@_fields.TAmount</td>
-                            <td class="amount">@_fields.TaxRate</td>
-                            <td class="amount">@_fields.TaxAmount</td>
-                            <td class="amount">@_fields.NetAmount</td>
-                            <td class="amount">
-                                <button id="btnEdit" title="Edit Record" class="btn btn-edit"><i class="bi bi-pencil-fill"></i></button>
-                                <button id="btnDel" title="Delete Record" class="btn btn-del"><i class="bi bi-trash-fill"></i></button>
-                                @if (model.MaxSrNo == _fields.Sr_No)
-                                {
-                                    <button id="btnPlus" title="New Record" class="btn btn-plus"><i class="bi bi-plus-square-fill"></i></button>
-                                }
-                            </td>
+                            <th style="width:5%">Sr #</th>
+                            <th style="width:5%">Inventory</th>
+                            <th style="width:5%">Batch</th>
+                            <th style="width:5%">Qty</th>
+                            <th style="width:5%">Rate</th>
+                            <th style="width:5%">Amount</th>
+                            <th style="width:5%">Tax %</th>
+                            <th style="width:5%">Tax Amount</th>
+                            <th style="width:5%">Net Amount</th>
+                            <th style="width:5%">
+                                <button class="btn btn-blue">
+                                    <i class="bi bi-pencil-fill"></i>
+                                </button>
+                            </th>
                         </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        @foreach (DataFields _fields in myfieldsList)
+                        {
+                            <tr>
+                                <td>@_fields.Sr_No</td>
+                                <td>@_fields.TitleInventory</td>
+                                <td>@_fields.Batch</td>
+                                <td class="amount">@_fields.TQty</td>
+                                <td class="amount">@_fields.TRate</td>
+                                <td class="amount">@_fields.TAmount</td>
+                                <td class="amount">@_fields.TaxRate</td>
+                                <td class="amount">@_fields.TaxAmount</td>
+                                <td class="amount">@_fields.NetAmount</td>
+                                <td class="amount">
+                                    <button id="btnEdit" title="Edit Record" class="btn btn-edit"><i class="bi bi-pencil-fill"></i></button>
+                                    <button id="btnDel" title="Delete Record" class="btn btn-del"><i class="bi bi-trash-fill"></i></button>
+                                    @if (_fields.Sr_No == Model.MaxSrNo)
+                                    {
+                                        <button id="btnPlus" title="New Record" class="btn btn-plus"><i class="bi bi-plus-square-fill"></i></button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
 
 
 
-</form>
-
+    </form>
+}
+else
+{
+    <div class="alert alert-danger" role="alert">
+        <h4 class="alert-heading">Error!</h4>
+        <p>There is an error in the data fields.</p>
+        <hr>
+        <p class="mb-0">Please contact the administrator.</p>
+    </div>
+}
 
 <script>
         $(document).ready(function () {
