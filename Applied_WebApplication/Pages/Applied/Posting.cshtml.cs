@@ -136,9 +136,6 @@ namespace Applied_WebApplication.Pages.Applied
                 }
             }
 
-            if (PostingType == (int)PostType.Receipt) { ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result; }
-
-
             if (ErrorMessages.Count > 0)
             {
                 return Page();

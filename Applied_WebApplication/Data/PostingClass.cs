@@ -792,6 +792,8 @@ namespace Applied_WebApplication.Data
         #region Posting of Receipt
         public static async Task<List<Message>> PostReceiptAsync(string UserName, int id)
         {
+
+
            
             List<Message> MyMessages = new();
 

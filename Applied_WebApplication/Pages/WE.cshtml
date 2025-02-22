@@ -4,38 +4,135 @@
     ViewData["Title"] = "APPLIED SOFTWARE HOUSE";
 }
 
-<div class="container">
-    <div class="row">
-        <div class="alert alert-primary" role="alert">
-            <h1 class="text-center">@ViewData["Title"]</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applied Software House</title>
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background-color: #f4f7f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(to right, #4a90e2, #357ab7);
+            color: white;
+            text-align: center;
+            padding: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .container {
+            width: 80%;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .contact {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e3eaf2;
+            border-radius: 5px;
+        }
+
+            .contact p {
+                margin: 5px 0;
+            }
+
+        .customer-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+            .customer-table th, .customer-table td {
+                border: 1px solid #ddd;
+                padding: 10px;
+                text-align: left;
+            }
+
+            .customer-table th {
+                background: #357ab7;
+                color: white;
+            }
+
+        .contact a {
+            color: #357ab7;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+            .contact a:hover {
+                text-decoration: underline;
+            }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 15px;
+            background: #357ab7;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+            .btn:hover {
+                background: #2b5f91;
+            }
+    </style>
+</head>
+<body>
+    <div class="header">APPLIED SOFTWARE HOUSE</div>
+
+    <div class="container">
+        <p>Introducing Our Cutting-Edge Accounting Software by Applied Software Housing. </p>
+        <p>Are you looking for a reliable, efficient, and user-friendly accounting solution for your business? Applied Software Housing proudly presents a state-of-the-art Accounting, Stock, and Payroll Management System designed to simplify financial operations for businesses of all sizes.</p>
+
+        <p><bold>  Why Choose Our Accounting Software?</bold></p>
+        <p>✅ Comprehensive Accounting: Manage invoices, expenses, and financial reports effortlessly.</p>
+        <p>✅ Stock & Inventory Management: Keep track of stock levels, purchases, and sales in real time.</p>
+        <p>✅ Payroll System: Automate salary calculations, deductions, and employee records.</p>
+        <p>✅ User-Friendly Interface: Designed for ease of use, even for non-accounting professionals.</p>
+        <p>✅ Secure & Reliable: Built with .NET Core 6 and Razor Pages, ensuring high performance and security.</p>
+        <p>✅ Customizable & Scalable: Tailor the software to fit your specific business needs.</p>
+
+        <p>📢 Perfect for small businesses, enterprises, retailers, and service providers who need an all-in-one financial management solution!</p>
+
+        <p>💡 Experience the Future of Accounting Today! Contact us now for a demo and see how our software can transform your business operations.
+        </p>
+
+        📞 Get in Touch: [+92 (336) 254 52 30]
+        
+
+        <h2>Applied Accounts</h2>
+        <p>Designed and developed by <strong>Muhammad Aamir Jahangir Khan</strong></p>
+        <p>Computer programmer since 1983.</p>
+
+        <div class="contact">
+            <p><strong>Contact:</strong> +92 336 2454 230 (Aamir Jahangir)</p>
+            <p><strong>Email:</strong> <a href="mailto:aamir@jahangir.com">aamir@jahangir.com</a></p>
         </div>
 
-    </div>
-    <div class="row mb-2">
-        <div class="col-4">
-            <h4 class="text-center">Applied Accounts</h4>
-        </div>
-        <div class="col-8">
-            <p><string>Applied Accounts</string> designed and developed by (Author)</p>
-            <p>Muhammad Aamir Jahangir Khan</p>
-            <p>Computer programmer since 1983.</p>
-            <p>CONTACT # +92 336 2454 230  (AAMIR JAHANGIR)</p>
-            <p>Email : <a href="mailto:aamir@jahangir.com">aamir@jahangir.com</a> </p>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <table>
-        <caption>LIST OF CUSTOMERS</caption>
-        <thead>
+        <h2>Clients</h2>
+        <table class="customer-table">
             <tr>
-                <th style="width: 65%">Customer Name</th>
-                <th style="width: 20%">City</th>
-                <th style="width: 15%">Country</th>
+                <th>Customer Name</th>
+                <th>City</th>
+                <th>Country</th>
             </tr>
-        </thead>
-        <tbody>
             <tr>
                 <td>HFS Steel SA</td>
                 <td>Muzambique</td>
@@ -61,9 +158,12 @@
                 <td>Muzambique</td>
                 <td>Africa</td>
             </tr>
-        </tbody>
-    </table>
-    
-</div>
+        </table>
+
+        <a href="#" class="btn">View More Clients</a>
+    </div>
+</body>
+</html>
+
 
 
