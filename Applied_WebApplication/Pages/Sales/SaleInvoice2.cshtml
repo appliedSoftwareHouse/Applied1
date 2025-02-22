@@ -1,21 +1,21 @@
 ﻿@page
+@using static Applied_WebApplication.Pages.Sales.SaleInvoice2Model
 @model Applied_WebApplication.Pages.Sales.SaleInvoice2Model
 @{
 
     var UserName = User.Identity.Name;
 
-    DataFields myfields = Model.myModel.fields;
-    List<DataFields> myfieldsList = Model.myModel.fieldsList;
+    //DataFields myfields = Model.Variables;
+
     bool IsError = false;
 
-    if (myfields == null || myfieldsList == null) { IsError = true; }
+    if (Model.Variables == null) { IsError = true; }
 
-
-    var TitleInventory = AppFunctions.GetTitle(UserName, Tables.Inventory, myfields.Inventory);
-    var TitleCompany = AppFunctions.GetTitle(UserName, Tables.Customers, myfields.Company);
-    var TitleEmployee = AppFunctions.GetTitle(UserName, Tables.Employees, myfields.Employee);
-    var TitleProject = AppFunctions.GetTitle(UserName, Tables.Project, myfields.Project);
-    var TitleTax = AppFunctions.GetTitle(UserName, Tables.Taxes, myfields.Tax);
+    var TitleInventory = Model.GetTitle(Model.StockList, Model.Variables.Inventory);
+    var TitleCompany = Model.GetTitle(Model.CompanyList, Model.Variables.Company);
+    var TitleEmployee = Model.GetTitle(Model.EmployeeList, Model.Variables.Employee);
+    var TitleProject = Model.GetTitle(Model.ProjectList, Model.Variables.Project);
+    var TitleTax = Model.GetTitle(Model.TaxesList, Model.Variables.Tax);
 
     var FMTCurrency1 = AppRegistry.FormatCurrency1;
     var FMTCurrency2 = AppRegistry.FormatCurrency2;
@@ -27,36 +27,38 @@
     <h3>SALE INVOICE</h3>
 </div>
 
-@if (Model.ErrorMessages.Count > 0)
-{
-    <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.ErrorMessages"></component>
-}
-
 @if (!IsError)
 {
+    @if (Model.MyMessages.Count > 0)
+    {
+            <component type="typeof(ErrorMessages)" render-mode="Static" param-Errors="@Model.MyMessages"></component>
+    }
 
     <form method="post">
         <div class="container">
-            <input hidden asp-for="@myfields.ID1" />
-            <input hidden asp-for="@myfields.ID2" />
-            <input hidden asp-for="@myfields.Status" />
+            <input hidden asp-for="@Model.Variables.ID1" />
+            <input hidden asp-for="@Model.Variables.ID2" />
 
+            <input hidden asp-for="@Model.Variables.TranID" />
+            <input hidden asp-for="@Model.Variables.Status" />
+
+            <!-- Invoice Part 1  -->
             <div class="row g-1 mb-1">
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@myfields.Vou_No">
+                        <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@Model.Variables.Vou_No">
                         <label for="txtVouNo">Voucher No</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@myfields.Inv_No">
+                        <input type="text" class="form-control" id="txtInvNo" placeholder="Invoice Number" asp-for="@Model.Variables.Inv_No">
                         <label for="txtInvNo">Invoice No</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtRefNo" placeholder="Reference Number" asp-for="@myfields.Ref_No">
+                        <input type="text" class="form-control" id="txtRefNo" placeholder="Reference Number" asp-for="@Model.Variables.Ref_No">
                         <label for="txtRefNo">Reference No</label>
                     </div>
 
@@ -66,19 +68,19 @@
             <div class="row g-1 mb-1">
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="date" class="form-control" id="dtVou" placeholder="Voucher Date" asp-for="@myfields.Vou_Date">
+                        <input type="date" class="form-control" id="dtVou" placeholder="Voucher Date" asp-for="@Model.Variables.Vou_Date">
                         <label for="dtVou">Voucher Date</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="date" class="form-control" id="dtInv" placeholder="Invoice Date" asp-for="@myfields.Inv_Date">
+                        <input type="date" class="form-control" id="dtInv" placeholder="Invoice Date" asp-for="@Model.Variables.Inv_Date">
                         <label for="dtInv">Invoice Date</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="date" class="form-control" id="dtPay" placeholder="Invoice Date" asp-for="@myfields.Pay_Date">
+                        <input type="date" class="form-control" id="dtPay" placeholder="Invoice Date" asp-for="@Model.Variables.Pay_Date">
                         <label for="dtPay">Payment due Date</label>
                     </div>
                 </div>
@@ -88,7 +90,7 @@
                 <div class="col-md-4">
                     <div class="form-floating position-relative">
                         <input type="text" id="ddownCompany" class="form-control" placeholder="Company..." autocomplete="off" asp-for="@TitleCompany">
-                        <input type="hidden" id="CompanyId" asp-for="@myfields.Company">
+                        <input type="hidden" id="CompanyId" asp-for="@Model.Variables.Company">
                         <label for="ddownCompany">Company</label>
                         <span id="caretIconCompany" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
                             <i class="bi bi-chevron-down"></i>
@@ -104,7 +106,7 @@
                 <div class="col-md-4">
                     <div class="form-floating position-relative">
                         <input type="text" id="ddownEmployee" class="form-control" placeholder="Employee..." autocomplete="off" asp-for="@TitleEmployee">
-                        <input type="hidden" id="EmployeeId" asp-for="@myfields.Employee">
+                        <input type="hidden" id="EmployeeId" asp-for="@Model.Variables.Employee">
                         <label for="ddownEmployee">Employee</label>
                         <span id="caretIconEmployee" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
                             <i class="bi bi-chevron-down"></i>
@@ -119,26 +121,33 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtRemarks" placeholder="Remarks" asp-for="@myfields.Remarks">
+                        <input type="text" class="form-control" id="txtRemarks" placeholder="Remarks" asp-for="@Model.Variables.Remarks">
                         <label for="txtRemarks">Remarks</label>
                     </div>
                 </div>
             </div>
             <div class="row g-1">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtComments" placeholder="Comments" asp-for="@myfields.Comments">
+                        <input type="text" class="form-control" id="txtSrNo" placeholder="Sr. No" asp-for="@Model.Variables.Sr_No">
+                        <label for="txtSrNo">Sr. Number</label>
+                    </div>
+                </div>
+                <div class="col-md-8">
+                    <div class="form-floating">
+                        <input type="text" class="form-control" id="txtComments" placeholder="Comments" asp-for="@Model.Variables.Comments">
                         <label for="txtComments">Comments</label>
                     </div>
                 </div>
             </div>
 
             <hr class="mid-line" />
+            <!-- Invoice Part 2  -->
             <div class="row g-1 mb-1">
                 <div class="col-md-4">
                     <div class="form-floating position-relative">
                         <input type="text" id="ddownInventory" class="form-control" placeholder="Inventory..." autocomplete="off" asp-for="@TitleInventory">
-                        <input type="hidden" id="InventoryId" asp-for="@myfields.Inventory">
+                        <input type="hidden" id="InventoryId" asp-for="@Model.Variables.Inventory">
                         <label for="ddownInventory">Inventory</label>
                         <span id="caretIconInventory" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
                             <i class="bi bi-chevron-down"></i>
@@ -153,19 +162,19 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtQuantity" placeholder="Quantity" asp-for="@myfields.Qty">
+                        <input type="number" class="form-control" id="txtQuantity" placeholder="Quantity" asp-for="@Model.Variables.Qty">
                         <label for="txtQuantity">Quantity</label>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtRate" placeholder="Rate" asp-for="@myfields.Rate">
+                        <input type="number" class="form-control" id="txtRate" placeholder="Rate" asp-for="@Model.Variables.Rate">
                         <label for="txtRate">Rate</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtAmount" readonly placeholder="Amount" asp-for="@myfields.Amount">
+                        <input type="number" class="form-control" id="txtAmount" readonly placeholder="Amount" asp-for="@Model.Variables.Amount">
                         <label for="txtAmount">Amount</label>
                     </div>
                 </div>
@@ -175,7 +184,7 @@
                 <div class="col-md-4">
                     <div class="form-floating position-relative">
                         <input type="text" id="ddownTaxes" class="form-control" placeholder="Taxes..." autocomplete="off" asp-for="@TitleTax">
-                        <input type="hidden" id="InventoryId" asp-for="@myfields.Tax">
+                        <input type="hidden" id="TaxId" asp-for="@Model.Variables.Tax">
                         <label for="ddownTaxes">Tax</label>
                         <span id="caretIconTaxes" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
                             <i class="bi bi-chevron-down"></i>
@@ -190,19 +199,19 @@
                 </div>
                 <div class="col-md-2">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtTaxRate" readonly placeholder="Tax Rate" asp-for="@myfields.TaxRate">
+                        <input type="number" class="form-control" id="txtTaxRate" readonly placeholder="Tax Rate" asp-for="@Model.Variables.TaxRate">
                         <label for="txtTaxRate">Tax Rate</label>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtTaxAmount" readonly placeholder="Tax Rate" asp-for="@myfields.TaxAmount">
+                        <input type="number" class="form-control" id="txtTaxAmount" readonly placeholder="Tax Rate" asp-for="@Model.Variables.TaxAmount">
                         <label for="txtTaxAmount">Tax Amount</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="number" class="form-control" id="txtNetAmount" readonly placeholder="NetAmount" asp-for="@myfields.NetAmount">
+                        <input type="number" class="form-control" id="txtNetAmount" readonly placeholder="NetAmount" asp-for="@Model.Variables.NetAmount">
                         <label for="txtNetAmount">Net Amount</label>
                     </div>
                 </div>
@@ -211,7 +220,7 @@
                 <div class="col-md-4">
                     <div class="form-floating position-relative">
                         <input type="text" id="ddownProject" class="form-control" placeholder="Project..." autocomplete="off" asp-for="@TitleProject">
-                        <input type="hidden" id="ProjectId" asp-for="@myfields.Project">
+                        <input type="hidden" id="ProjectId" asp-for="@Model.Variables.Project">
                         <label for="ddownProject">Project</label>
                         <span id="caretIconProject" class="position-absolute top-50 end-0 translate-middle-y me-3" style="cursor: pointer;">
                             <i class="bi bi-chevron-down"></i>
@@ -226,18 +235,37 @@
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@myfields.Batch">
+                        <input type="text" class="form-control" id="txtBatch" placeholder="Batch" asp-for="@Model.Variables.Batch">
                         <label for="txtNetBatch">Batch</label>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtDescription" placeholder="Description" asp-for="@myfields.Description">
+                        <input type="text" class="form-control" id="txtDescription" placeholder="Description" asp-for="@Model.Variables.Description">
                         <label for="txtDescription">Item Description</label>
                     </div>
                 </div>
 
             </div>
+            <hr class="mid-line" />
+            <!--Control Buttons -->
+            <div class="container">
+                <div class="row m-1">
+                    <div class="col-md-12">
+                        <button asp-page-handler="Save" type="submit" id="btnSave" class="btn btn-primary btn-w1">Save</button>
+                        <button asp-page-handler="AddNew" type="submit" id="btnAddNew" class="btn btn-primary btn-w1">Add</button>
+                        <button asp-page-handler="BackPage" type="submit" id="btnBack" class="btn btn-primary btn-w1">Back</button>
+                        <div class="btn-group" role="group" aria-label="Default button group">
+                            <button type="submit" class="btn btn-outline-dark" asp-page-handler="Top"><i class="bi bi-chevron-double-left"></i></button>
+                            <button type="submit" class="btn btn-outline-dark" asp-page-handler="Next"><i class="bi bi-chevron-right"></i></button>
+                            <button type="submit" class="btn btn-outline-dark" asp-page-handler="Back"><i class="bi bi-chevron-left"></i></button>
+                            <button type="submit" class="btn btn-outline-dark" asp-page-handler="Last"><i class="bi bi-chevron-double-right"></i></button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <!--List of Transaction (Table) -->
 
             <div class="container">
                 <table class="table-list">
@@ -260,34 +288,44 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (DataFields _fields in myfieldsList)
+                        @if (Model.RecordList != null)
                         {
-                            <tr>
-                                <td>@_fields.Sr_No</td>
-                                <td>@_fields.TitleInventory</td>
-                                <td>@_fields.Batch</td>
-                                <td class="amount">@_fields.TQty</td>
-                                <td class="amount">@_fields.TRate</td>
-                                <td class="amount">@_fields.TAmount</td>
-                                <td class="amount">@_fields.TaxRate</td>
-                                <td class="amount">@_fields.TaxAmount</td>
-                                <td class="amount">@_fields.NetAmount</td>
-                                <td class="amount">
-                                    <button id="btnEdit" title="Edit Record" class="btn btn-edit"><i class="bi bi-pencil-fill"></i></button>
-                                    <button id="btnDel" title="Delete Record" class="btn btn-del"><i class="bi bi-trash-fill"></i></button>
-                                    @if (_fields.Sr_No == Model.MaxSrNo)
-                                    {
-                                        <button id="btnPlus" title="New Record" class="btn btn-plus"><i class="bi bi-plus-square-fill"></i></button>
-                                    }
-                                </td>
-                            </tr>
+                            @foreach (DataFields _fields in Model.RecordList)
+                            {
+                                if(_fields.NetAmount == 0) { continue; }
+
+                                <tr>
+                                    <td>@_fields.Sr_No</td>
+                                    <td>@_fields.TitleInventory</td>
+                                    <td>@_fields.Batch</td>
+                                    <td class="amount">@_fields.TQty</td>
+                                    <td class="amount">@_fields.TRate</td>
+                                    <td class="amount">@_fields.TAmount</td>
+                                    <td class="amount">@_fields.TaxRate</td>
+                                    <td class="amount">@_fields.TaxAmount</td>
+                                    <td class="amount">@_fields.NetAmount</td>
+                                    <td class="amount">
+                                        <button 
+                                            asp-page-handler="Edit" 
+                                            asp-route-SRNO="@_fields.Sr_No"
+                                            type="submit" id="btnEdit" title="Edit Record" class="btn btn-edit"><i class="bi bi-pencil-fill"></i></button>
+                                        <button asp-page-handler="Delete" type="submit" id="btnDel" title="Delete Record" class="btn btn-del"><i class="bi bi-trash-fill"></i></button>
+                                        @if (_fields.Sr_No == Model.MaxSrNo)
+                                        {
+                                            if (_fields.NetAmount > 0)
+                                            {
+                                                <button asp-page-handler="AddNew" type="submit" id="btnPlus" title="New Record" class="btn btn-plus"><i class="bi bi-plus-square-fill"></i></button>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                            }
                         }
                     </tbody>
                 </table>
             </div>
 
-
-
+        </div>
     </form>
 }
 else
@@ -306,7 +344,7 @@ else
         initDropdown("#ddownCompany", "#CompanyId", "#dropdownListCompany");
         initDropdown("#ddownEmployee", "#EmployeeId", "#dropdownListEmployee");
         initDropdown("#ddownInventory", "#InventoryId", "#dropdownListInventory");
-        initDropdown("#ddownTaxes", "#TaxesId", "#dropdownListTaxes");
+        initDropdown("#ddownTaxes", "#TaxId", "#dropdownListTaxes");
         initDropdown("#ddownProject", "#ProjectId", "#dropdownListProject");
 
         // Click event handlers
@@ -319,3 +357,9 @@ else
 
 </script>
 
+@* <script>
+    setTimeout(function () {
+        location.reload();
+    }, 5000); // Refresh every 5 seconds
+</script>
+ *@
