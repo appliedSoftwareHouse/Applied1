@@ -9,7 +9,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.0.20283.0</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-02-25T04:31:12.4264967Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2025-02-25T08:30:54.5153060Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -38,7 +38,7 @@ LEFT JOIN [COA]       [A] ON [A].[ID] = [R].[COA]
 LEFT JOIN [Project]   [P] ON [P].[ID] = [R].[Project] 
 LEFT JOIN [Employees] [E] ON [E].[ID] = [R].[Employee] 
 LEFT JOIN [Customers] [C] ON [C].[ID] = [R].[Payer]
-WHERE [R].[ID] = 20</CommandText>
+WHERE [R].[ID] = 290</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -90,6 +90,10 @@ WHERE [R].[ID] = 20</CommandText>
           <DataField>Status</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
+        <Field Name="Title">
+          <DataField>Title</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
         <Field Name="PayerTitle">
           <DataField>PayerTitle</DataField>
           <rd:TypeName>System.String</rd:TypeName>
@@ -132,7 +136,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Vou_Date</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>6.17722in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -165,7 +169,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Vou_No</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>1.17167in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -188,7 +192,7 @@ WHERE [R].[ID] = 20</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt")</Value>
+                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt") &amp; " " &amp; First(Fields!Title.Value, "ds_receipt")</Value>
                     <Style>
                       <FontFamily>Calibri</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -234,7 +238,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>AccountTitle</rd:DefaultName>
-            <Top>1.19584in</Top>
+            <Top>1.17084in</Top>
             <Left>1.53417in</Left>
             <Height>0.25in</Height>
             <Width>4.94583in</Width>
@@ -266,7 +270,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>ProjectTitle</rd:DefaultName>
-            <Top>1.50555in</Top>
+            <Top>1.48055in</Top>
             <Left>1.53417in</Left>
             <Height>0.25in</Height>
             <Width>4.94583in</Width>
@@ -298,7 +302,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>EmployeeTitle</rd:DefaultName>
-            <Top>1.80972in</Top>
+            <Top>1.78472in</Top>
             <Left>1.53417in</Left>
             <Height>0.25in</Height>
             <Width>4.94583in</Width>
@@ -330,7 +334,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Description</rd:DefaultName>
-            <Top>2.12778in</Top>
+            <Top>2.10278in</Top>
             <Left>1.53417in</Left>
             <Height>0.26042in</Height>
             <Width>4.94583in</Width>
@@ -366,7 +370,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Amount</rd:DefaultName>
-            <Top>2.52015in</Top>
+            <Top>2.45765in</Top>
             <Left>5.50501in</Left>
             <Height>0.30833in</Height>
             <Width>1.67222in</Width>
@@ -400,7 +404,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox5</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>0.07583in</Left>
             <Height>0.25in</Height>
             <Width>0.875in</Width>
@@ -434,7 +438,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox6</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>2.77083in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -470,7 +474,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox7</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>5.12167in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -504,7 +508,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Ref_No</rd:DefaultName>
-            <Top>0.39306in</Top>
+            <Top>0.41806in</Top>
             <Left>3.81805in</Left>
             <Height>0.25in</Height>
             <Width>1in</Width>
@@ -521,7 +525,7 @@ WHERE [R].[ID] = 20</CommandText>
             </Style>
           </Textbox>
           <Line Name="Line1">
-            <Top>0.68889in</Top>
+            <Top>0.71389in</Top>
             <Left>0.07583in</Left>
             <Height>0in</Height>
             <Width>7.10139in</Width>
@@ -583,7 +587,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>1.19584in</Top>
+            <Top>1.17084in</Top>
             <Left>0.07583in</Left>
             <Height>0.25in</Height>
             <Width>1.29167in</Width>
@@ -616,7 +620,7 @@ WHERE [R].[ID] = 20</CommandText>
                 </Style>
               </Paragraph>
             </Paragraphs>
-            <Top>1.50555in</Top>
+            <Top>1.48055in</Top>
             <Left>0.07583in</Left>
             <Height>0.25in</Height>
             <Width>1.29167in</Width>
@@ -650,7 +654,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>1.80972in</Top>
+            <Top>1.78472in</Top>
             <Left>0.07583in</Left>
             <Height>0.25in</Height>
             <Width>1.29167in</Width>
@@ -684,7 +688,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox9</rd:DefaultName>
-            <Top>2.12778in</Top>
+            <Top>2.10278in</Top>
             <Left>0.07583in</Left>
             <Height>0.25in</Height>
             <Width>1.29167in</Width>
@@ -719,7 +723,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Amount</rd:DefaultName>
-            <Top>2.52015in</Top>
+            <Top>2.45765in</Top>
             <Left>4.00501in</Left>
             <Height>0.30833in</Height>
             <Width>1.5in</Width>
@@ -756,7 +760,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox15</rd:DefaultName>
-            <Top>2.79237in</Top>
+            <Top>2.72987in</Top>
             <Left>1.17167in</Left>
             <Height>0.19097in</Height>
             <Width>6.00555in</Width>
@@ -773,7 +777,7 @@ WHERE [R].[ID] = 20</CommandText>
             </Style>
           </Textbox>
           <Line Name="Line2">
-            <Top>0.3625in</Top>
+            <Top>0.3875in</Top>
             <Left>0.07583in</Left>
             <Height>0in</Height>
             <Width>7.10139in</Width>
@@ -785,7 +789,7 @@ WHERE [R].[ID] = 20</CommandText>
             </Style>
           </Line>
           <Line Name="Line3">
-            <Top>3.02917in</Top>
+            <Top>2.97917in</Top>
             <Left>0.07584in</Left>
             <Height>0in</Height>
             <Width>7.10139in</Width>
@@ -818,7 +822,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox2</rd:DefaultName>
-            <Top>3.03889in</Top>
+            <Top>2.98889in</Top>
             <Left>0.07584in</Left>
             <Height>0.15625in</Height>
             <Width>4.24165in</Width>
@@ -851,7 +855,7 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox8</rd:DefaultName>
-            <Top>3.05139in</Top>
+            <Top>3.00139in</Top>
             <Left>4.52584in</Left>
             <Height>0.14375in</Height>
             <Width>2.65138in</Width>
@@ -873,7 +877,7 @@ WHERE [R].[ID] = 20</CommandText>
                     <Value>R E C E I P T</Value>
                     <Style>
                       <FontFamily>Book Antiqua</FontFamily>
-                      <FontSize>12pt</FontSize>
+                      <FontSize>20pt</FontSize>
                       <FontWeight>Bold</FontWeight>
                     </Style>
                   </TextRun>
@@ -884,10 +888,9 @@ WHERE [R].[ID] = 20</CommandText>
               </Paragraph>
             </Paragraphs>
             <rd:DefaultName>Textbox4</rd:DefaultName>
-            <Top>0.01944in</Top>
-            <Left>1.52097in</Left>
-            <Height>0.25in</Height>
-            <Width>5.61875in</Width>
+            <Left>0.07584in</Left>
+            <Height>0.29167in</Height>
+            <Width>7.07708in</Width>
             <ZIndex>24</ZIndex>
             <Style>
               <Border>
@@ -900,7 +903,7 @@ WHERE [R].[ID] = 20</CommandText>
             </Style>
           </Textbox>
         </ReportItems>
-        <Height>3.19514in</Height>
+        <Height>3.14514in</Height>
         <Style>
           <Border>
             <Style>None</Style>
@@ -937,7 +940,7 @@ WHERE [R].[ID] = 20</CommandText>
           </Style>
         </PageHeader>
         <PageFooter>
-          <Height>0.91959in</Height>
+          <Height>0.89251in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -945,7 +948,7 @@ WHERE [R].[ID] = 20</CommandText>
               <Source>Embedded</Source>
               <Value>ID0201</Value>
               <Sizing>Fit</Sizing>
-              <Top>0.03056in</Top>
+              <Top>0.04306in</Top>
               <Height>0.80778in</Height>
               <Width>7.31055in</Width>
               <Visibility>

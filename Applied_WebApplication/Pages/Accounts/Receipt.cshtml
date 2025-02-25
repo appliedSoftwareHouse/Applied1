@@ -7,7 +7,7 @@
 
     Model.tbPayers = GetList(UserName, Tables.Customers, "");
 
-    string PayerTitle = Model.tbPayers.Where(e => e.Key == Model.Variables.Payer).FirstOrDefault().Value; 
+    string PayerTitle = Model.tbPayers.Where(e => e.Key == Model.Variables.Payer).FirstOrDefault().Value;
     string RevenueTitle = GetTitle(UserName, Tables.COA, Model.Variables.COA); ;
     string CashBankTitle = GetTitle(UserName, Tables.COA, Model.Variables.COACash);
     string EmployeeTitle = GetTitle(UserName, Tables.COA, Model.Variables.Employee);
@@ -85,7 +85,7 @@
 
         </div>
 
-        <!-- Cash / Bank, Revenue, Project -->
+        <!-- Cash / Bank, Payer, Title -->
         <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
@@ -115,11 +115,19 @@
                         }
                     </div>
                 </div>
-                
-                
-            </div>
-                       
 
+
+            </div>
+            <div class="col-md-3">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" asp-for="@Model.Variables.Title" id="txtTitle" title="for walking payer only">
+                    <label for="txtTitle">Payer Name</label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue, Project, Employee,-->
+        <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Revenue" aria-label="Floating label Revenue" asp-for="@Model.Variables.COA">
@@ -132,11 +140,6 @@
                     <label for="Revenue">Account Head</label>
                 </div>
             </div>
-
-        </div>
-
-        <!--Project, Employee, Amount-->
-        <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <select class="form-select" id="Project" aria-label="Floating label Project" asp-for="@Model.Variables.Project">
@@ -162,16 +165,17 @@
                     <label for="Employee">Employee</label>
                 </div>
             </div>
+           
+        </div>
+
+        <!-- Amount, Description, Status -->
+        <div class="row">
             <div class="col-md-3">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Amount" id="txtAmount">
                     <label for="txtAmount">Amount</label>
                 </div>
             </div>
-        </div>
-
-        <!-- Description -->
-        <div class="row">
             <div class="col-md-6">
                 <div class="form-floating mb-3">
                     <input type="text" class="form-control" asp-for="@Model.Variables.Description" id="txtDescription">
@@ -267,9 +271,9 @@
         </div>
     </div>
 
-    
 
-    
+
+
 </form>
 
 <script>

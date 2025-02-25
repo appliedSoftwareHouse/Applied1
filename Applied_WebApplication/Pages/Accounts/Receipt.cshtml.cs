@@ -73,7 +73,7 @@ namespace Applied_WebApplication.Pages.Accounts
                     _Variable.Ref_No = _Row["Ref_No"].ToString();
                     _Variable.Amount = (decimal)_Row["Amount"];
                     _Variable.Description = _Row["Description"].ToString();
-                    _Variable.Status = _Row["Status"].ToString();
+                    _Variable.Title = _Row["Title"].ToString();
                 }
                 return _Variable;
 
@@ -99,7 +99,8 @@ namespace Applied_WebApplication.Pages.Accounts
                 Employee = 0,
                 Amount = 0,
                 Description = string.Empty,
-                Status = string.Empty
+                Status = string.Empty,
+                Title = string.Empty
             };
         }
         #endregion
@@ -130,6 +131,7 @@ namespace Applied_WebApplication.Pages.Accounts
             _TableClass.CurrentRow["Amount"] = Variables.Amount;
             _TableClass.CurrentRow["Description"] = Variables.Description;
             _TableClass.CurrentRow["Status"] = "Submitted";
+            _TableClass.CurrentRow["Title"] = Variables.Title;
 
             _TableClass.Save();
             MyMessages = _TableClass.ErrorMessages;
@@ -205,11 +207,7 @@ namespace Applied_WebApplication.Pages.Accounts
 
         }
         #endregion
-
-        public void SelectCustomer()
-        {
-
-        }
+       
     }
 
     public class Parameter
@@ -227,6 +225,7 @@ namespace Applied_WebApplication.Pages.Accounts
         public string Description { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public string SearchText { get; set; } = string.Empty;
+        public string Title { get; set; } = string.Empty;               // Payer Name if not mentuion by Payer ID
 
     }
 }
