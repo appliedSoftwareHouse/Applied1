@@ -9,7 +9,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.0.20283.0</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-02-13T08:50:29.5346969Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2025-02-25T05:16:35.8099267Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1687,23 +1687,6 @@ WHERE [R].[ID] = 20</CommandText>
           <Height>1.15291in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
-          <ReportItems>
-            <Image Name="Image2">
-              <Source>Embedded</Source>
-              <Value>FrontMWF</Value>
-              <Sizing>FitProportional</Sizing>
-              <Height>1.08347in</Height>
-              <Width>7.31055in</Width>
-              <Visibility>
-                <Hidden>=Parameters!ShowImages.Value</Hidden>
-              </Visibility>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-              </Style>
-            </Image>
-          </ReportItems>
           <Style>
             <Border>
               <Style>None</Style>
@@ -1714,24 +1697,6 @@ WHERE [R].[ID] = 20</CommandText>
           <Height>0.91959in</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
-          <ReportItems>
-            <Image Name="Image3">
-              <Source>Embedded</Source>
-              <Value>Footer</Value>
-              <Sizing>Fit</Sizing>
-              <Top>0.03056in</Top>
-              <Height>0.80778in</Height>
-              <Width>7.31055in</Width>
-              <Visibility>
-                <Hidden>=Parameters!ShowImages.Value</Hidden>
-              </Visibility>
-              <Style>
-                <Border>
-                  <Style>None</Style>
-                </Border>
-              </Style>
-            </Image>
-          </ReportItems>
           <Style>
             <Border>
               <Style>None</Style>
