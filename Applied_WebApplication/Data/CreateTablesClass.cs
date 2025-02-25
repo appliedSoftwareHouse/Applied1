@@ -39,6 +39,37 @@ namespace Applied_WebApplication.Data
             TableList = Enum.GetValues(typeof(Tables));
         }
 
+        #region Create Tables
+
+        public void CreateTables()
+        {
+            var _SQLQuery = $"SELECT name FROM sqlite_master WHERE type in('table', 'view') ORDER BY 1";
+            var _TablesName = DataTableClass.GetTable(UserName, _SQLQuery);
+            var _TableView = _TablesName.AsDataView();
+            MyMessages = new();
+
+            foreach (Tables EnumTable in TableList)
+            {
+                if ((int)EnumTable > 8999) { continue; }                      // Skip on Temporary Table Names. 
+
+                bool IsTableFound;
+                var _TargetTable = EnumTable;
+                var _Table = EnumTable.ToString();
+
+                _TableView.RowFilter = $"Name='{_Table}'";
+                if (_TableView.Count == 0) { IsTableFound = false; } else { IsTableFound = true; }
+
+                if (!IsTableFound)
+                {
+                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}", ConsoleColor.Yellow));
+                    CreateTable(UserName, _TargetTable);
+
+                }
+            }
+        }
+        #endregion
+
+
         #endregion
         #region Sale Return
         public static void SaleReturn(string UserName)
@@ -138,33 +169,7 @@ namespace Applied_WebApplication.Data
         #region Create Tables
 
 
-        public void CreateTables()
-        {
-            var _SQLQuery = $"SELECT name FROM sqlite_master WHERE type in('table', 'view') ORDER BY 1";
-            var _TablesName = DataTableClass.GetTable(UserName, _SQLQuery);
-            var _TableView = _TablesName.AsDataView();
-            MyMessages = new();
-
-            foreach (Tables EnumTable in TableList)
-            {
-                if ((int)EnumTable > 8999) { continue; }                      // Skip on Temporary Table Names. 
-
-                bool IsTableFound;
-                var _TargetTable = EnumTable;
-                var _Table = EnumTable.ToString();
-
-                _TableView.RowFilter = $"Name='{_Table}'";
-                if (_TableView.Count == 0) { IsTableFound = false; } else { IsTableFound = true; }
-
-                if (!IsTableFound)
-                {
-                    MyMessages.Add(SetMessage($"Crerated Table {_TargetTable}", ConsoleColor.Yellow));
-                    CreateTable(UserName, _TargetTable);
-
-                }
-            }
-        }
-
+      
 
         #endregion
 
@@ -384,6 +389,7 @@ namespace Applied_WebApplication.Data
         #region Accounts (COA)
         private static void COA_Map(string UserName)
         {
+            // Depreciated.....
             var Text = new StringBuilder();
             Text.Append("CREATE TABLE [COA_Map] (");
             Text.Append("[ID] INT PRIMARY KEY NOT NULL UNIQUE,");

@@ -1238,11 +1238,27 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var _ID = GetText(UserName, "rcptID");
                 var _Query = SQLQuery.ReceiptsList($"[ID]={_ID}");
                 var _SourceTable = DataTableClass.GetTable(UserName, _Query);
-                var _ReportFile = GetText(UserName, "InvReportRDL");
+                var _ReportFile = GetText(UserName, "InvReport1RDL");
                 var _ShowImages = GetBool(UserName, "rcptShowImg");
+
+                if (RptType.Equals(ReportType.PDF))
+                {
+                    _ReportFile = GetText(UserName, "InvReport2RDL");
+                }
+
+                if (_ReportFile.Length.Equals(0))
+                {
+                    ErrorMessages.Add(SetMessage("Report file not defined.", ConsoleColor.Red));
+                    return Page();
+                }
+
                 var _OutputFile = _ReportFile;
 
-                if (_SourceTable == null) { return Page(); }
+                if (_SourceTable == null)
+                {
+                    ErrorMessages.Add(SetMessage("Report data not defined.", ConsoleColor.Red));
+                    return Page();
+                }
                 if (RptType != ReportType.Preview)
                 {
                     var _VNo = _SourceTable.Rows[0]["Vou_No"].ToString();
@@ -1416,7 +1432,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     var _Amount = (decimal)_Row["DR"] + (decimal)_Row["CR"];
                     var _InWord = new NumInWords().ChangeCurrencyToWords(_Amount, _Currency, _Unit);
 
-                ReportModel Reportmodel = new();
+                    ReportModel Reportmodel = new();
                     // Input Parameters  (.rdl report file)
                     Reportmodel.InputReport.FilePath = ReportPath;
                     Reportmodel.InputReport.FileName = _ReportFile;

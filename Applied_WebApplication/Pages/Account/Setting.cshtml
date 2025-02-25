@@ -116,12 +116,23 @@
                                     <label for="SalesReport">Sales Report Name</label>
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row mb-2">
                             <div class="col-md-3">
                                 <div class="form-floating mb-1">
-                                    <input type="text" class="form-control" id="SalesReport" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.InvoiceReportRDL">
-                                    <label for="SalesReport">Invoice Report Name</label>
+                                    <input type="text" class="form-control" id="ReceiptReport1" title="Receipt RDLC report for preview" placeholder="Receipt Preview Name" asp-for="@Model.Variables.ReceiptReport1RDL">
+                                    <label for="SalesReport">Receipt Preview Name</label>
                                 </div>
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-floating mb-1">
+                                    <input type="text" class="form-control" id="ReceiptReport2" title="Receipt RDLC report for PDF" placeholder="Sales Report RDL Name" asp-for="@Model.Variables.ReceiptReport2RDL">
+                                    <label for="SalesReport">Receipt PDF Name</label>
+                                </div>
+                            </div>
+
+
                         </div>
                         <div class="row mb-2">
                            

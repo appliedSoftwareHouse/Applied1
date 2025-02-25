@@ -873,7 +873,6 @@ namespace Applied_WebApplication.Data
             Text.Append($"({StockPositionData(Filter)})");
             return Text.ToString();
         }
-
         public static string StockPositionData(string Filter)
         {
             var Text = new StringBuilder();
