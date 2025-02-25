@@ -40,7 +40,8 @@ namespace Applied_WebApplication.Pages.Account
                 
                 DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
                 SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL"),
-                InvoiceReportRDL = AppRegistry.GetText(UserName, "InvReportRDL"),
+                ReceiptReport1RDL = AppRegistry.GetText(UserName, "InvReport1RDL"),
+                ReceiptReport2RDL = AppRegistry.GetText(UserName, "InvReport2RDL"),
 
                 // Currency Setup
                 CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle"),
@@ -106,9 +107,14 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
             AppRegistry.SetKey(UserName, "SalesReportRDL", Variables.SalesReportRDL, KeyType.Text);
-            AppRegistry.SetKey(UserName, "InvReportRDL", Variables.InvoiceReportRDL, KeyType.Text);
+            
             AppRegistry.SetKey(UserName, "CompanyGLs", Variables.CompanyGLs, KeyType.Text);
             AppRegistry.SetKey(UserName, "COAStocks", Variables.COAStocks, KeyType.Text);
+
+            // Receipts
+            AppRegistry.SetKey(UserName, "InvReport1RDL", Variables.ReceiptReport1RDL, KeyType.Text);
+            AppRegistry.SetKey(UserName, "InvReport2RDL", Variables.ReceiptReport2RDL, KeyType.Text);
+
 
             // Accounts Nature Setup
             AppRegistry.SetKey(UserName, "CashBkNature", Variables.CashBookNature, KeyType.Number);
@@ -148,7 +154,8 @@ namespace Applied_WebApplication.Pages.Account
             public int BRec_Tax { get; set; }
             public int BRec_Receivable { get; set; }
             public string SalesReportRDL { get; set; }
-            public string InvoiceReportRDL { get; set; }
+            public string ReceiptReport1RDL { get; set; }
+            public string ReceiptReport2RDL { get; set; }
             public string CompanyGLs { get; set; }
             public string COAStocks { get; set; }
             public int CashBookNature { get; set; }
