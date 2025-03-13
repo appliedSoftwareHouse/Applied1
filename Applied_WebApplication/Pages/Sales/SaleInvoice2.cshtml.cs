@@ -71,6 +71,8 @@ namespace Applied_WebApplication.Pages.Sales
                 TempTable1 = new(User, tb1, "BillRec1");
                 TempTable2 = new(User, tb2, "BillRec2");
 
+                RecordList ??= new();
+
                 if (tb1.Rows.Count > 0 && tb2.Rows.Count > 0)
                 {
                     var _Row1 = tb1.Rows[0];
@@ -153,7 +155,7 @@ namespace Applied_WebApplication.Pages.Sales
                 fields.Employee = Variables.Employee;
                 fields.Remarks = Variables.Remarks;
                 fields.Comments = Variables.Comments;
-                fields.Status = Variables.Status;
+                fields.Status = "New";
 
                 fields.ID2 = 0;
                 fields.Sr_No = RecordList.Max(x => x.Sr_No) + 1;
@@ -180,6 +182,13 @@ namespace Applied_WebApplication.Pages.Sales
         #endregion
 
         #region Save
+       
+
+        private bool Validated()
+        {
+            return true;
+        }
+
         public IActionResult OnPostSave()
         {
             if (UserRole == "Viewer") { return Page(); }
@@ -217,18 +226,15 @@ namespace Applied_WebApplication.Pages.Sales
             Row2["Tax_Rate"] = Variables.TaxRate;
             Row2["Description"] = Variables.Description;
 
-            
             tb1.CurrentRow = Row1;
             tb2.CurrentRow = Row2;
             bool IsSave = false;
-
 
             tb1.Save();
             if (!tb1.IsError)
             {
                 Variables.ID1 = (int)tb1.CurrentRow["ID"];   // Get an ID if voucher is new.
                 tb2.CurrentRow["TranID"] = Variables.ID1;    // Assign TranID as new Voucher ID
-
 
                 tb2.Save();
                 if (!tb2.IsError)
@@ -251,8 +257,8 @@ namespace Applied_WebApplication.Pages.Sales
                 return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
             }
 
+            LoadData(Variables.ID1, Variables.Sr_No);
             return Page();
-
         }
         #endregion
 
@@ -330,32 +336,48 @@ namespace Applied_WebApplication.Pages.Sales
         #region Top - Next - Back - Last
         public IActionResult OnPostTop()
         {
-            LoadData(Variables.ID1, Variables.Sr_No);
-            Variables = RecordList.First();
-            return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            if (RecordList.Count > 0)
+            {
+                LoadData(Variables.ID1, Variables.Sr_No);
+                Variables = RecordList.First();
+                return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            }
+            return Page();
 
         }
         public IActionResult OnPostNext()
         {
-            LoadData(Variables.ID1, Variables.Sr_No);
-            var _NextSrNo = Variables.Sr_No + 1;
-            if (_NextSrNo > RecordList.Last().Sr_No) { _NextSrNo = RecordList.Last().Sr_No; }
-            Variables = RecordList.Where(x => x.Sr_No == _NextSrNo).First();
-            return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            if (RecordList.Count > 0)
+            {
+                LoadData(Variables.ID1, Variables.Sr_No);
+                var _NextSrNo = Variables.Sr_No + 1;
+                if (_NextSrNo > RecordList.Last().Sr_No) { _NextSrNo = RecordList.Last().Sr_No; }
+                Variables = RecordList.Where(x => x.Sr_No == _NextSrNo).First();
+                return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            }
+            return Page();
         }
         public IActionResult OnPostBack()
         {
-            LoadData(Variables.ID1, Variables.Sr_No);
-            var _BackSrNo = Variables.Sr_No - 1;
-            if (_BackSrNo < 0) { _BackSrNo = RecordList.First().Sr_No; }
-            Variables = RecordList.Where(x => x.Sr_No == _BackSrNo).First();
-            return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            if (RecordList.Count > 0)
+            {
+                LoadData(Variables.ID1, Variables.Sr_No);
+                var _BackSrNo = Variables.Sr_No - 1;
+                if (_BackSrNo < 0) { _BackSrNo = RecordList.First().Sr_No; }
+                Variables = RecordList.Where(x => x.Sr_No == _BackSrNo).First();
+                return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            }
+            return Page();
         }
         public IActionResult OnPostLast()
         {
-            LoadData(Variables.ID1, Variables.Sr_No);
-            Variables = RecordList.Last();
-            return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            if (RecordList.Count > 0)
+            {
+                LoadData(Variables.ID1, Variables.Sr_No);
+                Variables = RecordList.Last();
+                return RedirectToPage(routeValues: new { ID = Variables.ID1, SRNO = Variables.Sr_No });
+            }
+            return Page();
         }
         #endregion
 
@@ -373,6 +395,7 @@ namespace Applied_WebApplication.Pages.Sales
             [Required] public int ID1 { get; set; }
             [Required] public int ID2 { get; set; }
 
+            [Required]
             public string Vou_No { get; set; }
             public string Ref_No { get; set; } = string.Empty;
             public string Inv_No { get; set; } = string.Empty;
