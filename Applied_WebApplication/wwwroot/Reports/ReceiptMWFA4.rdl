@@ -9,7 +9,7 @@
       <am:Name>MSRB</am:Name>
       <am:Version>15.0.20283.0</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2025-02-25T05:16:35.8099267Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2025-02-25T08:18:19.3032421Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -38,7 +38,7 @@ LEFT JOIN [COA]       [A] ON [A].[ID] = [R].[COA]
 LEFT JOIN [Project]   [P] ON [P].[ID] = [R].[Project] 
 LEFT JOIN [Employees] [E] ON [E].[ID] = [R].[Employee] 
 LEFT JOIN [Customers] [C] ON [C].[ID] = [R].[Payer]
-WHERE [R].[ID] = 20</CommandText>
+WHERE [R].[ID] = 290</CommandText>
         <rd:UseGenericDesigner>true</rd:UseGenericDesigner>
       </Query>
       <Fields>
@@ -88,6 +88,10 @@ WHERE [R].[ID] = 20</CommandText>
         </Field>
         <Field Name="Status">
           <DataField>Status</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Title">
+          <DataField>Title</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
         <Field Name="PayerTitle">
@@ -186,7 +190,7 @@ WHERE [R].[ID] = 20</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt")</Value>
+                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt") &amp; " " &amp; First(Fields!Title.Value, "ds_receipt")</Value>
                     <Style>
                       <FontFamily>Calibri</FontFamily>
                       <FontSize>14pt</FontSize>
@@ -966,7 +970,7 @@ WHERE [R].[ID] = 20</CommandText>
               <Paragraph>
                 <TextRuns>
                   <TextRun>
-                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt")</Value>
+                    <Value>=First(Fields!PayerTitle.Value, "ds_receipt") &amp; " " &amp; First(Fields!Title.Value, "ds_receipt")</Value>
                     <Style>
                       <FontFamily>Calibri</FontFamily>
                       <FontSize>14pt</FontSize>

@@ -830,22 +830,23 @@ namespace Applied_WebApplication.Data
         public static string CompanyBalances(string _Filter, string COA_List)
         {
             StringBuilder Text = new StringBuilder();
-            Text.Append("SELECT ");
-            Text.Append("[L].[Customer],");
-            Text.Append("[C].[Code],");
-            Text.Append("[C].[Title],");
-            Text.Append("[C].[City],");
-            Text.Append("[N].[Title] [Nature],");
-            Text.Append("CAST(ROUND(SUM([L].[DR]), 2) AS FLOAT) AS [DR],");
-            Text.Append("CAST(ROUND(SUM([L].[CR]), 2) AS FLOAT) AS [CR],");
-            Text.Append("CAST(ROUND(SUM([L].[DR] -[L].[CR]), 2) AS FLOAT) AS [BAL]");
-            Text.Append("FROM[Ledger] [L]");
-            Text.Append("LEFT JOIN [Customers] [C] on[C].[ID] = [L].[Customer]");
-            Text.Append($"LEFT JOIN ({GetDirectory("CompanyStatus")}) [N] ");
-            Text.Append("ON [N].[ID] = [C].[Status]");
-            Text.Append($"WHERE[COA] IN({COA_List})");
+            Text.AppendLine("SELECT ");
+            Text.AppendLine("[L].[Customer], ");
+            Text.AppendLine("[C].[Phone], ");
+            Text.AppendLine("[C].[Code], ");
+            Text.AppendLine("[C].[Title], ");
+            Text.AppendLine("[C].[City], ");
+            Text.AppendLine("[N].[Title] [Nature], ");
+            Text.AppendLine("CAST(ROUND(SUM([L].[DR]), 2) AS FLOAT) AS [DR], ");
+            Text.AppendLine("CAST(ROUND(SUM([L].[CR]), 2) AS FLOAT) AS [CR], ");
+            Text.AppendLine("CAST(ROUND(SUM([L].[DR] -[L].[CR]), 2) AS FLOAT) AS [BAL] ");
+            Text.AppendLine("FROM [Ledger] [L] ");
+            Text.AppendLine(" LEFT JOIN [Customers] [C] on[C].[ID] = [L].[Customer]");
+            Text.AppendLine($"LEFT JOIN ({GetDirectory("CompanyStatus")}) [N] ");
+            Text.AppendLine("ON [N].[ID] = [C].[Status]");
+            Text.AppendLine($"WHERE[COA] IN({COA_List})");
             if (_Filter.Length > 0) { Text.Append($" AND {_Filter} "); }
-            Text.Append("GROUP BY[Customer]");
+            Text.AppendLine("GROUP BY[Customer]");
 
             return Text.ToString();
         }
