@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.JSInterop;
-using Microsoft.ReportingServices.ReportProcessing.ReportObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 

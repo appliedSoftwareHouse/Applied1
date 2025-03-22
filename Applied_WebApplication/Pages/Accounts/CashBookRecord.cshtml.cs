@@ -31,7 +31,7 @@ namespace Applied_WebApplication.Pages.Accounts
             {
                 Row = _Table.CurrentRow;
                 if (BookRecord == null) { BookRecord = new(); }
-                Row["Vou_No"] = GetNewCashVoucher(UserName);
+                Row["Vou_No"] = "New";
                 Row["Vou_Date"] = AppRegistry.GetDate(UserName, "cbook-dt");
                 Row["BookID"] = BookID;
             }
@@ -61,13 +61,13 @@ namespace Applied_WebApplication.Pages.Accounts
             BookRecord.Employee = (int)Row["Employee"];
         }
 
-
-
         public IActionResult OnPostSave()
         {
             DataTableClass Table = new(UserName, Tables.CashBook);
             Table.UserRole = UserRole;
             DataRow Row = Table.NewRecord();
+
+            if(BookRecord.Vou_No.ToUpper()=="NEW") { BookRecord.Vou_No = GetNewCashVoucher(UserName); }
 
             Row["ID"] = BookRecord.ID;
             Row["BookID"] = BookRecord.BookID;
