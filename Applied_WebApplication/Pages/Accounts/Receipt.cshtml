@@ -14,24 +14,15 @@
     string ProjectTitle = GetTitle(UserName, Tables.COA, Model.Variables.Project);
     //Model.tbAccounts = AppFunctions.Titles(UserName, SQLQuery.ReceiptAccounts());
 
-    int CashBookID = AppRegistry.GetNumber(UserName, "CashBookID");
-    int BankBookID = AppRegistry.GetNumber(UserName, "BankBookID");
+    int CashBookID = AppRegistry.GetNumber(UserName, "CashBkNature");
+    int BankBookID = AppRegistry.GetNumber(UserName, "BankBkNature");
     int RevenueID = AppRegistry.GetNumber(UserName, "RevenueNote");
     string _FilterCashBank = $"Nature IN ({CashBookID},{BankBookID})";
     string _FilterRevenue = $"Nature = {RevenueID}";
 
     string UserRole = UserProfile.GetUserRole(User);
 
-    var Options = new Dictionary<int, string>
-        {
-            { 1, "Apple" },
-            { 2, "Banana" },
-            { 3, "Cherry" },
-            { 4, "Date" },
-            { 5, "Elderberry" },
-            { 6, "Fig" },
-            { 7, "Grapes" }
-        };
+    
 
 }
 
