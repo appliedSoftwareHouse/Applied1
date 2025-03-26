@@ -857,9 +857,9 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
-            Text.Append("[Key] AS[ID],");
-            Text.Append("[Value] AS[Title]");
-            Text.Append($"FROM[Directories] WHERE Directory = '{_DirectoryName}'");
+            Text.Append("[Key]   AS [ID],  ");
+            Text.Append("[Value] AS [Title]");
+            Text.Append($"FROM [Directories] WHERE Directory = '{_DirectoryName}'");
             Text.Append("");
 
             return Text.ToString();
