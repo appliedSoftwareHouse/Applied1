@@ -15,6 +15,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         public DataTable MyTable { get; set; }
         public string ReportFilter { get; set; }
         public string UserName => User.Identity.Name;
+        public bool IsPageValid { get; set; } = true;
 
 
 
@@ -42,6 +43,10 @@ namespace Applied_WebApplication.Pages.ReportPrint
 
             MyTable = DataTableClass.GetTable(UserName, SQLQuery.CompanyBalances(ReportFilter, _COA_List));
 
+            if(MyTable.Columns.Count == 0)
+            {
+                IsPageValid = false;
+            }
 
         }
 

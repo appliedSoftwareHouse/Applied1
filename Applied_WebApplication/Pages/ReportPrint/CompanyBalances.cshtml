@@ -6,9 +6,16 @@
     var UserName = User.Identity.Name;
     var NumberFormat = AppRegistry.GetText(UserName, "FMTCurrency");
 
-    var Tot_DR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([DR])", ""));
-    var Tot_CR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([CR])", ""));
-    var Tot_Bal = Tot_DR - Tot_CR;
+    var Tot_DR = 0.00M;
+    var Tot_CR = 0.00M;
+    var Tot_Bal = 0.00M;
+
+    if (Model.MyTable is not null)
+    {
+        Tot_DR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([DR])", ""));
+        Tot_CR = Conversion.ToDecimal(Model.MyTable.Compute("SUM([CR])", ""));
+        Tot_Bal = Tot_DR - Tot_CR;
+    }
 }
 
 <style>
@@ -26,112 +33,126 @@
 </div>
 
 
-<form method="post">
-    <div class="container">
-        <div class="row">
-            <div class="col-3">
-                <div class="input-group">
-                    <span class="input-group-text" id="lblDate">Date</span>
-                    <input type="date" class="form-control" placeholder="Enter Report Date" aria-label="ReportDate" aria-describedby="lblDate"
-                           asp-for="@Model.Variables.ReportDate" />
+@if (Model.IsPageValid)
+{
+    <form method="post">
+        <div class="container">
+            <div class="row">
+                <div class="col-3">
+                    <div class="input-group">
+                        <span class="input-group-text" id="lblDate">Date</span>
+                        <input type="date" class="form-control" placeholder="Enter Report Date" aria-label="ReportDate" aria-describedby="lblDate"
+                               asp-for="@Model.Variables.ReportDate" />
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-3">
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="spnFilter">Filter</span>
-                    <input type="text"
-                           id="txtFilter"
-                           asp-for="@Model.Variables.Filter"
-                           class="form-control"
-                           placeholder="Search">
-                    <span>
-                        <button name="btnClear" class="btn btn-outline-secondary" asp-page-handler="ClearFilter">Clear</button>
-                    </span>
+                <div class="col-3">
+                    <div class="input-group mb-3">
+                        <span class="input-group-text" id="spnFilter">Filter</span>
+                        <input type="text"
+                               id="txtFilter"
+                               asp-for="@Model.Variables.Filter"
+                               class="form-control"
+                               placeholder="Search">
+                        <span>
+                            <button name="btnClear" class="btn btn-outline-secondary" asp-page-handler="ClearFilter">Clear</button>
+                        </span>
+                    </div>
                 </div>
-            </div>
 
-            <div class="col-wh"><button class="btn btn-info    btn-wh" asp-page-handler="Refresh">REFRESH</button></div>
-            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Refresh">All</button></div>
-            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Receivable">Receivable</button></div>
-            <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Payable">Payable</button></div>
+                <div class="col-wh"><button class="btn btn-info    btn-wh" asp-page-handler="Refresh">REFRESH</button></div>
+                <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Refresh">All</button></div>
+                <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Receivable">Receivable</button></div>
+                <div class="col-wh"><button class="btn btn-primary btn-wh" asp-page-handler="Payable">Payable</button></div>
 
-            <div class="col-wh">
-                <div class="dropdown">
-                    <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
-                        Print <i class="bi bi-printer"></i>
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Preview">Preview</button></li>
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.PDF">PDF</button></li>
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Excel">Excel</button></li>
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Word">Word</button></li>
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.HTML">HTML</button></li>
-                        <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Image">Image</button></li>
-                    </ul>
+                <div class="col-wh">
+                    <div class="dropdown">
+                        <button type="button" class="btn btn-success dropdown-toggle" data-bs-toggle="dropdown">
+                            Print <i class="bi bi-printer"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Preview">Preview</button></li>
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.PDF">PDF</button></li>
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Excel">Excel</button></li>
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Word">Word</button></li>
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.HTML">HTML</button></li>
+                            <li><button class="btn border-0" asp-page-handler="Print" asp-route-_ReportType="@ReportType.Image">Image</button></li>
+                        </ul>
 
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="container mt-2">
-        @if (Model.MyTable != null)
-        {
-            <table class="table-list">
-                <thead>
-                    <tr>
-                        <th>Code</th>
-                        <th>Company</th>
-                        <th>City</th>
-                        <th>Nature</th>
-                        <th>Receivable</th>
-                        <th>Payable</th>
-                        <th>Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (DataRow Row in Model.MyTable.Rows)
-                    {
-                        var _Amount = Conversion.ToDecimal(Row["BAL"]);
-                        var _Receivable = 0.00M;
-                        var _Payable = 0.00M;
-
-                        if (_Amount > 0) { _Receivable = _Amount; _Payable = 0; }
-                        if (_Amount < 0) { _Receivable = 0; _Payable = Math.Abs(_Amount); }
-
-                        var _Receivable1 = _Receivable.ToString(NumberFormat);
-                        var _Payable1 = _Payable.ToString(NumberFormat);
-
+        <div class="container mt-2">
+            @if (Model.MyTable != null)
+            {
+                <table class="table-list">
+                    <thead>
                         <tr>
-                            <td>@Row["Code"]</td>
-                            <td>@Row["Title"]</td>
-                            <td>@Row["City"]</td>
-                            <td>@Row["Nature"]</td>
-                            <td class="table-col-amount">@_Receivable1</td>
-                            <td class="table-col-amount">@_Payable1</td>
-                            <td>
-                                <button class="btn btn-link"
-                                        asp-page-handler="Ledger"
-                                        asp-route-ID="@Row["Customer"]">
-                                    <i class="bi bi-chat-square-text"></i>
-                                </button>
-
-                            </td>
+                            <th>Code</th>
+                            <th>Company</th>
+                            <th>City</th>
+                            <th>Nature</th>
+                            <th>Receivable</th>
+                            <th>Payable</th>
+                            <th>Details</th>
                         </tr>
-                    }
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td>TOTAL</td>
-                        <td class="table-col-amount">@Tot_Bal.ToString(NumberFormat)</td>
-                        <td class="table-col-amount">@Tot_DR.ToString(NumberFormat)</td>
-                        <td class="table-col-amount">@Tot_CR.ToString(NumberFormat)</td>
-                        <td></td>
-                    </tr>
-                </tfoot>
-            </table>
-        }
+                    </thead>
+                    <tbody>
+                        @foreach (DataRow Row in Model.MyTable.Rows)
+                        {
+                            var _Amount = Conversion.ToDecimal(Row["BAL"]);
+                            var _Receivable = 0.00M;
+                            var _Payable = 0.00M;
+
+                            if (_Amount > 0) { _Receivable = _Amount; _Payable = 0; }
+                            if (_Amount < 0) { _Receivable = 0; _Payable = Math.Abs(_Amount); }
+
+                            var _Receivable1 = _Receivable.ToString(NumberFormat);
+                            var _Payable1 = _Payable.ToString(NumberFormat);
+
+                            <tr>
+                                <td>@Row["Code"]</td>
+                                <td>@Row["Title"]</td>
+                                <td>@Row["City"]</td>
+                                <td>@Row["Nature"]</td>
+                                <td class="table-col-amount">@_Receivable1</td>
+                                <td class="table-col-amount">@_Payable1</td>
+                                <td>
+                                    <button class="btn btn-link"
+                                            asp-page-handler="Ledger"
+                                            asp-route-ID="@Row["Customer"]">
+                                        <i class="bi bi-chat-square-text"></i>
+                                    </button>
+
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td></td>
+                            <td>TOTAL</td>
+                            <td class="table-col-amount">@Tot_Bal.ToString(NumberFormat)</td>
+                            <td class="table-col-amount">@Tot_DR.ToString(NumberFormat)</td>
+                            <td class="table-col-amount">@Tot_CR.ToString(NumberFormat)</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            }
+        </div>
+    </form>
+}
+else
+{
+    <div class="container">
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Error!</h4>
+            <p>Invalid Page Request.</p>
+            <hr>
+            <p class="mb-0">Please contact your system administrator.</p>
+        </div>
     </div>
-</form>
+}
