@@ -17,7 +17,7 @@ namespace Applied_WebApplication.Pages.Applied
         public string UserName => User.Identity.Name;
         public string UserRole => UserProfile.GetUserClaim(User, "Role");
         private readonly string Submitted = VoucherStatus.Submitted.ToString();
-
+        
         public void OnGet()
         {
             Variables = new()
@@ -95,6 +95,9 @@ namespace Applied_WebApplication.Pages.Applied
             AppRegistry.SetKey(UserName, "Post_Type", Variables.PostingType, KeyType.Number);
             AppRegistry.SetKey(UserName, "Post_dt_From", Variables.Dt_From, KeyType.Date);
             AppRegistry.SetKey(UserName, "Post_dt_To", Variables.Dt_To, KeyType.Date);
+            AppRegistry.SetKey(UserName, "PostCash", false, KeyType.Boolean);    // Reset Post Cash Voucher Status
+            AppRegistry.SetKey(UserName, "PostBank", false, KeyType.Boolean);    // Reset Post Bank Voucher Status
+            AppRegistry.SetKey(UserName, "PostReceipt", false, KeyType.Boolean);
 
             return RedirectToPage();
         }
