@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static Applied_WebApplication.Data.DataTableClass;
 
+
 namespace Applied_WebApplication.Pages.Applied
 {
     [Authorize]
@@ -17,6 +18,7 @@ namespace Applied_WebApplication.Pages.Applied
         public string UserName => User.Identity.Name;
         public string UserRole => UserProfile.GetUserClaim(User, "Role");
         private readonly string Submitted = VoucherStatus.Submitted.ToString();
+        public bool IsPosting = false;
         
         public void OnGet()
         {
@@ -102,47 +104,54 @@ namespace Applied_WebApplication.Pages.Applied
             return RedirectToPage();
         }
 
-        public IActionResult OnPostPosting(int id, int PostingType)
+        public async Task<IActionResult> OnPostPosting(int id, int PostingType)
         {
-            Variables = new()
+            if (!IsPosting)
             {
-                PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
-                Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
-                Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
-            };
-
-            if (PostingType == (int)PostType.CashBook)
-            {
-                if (!AppRegistry.GetBool(UserName, "PostCash"))
+                IsPosting = true;
+                Variables = new()
                 {
-                    ErrorMessages = PostingClass.PostCashBookAsync(UserName, id).Result;
+                    PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
+                    Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
+                    Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
+                };
+
+                if (PostingType == (int)PostType.CashBook)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostCash"))
+                    {
+                        ErrorMessages = await PostingClass.PostCashBookAsync(UserName, id);
+                    }
+                }
+                if (PostingType == (int)PostType.BankBook)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostBank"))
+                    {
+                        ErrorMessages = await PostingClass.PostBankBookAsync(UserName, id);
+                    }
+                }
+                if (PostingType == (int)PostType.Production) { ErrorMessages = await PostingClass.PostProductionAsync(UserName, id); }
+
+                if (PostingType == (int)PostType.BillPayable) { ErrorMessages = await PostingClass.PostBillPayable(UserName, id); }
+                if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = await PostingClass.PostBillReceivable(UserName, id); }
+                if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = await PostingClass.PostSaleReturn(UserName, id); }
+
+                if (PostingType == (int)PostType.Receipt)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostReceipt"))
+                    {
+                        ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
+                    }
+                }
+
+                if (ErrorMessages.Count > 0)
+                {
+                    IsPosting = false;
+                    return Page();
                 }
             }
-            if (PostingType == (int)PostType.BankBook)
-            {
-                if (!AppRegistry.GetBool(UserName, "PostBank"))
-                {
-                    ErrorMessages = PostingClass.PostBankBookAsync(UserName, id).Result;
-                }
-            }
-            if (PostingType == (int)PostType.Production) { ErrorMessages = PostingClass.PostProductionAsync(UserName, id).Result; }
 
-            if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
-            if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
-            if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
-
-            if (PostingType == (int)PostType.Receipt)
-            {
-                if (!AppRegistry.GetBool(UserName, "PostReceipt"))
-                {
-                    ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
-                }
-            }
-
-            if (ErrorMessages.Count > 0)
-            {
-                return Page();
-            }
+            IsPosting = false;
             return RedirectToPage();
         }
 
