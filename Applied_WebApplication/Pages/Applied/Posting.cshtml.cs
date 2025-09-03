@@ -27,8 +27,10 @@ namespace Applied_WebApplication.Pages.Applied
                 PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
                 Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
                 Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To")
+                
             };
 
+            AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
             string Filter;
             var Date1 = Variables.Dt_From.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Dt_To.AddDays(1).ToString(AppRegistry.DateYMD);
@@ -106,9 +108,12 @@ namespace Applied_WebApplication.Pages.Applied
 
         public async Task<IActionResult> OnPostPosting(int id, int PostingType)
         {
+            var IsPosting = AppRegistry.GetBool(UserName, "IsPosting");
+
             if (!IsPosting)
             {
-                IsPosting = true;
+                AppRegistry.SetKey(UserName, "IsPosting", true, KeyType.Boolean);
+                
                 Variables = new()
                 {
                     PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
@@ -146,12 +151,12 @@ namespace Applied_WebApplication.Pages.Applied
 
                 if (ErrorMessages.Count > 0)
                 {
-                    IsPosting = false;
+                    AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
                     return Page();
                 }
             }
 
-            IsPosting = false;
+            AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
             return RedirectToPage();
         }
 
