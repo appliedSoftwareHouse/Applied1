@@ -511,6 +511,8 @@ namespace Applied_WebApplication.Data
                     var Vou_Type = VoucherType.SaleReturn;
 
                     #region Create Voucher
+
+                    tb_Ledger.MyDataView.RowFilter = $"Vou_No='{Vou_No}'";
                     if (tb_Ledger.CountView == 0)
                     {
                         foreach (DataRow Row in SaleReturn.Rows)
