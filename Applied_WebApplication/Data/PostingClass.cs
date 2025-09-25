@@ -517,11 +517,7 @@ namespace Applied_WebApplication.Data
                     {
                         foreach (DataRow Row in SaleReturn.Rows)
                         {
-                            IsValidated = true;         //  Default value.
-                            //if (Vou_No != Row["Vou_No"].ToString())
-                            //{
-
-                            //}
+                            IsValidated = true;         
                             var _Description = (string)Row["Inventory"] + ": " + (string)Row["Description"];
 
                             #region Debit Entry
@@ -535,7 +531,7 @@ namespace Applied_WebApplication.Data
                             tb_Ledger.CurrentRow["Ref_No"] = DBNull.Value;
                             tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
                             tb_Ledger.CurrentRow["COA"] = COA_DR;
-                            tb_Ledger.CurrentRow["DR"] = Row["RAmount"];
+                            tb_Ledger.CurrentRow["DR"] = Row["RNetAmount"];
                             tb_Ledger.CurrentRow["CR"] = 0;
                             tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                             tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
@@ -585,7 +581,7 @@ namespace Applied_WebApplication.Data
                             tb_Ledger.CurrentRow["BookID"] = DBNull.Value;
                             tb_Ledger.CurrentRow["COA"] = COA_CR;
                             tb_Ledger.CurrentRow["DR"] = 0;
-                            tb_Ledger.CurrentRow["CR"] = Row["RNetAmount"];
+                            tb_Ledger.CurrentRow["CR"] = Row["RAmount"];
                             tb_Ledger.CurrentRow["Customer"] = Row["CompanyID"];
                             tb_Ledger.CurrentRow["Project"] = Row["ProjectID"];
                             tb_Ledger.CurrentRow["Employee"] = Row["EmployeeID"];
