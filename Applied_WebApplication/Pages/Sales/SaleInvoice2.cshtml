@@ -46,7 +46,7 @@
             <div class="row g-1 mb-1">
                 <div class="col-md-4">
                     <div class="form-floating">
-                        <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" readonly asp-for="@Model.Variables.Vou_No">
+                        <input type="text" class="form-control" id="txtVouNo" placeholder="Voucher Number" value="@Model.Variables.Vou_No" readonly asp-for="@Model.Variables.Vou_No">
                         <label for="txtVouNo">Voucher No</label>
                     </div>
                 </div>
@@ -252,8 +252,9 @@
             <div class="container">
                 <div class="row m-1">
                     <div class="col-md-12">
+                        <button asp-page-handler="AddNew" type="submit" id="btnAddNew" class="btn btn-primary btn-w1">New</button>
                         <button asp-page-handler="Save" type="submit" id="btnSave" class="btn btn-primary btn-w1">Save</button>
-                        <button asp-page-handler="AddNew" type="submit" id="btnAddNew" class="btn btn-primary btn-w1">Add</button>
+                        
                         <button asp-page-handler="BackPage" type="submit" id="btnBack" class="btn btn-primary btn-w1">Back</button>
                         <div class="btn-group" role="group" aria-label="Default button group">
                             <button type="submit" class="btn btn-outline-dark" asp-page-handler="Top"><i class="bi bi-chevron-double-left"></i></button>

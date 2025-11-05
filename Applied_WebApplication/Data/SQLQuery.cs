@@ -1,14 +1,4 @@
-﻿using Applied_WebApplication.Pages.Sales;
-using Microsoft.AspNetCore.Components.Web;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Data;
-using System.Net;
-using System.Security.Policy;
-using System.Security.Principal;
-using System.Text;
-using System.Text.RegularExpressions;
-using static Applied_WebApplication.Pages.Stock.InventoryModel;
-using static System.Net.Mime.MediaTypeNames;
+﻿using System.Text;
 
 namespace Applied_WebApplication.Data
 {
@@ -783,43 +773,43 @@ namespace Applied_WebApplication.Data
         {
             _Filter ??= string.Empty;
             var Text = new StringBuilder();
-            Text.Append("SELECT *,");
-            Text.Append("CAST([SR].[Amount] + [SR].[TaxAmount] AS Float) AS[NetAmount],");
-            Text.Append("CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float) AS [RNetAmount],");
-            Text.Append("CAST(");
-            Text.Append("(CAST([SR].[Amount] + [SR].[TaxAmount] AS Float)) - ");
-            Text.Append("(CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float)) ");
-            Text.Append("AS Float) AS [Total] ");
-            Text.Append("FROM(");
-            Text.Append("SELECT");
-            Text.Append("[SR].[ID]             AS [SR_ID],");
-            Text.Append("[SR].[TranID]      AS [SR_TranID],");
-            Text.Append("[B1].[ID]             AS [B1_ID],");
-            Text.Append("[B2].[ID]             AS [B2_ID],");
-            Text.Append("[SR].[Vou_No]    AS [Vou_No],");
-            Text.Append("[SR].[Vou_Date] AS [Vou_Date],");
-            Text.Append("[B2].[TranID]      AS [B2_TranID],");
-            Text.Append("[B2].[Qty]           AS [Qty],");
-            Text.Append("[B2].[Rate]         AS [Rate],");
-            Text.Append("[TX].[Rate]         AS [TRate],");
-            Text.Append("[B1].[Company]  AS [CompanyID],");
-            Text.Append("[B1].[Employee] AS [EmployeeID],");
-            Text.Append("[B2].[Project]      AS [ProjectID],");
-            Text.Append("CAST( [B2].[Qty] * [B2].[Rate] AS Float) AS [Amount],");
-            Text.Append("CAST(([B2].[Qty] * [B2].[Rate]) * [TX].[Rate] AS Float) AS [TaxAmount],");
-            Text.Append("[SR].[Qty]     AS [QtyR],");
-            Text.Append("CAST([SR].[Qty] * [B2].[Rate] As Float) AS [RAmount],");
-            Text.Append("CAST(([SR].[Qty] * [B2].[Rate]) * [TX].[Rate] AS Float) AS [RTaxAmount],");
-            Text.Append("[B2].[Description],");
-            Text.Append("[B1].[Comments] AS [Remarks],");
-            Text.Append("[I].[Title] AS [Inventory],");
-            Text.Append("[SR].[Status]");
-            Text.Append("FROM SaleReturn [SR]");
-            Text.Append("LEFT JOIN [BillReceivable2] [B2] ON [B2].[ID] = [SR].[TranID]");
-            Text.Append("LEFT JOIN [BillReceivable]   [B1] ON [B1].[ID] = [B2].[TranID]");
-            Text.Append("LEFT JOIN [Inventory]           [I] ON [I].[ID] = [B2].[Inventory]");
-            Text.Append("LEFT JOIN[Taxes]                 [TX] ON [TX].[ID] = [B2].[Tax]");
-            Text.Append(") AS [SR]");
+            Text.AppendLine("SELECT *,");
+            Text.AppendLine("CAST([SR].[Amount] + [SR].[TaxAmount] AS Float) AS[NetAmount],");
+            Text.AppendLine("CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float) AS [RNetAmount],");
+            Text.AppendLine("CAST(");
+            Text.AppendLine("(CAST([SR].[Amount] + [SR].[TaxAmount] AS Float)) - ");
+            Text.AppendLine("(CAST([SR].[RAmount] + [SR].[RTaxAmount] AS Float)) ");
+            Text.AppendLine("AS Float) AS [Total] ");
+            Text.AppendLine("FROM(");
+            Text.AppendLine("SELECT");
+            Text.AppendLine("[SR].[ID]          AS [SR_ID],");
+            Text.AppendLine("[SR].[TranID]      AS [SR_TranID],");
+            Text.AppendLine("[B1].[ID]          AS [B1_ID],");
+            Text.AppendLine("[B2].[ID]          AS [B2_ID],");
+            Text.AppendLine("[SR].[Vou_No]      AS [Vou_No],");
+            Text.AppendLine("[SR].[Vou_Date]    AS [Vou_Date],");
+            Text.AppendLine("[B2].[TranID]      AS [B2_TranID],");
+            Text.AppendLine("[B2].[Qty]         AS [Qty],");
+            Text.AppendLine("[B2].[Rate]        AS [Rate],");
+            Text.AppendLine("[TX].[Rate]        AS [TRate],");
+            Text.AppendLine("[B1].[Company]     AS [CompanyID],");
+            Text.AppendLine("[B1].[Employee]    AS [EmployeeID],");
+            Text.AppendLine("[B2].[Project]     AS [ProjectID],");
+            Text.AppendLine("CAST( [B2].[Qty] * [B2].[Rate] AS Float) AS [Amount],");
+            Text.AppendLine("CAST(([B2].[Qty] * [B2].[Rate]) * ([TX].[Rate]/100.0) AS Float) AS [TaxAmount],");
+            Text.AppendLine("[SR].[Qty]         AS [QtyR],");
+            Text.AppendLine("CAST([SR].[Qty] *  [B2].[Rate] As Float) AS [RAmount],");
+            Text.AppendLine("CAST(([SR].[Qty] * [B2].[Rate]) * ([TX].[Rate]/100.0) AS Float) AS [RTaxAmount],");
+            Text.AppendLine("[B2].[Description],");
+            Text.AppendLine("[B1].[Comments] AS [Remarks],");
+            Text.AppendLine("[I].[Title] AS [Inventory],");
+            Text.AppendLine("[SR].[Status]");
+            Text.AppendLine("FROM SaleReturn [SR]");
+            Text.AppendLine("LEFT JOIN [BillReceivable2] [B2] ON [B2].[ID] = [SR].[TranID]");
+            Text.AppendLine("LEFT JOIN [BillReceivable]  [B1] ON [B1].[ID] = [B2].[TranID]");
+            Text.AppendLine("LEFT JOIN [Inventory]       [I]  ON [I].[ID]  = [B2].[Inventory]");
+            Text.AppendLine("LEFT JOIN[Taxes]            [TX] ON [TX].[ID] = [B2].[Tax]");
+            Text.AppendLine(") AS [SR]");
             if (_Filter.Length > 0) { Text.Append($" WHERE {_Filter}"); }
 
             return Text.ToString();
@@ -857,9 +847,9 @@ namespace Applied_WebApplication.Data
         {
             var Text = new StringBuilder();
             Text.Append("SELECT ");
-            Text.Append("[Key] AS[ID],");
-            Text.Append("[Value] AS[Title]");
-            Text.Append($"FROM[Directories] WHERE Directory = '{_DirectoryName}'");
+            Text.Append("[Key]   AS [ID],  ");
+            Text.Append("[Value] AS [Title]");
+            Text.Append($"FROM [Directories] WHERE Directory = '{_DirectoryName}'");
             Text.Append("");
 
             return Text.ToString();

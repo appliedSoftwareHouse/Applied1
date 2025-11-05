@@ -57,6 +57,27 @@ namespace Applied_WebApplication.Pages.Accounts
             return RedirectToPage("JV", "New");
         }
 
+        public IActionResult OnPostDelete(string Vou_No)
+        {
+            if(UserProfile.GetUserRole(User) == "Administrator")
+            {
+                var Filter = $"Vou_No = '{Vou_No}'";
+                DataTableClass tb_Class = new(UserName, Tables.Ledger, Filter);
+
+                if (tb_Class.MyDataTable.Rows.Count > 0)
+                {
+                    foreach (DataRow Row in tb_Class.MyDataTable.Rows)
+                    {
+                        if (Row.Field<string>("Vou_No") == Vou_No)
+                        {
+                            tb_Class.CurrentRow = Row;
+                            tb_Class.Delete();
+                        }   
+                    }
+                }
+            }
+            return Page();
+        }
 
         public class MyParameters
         {

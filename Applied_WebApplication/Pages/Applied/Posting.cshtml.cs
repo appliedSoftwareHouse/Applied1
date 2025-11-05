@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Data;
 using static Applied_WebApplication.Data.DataTableClass;
 
+
 namespace Applied_WebApplication.Pages.Applied
 {
     [Authorize]
@@ -17,7 +18,8 @@ namespace Applied_WebApplication.Pages.Applied
         public string UserName => User.Identity.Name;
         public string UserRole => UserProfile.GetUserClaim(User, "Role");
         private readonly string Submitted = VoucherStatus.Submitted.ToString();
-
+        public bool IsPosting = false;
+        
         public void OnGet()
         {
             Variables = new()
@@ -25,8 +27,10 @@ namespace Applied_WebApplication.Pages.Applied
                 PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
                 Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
                 Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To")
+                
             };
 
+            AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
             string Filter;
             var Date1 = Variables.Dt_From.AddDays(-1).ToString(AppRegistry.DateYMD);
             var Date2 = Variables.Dt_To.AddDays(1).ToString(AppRegistry.DateYMD);
@@ -95,51 +99,64 @@ namespace Applied_WebApplication.Pages.Applied
             AppRegistry.SetKey(UserName, "Post_Type", Variables.PostingType, KeyType.Number);
             AppRegistry.SetKey(UserName, "Post_dt_From", Variables.Dt_From, KeyType.Date);
             AppRegistry.SetKey(UserName, "Post_dt_To", Variables.Dt_To, KeyType.Date);
+            AppRegistry.SetKey(UserName, "PostCash", false, KeyType.Boolean);    // Reset Post Cash Voucher Status
+            AppRegistry.SetKey(UserName, "PostBank", false, KeyType.Boolean);    // Reset Post Bank Voucher Status
+            AppRegistry.SetKey(UserName, "PostReceipt", false, KeyType.Boolean);
 
             return RedirectToPage();
         }
 
-        public IActionResult OnPostPosting(int id, int PostingType)
+        public async Task<IActionResult> OnPostPosting(int id, int PostingType)
         {
-            Variables = new()
-            {
-                PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
-                Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
-                Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
-            };
+            var IsPosting = AppRegistry.GetBool(UserName, "IsPosting");
 
-            if (PostingType == (int)PostType.CashBook)
+            if (!IsPosting)
             {
-                if (!AppRegistry.GetBool(UserName, "PostCash"))
+                AppRegistry.SetKey(UserName, "IsPosting", true, KeyType.Boolean);
+                
+                Variables = new()
                 {
-                    ErrorMessages = PostingClass.PostCashBookAsync(UserName, id).Result;
+                    PostingType = AppRegistry.GetNumber(UserName, "Post_Type"),
+                    Dt_From = AppRegistry.GetDate(UserName, "Post_dt_From"),
+                    Dt_To = AppRegistry.GetDate(UserName, "Post_dt_To"),
+                };
+
+                if (PostingType == (int)PostType.CashBook)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostCash"))
+                    {
+                        ErrorMessages = await PostingClass.PostCashBookAsync(UserName, id);
+                    }
+                }
+                if (PostingType == (int)PostType.BankBook)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostBank"))
+                    {
+                        ErrorMessages = await PostingClass.PostBankBookAsync(UserName, id);
+                    }
+                }
+                if (PostingType == (int)PostType.Production) { ErrorMessages = await PostingClass.PostProductionAsync(UserName, id); }
+
+                if (PostingType == (int)PostType.BillPayable) { ErrorMessages = await PostingClass.PostBillPayable(UserName, id); }
+                if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = await PostingClass.PostBillReceivable(UserName, id); }
+                if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = await PostingClass.PostSaleReturn(UserName, id); }
+
+                if (PostingType == (int)PostType.Receipt)
+                {
+                    if (!AppRegistry.GetBool(UserName, "PostReceipt"))
+                    {
+                        ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
+                    }
+                }
+
+                if (ErrorMessages.Count > 0)
+                {
+                    AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
+                    return Page();
                 }
             }
-            if (PostingType == (int)PostType.BankBook)
-            {
-                if (!AppRegistry.GetBool(UserName, "PostBank"))
-                {
-                    ErrorMessages = PostingClass.PostBankBookAsync(UserName, id).Result;
-                }
-            }
-            if (PostingType == (int)PostType.Production) { ErrorMessages = PostingClass.PostProductionAsync(UserName, id).Result; }
 
-            if (PostingType == (int)PostType.BillPayable) { ErrorMessages = PostingClass.PostBillPayable(UserName, id); }
-            if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = PostingClass.PostBillReceivable(UserName, id); }
-            if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = PostingClass.PostSaleReturn(UserName, id); }
-
-            if (PostingType == (int)PostType.Receipt)
-            {
-                if (!AppRegistry.GetBool(UserName, "PostReceipt"))
-                {
-                    ErrorMessages = PostingClass.PostReceiptAsync(UserName, id).Result;
-                }
-            }
-
-            if (ErrorMessages.Count > 0)
-            {
-                return Page();
-            }
+            AppRegistry.SetKey(UserName, "IsPosting", false, KeyType.Boolean);
             return RedirectToPage();
         }
 
