@@ -730,7 +730,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #endregion
 
         #region Purchase Register
-        public IActionResult OnGetPurchaseRegister(ReportType ReportType)
+        public IActionResult OnGetPurchaseRegister(ReportType RptType)
         {
             ReportFilters paramaters = new ReportFilters()
             {
@@ -791,7 +791,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                     Heading1 = _Heading1,
                     Heading2 = _Heading2,
                     Footer = AppGlobals.ReportFooter,
-                    ReportType = ReportType,
+                    ReportType = RptType,
                     DataSetName = "ds_PurchaseRegister",
                     ReportData = _Table,
                     DataParameters = _Parameters
@@ -800,7 +800,7 @@ namespace Applied_WebApplication.Pages.ReportPrint
                 var ReportClass = new ExportReport(Variables);
                 ReportClass.Render();
 
-                if (ReportType == ReportType.Preview)
+                if (RptType == ReportType.Preview)
                 {
                     ReportLink = ReportClass.Variables.GetFileLink();
                     IsShowPdf = true;
