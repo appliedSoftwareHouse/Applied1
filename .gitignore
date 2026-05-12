@@ -377,3 +377,6 @@ FodyWeavers.xsd
 /Applied_WebApplication/chrome
 /Applied_WebApplication/wwwroot/PrintedReports/Receipt.pdf
 /Applied_WebApplication/wwwroot/PrintedReports/ComBalance.pdf
+/Applied_WebApplication/wwwroot/PrintedReports/GLProject.pdf
+/Applied_WebApplication/wwwroot/PrintedReports/GLProject.xlsx
+*.Backup

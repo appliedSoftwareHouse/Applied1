@@ -732,62 +732,149 @@ namespace Applied_WebApplication.Pages.ReportPrint
         #region Purchase Register
         public IActionResult OnGetPurchaseRegister(ReportType RptType)
         {
-            try
+            ReportFilters paramaters = new ReportFilters()
             {
-                PurchaseReportsModel model = new();
+                Dt_From = (DateTime)GetKey(UserName, "pRptTemp", KeyType.Date),
+                Dt_To = (DateTime)GetKey(UserName, "pRptTemp", KeyType.Date),
+            };
 
-                // Generate / Obtain Report Data from Temp Table....
-                var _TempTable = GetText(UserName, "pRptTemp");
-                var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
-                if (_SourceTable.DataSet == null) { return Page(); }
-                // End Generate Report Data
+            var _Dates = new string[3]
+           {
+                paramaters.Dt_From.AddDays(-1).ToString(DateYMD),
+                paramaters.Dt_From.ToString(DateYMD),
+                paramaters.Dt_To.ToString(DateYMD)
+           };
 
+
+            var _TempTable = GetText(UserName, "pRptTemp");
+            var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
+            if (_SourceTable.DataSet == null) { return Page(); }
+
+            //var _FilterOB = $"[COA] = {paramaters.N_COA} AND Date([Vou_Date]) < Date('{_Dates[1]}')";
+            //var _Filter = $"[COA] = {paramaters.N_COA} AND (Date([Vou_Date]) BETWEEN Date('{_Dates[1]}') AND Date('{_Dates[2]}'))";
+            //var _GroupBy = "[COA]";
+            //var _SortBy = "[Vou_date], [Vou_no]";
+            //var _Query = SQLQuery.Ledger2(_FilterOB, _Filter, _GroupBy, _Dates[0], _SortBy);
+
+            DataTable _Table = _SourceTable;  // DataTableClass.GetTable(UserName, _Query);
+
+
+            if (_Table.Rows.Count > 0)
+            {
+                _Dates[1] = paramaters.Dt_From.ToString(FormatDate);
+                _Dates[2] = paramaters.Dt_To.ToString(FormatDate);
+
+                
                 var _Heading1 = GetText(UserName, "pRptHeading1");
                 var _Heading2 = GetText(UserName, "pRptHeading2");
+                var _CompanyName = UserProfile.GetCompanyName(User);
 
 
-                ReportModel Reportmodel = new ReportModel();
-                // Input Parameters  (.rdl report file)
-                Reportmodel.InputReport.FilePath = ReportPath;
-                Reportmodel.InputReport.FileName = GetText(UserName, "pRptName");
-                Reportmodel.InputReport.FileExtention = "rdl";
-                // output Parameters (like pdf, excel, word, html, tiff)
-                Reportmodel.OutputReport.FilePath = PrintedReportsPath;
-                Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
-                Reportmodel.OutputReport.FileName = "PurchaseRegister";
-                Reportmodel.OutputReport.ReportType = RptType;
-                // Reports Parameters
-                Reportmodel.AddReportParameter("CompanyName", CompanyName);
-                Reportmodel.AddReportParameter("Heading1", _Heading1);
-                Reportmodel.AddReportParameter("Heading2", _Heading2);
-                Reportmodel.AddReportParameter("Footer", ReportFooter);
-
-                var StockClass = new StockLedgersClass(UserName);
-
-                Reportmodel.ReportData.DataSetName = "ds_PurchaseRegister";
-                Reportmodel.ReportData.ReportTable = _SourceTable;
-
-                if (Reportmodel.ReportRender())         // Render a report for preview or download...
+                List<ReportParameter> _Parameters = new List<ReportParameter>
                 {
-                    if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
-                    {
-                        ReportLink = Reportmodel.OutputReport.GetFileLink();
-                        IsShowPdf = true;
-                        return Page();
-                    }
-                    else
-                    {
-                        var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
-                        return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
-                    }
+                    new ReportParameter("CompanyName", CompanyName),
+                    new ReportParameter("Heading1", _Heading1),
+                    new ReportParameter("Heading2", _Heading2),
+                    new ReportParameter("Footer", AppGlobals.ReportFooter)
+                };
+
+
+                #region Report Generator
+                var Variables = new ReportParameters()
+                {
+                    ReportPath = AppGlobals.ReportPath,
+                    ReportFile = GetText(UserName, "pRptName") + ".rdl",  // "Ledger1.rdl",
+                    OutputPath = AppGlobals.PrintedReportPath,
+                    OutputPathLink = AppGlobals.PrintedReportPathLink,
+                    OutputFile = "PurchaseRegister",
+                    CompanyName = _CompanyName,
+                    Heading1 = _Heading1,
+                    Heading2 = _Heading2,
+                    Footer = AppGlobals.ReportFooter,
+                    ReportType = RptType,
+                    DataSetName = "ds_PurchaseRegister",
+                    ReportData = _Table,
+                    DataParameters = _Parameters
+                };
+
+                var ReportClass = new ExportReport(Variables);
+                ReportClass.Render();
+
+                if (RptType == ReportType.Preview)
+                {
+                    ReportLink = ReportClass.Variables.GetFileLink();
+                    IsShowPdf = true;
+                    return Page();
                 }
-            }
-            catch (Exception e)
-            {
-                ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+                else
+                {
+                    return File(ReportClass.Variables.FileBytes, ReportClass.Variables.MimeType, ReportClass.Variables.OutputFileFullName);
+                }
+                #endregion
             }
 
             return Page();
+
+            //---------------------------------------------
+
+
+
+            //try
+            //{
+            //    PurchaseReportsModel model = new();
+
+            //    // Generate / Obtain Report Data from Temp Table....
+            //    var _TempTable = GetText(UserName, "pRptTemp");
+            //    var _SourceTable = TempDBClass.LoadTempTableAsync(UserName, _TempTable).Result;
+            //    if (_SourceTable.DataSet == null) { return Page(); }
+            //    // End Generate Report Data
+
+            //    var _Heading1 = GetText(UserName, "pRptHeading1");
+            //    var _Heading2 = GetText(UserName, "pRptHeading2");
+
+
+            //    ReportModel Reportmodel = new ReportModel();
+            //    // Input Parameters  (.rdl report file)
+            //    Reportmodel.InputReport.FilePath = ReportPath;
+            //    Reportmodel.InputReport.FileName = GetText(UserName, "pRptName");
+            //    Reportmodel.InputReport.FileExtention = "rdl";
+            //    // output Parameters (like pdf, excel, word, html, tiff)
+            //    Reportmodel.OutputReport.FilePath = PrintedReportsPath;
+            //    Reportmodel.OutputReport.FileLink = PrintedReportsPathLink;
+            //    Reportmodel.OutputReport.FileName = "PurchaseRegister";
+            //    Reportmodel.OutputReport.ReportType = RptType;
+            //    // Reports Parameters
+            //    Reportmodel.AddReportParameter("CompanyName", CompanyName);
+            //    Reportmodel.AddReportParameter("Heading1", _Heading1);
+            //    Reportmodel.AddReportParameter("Heading2", _Heading2);
+            //    Reportmodel.AddReportParameter("Footer", ReportFooter);
+
+            //    var StockClass = new StockLedgersClass(UserName);
+
+            //    Reportmodel.ReportData.DataSetName = "ds_PurchaseRegister";
+            //    Reportmodel.ReportData.ReportTable = _SourceTable;
+
+            //    if (Reportmodel.ReportRender())         // Render a report for preview or download...
+            //    {
+            //        if (Reportmodel.OutputReport.ReportType == ReportType.HTML || Reportmodel.OutputReport.ReportType == ReportType.Preview)
+            //        {
+            //            ReportLink = Reportmodel.OutputReport.GetFileLink();
+            //            IsShowPdf = true;
+            //            return Page();
+            //        }
+            //        else
+            //        {
+            //            var FileName = $"{Reportmodel.OutputReport.FileName}{Reportmodel.OutputReport.FileExtention}";
+            //            return File(Reportmodel.ReportBytes, Reportmodel.OutputReport.MimeType, FileName);
+            //        }
+            //    }
+            //}
+            //catch (Exception e)
+            //{
+            //    ErrorMessages.Add(SetMessage($"ERROR: {e.Message}", ConsoleColor.Red));
+            //}
+
+            //return Page();
         }
 
         #endregion
