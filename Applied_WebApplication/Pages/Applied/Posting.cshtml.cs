@@ -136,7 +136,6 @@ namespace Applied_WebApplication.Pages.Applied
                     }
                 }
                 if (PostingType == (int)PostType.Production) { ErrorMessages = await PostingClass.PostProductionAsync(UserName, id); }
-
                 if (PostingType == (int)PostType.BillPayable) { ErrorMessages = await PostingClass.PostBillPayable(UserName, id); }
                 if (PostingType == (int)PostType.BillReceivable) { ErrorMessages = await PostingClass.PostBillReceivable(UserName, id); }
                 if (PostingType == (int)PostType.SaleReturn) { ErrorMessages = await PostingClass.PostSaleReturn(UserName, id); }

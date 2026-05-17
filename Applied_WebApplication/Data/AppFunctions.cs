@@ -141,7 +141,7 @@ namespace Applied_WebApplication.Data
             return "";
         }
 
-        public static DataRow GetRecord(string UserName, Tables _TableName, int id)
+        public static DataRow? GetRecord(string UserName, Tables _TableName, int id)
         {
             DataTableClass _Table = new(UserName, _TableName);
             _Table.MyDataView.RowFilter = $"ID={id}";
@@ -149,7 +149,7 @@ namespace Applied_WebApplication.Data
             {
                 return _Table.MyDataView[0].Row;
             }
-            return _Table.NewRecord();
+            return null;
         }
 
         public static DataTable GetVoucher(string UserName, int TranID, VoucherType VouType)
@@ -231,9 +231,8 @@ namespace Applied_WebApplication.Data
         // Get DatRows from DataTable filter by ID=??
         public static DataRow GetDataRow(string UserName, Tables _TableName, int ID)
         {
-            DataTableClass _Table = new(UserName, _TableName);
-            _Table.MyDataView.RowFilter = $"ID={ID}";
-            if (_Table.MyDataView.Count == 1)
+            DataTableClass _Table = new(UserName, _TableName, $"ID={ID}");
+            if (_Table.Rows.Count == 1)
             { return _Table.MyDataView[0].Row; }
             else { return _Table.MyDataTable.NewRow(); }
         }

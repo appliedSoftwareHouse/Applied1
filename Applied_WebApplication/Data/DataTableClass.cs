@@ -729,7 +729,7 @@ namespace Applied_WebApplication.Data
 
         public static bool Replace(string UserName, Tables table, int _ID, string _Column, object _Value)
         {
-            DataTableClass tb_table = new(UserName, table, "");
+            DataTableClass tb_table = new(UserName, table, $"ID={_ID}");
             return tb_table.Replace(_ID, _Column, _Value);
         }
 

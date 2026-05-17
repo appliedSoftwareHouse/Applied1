@@ -83,8 +83,8 @@
                             <td class="TextCenter">@Row["Vou_No"]</td>
                             <td class="TextCenter">@RowDate</td>
                             <td>@Row["Title"]</td>
-                            <td class="text-danger align-right">@decimal.Parse(Row["DR"].ToString()).ToString(NumFormat)</td>
-                            <td class="text-danger align-right">@decimal.Parse(Row["CR"].ToString()).ToString(NumFormat)</td>
+                            <td class="text-danger align-right">@decimal.Parse(Row["DR"].ToString()!).ToString(NumFormat)</td>
+                            <td class="text-danger align-right">@decimal.Parse(Row["CR"].ToString()!).ToString(NumFormat)</td>
                             <td class="TextCenter">@Row["Status"]</td>
                             @if (!Model.IsPosting)
                             {

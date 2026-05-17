@@ -65,17 +65,17 @@
         {
             <div class="error-msg"> @_Error.Msg; </div>
         }
-        if (_Error.Colour == System.Drawing.Color.Green)
+        else if (_Error.Colour == System.Drawing.Color.Green)
         {
             <div class="error-msg color-green"> @_Error.Msg; </div>
         }
 
-        if (_Error.Colour == System.Drawing.Color.Blue)
+        else if (_Error.Colour == System.Drawing.Color.Blue)
         {
             <div class="error-msg color-blue"> @_Error.Msg; </div>
         }
 
-        if (_Error.Colour == System.Drawing.Color.Yellow)
+        else if (_Error.Colour == System.Drawing.Color.Yellow)
         {
             <div class="alert color-yellow alert-dismissible fade show" role="alert">
                 @_Error.Msg
@@ -84,9 +84,15 @@
             @*<div class="error-msg color-yellow"> @_Error.Msg; </div>*@
         }
 
-        if (_Error.Colour == System.Drawing.Color.Red)
+        else if (_Error.Colour == System.Drawing.Color.Red)
         {
             <div class="error-msg color-red"> @_Error.Msg; </div>
+        }
+        else 
+        {
+            <div class="error-msg color-red">
+                <span style="color:yellow">@_Error.Msg</span>
+            </div>
         }
     }
 </div>
