@@ -50,7 +50,7 @@ namespace Applied_WebApplication.Data
         public static DateTime GetFiscalFrom()
         { return new DateTime(2022, 07, 01); }           // In future addign value from App Registry
         public static DateTime GetFiscalTo()
-        { return new DateTime(2026, 06, 30); }
+        { return new DateTime(2030, 06, 30); }
 
         public static DateTime GetFiscalFrom(string UserName)
         {
