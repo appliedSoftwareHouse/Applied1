@@ -14,8 +14,8 @@ namespace Applied_WebApplication.Pages.Account
         public string UserName => User.Identity.Name;
 
         public string[] CurrencyFormats { get; set; } = new string[] { string.Empty, "#,0", "#.0.00", "#,###0", "#,##0.00" };
-        
-        public string[] DateFormats { get; set; } = new string[] {string.Empty, "dd-MM-yy", "dd-MM-yyyy", "MM-dd-yy", "MM-dd-yyyy", "dd-MMM-yy", "dd-MMM-yyyy" };
+
+        public string[] DateFormats { get; set; } = new string[] { string.Empty, "dd-MM-yy", "dd-MM-yyyy", "MM-dd-yy", "MM-dd-yyyy", "dd-MMM-yy", "dd-MMM-yyyy" };
 
         #endregion
 
@@ -24,63 +24,64 @@ namespace Applied_WebApplication.Pages.Account
         public void OnGet()
         {
             string UserName = User.Identity.Name;
-  
-            Variables = new()
+
+            Variables = new();
             {
                 // Opening Balance
-                OBCompany = AppRegistry.GetNumber(UserName, "OBCompany"),
-                OBStock = AppRegistry.GetNumber(UserName, "OBStock"),
+                Variables.OBCompany = AppRegistry.GetNumber(UserName, "OBCompany");
+                Variables.OBStock = AppRegistry.GetNumber(UserName, "OBStock");
 
                 // General Setup
-                FiscalStart = AppRegistry.GetDate(UserName, "FiscalStart"),
-                FiscalEnd = AppRegistry.GetDate(UserName, "FiscalEnd"),
-                StockExpiry = AppRegistry.GetNumber(UserName, "StockExpiry"),
-                
-                OBDate = AppRegistry.GetDate(UserName, "OBDate"),
-                
-                DateFormat = AppRegistry.GetText(UserName, "FMTDate"),
-                SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL"),
-                ReceiptReport1RDL = AppRegistry.GetText(UserName, "InvReport1RDL"),
-                ReceiptReport2RDL = AppRegistry.GetText(UserName, "InvReport2RDL"),
+                Variables.FiscalStart = AppRegistry.GetDate(UserName, "FiscalStart");
+                Variables.FiscalEnd = AppRegistry.GetDate(UserName, "FiscalEnd");
+                Variables.StockExpiry = AppRegistry.GetNumber(UserName, "StockExpiry");
+
+                Variables.OBDate = AppRegistry.GetDate(UserName, "OBDate");
+
+                Variables.DateFormat = AppRegistry.GetText(UserName, "FMTDate");
+                Variables.SalesReportRDL = AppRegistry.GetText(UserName, "SalesReportRDL");
+                Variables.ReceiptReport1RDL = AppRegistry.GetText(UserName, "InvReport1RDL");
+                Variables.ReceiptReport2RDL = AppRegistry.GetText(UserName, "InvReport2RDL");
 
                 // Currency Setup
-                CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle"),
-                CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit"),
-                CurrencySign = AppRegistry.GetText(UserName, "CurrencySign"),
-                CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency"),
+                Variables.CurrencyTitle = AppRegistry.GetText(UserName, "CurrencyTitle");
+                Variables.CurrencyUnit = AppRegistry.GetText(UserName, "CurrencyUnit");
+                Variables.CurrencySign = AppRegistry.GetText(UserName, "CurrencySign");
+                Variables.CurrencyFormat = AppRegistry.GetText(UserName, "FMTCurrency");
 
                 // Bill Payable Setup
-                BPay_Stock = AppRegistry.GetNumber(UserName, "BPay_Stock"),
-                BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax"),
-                BPay_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable"),
+                Variables.BPay_Stock = AppRegistry.GetNumber(UserName, "BPay_Stock");
+                Variables.BPay_Tax = AppRegistry.GetNumber(UserName, "BPay_Tax");
+                Variables.BPay_Payable = AppRegistry.GetNumber(UserName, "BPay_Payable");
 
                 // Bill Receivable
-                BRec_Stock = AppRegistry.GetNumber(UserName, "BRec_Stock"),
-                BRec_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax"),
-                BRec_Receivable = AppRegistry.GetNumber(UserName, "BRec_Receivable"),
-                
+                Variables.BRec_Stock = AppRegistry.GetNumber(UserName, "BRec_Stock");
+                Variables.BRec_Tax = AppRegistry.GetNumber(UserName, "BRec_Tax");
+                Variables.BRec_Receivable = AppRegistry.GetNumber(UserName, "BRec_Receivable");
+
                 // Accounts setrup for ledger
-                CompanyGLs = AppRegistry.GetText(UserName, "CompanyGLs"),
-                COAStocks = AppRegistry.GetText(UserName, "COAStocks"),
+                Variables.CompanyGLs = AppRegistry.GetText(UserName, "CompanyGLs");
+                Variables.COAStocks = AppRegistry.GetText(UserName, "COAStocks");
 
                 // Accounts Nature
-                CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature"),
-                BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature"),
-                RevenueNote = AppRegistry.GetNumber(UserName, "RevenueNote"),
+                Variables.CashBookNature = AppRegistry.GetNumber(UserName, "CashBkNature");
+                Variables.BankBookNature = AppRegistry.GetNumber(UserName, "BankBkNature");
+                Variables.RevenueNote = AppRegistry.GetNumber(UserName, "RevenueNote");
 
                 // Production
-                ProductIN = AppRegistry.GetNumber(UserName, "ProductIN"),
-                ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT"),
+                Variables.ProductIN = AppRegistry.GetNumber(UserName, "ProductIN");
+                Variables.ProductOUT = AppRegistry.GetNumber(UserName, "ProductOUT");
 
-                ImagePath = AppRegistry.GetText(UserName, "ImagePath"),
-                ReportPath = AppRegistry.GetText(UserName, "ReportPath"),
-            };
+                Variables.ImagePath = AppRegistry.GetText(UserName, "ImagePath");
+                Variables.ReportPath = AppRegistry.GetText(UserName, "ReportPath");
+            }
+            ;
         }
         #endregion
         #region Save
         public IActionResult OnPostSave()
         {
-            
+
             // General Setup
             AppRegistry.SetKey(UserName, "OBCompany", Variables.OBCompany, KeyType.Number);
             AppRegistry.SetKey(UserName, "OBStock", Variables.OBStock, KeyType.Number);
@@ -89,7 +90,7 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "StockExpiry", Variables.StockExpiry, KeyType.Number);
             AppRegistry.SetKey(UserName, "OBDate", Variables.OBDate, KeyType.Date);
             AppRegistry.SetKey(UserName, "FMTDate", Variables.DateFormat, KeyType.Text);
-            
+
             // Currency Setup
             AppRegistry.SetKey(UserName, "CurrencyTitle", Variables.CurrencyTitle, KeyType.Text);
             AppRegistry.SetKey(UserName, "CurrencyUnit", Variables.CurrencyUnit, KeyType.Text);
@@ -107,7 +108,7 @@ namespace Applied_WebApplication.Pages.Account
             AppRegistry.SetKey(UserName, "BRec_Tax", Variables.BRec_Tax, KeyType.Number);
             AppRegistry.SetKey(UserName, "BRec_Receivable", Variables.BRec_Receivable, KeyType.Number);
             AppRegistry.SetKey(UserName, "SalesReportRDL", Variables.SalesReportRDL, KeyType.Text);
-            
+
             AppRegistry.SetKey(UserName, "CompanyGLs", Variables.CompanyGLs, KeyType.Text);
             AppRegistry.SetKey(UserName, "COAStocks", Variables.COAStocks, KeyType.Text);
 
@@ -127,9 +128,9 @@ namespace Applied_WebApplication.Pages.Account
 
 
             // Image and report Path Setup
-            AppRegistry.SetKey(UserName, "ImagePath", Variables.ImagePath, KeyType.Text); 
+            AppRegistry.SetKey(UserName, "ImagePath", Variables.ImagePath, KeyType.Text);
             AppRegistry.SetKey(UserName, "ReportPath", Variables.ReportPath, KeyType.Text);
-            
+
             return RedirectToPage();
         }
         #endregion
@@ -162,11 +163,11 @@ namespace Applied_WebApplication.Pages.Account
             public int BankBookNature { get; set; }
             public int ProductIN { get; set; }
             public int ProductOUT { get; set; }
-            public string ImagePath {  get; set; }
-            public string ReportPath {  get; set; }
-            public int RevenueNote {  get; set; }
-            public string CurrencyTitle {  get; set; }
-            public string CurrencyUnit {  get; set; }
+            public string ImagePath { get; set; }
+            public string ReportPath { get; set; }
+            public int RevenueNote { get; set; }
+            public string CurrencyTitle { get; set; }
+            public string CurrencyUnit { get; set; }
 
         }
         #endregion
